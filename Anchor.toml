@@ -1,0 +1,29 @@
+anchor_version = "0.24.2"
+solana_version = "1.9.13"
+
+[scripts]
+test = "yarn mocha tests/*.spec.ts"
+
+[provider]
+cluster = "localnet"
+wallet = "./tests/test-key.json"
+
+[programs.mainnet]
+cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+
+[programs.devnet]
+cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+
+[programs.testnet]
+cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+
+[programs.localnet]
+cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
