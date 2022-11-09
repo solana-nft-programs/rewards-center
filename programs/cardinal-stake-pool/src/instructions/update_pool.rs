@@ -12,6 +12,9 @@ pub struct UpdatePoolIx {
     cooldown_seconds: Option<u32>,
     min_stake_seconds: Option<u32>,
     end_date: Option<i64>,
+    payment_amount: Option<u64>,
+    payment_mint: Option<Pubkey>,
+    payment_manager: Option<Pubkey>,
 }
 
 #[derive(Accounts)]
@@ -36,6 +39,11 @@ pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
     stake_pool.cooldown_seconds = ix.cooldown_seconds;
     stake_pool.min_stake_seconds = ix.min_stake_seconds;
     stake_pool.image_uri = ix.image_uri.unwrap_or_else(|| stake_pool.image_uri.clone());
+    stake_pool.payment_mint = ix.payment_mint;
+    stake_pool.payment_amount = ix.payment_amount;
+    if let Some(payment_manager) = ix.payment_manager {
+        assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");
+    }
 
     // zero extra data
     let stake_pool_account = stake_pool.to_account_info();

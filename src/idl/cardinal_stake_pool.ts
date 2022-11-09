@@ -276,36 +276,6 @@ export type CardinalStakePool = {
           isSigner: false;
         },
         {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "userPaymentMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "targetPaymentMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "paymentManager";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeCollectorTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "cardinalPaymentManager";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "tokenMetadataProgram";
           isMut: false;
           isSigner: false;
@@ -435,36 +405,6 @@ export type CardinalStakePool = {
         {
           name: "userOriginalMintTokenAccount";
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "userPaymentMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "targetPaymentMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "paymentManager";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeCollectorTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "cardinalPaymentManager";
-          isMut: false;
           isSigner: false;
         },
         {
@@ -939,6 +879,24 @@ export type CardinalStakePool = {
             type: {
               option: "i64";
             };
+          },
+          {
+            name: "paymentAmount";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "paymentMint";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
+            name: "paymentManager";
+            type: {
+              option: "publicKey";
+            };
           }
         ];
       };
@@ -1078,6 +1036,24 @@ export type CardinalStakePool = {
             name: "endDate";
             type: {
               option: "i64";
+            };
+          },
+          {
+            name: "paymentAmount";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "paymentMint";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
+            name: "paymentManager";
+            type: {
+              option: "publicKey";
             };
           }
         ];
@@ -1242,6 +1218,24 @@ export type CardinalStakePool = {
             name: "endDate";
             type: {
               option: "i64";
+            };
+          },
+          {
+            name: "paymentAmount";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "paymentMint";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
+            name: "paymentManager";
+            type: {
+              option: "publicKey";
             };
           }
         ];
@@ -1724,36 +1718,6 @@ export const IDL: CardinalStakePool = {
           isSigner: false,
         },
         {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "userPaymentMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "targetPaymentMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "paymentManager",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeCollectorTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "cardinalPaymentManager",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "tokenMetadataProgram",
           isMut: false,
           isSigner: false,
@@ -1883,36 +1847,6 @@ export const IDL: CardinalStakePool = {
         {
           name: "userOriginalMintTokenAccount",
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "userPaymentMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "targetPaymentMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "paymentManager",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeCollectorTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "cardinalPaymentManager",
-          isMut: false,
           isSigner: false,
         },
         {
@@ -2388,6 +2322,24 @@ export const IDL: CardinalStakePool = {
               option: "i64",
             },
           },
+          {
+            name: "paymentAmount",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "paymentMint",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
+            name: "paymentManager",
+            type: {
+              option: "publicKey",
+            },
+          },
         ],
       },
     },
@@ -2526,6 +2478,24 @@ export const IDL: CardinalStakePool = {
             name: "endDate",
             type: {
               option: "i64",
+            },
+          },
+          {
+            name: "paymentAmount",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "paymentMint",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
+            name: "paymentManager",
+            type: {
+              option: "publicKey",
             },
           },
         ],
@@ -2690,6 +2660,24 @@ export const IDL: CardinalStakePool = {
             name: "endDate",
             type: {
               option: "i64",
+            },
+          },
+          {
+            name: "paymentAmount",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "paymentMint",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
+            name: "paymentManager",
+            type: {
+              option: "publicKey",
             },
           },
         ],

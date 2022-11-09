@@ -1,5 +1,5 @@
 {
-  "name": "@cardinal/staking",
+  "name": "@cardinal/rewards-center",
   "version": "1.10.7",
   "description": "Cardinal stake pool SDK",
   "keywords": [

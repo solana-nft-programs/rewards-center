@@ -39,38 +39,13 @@ pub struct StakeCtx<'info> {
     )]
     user_original_mint_token_account: Box<Account<'info, TokenAccount>>,
 
-    // payment
-    #[account(mut)]
-    payer: Signer<'info>,
-    #[account(mut, constraint =
-        user_original_mint_token_account.mint == stake_entry.original_mint
-        && user_original_mint_token_account.owner == user.key()
-        @ ErrorCode::InvalidPaymentMintTokenAccount
-    )]
-    user_payment_mint_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut, constraint =
-        user_original_mint_token_account.mint == stake_entry.original_mint
-        && user_original_mint_token_account.owner.to_string() == DEFAULT_PAYMENT_MANAGER
-        @ ErrorCode::InvalidPaymentMintTokenAccount
-    )]
-    target_payment_mint_token_account: Box<Account<'info, TokenAccount>>,
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut)]
-    payment_manager: UncheckedAccount<'info>,
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut)]
-    fee_collector_token_account: UncheckedAccount<'info>,
-
-    // programs
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    cardinal_payment_manager: Program<'info, CardinalPaymentManager>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = mpl_token_metadata::id())]
     token_metadata_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
 }
 
-pub fn handler(ctx: Context<StakeCtx>, amount: u64) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
 
@@ -96,31 +71,50 @@ pub fn handler(ctx: Context<StakeCtx>, amount: u64) -> Result<()> {
         stake_entry.cooldown_start_seconds = None;
     }
 
-    let cpi_accounts = Approve {
-        to: ctx.accounts.user_original_mint_token_account.to_account_info(),
-        delegate: stake_entry.to_account_info(),
-        authority: ctx.accounts.user.to_account_info(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-    token::approve(cpi_context, amount)?;
+    if ctx.accounts.original_mint.supply == 1
+        && ctx.accounts.original_mint.freeze_authority.is_some()
+        && ctx
+            .accounts
+            .original_mint
+            .freeze_authority
+            .expect("Invalid freze authority")
+            .eq(&ctx.accounts.original_mint_edition.key())
+    {
+        let cpi_accounts = Approve {
+            to: ctx.accounts.user_original_mint_token_account.to_account_info(),
+            delegate: stake_entry.to_account_info(),
+            authority: ctx.accounts.user.to_account_info(),
+        };
+        let cpi_program = ctx.accounts.token_program.to_account_info();
+        let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
+        token::approve(cpi_context, amount)?;
 
-    invoke_signed(
-        &freeze_delegated_account(
-            ctx.accounts.token_metadata_program.key(),
-            stake_entry.key(),
-            ctx.accounts.user_original_mint_token_account.key(),
-            ctx.accounts.original_mint_edition.key(),
-            ctx.accounts.original_mint.key(),
-        ),
-        &[
-            stake_entry.to_account_info(),
-            ctx.accounts.user_original_mint_token_account.to_account_info(),
-            ctx.accounts.original_mint_edition.to_account_info(),
-            ctx.accounts.original_mint.to_account_info(),
-        ],
-        stake_entry_signer,
-    )?;
+        invoke_signed(
+            &freeze_delegated_account(
+                ctx.accounts.token_metadata_program.key(),
+                stake_entry.key(),
+                ctx.accounts.user_original_mint_token_account.key(),
+                ctx.accounts.original_mint_edition.key(),
+                ctx.accounts.original_mint.key(),
+            ),
+            &[
+                stake_entry.to_account_info(),
+                ctx.accounts.user_original_mint_token_account.to_account_info(),
+                ctx.accounts.original_mint_edition.to_account_info(),
+                ctx.accounts.original_mint.to_account_info(),
+            ],
+            stake_entry_signer,
+        )?;
+    } else {
+        let cpi_accounts = token::Transfer {
+            from: ctx.accounts.user_original_mint_token_account.to_account_info(),
+            to: ctx.accounts.stake_entry_original_mint_token_account.to_account_info(),
+            authority: ctx.accounts.user.to_account_info(),
+        };
+        let cpi_program = ctx.accounts.token_program.to_account_info();
+        let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
+        token::transfer(cpi_context, amount)?;
+    }
 
     // update stake entry
     if stake_pool.reset_on_stake && stake_entry.amount == 0 {
@@ -132,19 +126,34 @@ pub fn handler(ctx: Context<StakeCtx>, amount: u64) -> Result<()> {
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
 
     // handle payment
-    assert_allowed_payment_manager(&ctx.accounts.payment_manager.key().to_string(), DEFAULT_PAYMENT_RECIPIENT).expect("Payment manager error");
-    let payment_mints = get_payment_mints();
-    let payment_amount = payment_mints.get(DEFAULT_PAYMENT_MINT).expect("Could not fetch payment amount");
-    let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
-        payment_manager: ctx.accounts.payment_manager.to_account_info(),
-        payer_token_account: ctx.accounts.user_payment_mint_token_account.to_account_info(),
-        fee_collector_token_account: ctx.accounts.fee_collector_token_account.to_account_info(),
-        payment_token_account: ctx.accounts.target_payment_mint_token_account.to_account_info(),
-        payer: ctx.accounts.payer.to_account_info(),
-        token_program: ctx.accounts.token_program.to_account_info(),
-    };
-    let cpi_ctx = CpiContext::new(ctx.accounts.cardinal_payment_manager.to_account_info(), cpi_accounts);
-    cardinal_payment_manager::cpi::manage_payment(cpi_ctx, *payment_amount)?;
+    if let Some(payment_mint) = stake_pool.payment_mint {
+        let remaining_accounts = &mut ctx.remaining_accounts.iter();
+        let payment_manager = next_account_info(remaining_accounts)?;
+        assert_eq!(stake_pool.payment_manager.expect("Invalid payment manager"), payment_manager.key());
+
+        let payer_token_account_info = next_account_info(remaining_accounts)?;
+        let payer_token_account = Account::<TokenAccount>::try_from(payer_token_account_info)?;
+        assert_eq!(payer_token_account.mint, payment_mint);
+
+        let fee_collector_token_account = next_account_info(remaining_accounts)?;
+        let payment_token_account = next_account_info(remaining_accounts)?;
+        let payer = next_account_info(remaining_accounts)?;
+        let cardinal_payment_manager = next_account_info(remaining_accounts)?;
+        assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
+
+        assert_allowed_payment_info(&payment_mint.to_string()).expect("Payment manager error");
+        let payment_amount = stake_pool.payment_amount.expect("Invalid payment amount");
+        let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
+            payment_manager: payment_manager.to_account_info(),
+            payer_token_account: payer_token_account_info.to_account_info(),
+            fee_collector_token_account: fee_collector_token_account.to_account_info(),
+            payment_token_account: payment_token_account.to_account_info(),
+            payer: payer.to_account_info(),
+            token_program: ctx.accounts.token_program.to_account_info(),
+        };
+        let cpi_ctx = CpiContext::new(cardinal_payment_manager.to_account_info(), cpi_accounts);
+        cardinal_payment_manager::cpi::manage_payment(cpi_ctx, payment_amount)?;
+    }
 
     Ok(())
 }

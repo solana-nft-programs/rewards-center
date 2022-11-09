@@ -475,9 +475,9 @@ export const getStakeBooster = async (
   stakeBoosterId: PublicKey
 ): Promise<AccountData<StakeBoosterData>> => {
   const stakePoolProgram = getProgram(connection);
-  const parsed = await stakePoolProgram.account.stakeBooster.fetch(
+  const parsed = (await stakePoolProgram.account.stakeBooster.fetch(
     stakeBoosterId
-  );
+  )) as StakeBoosterData;
   return {
     parsed,
     pubkey: stakeBoosterId,

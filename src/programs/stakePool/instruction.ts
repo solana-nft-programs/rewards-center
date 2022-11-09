@@ -11,7 +11,10 @@ import {
   findMintCounterId,
   findTokenManagerAddress,
 } from "@cardinal/token-manager/dist/cjs/programs/tokenManager/pda";
-import { MetadataProgram } from "@metaplex-foundation/mpl-token-metadata";
+import {
+  Edition,
+  MetadataProgram,
+} from "@metaplex-foundation/mpl-token-metadata";
 import { AnchorProvider, BN, Program } from "@project-serum/anchor";
 import type { Wallet } from "@saberhq/solana-contrib";
 import {
@@ -70,6 +73,9 @@ export const initStakePool = (
     cooldownSeconds?: number;
     minStakeSeconds?: number;
     endDate?: BN;
+    paymentAmount?: BN;
+    paymentMint?: PublicKey;
+    paymentManager?: PublicKey;
   }
 ): TransactionInstruction => {
   const provider = new AnchorProvider(connection, wallet, {});
@@ -90,6 +96,9 @@ export const initStakePool = (
       cooldownSeconds: params.cooldownSeconds ?? null,
       minStakeSeconds: params.minStakeSeconds ?? null,
       endDate: params.endDate ?? null,
+      paymentAmount: params.paymentAmount ?? null,
+      paymentMint: params.paymentMint ?? null,
+      paymentManager: params.paymentManager ?? null,
     },
     {
       accounts: {
@@ -299,7 +308,7 @@ export const claimReceiptMint = async (
   });
 };
 
-export const stake = (
+export const stake = async (
   connection: Connection,
   wallet: Wallet,
   params: {
@@ -310,13 +319,14 @@ export const stake = (
     userOriginalMintTokenAccountId: PublicKey;
     amount: BN;
   }
-): TransactionInstruction => {
+): Promise<TransactionInstruction> => {
   const provider = new AnchorProvider(connection, wallet, {});
   const stakePoolProgram = new Program<STAKE_POOL_PROGRAM>(
     STAKE_POOL_IDL,
     STAKE_POOL_ADDRESS,
     provider
   );
+  const editionId = await Edition.getPDA(params.originalMint);
 
   return stakePoolProgram.instruction.stake(params.amount, {
     accounts: {
@@ -325,14 +335,16 @@ export const stake = (
       stakeEntryOriginalMintTokenAccount:
         params.stakeEntryOriginalMintTokenAccountId,
       originalMint: params.originalMint,
+      originalMintEdition: editionId,
       user: wallet.publicKey,
       userOriginalMintTokenAccount: params.userOriginalMintTokenAccountId,
+      tokenMetadataProgram: MetadataProgram.PUBKEY,
       tokenProgram: TOKEN_PROGRAM_ID,
     },
   });
 };
 
-export const unstake = (
+export const unstake = async (
   connection: Connection,
   wallet: Wallet,
   params: {
@@ -344,22 +356,25 @@ export const unstake = (
     user: PublicKey;
     remainingAccounts: AccountMeta[];
   }
-): TransactionInstruction => {
+): Promise<TransactionInstruction> => {
   const provider = new AnchorProvider(connection, wallet, {});
   const stakePoolProgram = new Program<STAKE_POOL_PROGRAM>(
     STAKE_POOL_IDL,
     STAKE_POOL_ADDRESS,
     provider
   );
+  const editionId = await Edition.getPDA(params.originalMintId);
   return stakePoolProgram.instruction.unstake({
     accounts: {
       stakePool: params.stakePoolId,
       stakeEntry: params.stakeEntryId,
       originalMint: params.originalMintId,
+      originalMintEdition: editionId,
       stakeEntryOriginalMintTokenAccount:
         params.stakeEntryOriginalMintTokenAccount,
       user: params.user,
       userOriginalMintTokenAccount: params.userOriginalMintTokenAccount,
+      tokenMetadataProgram: MetadataProgram.PUBKEY,
       tokenProgram: TOKEN_PROGRAM_ID,
     },
     remainingAccounts: params.remainingAccounts,
@@ -381,6 +396,9 @@ export const updateStakePool = (
     cooldownSeconds?: number;
     minStakeSeconds?: number;
     endDate?: BN;
+    paymentAmount?: BN;
+    paymentMint?: PublicKey;
+    paymentManager?: PublicKey;
   }
 ): TransactionInstruction => {
   const provider = new AnchorProvider(connection, wallet, {});
@@ -401,6 +419,9 @@ export const updateStakePool = (
       cooldownSeconds: params.cooldownSeconds ?? null,
       minStakeSeconds: params.minStakeSeconds ?? null,
       endDate: params.endDate ?? null,
+      paymentAmount: params.paymentAmount ?? null,
+      paymentMint: params.paymentMint ?? null,
+      paymentManager: params.paymentManager ?? null,
     },
     {
       accounts: {

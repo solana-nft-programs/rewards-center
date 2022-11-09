@@ -356,7 +356,7 @@ export const withStake = async (
     );
 
   transaction.add(
-    stake(connection, wallet, {
+    await stake(connection, wallet, {
       stakeEntryId: stakeEntryId,
       stakePoolId: params.stakePoolId,
       originalMint: params.originalMintId,
@@ -456,7 +456,7 @@ export const withUnstake = async (
   );
 
   transaction.add(
-    unstake(connection, wallet, {
+    await unstake(connection, wallet, {
       stakePoolId: params.stakePoolId,
       stakeEntryId: stakeEntryId,
       originalMintId: params.originalMintId,
