@@ -372,6 +372,21 @@
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.66.2"
 
+"@cardinal/payment-manager@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@cardinal/payment-manager/-/payment-manager-2.0.2.tgz#0e92ededd9b5274024dc906c9961aaf02aa30428"
+  integrity sha512-Wan0PtY0Xsicf1ZFBLsS+vzXkPBVPTdUz3zFIXQ6d9IvqZBSHz8qBCcfGgxp+d9R+Vz9qpLstFifwcc4cfMWRg==
+  dependencies:
+    "@cardinal/common" "^3.0.1"
+    "@metaplex-foundation/mpl-token-metadata" "^1.2.5"
+    "@project-serum/anchor" "^0.25.0"
+    "@saberhq/anchor-contrib" "^1.14.9"
+    "@saberhq/chai-solana" "^1.14.9"
+    "@saberhq/solana-contrib" "^1.14.9"
+    "@solana/buffer-layout" "^4.0.0"
+    "@solana/spl-token" "^0.1.8"
+    "@solana/web3.js" "^1.66.2"
+
 "@cardinal/token-manager@^1.7.9":
   version "1.7.9"
   resolved "https://registry.yarnpkg.com/@cardinal/token-manager/-/token-manager-1.7.9.tgz#0413f99489051612482d6387b99b6299e9729791"
