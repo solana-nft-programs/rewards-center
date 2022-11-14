@@ -38,7 +38,7 @@
   "dependencies": {
     "@cardinal/common": "^2.0.11",
     "@cardinal/payment-manager": "^1.7.9",
-    "@cardinal/token-manager": "^1.7.9",
+    "@cardinal/token-manager": "^2.0.0",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.5",
     "@metaplex-foundation/rustbin": "^0.3.1",
     "@metaplex-foundation/solita": "^0.12.2"

@@ -372,10 +372,10 @@
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.66.2"
 
-"@cardinal/token-manager@^1.7.9":
-  version "1.7.9"
-  resolved "https://registry.yarnpkg.com/@cardinal/token-manager/-/token-manager-1.7.9.tgz#0413f99489051612482d6387b99b6299e9729791"
-  integrity sha512-aFx5BVGeHdVNxXP/rMyIgw7GEY+1NbN1xwDcZzVy1neS3fRA9IZPQg0RYbJmUHRW3befZfE1miP18JdmhgjJGg==
+"@cardinal/token-manager@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@cardinal/token-manager/-/token-manager-2.0.0.tgz#5993b00180baaa1ab6b7bb4146e1bd9cbf376c76"
+  integrity sha512-ZLUZmRh7Bc+3TPLzouYkpEWXF/R9xA6SfQzXNyoud9gidTXrZA/OujqtQBWZg+sOlGzUQQEc91/GcuXUQu3Q+Q==
   dependencies:
     "@cardinal/common" "^2.0.12"
     "@cardinal/payment-manager" "^1.7.9"
