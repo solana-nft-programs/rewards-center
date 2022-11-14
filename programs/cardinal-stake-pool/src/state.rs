@@ -32,12 +32,11 @@ pub struct StakeEntry {
 }
 
 pub const STAKE_POOL_PREFIX: &str = "stake-pool";
-// 5 Pubkeys for creators and collections
-pub const STAKE_POOL_SIZE: usize = 8 + 1 + 8 + 32 + 1 + 4 + 8 + 8 + 16 + 16 + 33 + 33 + 1 + 32 * 5 + 256;
+
+pub const STAKE_POOL_SIZE: usize = 8 + 1 + 8 + 32 + 1 + 4 + 8 + 8 + 16 + 16 + 33 + 33 + 1 + 32 * 5 + 24 + 256;
 #[account]
 pub struct StakePool {
     pub bump: u8,
-    pub identifier: u64,
     pub authority: Pubkey,
     pub total_staked: u32,
     pub reset_on_unstake: bool,
@@ -50,6 +49,7 @@ pub struct StakePool {
     pub requires_authorization: bool,
     pub requires_creators: Vec<Pubkey>,
     pub requires_collections: Vec<Pubkey>,
+    pub identifier: String,
 }
 
 pub fn assert_stake_boost_payment_manager(pubkey: &Pubkey) -> Result<()> {
@@ -83,15 +83,6 @@ pub struct StakeAuthorizationRecord {
     pub bump: u8,
     pub pool: Pubkey,
     pub mint: Pubkey,
-}
-
-pub const IDENTIFIER_PREFIX: &str = "identifier";
-pub const IDENTIFIER_SIZE: usize = 8 + std::mem::size_of::<Identifier>() + 8;
-
-#[account]
-pub struct Identifier {
-    pub bump: u8,
-    pub count: u64,
 }
 
 pub fn get_stake_seed(supply: u64, user: Pubkey) -> Pubkey {

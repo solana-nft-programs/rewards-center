@@ -109,36 +109,10 @@ export type CardinalStakePool = {
       args: [];
     },
     {
-      name: "initIdentifier";
-      accounts: [
-        {
-          name: "identifier";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
       name: "initPool";
       accounts: [
         {
           name: "stakePool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "identifier";
           isMut: true;
           isSigner: false;
         },
@@ -587,10 +561,6 @@ export type CardinalStakePool = {
             type: "u8";
           },
           {
-            name: "identifier";
-            type: "u64";
-          },
-          {
             name: "authority";
             type: "publicKey";
           },
@@ -653,6 +623,10 @@ export type CardinalStakePool = {
             type: {
               vec: "publicKey";
             };
+          },
+          {
+            name: "identifier";
+            type: "string";
           }
         ];
       };
@@ -717,22 +691,6 @@ export type CardinalStakePool = {
           {
             name: "mint";
             type: "publicKey";
-          }
-        ];
-      };
-    },
-    {
-      name: "identifier";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "bump";
-            type: "u8";
-          },
-          {
-            name: "count";
-            type: "u64";
           }
         ];
       };
@@ -891,6 +849,10 @@ export type CardinalStakePool = {
             type: {
               option: "publicKey";
             };
+          },
+          {
+            name: "identifier";
+            type: "string";
           }
         ];
       };
@@ -1269,36 +1231,10 @@ export const IDL: CardinalStakePool = {
       args: [],
     },
     {
-      name: "initIdentifier",
-      accounts: [
-        {
-          name: "identifier",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
       name: "initPool",
       accounts: [
         {
           name: "stakePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "identifier",
           isMut: true,
           isSigner: false,
         },
@@ -1747,10 +1683,6 @@ export const IDL: CardinalStakePool = {
             type: "u8",
           },
           {
-            name: "identifier",
-            type: "u64",
-          },
-          {
             name: "authority",
             type: "publicKey",
           },
@@ -1813,6 +1745,10 @@ export const IDL: CardinalStakePool = {
             type: {
               vec: "publicKey",
             },
+          },
+          {
+            name: "identifier",
+            type: "string",
           },
         ],
       },
@@ -1877,22 +1813,6 @@ export const IDL: CardinalStakePool = {
           {
             name: "mint",
             type: "publicKey",
-          },
-        ],
-      },
-    },
-    {
-      name: "identifier",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "bump",
-            type: "u8",
-          },
-          {
-            name: "count",
-            type: "u64",
           },
         ],
       },
@@ -2051,6 +1971,10 @@ export const IDL: CardinalStakePool = {
             type: {
               option: "publicKey",
             },
+          },
+          {
+            name: "identifier",
+            type: "string",
           },
         ],
       },

@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
@@ -16,7 +16,6 @@ import * as beetSolana from '@metaplex-foundation/beet-solana'
  */
 export type StakePoolArgs = {
   bump: number
-  identifier: beet.bignum
   authority: web3.PublicKey
   totalStaked: number
   resetOnUnstake: boolean
@@ -29,6 +28,7 @@ export type StakePoolArgs = {
   requiresAuthorization: boolean
   requiresCreators: web3.PublicKey[]
   requiresCollections: web3.PublicKey[]
+  identifier: string
 }
 
 export const stakePoolDiscriminator = [121, 34, 206, 21, 79, 127, 255, 28]
@@ -42,7 +42,6 @@ export const stakePoolDiscriminator = [121, 34, 206, 21, 79, 127, 255, 28]
 export class StakePool implements StakePoolArgs {
   private constructor(
     readonly bump: number,
-    readonly identifier: beet.bignum,
     readonly authority: web3.PublicKey,
     readonly totalStaked: number,
     readonly resetOnUnstake: boolean,
@@ -54,7 +53,8 @@ export class StakePool implements StakePoolArgs {
     readonly paymentManager: beet.COption<web3.PublicKey>,
     readonly requiresAuthorization: boolean,
     readonly requiresCreators: web3.PublicKey[],
-    readonly requiresCollections: web3.PublicKey[]
+    readonly requiresCollections: web3.PublicKey[],
+    readonly identifier: string
   ) {}
 
   /**
@@ -63,7 +63,6 @@ export class StakePool implements StakePoolArgs {
   static fromArgs(args: StakePoolArgs) {
     return new StakePool(
       args.bump,
-      args.identifier,
       args.authority,
       args.totalStaked,
       args.resetOnUnstake,
@@ -75,7 +74,8 @@ export class StakePool implements StakePoolArgs {
       args.paymentManager,
       args.requiresAuthorization,
       args.requiresCreators,
-      args.requiresCollections
+      args.requiresCollections,
+      args.identifier
     )
   }
 
@@ -181,17 +181,6 @@ export class StakePool implements StakePoolArgs {
   pretty() {
     return {
       bump: this.bump,
-      identifier: (() => {
-        const x = <{ toNumber: () => number }>this.identifier
-        if (typeof x.toNumber === 'function') {
-          try {
-            return x.toNumber()
-          } catch (_) {
-            return x
-          }
-        }
-        return x
-      })(),
       authority: this.authority.toBase58(),
       totalStaked: this.totalStaked,
       resetOnUnstake: this.resetOnUnstake,
@@ -204,6 +193,7 @@ export class StakePool implements StakePoolArgs {
       requiresAuthorization: this.requiresAuthorization,
       requiresCreators: this.requiresCreators,
       requiresCollections: this.requiresCollections,
+      identifier: this.identifier,
     }
   }
 }
@@ -221,7 +211,6 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['bump', beet.u8],
-    ['identifier', beet.u64],
     ['authority', beetSolana.publicKey],
     ['totalStaked', beet.u32],
     ['resetOnUnstake', beet.bool],
@@ -234,6 +223,7 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['requiresAuthorization', beet.bool],
     ['requiresCreators', beet.array(beetSolana.publicKey)],
     ['requiresCollections', beet.array(beetSolana.publicKey)],
+    ['identifier', beet.utf8String],
   ],
   StakePool.fromArgs,
   'StakePool'

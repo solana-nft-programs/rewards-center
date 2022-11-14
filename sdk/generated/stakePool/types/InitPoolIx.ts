@@ -20,6 +20,7 @@ export type InitPoolIx = {
   paymentAmount: beet.COption<beet.bignum>
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
+  identifier: string
 }
 
 /**
@@ -39,6 +40,7 @@ export const initPoolIxBeet = new beet.FixableBeetArgsStruct<InitPoolIx>(
     ['paymentAmount', beet.coption(beet.u64)],
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
+    ['identifier', beet.utf8String],
   ],
   'InitPoolIx'
 )

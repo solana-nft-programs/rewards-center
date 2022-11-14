@@ -109,36 +109,10 @@
       "args": []
     },
     {
-      "name": "initIdentifier",
-      "accounts": [
-        {
-          "name": "identifier",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initPool",
       "accounts": [
         {
           "name": "stakePool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "identifier",
           "isMut": true,
           "isSigner": false
         },
@@ -587,10 +561,6 @@
             "type": "u8"
           },
           {
-            "name": "identifier",
-            "type": "u64"
-          },
-          {
             "name": "authority",
             "type": "publicKey"
           },
@@ -653,6 +623,10 @@
             "type": {
               "vec": "publicKey"
             }
+          },
+          {
+            "name": "identifier",
+            "type": "string"
           }
         ]
       }
@@ -717,22 +691,6 @@
           {
             "name": "mint",
             "type": "publicKey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Identifier",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "count",
-            "type": "u64"
           }
         ]
       }
@@ -891,6 +849,10 @@
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "identifier",
+            "type": "string"
           }
         ]
       }

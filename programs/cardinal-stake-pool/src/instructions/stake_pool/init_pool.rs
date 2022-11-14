@@ -14,6 +14,7 @@ pub struct InitPoolIx {
     payment_amount: Option<u64>,
     payment_mint: Option<Pubkey>,
     payment_manager: Option<Pubkey>,
+    identifier: String,
 }
 
 #[derive(Accounts)]
@@ -23,12 +24,10 @@ pub struct InitPoolCtx<'info> {
         init,
         payer = payer,
         space = STAKE_POOL_SIZE,
-        seeds = [STAKE_POOL_PREFIX.as_bytes(), identifier.count.to_le_bytes().as_ref()],
+        seeds = [STAKE_POOL_PREFIX.as_bytes(), ix.identifier.as_ref()],
         bump
     )]
     stake_pool: Account<'info, StakePool>,
-    #[account(mut)]
-    identifier: Account<'info, Identifier>,
 
     #[account(mut)]
     payer: Signer<'info>,
@@ -37,9 +36,8 @@ pub struct InitPoolCtx<'info> {
 
 pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
-    let identifier = &mut ctx.accounts.identifier;
     stake_pool.bump = *ctx.bumps.get("stake_pool").unwrap();
-    stake_pool.identifier = identifier.count;
+    stake_pool.identifier = ix.identifier;
     stake_pool.requires_collections = ix.requires_collections;
     stake_pool.requires_creators = ix.requires_creators;
     stake_pool.requires_authorization = ix.requires_authorization;
@@ -55,8 +53,5 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
     if let Some(payment_manager) = ix.payment_manager {
         assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");
     }
-
-    let identifier = &mut ctx.accounts.identifier;
-    identifier.count += 1;
     Ok(())
 }

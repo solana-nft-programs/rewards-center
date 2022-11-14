@@ -1,7 +1,6 @@
 // stake_pool
 pub mod stake_pool;
 pub use stake_pool::close_stake_pool::*;
-pub use stake_pool::init_identifier::*;
 pub use stake_pool::init_pool::*;
 pub use stake_pool::update_pool::*;
 

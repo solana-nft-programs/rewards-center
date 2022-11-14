@@ -1,6 +1,3 @@
-pub mod init_identifier;
-pub use init_identifier::*;
-
 pub mod init_pool;
 pub use init_pool::*;
 
