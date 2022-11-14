@@ -5,13 +5,6 @@ use std::{collections::HashMap, str::FromStr};
 pub const STAKE_ENTRY_PREFIX: &str = "stake-entry";
 pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
 
-#[derive(Clone, Debug, PartialEq, Eq, AnchorSerialize, AnchorDeserialize)]
-#[repr(u8)]
-pub enum StakeEntryKind {
-    Permissionless = 0, // original
-    Permissioned = 1,   // someone else called update_total_stake_seconds indicating claim_reward must check signer so this is a permissioned claim_rewards
-}
-
 #[account]
 pub struct StakeEntry {
     pub bump: u8,

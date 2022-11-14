@@ -5,7 +5,7 @@ use {
         solana_program::{program::invoke, system_instruction::transfer},
     },
     anchor_spl::token::{self, Mint, Token, TokenAccount},
-    cardinal_stake_pool::state::{StakeEntry, StakeEntryKind, StakePool},
+    cardinal_stake_pool::state::{StakeEntry, StakePool},
     std::cmp::min,
 };
 
@@ -24,14 +24,14 @@ pub struct ClaimRewardsCtx<'info> {
     #[account(mut, constraint = reward_mint.key() == reward_distributor.reward_mint @ ErrorCode::InvalidRewardMint)]
     reward_mint: Box<Account<'info, Mint>>,
 
-    #[account(mut, constraint = user_reward_mint_token_account.mint == reward_distributor.reward_mint @ ErrorCode::InvalidUserRewardMintTokenAccount)]
+    #[account(mut, constraint =user_reward_mint_token_account.owner == stake_entry.last_staker &&  user_reward_mint_token_account.mint == reward_distributor.reward_mint @ ErrorCode::InvalidUserRewardMintTokenAccount)]
     user_reward_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut, constraint = assert_reward_manager(&reward_manager.key()))]
     reward_manager: UncheckedAccount<'info>,
 
-    #[account(mut)]
+    #[account(mut, constraint = user.key() == stake_entry.last_staker || user.key() == reward_distributor.authority @ ErrorCode::InvalidAuthority)]
     user: Signer<'info>,
     token_program: Program<'info, Token>,
     system_program: Program<'info, System>,
@@ -47,15 +47,6 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let reward_amount = reward_distributor.reward_amount;
     let reward_duration_seconds = reward_distributor.reward_duration_seconds;
-
-    if stake_entry.kind == StakeEntryKind::Permissioned as u8
-        // if someone else updated this users stake_entry then it must be checked that they are still the staker - this should be called BEFORE unstake
-        && ctx.accounts.user_reward_mint_token_account.owner != stake_entry.last_staker
-        // can only be signed by the last_staker or the reward distributor authority
-        && (ctx.accounts.user.key() != stake_entry.last_staker || ctx.accounts.user.key() != reward_distributor.authority)
-    {
-        return Err(error!(ErrorCode::InvalidUserRewardMintTokenAccount));
-    }
 
     let reward_seconds_received = reward_entry.reward_seconds_received;
     if reward_seconds_received <= stake_entry.total_stake_seconds && (reward_distributor.max_supply.is_none() || reward_distributor.rewards_issued < reward_distributor.max_supply.unwrap() as u128) {
