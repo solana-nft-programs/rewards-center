@@ -8,7 +8,7 @@ pub struct DeauthorizeMintCtx<'info> {
     stake_pool: Account<'info, StakePool>,
     #[account(mut, close = authority, constraint = stake_authorization_record.pool == stake_pool.key() @ ErrorCode::InvalidStakeAuthorizationRecord)]
     stake_authorization_record: Account<'info, StakeAuthorizationRecord>,
-    #[account(mut, constraint = authority.key() == stake_pool.authority @ ErrorCode::InvalidPoolAuthority)]
+    #[account(mut, constraint = authority.key() == stake_pool.authority @ ErrorCode::InvalidAuthority)]
     authority: Signer<'info>,
 }
 

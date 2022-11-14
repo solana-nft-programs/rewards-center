@@ -15,17 +15,18 @@ use anchor_spl::token::{self};
 
 #[derive(Accounts)]
 pub struct UnstakeEditionCtx<'info> {
-    #[account(mut)]
-    stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
+    stake_pool: Box<Account<'info, StakePool>>,
+    #[account(mut)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
+    #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     stake_mint_edition: UncheckedAccount<'info>,
 
     // user
-    #[account(mut, constraint = user.key() == stake_entry.last_staker @ ErrorCode::InvalidUnstakeUser)]
+    #[account(mut, constraint = user.key() == stake_entry.last_staker @ ErrorCode::InvalidLastStaker)]
     user: Signer<'info>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
@@ -34,7 +35,7 @@ pub struct UnstakeEditionCtx<'info> {
         user_stake_mint_token_account.amount > 0
         && user_stake_mint_token_account.mint == stake_entry.stake_mint
         && user_stake_mint_token_account.owner == user.key()
-        @ ErrorCode::InvalidUserOriginalMintTokenAccount
+        @ ErrorCode::InvalidUserStakeMintTokenAccount
     )]
     user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
@@ -42,6 +43,7 @@ pub struct UnstakeEditionCtx<'info> {
     #[account(address = mpl_token_metadata::id())]
     token_metadata_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
+    system_program: Program<'info, System>,
 }
 
 pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
@@ -97,7 +99,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    if let Some(payment_mint) = stake_pool.payment_mint {
+    if let (Some(payment_mint), Some(payment_amount)) = (stake_pool.payment_mint, stake_pool.unstake_payment_amount) {
         let payment_manager = next_account_info(remaining_accounts)?;
         assert_eq!(stake_pool.payment_manager.expect("Invalid payment manager"), payment_manager.key());
 
@@ -112,7 +114,6 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
 
         assert_allowed_payment_info(&payment_mint.to_string()).expect("Payment manager error");
-        let payment_amount = stake_pool.payment_amount.expect("Invalid payment amount");
         let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
             payment_manager: payment_manager.to_account_info(),
             payer_token_account: payer_token_account_info.to_account_info(),

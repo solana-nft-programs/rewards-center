@@ -38,6 +38,7 @@ export const authorizeMintStruct = new beet.BeetArgsStruct<
  *
  * @property [_writable_] stakePool
  * @property [_writable_] stakeAuthorizationRecord
+ * @property [_writable_, **signer**] authority
  * @property [_writable_, **signer**] payer
  * @category Instructions
  * @category AuthorizeMint
@@ -46,6 +47,7 @@ export const authorizeMintStruct = new beet.BeetArgsStruct<
 export type AuthorizeMintInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeAuthorizationRecord: web3.PublicKey
+  authority: web3.PublicKey
   payer: web3.PublicKey
   systemProgram?: web3.PublicKey
 }
@@ -83,6 +85,11 @@ export function createAuthorizeMintInstruction(
       pubkey: accounts.stakeAuthorizationRecord,
       isWritable: true,
       isSigner: false,
+    },
+    {
+      pubkey: accounts.authority,
+      isWritable: true,
+      isSigner: true,
     },
     {
       pubkey: accounts.payer,

@@ -16,12 +16,12 @@ use anchor_spl::token::{self};
 
 #[derive(Accounts)]
 pub struct StakeEditionCtx<'info> {
+    #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
+    stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), get_stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
-    #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
-    stake_pool: Box<Account<'info, StakePool>>,
-
+    #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: Checked in handler
     stake_mint_edition: UncheckedAccount<'info>,
@@ -37,7 +37,7 @@ pub struct StakeEditionCtx<'info> {
         user_stake_mint_token_account.amount > 0
         && user_stake_mint_token_account.mint == stake_entry.stake_mint
         && user_stake_mint_token_account.owner == user.key()
-        @ ErrorCode::InvalidUserOriginalMintTokenAccount
+        @ ErrorCode::InvalidUserStakeMintTokenAccount
     )]
     user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
@@ -91,7 +91,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     )?;
 
     // handle payment
-    if let Some(payment_mint) = stake_pool.payment_mint {
+    if let (Some(payment_mint), Some(payment_amount)) = (stake_pool.payment_mint, stake_pool.stake_payment_amount) {
         let remaining_accounts = &mut ctx.remaining_accounts.iter();
         let payment_manager = next_account_info(remaining_accounts)?;
         assert_eq!(stake_pool.payment_manager.expect("Invalid payment manager"), payment_manager.key());
@@ -107,7 +107,6 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
 
         assert_allowed_payment_info(&payment_mint.to_string()).expect("Payment manager error");
-        let payment_amount = stake_pool.payment_amount.expect("Invalid payment amount");
         let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
             payment_manager: payment_manager.to_account_info(),
             payer_token_account: payer_token_account_info.to_account_info(),

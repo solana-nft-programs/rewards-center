@@ -11,7 +11,8 @@ pub struct InitPoolIx {
     cooldown_seconds: Option<u32>,
     min_stake_seconds: Option<u32>,
     end_date: Option<i64>,
-    payment_amount: Option<u64>,
+    stake_payment_amount: Option<u64>,
+    unstake_payment_amount: Option<u64>,
     payment_mint: Option<Pubkey>,
     payment_manager: Option<Pubkey>,
     identifier: String,
@@ -48,7 +49,8 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
     stake_pool.min_stake_seconds = ix.min_stake_seconds;
     stake_pool.end_date = ix.end_date;
     stake_pool.payment_mint = ix.payment_mint;
-    stake_pool.payment_amount = ix.payment_amount;
+    stake_pool.stake_payment_amount = ix.stake_payment_amount;
+    stake_pool.unstake_payment_amount = ix.unstake_payment_amount;
     stake_pool.payment_manager = ix.payment_manager;
     if let Some(payment_manager) = ix.payment_manager {
         assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");

@@ -45,6 +45,7 @@ export type UnstakeEditionInstructionAccounts = {
   userStakeMintTokenAccount: web3.PublicKey
   tokenMetadataProgram: web3.PublicKey
   tokenProgram?: web3.PublicKey
+  systemProgram?: web3.PublicKey
 }
 
 export const unstakeEditionInstructionDiscriminator = [
@@ -109,6 +110,11 @@ export function createUnstakeEditionInstruction(
     },
     {
       pubkey: accounts.tokenProgram ?? splToken.TOKEN_PROGRAM_ID,
+      isWritable: false,
+      isSigner: false,
+    },
+    {
+      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
       isWritable: false,
       isSigner: false,
     },

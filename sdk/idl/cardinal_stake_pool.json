@@ -189,6 +189,11 @@
           "isSigner": false
         },
         {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
           "name": "payer",
           "isMut": true,
           "isSigner": true
@@ -391,12 +396,12 @@
       "name": "stakeEdition",
       "accounts": [
         {
-          "name": "stakeEntry",
+          "name": "stakePool",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "stakePool",
+          "name": "stakeEntry",
           "isMut": true,
           "isSigner": false
         },
@@ -500,6 +505,11 @@
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
@@ -596,7 +606,13 @@
             }
           },
           {
-            "name": "paymentAmount",
+            "name": "stakePaymentAmount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "unstakePaymentAmount",
             "type": {
               "option": "u64"
             }
@@ -838,7 +854,13 @@
             }
           },
           {
-            "name": "paymentAmount",
+            "name": "stakePaymentAmount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "unstakePaymentAmount",
             "type": {
               "option": "u64"
             }
@@ -910,7 +932,13 @@
             }
           },
           {
-            "name": "paymentAmount",
+            "name": "stakePaymentAmount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "unstakePaymentAmount",
             "type": {
               "option": "u64"
             }
@@ -934,113 +962,58 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidOriginalMint",
-      "msg": "Original mint is invalid"
-    },
-    {
-      "code": 6001,
-      "name": "InvalidTokenManagerMint",
-      "msg": "Token Manager mint is invalid"
-    },
-    {
-      "code": 6002,
-      "name": "InvalidUserOriginalMintTokenAccount",
-      "msg": "Invalid user original mint token account"
-    },
-    {
-      "code": 6003,
-      "name": "InvalidUserMintTokenAccount",
-      "msg": "Invalid user token manager mint account"
-    },
-    {
-      "code": 6004,
-      "name": "InvalidStakeEntryOriginalMintTokenAccount",
-      "msg": "Invalid stake entry original mint token account"
-    },
-    {
-      "code": 6005,
-      "name": "InvalidStakeEntryMintTokenAccount",
-      "msg": "Invalid stake entry token manager mint token account"
-    },
-    {
-      "code": 6006,
-      "name": "InvalidUnstakeUser",
-      "msg": "Invalid unstake user only last staker can unstake"
-    },
-    {
-      "code": 6007,
       "name": "InvalidStakePool",
       "msg": "Invalid stake pool"
     },
     {
-      "code": 6008,
-      "name": "NoMintMetadata",
-      "msg": "No mint metadata"
+      "code": 6001,
+      "name": "InvalidStakeEntry",
+      "msg": "Invalid stake entry"
     },
     {
-      "code": 6009,
-      "name": "MintNotAllowedInPool",
-      "msg": "Mint not allowed in this pool"
-    },
-    {
-      "code": 6010,
-      "name": "InvalidPoolAuthority",
+      "code": 6002,
+      "name": "InvalidAuthority",
       "msg": "Invalid stake pool authority"
     },
     {
+      "code": 6003,
+      "name": "InvalidEscrow",
+      "msg": "Mismatched user and escrow"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidUserStakeMintTokenAccount",
+      "msg": "Invalid user original mint token account"
+    },
+    {
       "code": 6011,
-      "name": "InvalidStakeType",
-      "msg": "Invalid stake type"
-    },
-    {
-      "code": 6012,
-      "name": "InvalidStakeEntryStakeTokenAccount",
-      "msg": "Invalid stake entry stake token account"
-    },
-    {
-      "code": 6013,
       "name": "InvalidLastStaker",
       "msg": "Invalid last staker"
     },
     {
-      "code": 6014,
-      "name": "InvalidTokenManagerProgram",
-      "msg": "Invalid token manager program"
+      "code": 6012,
+      "name": "CannotUpdateUnstakedEntry",
+      "msg": "Cannot update unstaked entry"
     },
     {
-      "code": 6015,
-      "name": "InvalidReceiptMint",
-      "msg": "Invalid receipt mint"
-    },
-    {
-      "code": 6016,
-      "name": "StakeEntryAlreadyStaked",
-      "msg": "Stake entry already has tokens staked"
-    },
-    {
-      "code": 6017,
-      "name": "InvalidAuthority",
-      "msg": "Invalid authority"
-    },
-    {
-      "code": 6018,
+      "code": 6013,
       "name": "CannotCloseStakedEntry",
       "msg": "Cannot close staked entry"
     },
     {
-      "code": 6019,
+      "code": 6014,
       "name": "CannotClosePoolWithStakedEntries",
       "msg": "Cannot close staked entry"
     },
     {
       "code": 6020,
-      "name": "CooldownSecondRemaining",
-      "msg": "Token still has some cooldown seconds remaining"
+      "name": "InvalidMintMetadata",
+      "msg": "Invalid mint metadata"
     },
     {
       "code": 6021,
-      "name": "MinStakeSecondsNotSatisfied",
-      "msg": "Minimum stake seconds not satisfied"
+      "name": "MintNotAllowedInPool",
+      "msg": "Mint not allowed in this pool"
     },
     {
       "code": 6022,
@@ -1049,76 +1022,56 @@
     },
     {
       "code": 6023,
-      "name": "InvalidMintMetadata",
-      "msg": "Invalid mint metadata"
-    },
-    {
-      "code": 6024,
-      "name": "StakePoolHasEnded",
-      "msg": "Stake pool has ended"
-    },
-    {
-      "code": 6025,
       "name": "InvalidMintMetadataOwner",
       "msg": "Mint metadata is owned by the incorrect program"
     },
     {
-      "code": 6026,
-      "name": "StakeMintAlreadyInitialized",
-      "msg": "Stake mint already intialized"
-    },
-    {
-      "code": 6027,
-      "name": "InvalidStakeEntry",
-      "msg": "Invalid stake entry"
-    },
-    {
-      "code": 6028,
+      "code": 6030,
       "name": "InvalidPaymentMint",
       "msg": "Invalid payment mint"
     },
     {
-      "code": 6029,
-      "name": "InvalidPaymentMintTokenAccount",
-      "msg": "Invalid payment mint token account"
+      "code": 6040,
+      "name": "CooldownSecondRemaining",
+      "msg": "Token still has some cooldown seconds remaining"
     },
     {
-      "code": 6030,
-      "name": "CannotUpdateUnstakedEntry",
-      "msg": "Cannot update unstaked entry"
+      "code": 6041,
+      "name": "StakePoolHasEnded",
+      "msg": "Stake pool has ended"
     },
     {
-      "code": 6031,
-      "name": "InvalidEscrow",
-      "msg": "Mismatched user and escrow"
+      "code": 6050,
+      "name": "MinStakeSecondsNotSatisfied",
+      "msg": "Minimum stake seconds not satisfied"
     },
     {
-      "code": 6032,
+      "code": 6060,
       "name": "CannotBoostUnstakedToken",
       "msg": "Cannot boost unstaked token"
     },
     {
-      "code": 6033,
+      "code": 6061,
       "name": "CannotBoostMoreThanCurrentTime",
       "msg": "Cannot boost past current time less than start time"
     },
     {
-      "code": 6034,
+      "code": 6062,
       "name": "InvalidBoostPayerTokenAccount",
       "msg": "Invalid boost payer token account"
     },
     {
-      "code": 6035,
+      "code": 6063,
       "name": "InvalidBoostPaymentRecipientTokenAccount",
       "msg": "Invalid boost payment recipient token account"
     },
     {
-      "code": 6036,
+      "code": 6064,
       "name": "InvalidPaymentManager",
       "msg": "Invalid payment manager"
     },
     {
-      "code": 6037,
+      "code": 6065,
       "name": "CannotBoostFungibleToken",
       "msg": "Cannot boost a fungible token stake entry"
     }

@@ -22,7 +22,8 @@ export type StakePoolArgs = {
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
   endDate: beet.COption<beet.bignum>
-  paymentAmount: beet.COption<beet.bignum>
+  stakePaymentAmount: beet.COption<beet.bignum>
+  unstakePaymentAmount: beet.COption<beet.bignum>
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
   requiresAuthorization: boolean
@@ -48,7 +49,8 @@ export class StakePool implements StakePoolArgs {
     readonly cooldownSeconds: beet.COption<number>,
     readonly minStakeSeconds: beet.COption<number>,
     readonly endDate: beet.COption<beet.bignum>,
-    readonly paymentAmount: beet.COption<beet.bignum>,
+    readonly stakePaymentAmount: beet.COption<beet.bignum>,
+    readonly unstakePaymentAmount: beet.COption<beet.bignum>,
     readonly paymentMint: beet.COption<web3.PublicKey>,
     readonly paymentManager: beet.COption<web3.PublicKey>,
     readonly requiresAuthorization: boolean,
@@ -69,7 +71,8 @@ export class StakePool implements StakePoolArgs {
       args.cooldownSeconds,
       args.minStakeSeconds,
       args.endDate,
-      args.paymentAmount,
+      args.stakePaymentAmount,
+      args.unstakePaymentAmount,
       args.paymentMint,
       args.paymentManager,
       args.requiresAuthorization,
@@ -187,7 +190,8 @@ export class StakePool implements StakePoolArgs {
       cooldownSeconds: this.cooldownSeconds,
       minStakeSeconds: this.minStakeSeconds,
       endDate: this.endDate,
-      paymentAmount: this.paymentAmount,
+      stakePaymentAmount: this.stakePaymentAmount,
+      unstakePaymentAmount: this.unstakePaymentAmount,
       paymentMint: this.paymentMint,
       paymentManager: this.paymentManager,
       requiresAuthorization: this.requiresAuthorization,
@@ -217,7 +221,8 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],
     ['endDate', beet.coption(beet.i64)],
-    ['paymentAmount', beet.coption(beet.u64)],
+    ['stakePaymentAmount', beet.coption(beet.u64)],
+    ['unstakePaymentAmount', beet.coption(beet.u64)],
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
