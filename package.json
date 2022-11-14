@@ -36,7 +36,7 @@
     "docs:generate": "typedoc --excludePrivate --includeVersion --out site/ src/index.ts"
   },
   "dependencies": {
-    "@cardinal/common": "^2.0.11",
+    "@cardinal/common": "^4.0.1",
     "@cardinal/payment-manager": "^1.7.9",
     "@cardinal/token-manager": "^1.7.9",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.5",

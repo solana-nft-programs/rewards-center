@@ -326,7 +326,7 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cardinal/common@^2.0.11", "@cardinal/common@^2.0.12":
+"@cardinal/common@^2.0.12":
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-2.0.14.tgz#bdbe2f923df048f37ce80de39216d838dc24c1e6"
   integrity sha512-/mZPDrD41JFPl83Potv9b3HklYIKF4ZpFHZV7pFZRXAZc+QDBbjvNDdx5EVW8gFYkfHkfH8M62LbBK8ZDtbm0g==
@@ -355,6 +355,19 @@
     "@solana/spl-token" "^0.3.5"
     bignumber.js "^9.1.0"
     bn.js "^5.2.1"
+    polished "^4.2.2"
+    tslib "^2.4.0"
+
+"@cardinal/common@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-4.0.1.tgz#cf6895c47a986e7f5a75b1260eb1a663233b141a"
+  integrity sha512-We4m3pTQouHhay4RrPJJOvmV0KOGy7vuKSRaseLPvUjdEfQRZ9SN/Oy2U4v326wBcdonVc72EAYFAqYWBJgRFQ==
+  dependencies:
+    "@project-serum/anchor" "^0.24.2"
+    "@solana/buffer-layout" "^4.0.0"
+    "@solana/spl-token" "^0.3.5"
+    "@solana/web3.js" "^1.66.2"
+    bignumber.js "^9.1.0"
     polished "^4.2.2"
     tslib "^2.4.0"
 
