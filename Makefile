@@ -21,7 +21,7 @@ start:
 		--bpf-program rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp ./target/deploy/cardinal_receipt_manager.so \
 		--reset --quiet & echo $$!
 	sleep 10
-	solana-keygen pubkey ./tests/test-key.json
+	solana-keygen pubkey ./tests/test-keypairs/test-key.json
 	solana airdrop 1000 $(TEST_KEY) --url http://localhost:8899
 
 test:

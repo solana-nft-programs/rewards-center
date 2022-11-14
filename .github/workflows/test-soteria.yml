@@ -11,11 +11,11 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  SOLANA_VERSION: 1.9.13
+  SOLANA_VERSION: 1.10.41
   RUST_TOOLCHAIN: nightly
   SOTERIA_VERSION: 0.0.0
   ANCHOR_GIT: https://github.com/project-serum/anchor
-  ANCHOR_VERSION: 0.24.2
+  ANCHOR_VERSION: 0.25.0
 
 jobs:
   soteria-scan:

@@ -595,28 +595,12 @@ export type CardinalStakePool = {
             type: "publicKey";
           },
           {
-            name: "requiresCreators";
-            type: {
-              vec: "publicKey";
-            };
-          },
-          {
-            name: "requiresCollections";
-            type: {
-              vec: "publicKey";
-            };
-          },
-          {
-            name: "requiresAuthorization";
-            type: "bool";
+            name: "totalStaked";
+            type: "u32";
           },
           {
             name: "resetOnUnstake";
             type: "bool";
-          },
-          {
-            name: "totalStaked";
-            type: "u32";
           },
           {
             name: "cooldownSeconds";
@@ -652,6 +636,22 @@ export type CardinalStakePool = {
             name: "paymentManager";
             type: {
               option: "publicKey";
+            };
+          },
+          {
+            name: "requiresAuthorization";
+            type: "bool";
+          },
+          {
+            name: "requiresCreators";
+            type: {
+              vec: "publicKey";
+            };
+          },
+          {
+            name: "requiresCollections";
+            type: {
+              vec: "publicKey";
             };
           }
         ];
@@ -1755,28 +1755,12 @@ export const IDL: CardinalStakePool = {
             type: "publicKey",
           },
           {
-            name: "requiresCreators",
-            type: {
-              vec: "publicKey",
-            },
-          },
-          {
-            name: "requiresCollections",
-            type: {
-              vec: "publicKey",
-            },
-          },
-          {
-            name: "requiresAuthorization",
-            type: "bool",
+            name: "totalStaked",
+            type: "u32",
           },
           {
             name: "resetOnUnstake",
             type: "bool",
-          },
-          {
-            name: "totalStaked",
-            type: "u32",
           },
           {
             name: "cooldownSeconds",
@@ -1812,6 +1796,22 @@ export const IDL: CardinalStakePool = {
             name: "paymentManager",
             type: {
               option: "publicKey",
+            },
+          },
+          {
+            name: "requiresAuthorization",
+            type: "bool",
+          },
+          {
+            name: "requiresCreators",
+            type: {
+              vec: "publicKey",
+            },
+          },
+          {
+            name: "requiresCollections",
+            type: {
+              vec: "publicKey",
             },
           },
         ],

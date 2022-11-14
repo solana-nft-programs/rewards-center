@@ -18,17 +18,17 @@ export type StakePoolArgs = {
   bump: number
   identifier: beet.bignum
   authority: web3.PublicKey
-  requiresCreators: web3.PublicKey[]
-  requiresCollections: web3.PublicKey[]
-  requiresAuthorization: boolean
-  resetOnUnstake: boolean
   totalStaked: number
+  resetOnUnstake: boolean
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
   endDate: beet.COption<beet.bignum>
   paymentAmount: beet.COption<beet.bignum>
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
+  requiresAuthorization: boolean
+  requiresCreators: web3.PublicKey[]
+  requiresCollections: web3.PublicKey[]
 }
 
 export const stakePoolDiscriminator = [121, 34, 206, 21, 79, 127, 255, 28]
@@ -44,17 +44,17 @@ export class StakePool implements StakePoolArgs {
     readonly bump: number,
     readonly identifier: beet.bignum,
     readonly authority: web3.PublicKey,
-    readonly requiresCreators: web3.PublicKey[],
-    readonly requiresCollections: web3.PublicKey[],
-    readonly requiresAuthorization: boolean,
-    readonly resetOnUnstake: boolean,
     readonly totalStaked: number,
+    readonly resetOnUnstake: boolean,
     readonly cooldownSeconds: beet.COption<number>,
     readonly minStakeSeconds: beet.COption<number>,
     readonly endDate: beet.COption<beet.bignum>,
     readonly paymentAmount: beet.COption<beet.bignum>,
     readonly paymentMint: beet.COption<web3.PublicKey>,
-    readonly paymentManager: beet.COption<web3.PublicKey>
+    readonly paymentManager: beet.COption<web3.PublicKey>,
+    readonly requiresAuthorization: boolean,
+    readonly requiresCreators: web3.PublicKey[],
+    readonly requiresCollections: web3.PublicKey[]
   ) {}
 
   /**
@@ -65,17 +65,17 @@ export class StakePool implements StakePoolArgs {
       args.bump,
       args.identifier,
       args.authority,
-      args.requiresCreators,
-      args.requiresCollections,
-      args.requiresAuthorization,
-      args.resetOnUnstake,
       args.totalStaked,
+      args.resetOnUnstake,
       args.cooldownSeconds,
       args.minStakeSeconds,
       args.endDate,
       args.paymentAmount,
       args.paymentMint,
-      args.paymentManager
+      args.paymentManager,
+      args.requiresAuthorization,
+      args.requiresCreators,
+      args.requiresCollections
     )
   }
 
@@ -193,17 +193,17 @@ export class StakePool implements StakePoolArgs {
         return x
       })(),
       authority: this.authority.toBase58(),
-      requiresCreators: this.requiresCreators,
-      requiresCollections: this.requiresCollections,
-      requiresAuthorization: this.requiresAuthorization,
-      resetOnUnstake: this.resetOnUnstake,
       totalStaked: this.totalStaked,
+      resetOnUnstake: this.resetOnUnstake,
       cooldownSeconds: this.cooldownSeconds,
       minStakeSeconds: this.minStakeSeconds,
       endDate: this.endDate,
       paymentAmount: this.paymentAmount,
       paymentMint: this.paymentMint,
       paymentManager: this.paymentManager,
+      requiresAuthorization: this.requiresAuthorization,
+      requiresCreators: this.requiresCreators,
+      requiresCollections: this.requiresCollections,
     }
   }
 }
@@ -223,17 +223,17 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['bump', beet.u8],
     ['identifier', beet.u64],
     ['authority', beetSolana.publicKey],
-    ['requiresCreators', beet.array(beetSolana.publicKey)],
-    ['requiresCollections', beet.array(beetSolana.publicKey)],
-    ['requiresAuthorization', beet.bool],
-    ['resetOnUnstake', beet.bool],
     ['totalStaked', beet.u32],
+    ['resetOnUnstake', beet.bool],
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],
     ['endDate', beet.coption(beet.i64)],
     ['paymentAmount', beet.coption(beet.u64)],
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
+    ['requiresAuthorization', beet.bool],
+    ['requiresCreators', beet.array(beetSolana.publicKey)],
+    ['requiresCollections', beet.array(beetSolana.publicKey)],
   ],
   StakePool.fromArgs,
   'StakePool'

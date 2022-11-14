@@ -36,17 +36,19 @@
     "docs:generate": "typedoc --excludePrivate --includeVersion --out site/ src/index.ts"
   },
   "dependencies": {
-    "@cardinal/common": "^2.0.11",
-    "@cardinal/payment-manager": "^1.7.9",
-    "@cardinal/token-manager": "^1.7.9",
-    "@metaplex-foundation/mpl-token-metadata": "^1.2.5",
+    "@cardinal/common": "^4.0.1",
+    "@cardinal/payment-manager": "^2.0.2",
     "@metaplex-foundation/rustbin": "^0.3.1",
-    "@metaplex-foundation/solita": "^0.12.2"
+    "@metaplex-foundation/solita": "^0.12.2",
+    "@project-serum/anchor": "0.25.0",
+    "@types/bn.js": "^5.1.1"
+  },
+  "resolutions": {
+    "@solana/spl-token": "=0.3.6"
   },
   "devDependencies": {
-    "eslint-plugin-simple-import-sort": "^8.0.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
     "@rushstack/eslint-patch": "^1.2.0",
+    "@solana/spl-token": "=0.3.6",
     "@types/jest": "^29.2.0",
     "colors": "^1.4.0",
     "dotenv": "^16.0.3",
@@ -55,6 +57,8 @@
     "eslint-plugin-github": "^4.3.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^25.3.2",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^29.2.1",
     "lint-staged": "^13.0.3",
     "pretty-quick": "^3.1.3",

@@ -15,11 +15,11 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  SOLANA_VERSION: 1.9.13
+  SOLANA_VERSION: 1.10.41
   RUST_TOOLCHAIN: nightly
   SOTERIA_VERSION: 0.0.0
   ANCHOR_GIT: https://github.com/project-serum/anchor
-  ANCHOR_VERSION: 0.24.2
+  ANCHOR_VERSION: 0.25.0
 
 jobs:
   rust-clippy:
@@ -112,17 +112,23 @@ jobs:
 
       - name: Setup
         run: mkdir -p target/deploy
-      - run: cp -r tests/test-keypairs/* target/deploy
-      - run: find . -type f -name "*" -exec sed -i'' -e "s/stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6/$(solana-keygen pubkey tests/test-keypairs/cardinal_stake_pool-keypair.json)/g" {} +
-      - run: find . -type f -name "*" -exec sed -i'' -e "s/rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA/$(solana-keygen pubkey tests/test-keypairs/cardinal_reward_distributor-keypair.json)/g" {} +
-      - run: find . -type f -name "*" -exec sed -i'' -e "s/rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp/$(solana-keygen pubkey tests/test-keypairs/cardinal_receipt_manager-keypair.json)/g" {} +
-      - run: find . -type f -name "Anchor.toml" -exec sed -i'' -e "s/yarn mocha tests\/\*.spec.ts/yarn mocha tests\/\*.spec.ts --reporter mocha-junit-reporter --reporter-options mochaFile=.\/tests\/out.xml/g" {} +
+      - name: build
+        run: cargo build-bpf
 
-      - name: Run tests
-        run: solana-test-validator --url https://api.devnet.solana.com --clone metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s --clone PwDiXFxQsGra4sFFTT8r1QWRMd4vfumiWC1jfWNfdYT --clone FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi --clone mgr99QFMYByTqGPWmNqunV7vBLmWWXdSrHUfV8Jf3JM --clone ojLGErfqghuAqpJXE1dguXF7kKfvketCEeah8ig6GU3 --clone pmvYY6Wgvpe3DEj3UX1FcRpMx43sMLYLJrFTVGcqpdn --clone 355AtuHH98Jy9XFg5kWodfmvSfrhcxYUKGoJe8qziFNY --reset & echo $$! > validator.PID
+      - name: Run local validator
+        run: 	>-
+          solana-test-validator --url https://api.mainnet-beta.solana.com
+		      --clone metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s --clone PwDiXFxQsGra4sFFTT8r1QWRMd4vfumiWC1jfWNfdYT
+		      --clone pmvYY6Wgvpe3DEj3UX1FcRpMx43sMLYLJrFTVGcqpdn --clone 355AtuHH98Jy9XFg5kWodfmvSfrhcxYUKGoJe8qziFNY
+          --clone FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi
+          --clone CuEDMUqgkGTVcAaqEDHuVR848XN38MPsD11JrkxcGD6a 
+          --bpf-program stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6 ./target/deploy/cardinal_stake_pool.so
+          --bpf-program rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA ./target/deploy/cardinal_reward_distributor.so
+          --bpf-program rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp ./target/deploy/cardinal_receipt_manager.so
+          --reset --quiet & echo $$! > validator.PID
       - run: sleep 6
-      - run: solana airdrop 1000 $(solana-keygen pubkey tests/test-key.json) --url http://localhost:8899
-      - run: anchor test --skip-local-validator --provider.cluster localnet
+      - run: solana airdrop 1000 $(solana-keygen pubkey ./tests/test-keypairs/test-key.json) --url http://localhost:8899
+      - run: yarn test
 
       # - uses: dorny/test-reporter@v1
       #   if: always()

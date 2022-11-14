@@ -1,95 +1,188 @@
+import { utils, Wallet } from "@project-serum/anchor";
 import {
-  CreateMasterEditionV3,
-  CreateMetadataV2,
-  Creator,
-  DataV2,
-  MasterEdition,
-  Metadata,
-} from "@metaplex-foundation/mpl-token-metadata";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
-import BN from "bn.js";
+  createAssociatedTokenAccountInstruction,
+  createInitializeMint2Instruction,
+  createMintToInstruction,
+  getAssociatedTokenAddressSync,
+  getMinimumBalanceForRentExemptMint,
+  MINT_SIZE,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
+import type { PublicKey, SendTransactionError, Signer } from "@solana/web3.js";
+import {
+  Connection,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  sendAndConfirmRawTransaction,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
 
-export function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export async function newAccountWithLamports(
+  connection: Connection,
+  lamports = LAMPORTS_PER_SOL,
+  keypair = Keypair.generate()
+): Promise<Keypair> {
+  const account = keypair;
+  const signature = await connection.requestAirdrop(
+    account.publicKey,
+    lamports
+  );
+  await connection.confirmTransaction(signature, "confirmed");
+  return account;
 }
 
-/**
- * Pay and create mint and token account
- * @param connection
- * @param creator
- * @returns
- */
-export const createMint = async (
-  connection: web3.Connection,
-  creator: web3.Keypair,
-  recipient: web3.PublicKey,
-  amount = 1,
-  freezeAuthority: web3.PublicKey = recipient,
-  mintAuthority: web3.PublicKey = creator.publicKey,
-  decimals?: number
-): Promise<[web3.PublicKey, splToken.Token]> => {
-  const fromAirdropSignature = await connection.requestAirdrop(
-    creator.publicKey,
-    web3.LAMPORTS_PER_SOL
-  );
-  await connection.confirmTransaction(fromAirdropSignature);
-  const mint = await splToken.Token.createMint(
-    connection,
-    creator,
-    mintAuthority,
-    freezeAuthority,
-    decimals ?? 0,
-    splToken.TOKEN_PROGRAM_ID
-  );
-  const tokenAccount = await mint.createAssociatedTokenAccount(recipient);
-  if (amount) {
-    await mint.mintTo(tokenAccount, creator.publicKey, [], amount);
+export function getConnection(): Connection {
+  const url = "http://127.0.0.1:8899";
+  return new Connection(url, "confirmed");
+}
+
+export async function executeTransaction(
+  connection: Connection,
+  tx: Transaction,
+  wallet: Wallet,
+  signers?: Signer[]
+): Promise<string> {
+  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  tx.feePayer = wallet.publicKey;
+  await wallet.signTransaction(tx);
+  if (signers) {
+    tx.partialSign(...signers);
   }
-  return [tokenAccount, mint];
+  try {
+    const txid = await sendAndConfirmRawTransaction(connection, tx.serialize());
+    return txid;
+  } catch (e) {
+    handleError(e);
+    throw e;
+  }
+}
+
+export type CardinalProvider = {
+  connection: Connection;
+  wallet: Wallet;
+  keypair: Keypair;
 };
 
-export const createMasterEditionIxs = async (
-  mintId: web3.PublicKey,
-  tokenCreatorId: web3.PublicKey
-) => {
-  const metadataId = await Metadata.getPDA(mintId);
-  const metadataTx = new CreateMetadataV2(
-    { feePayer: tokenCreatorId },
-    {
-      metadata: metadataId,
-      metadataData: new DataV2({
-        name: "test",
-        symbol: "TST",
-        uri: "http://test/",
-        sellerFeeBasisPoints: 10,
-        creators: [
-          new Creator({
-            address: tokenCreatorId.toBase58(),
-            verified: true,
-            share: 100,
-          }),
-        ],
-        collection: null,
-        uses: null,
-      }),
-      updateAuthority: tokenCreatorId,
-      mint: mintId,
-      mintAuthority: tokenCreatorId,
-    }
+export async function getProvider(): Promise<CardinalProvider> {
+  const connection = getConnection();
+  const keypair = await newAccountWithLamports(
+    connection,
+    LAMPORTS_PER_SOL,
+    keypairFrom(process.env.TEST_KEY ?? "./tests/test-keypairs/test-key.json")
   );
+  const wallet = new Wallet(keypair);
+  return {
+    connection,
+    wallet,
+    keypair,
+  };
+}
 
-  const masterEditionId = await MasterEdition.getPDA(mintId);
-  const masterEditionTx = new CreateMasterEditionV3(
-    { feePayer: tokenCreatorId },
-    {
-      edition: masterEditionId,
-      metadata: metadataId,
-      updateAuthority: tokenCreatorId,
-      mint: mintId,
-      mintAuthority: tokenCreatorId,
-      maxSupply: new BN(1),
+export const keypairFrom = (s: string, n?: string): Keypair => {
+  try {
+    if (s.includes("[")) {
+      return Keypair.fromSecretKey(
+        Buffer.from(
+          s
+            .replace("[", "")
+            .replace("]", "")
+            .split(",")
+            .map((c) => parseInt(c))
+        )
+      );
+    } else {
+      return Keypair.fromSecretKey(utils.bytes.bs58.decode(s));
     }
+  } catch (e) {
+    try {
+      return Keypair.fromSecretKey(
+        Buffer.from(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          JSON.parse(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires
+            require("fs").readFileSync(s, {
+              encoding: "utf-8",
+            })
+          )
+        )
+      );
+    } catch (e) {
+      process.stdout.write(`${n ?? "keypair"} is not valid keypair`);
+      process.exit(1);
+    }
+  }
+};
+
+export const handleError = (e: any) => {
+  const message = (e as SendTransactionError).message ?? "";
+  const logs = (e as SendTransactionError).logs;
+  if (logs) {
+    console.log(logs);
+    // const parsed = parseProgramLogs(logs, message);
+    // const fmt = formatInstructionLogsForConsole(parsed);
+    // console.log(fmt);
+  } else {
+    console.log(e, message);
+  }
+};
+
+const networkURLs: { [key: string]: { primary: string; secondary?: string } } =
+  {
+    ["mainnet-beta"]: {
+      primary:
+        process.env.MAINNET_PRIMARY || "https://solana-api.projectserum.com",
+      secondary: "https://solana-api.projectserum.com",
+    },
+    mainnet: {
+      primary:
+        process.env.MAINNET_PRIMARY || "https://solana-api.projectserum.com",
+      secondary: "https://solana-api.projectserum.com",
+    },
+    devnet: { primary: "https://api.devnet.solana.com/" },
+    testnet: { primary: "https://api.testnet.solana.com/" },
+    localnet: { primary: "http://localhost:8899/" },
+  };
+
+export const connectionFor = (
+  cluster: string | null,
+  defaultCluster = "mainnet"
+) => {
+  return new Connection(
+    process.env.RPC_URL || networkURLs[cluster || defaultCluster]!.primary,
+    "recent"
   );
-  return [...metadataTx.instructions, ...masterEditionTx.instructions];
+};
+
+export const secondaryConnectionFor = (
+  cluster: string | null,
+  defaultCluster = "mainnet"
+) => {
+  return new Connection(
+    process.env.RPC_URL ||
+      networkURLs[cluster || defaultCluster]?.secondary ||
+      networkURLs[cluster || defaultCluster]!.primary,
+    "recent"
+  );
+};
+
+export const createMintTx = async (
+  connection: Connection,
+  mint: PublicKey,
+  authority: PublicKey,
+  target = authority
+) => {
+  const ata = getAssociatedTokenAddressSync(mint, target);
+  return new Transaction().add(
+    SystemProgram.createAccount({
+      fromPubkey: authority,
+      newAccountPubkey: mint,
+      space: MINT_SIZE,
+      lamports: await getMinimumBalanceForRentExemptMint(connection),
+      programId: TOKEN_PROGRAM_ID,
+    }),
+    createInitializeMint2Instruction(mint, 0, authority, authority),
+    createAssociatedTokenAccountInstruction(authority, ata, target, mint),
+    createMintToInstruction(mint, ata, authority, 1)
+  );
 };
