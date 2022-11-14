@@ -72,11 +72,11 @@ pub mod cardinal_stake_pool {
     }
 
     //// editions ////
-    pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
+    pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
         editions::stake_edition::handler(ctx, amount)
     }
 
-    pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCtx<'info>>) -> Result<()> {
+    pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
         editions::unstake_edition::handler(ctx)
     }
 }

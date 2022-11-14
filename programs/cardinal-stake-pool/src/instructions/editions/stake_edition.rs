@@ -15,7 +15,7 @@ use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
 
 #[derive(Accounts)]
-pub struct StakeCtx<'info> {
+pub struct StakeEditionCtx<'info> {
     #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), get_stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
@@ -46,7 +46,7 @@ pub struct StakeCtx<'info> {
     token_program: Program<'info, Token>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
 

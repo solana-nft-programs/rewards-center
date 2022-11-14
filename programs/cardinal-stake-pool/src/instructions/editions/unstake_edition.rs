@@ -14,7 +14,7 @@ use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
 
 #[derive(Accounts)]
-pub struct UnstakeCtx<'info> {
+pub struct UnstakeEditionCtx<'info> {
     #[account(mut)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
@@ -43,7 +43,7 @@ pub struct UnstakeCtx<'info> {
     token_program: Program<'info, Token>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCtx<'info>>) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
 
