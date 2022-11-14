@@ -34,7 +34,7 @@ pub fn handler(ctx: Context<AuthorizeMintCtx>, mint: Pubkey) -> Result<()> {
     Ok(())
 }
 
-pub fn mint_is_allowed(stake_pool: &Box<Account<StakePool>>, stake_mint_metadata: &AccountInfo, stake_mint: Pubkey, remaining_accounts: &mut Iter<AccountInfo>) -> Result<()> {
+pub fn mint_is_allowed(stake_pool: &Account<StakePool>, stake_mint_metadata: &AccountInfo, stake_mint: Pubkey, remaining_accounts: &mut Iter<AccountInfo>) -> Result<()> {
     assert_derivation(
         &mpl_token_metadata::id(),
         &stake_mint_metadata.to_account_info(),
