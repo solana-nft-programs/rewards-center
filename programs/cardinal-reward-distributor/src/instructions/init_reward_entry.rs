@@ -1,6 +1,7 @@
 use cardinal_stake_pool::state::StakeEntry;
 
-use {crate::state::*, anchor_lang::prelude::*};
+use crate::state::*;
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct InitRewardEntryCtx<'info> {

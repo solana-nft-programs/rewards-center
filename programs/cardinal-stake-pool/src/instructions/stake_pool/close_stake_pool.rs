@@ -1,8 +1,7 @@
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
 use anchor_lang::AccountsClose;
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-};
 
 #[derive(Accounts)]
 pub struct CloseStakePoolCtx<'info> {

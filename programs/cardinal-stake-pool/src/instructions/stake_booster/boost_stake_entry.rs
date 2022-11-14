@@ -1,9 +1,11 @@
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-    anchor_spl::token::{Mint, Token, TokenAccount},
-    cardinal_payment_manager::{program::CardinalPaymentManager, state::PaymentManager},
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
+use anchor_spl::token::Mint;
+use anchor_spl::token::Token;
+use anchor_spl::token::TokenAccount;
+use cardinal_payment_manager::program::CardinalPaymentManager;
+use cardinal_payment_manager::state::PaymentManager;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct BoostStakeEntryIx {

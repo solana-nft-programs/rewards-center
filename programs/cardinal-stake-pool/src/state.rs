@@ -1,6 +1,7 @@
 use crate::errors::ErrorCode;
 use anchor_lang::prelude::*;
-use std::{collections::HashMap, str::FromStr};
+use std::collections::HashMap;
+use std::str::FromStr;
 
 pub const USER_ESCROW_PREFIX: &str = "escrow";
 #[inline]

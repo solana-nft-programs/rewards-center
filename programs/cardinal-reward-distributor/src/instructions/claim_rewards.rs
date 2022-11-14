@@ -1,13 +1,15 @@
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::{
-        prelude::*,
-        solana_program::{program::invoke, system_instruction::transfer},
-    },
-    anchor_spl::token::{self, Mint, Token, TokenAccount},
-    cardinal_stake_pool::state::{StakeEntry, StakePool},
-    std::cmp::min,
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
+use anchor_lang::solana_program::program::invoke;
+use anchor_lang::solana_program::system_instruction::transfer;
+use anchor_spl::token::Mint;
+use anchor_spl::token::Token;
+use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{self};
+use cardinal_stake_pool::state::StakeEntry;
+use cardinal_stake_pool::state::StakePool;
+use std::cmp::min;
 
 #[derive(Accounts)]
 pub struct ClaimRewardsCtx<'info> {

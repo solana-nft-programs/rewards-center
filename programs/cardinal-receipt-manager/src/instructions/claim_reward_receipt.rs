@@ -1,11 +1,12 @@
-use anchor_spl::token::{Token, TokenAccount};
-use cardinal_payment_manager::{program::CardinalPaymentManager, state::PaymentManager};
+use anchor_spl::token::Token;
+use anchor_spl::token::TokenAccount;
+use cardinal_payment_manager::program::CardinalPaymentManager;
+use cardinal_payment_manager::state::PaymentManager;
 use cardinal_stake_pool::state::StakeEntry;
 
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct CreateRewardReceiptCtx<'info> {

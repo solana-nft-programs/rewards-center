@@ -1,12 +1,10 @@
 use mpl_token_metadata::utils::assert_derivation;
 
 use crate::instructions::mint_is_allowed;
-use {
-    crate::state::*,
-    anchor_lang::prelude::*,
-    anchor_spl::token::Mint,
-    mpl_token_metadata::{self},
-};
+use crate::state::*;
+use anchor_lang::prelude::*;
+use anchor_spl::token::Mint;
+use mpl_token_metadata::{self};
 
 #[derive(Accounts)]
 #[instruction(user: Pubkey)]

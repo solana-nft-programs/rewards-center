@@ -1,10 +1,10 @@
-use mpl_token_metadata::{state::Metadata, utils::assert_derivation};
+use mpl_token_metadata::state::Metadata;
+use mpl_token_metadata::utils::assert_derivation;
 use std::slice::Iter;
 
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 #[instruction(mint: Pubkey)]

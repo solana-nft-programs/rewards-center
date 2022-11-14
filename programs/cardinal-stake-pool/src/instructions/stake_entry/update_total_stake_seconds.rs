@@ -1,4 +1,6 @@
-use {crate::errors::ErrorCode, crate::state::*, anchor_lang::prelude::*};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct UpdateTotalStakeSecondsCtx<'info> {

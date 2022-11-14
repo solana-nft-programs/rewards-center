@@ -5,11 +5,13 @@ use solana_program::program::invoke_signed;
 
 use crate::instructions::stake_entry::increment_total_stake_seconds;
 
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-    anchor_spl::token::{self, Mint, Token, TokenAccount},
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
+use anchor_spl::token::Mint;
+use anchor_spl::token::Token;
+use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{self};
 
 #[derive(Accounts)]
 pub struct UnstakeCtx<'info> {

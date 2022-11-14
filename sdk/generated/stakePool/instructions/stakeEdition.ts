@@ -40,6 +40,7 @@ export const stakeEditionStruct = new beet.BeetArgsStruct<
  * @property [_writable_] stakePool
  * @property [] stakeMint
  * @property [] stakeMintEdition
+ * @property [] stakeMintMetadata
  * @property [_writable_, **signer**] user
  * @property [] userEscrow
  * @property [_writable_] userStakeMintTokenAccount
@@ -53,6 +54,7 @@ export type StakeEditionInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeMint: web3.PublicKey
   stakeMintEdition: web3.PublicKey
+  stakeMintMetadata: web3.PublicKey
   user: web3.PublicKey
   userEscrow: web3.PublicKey
   userStakeMintTokenAccount: web3.PublicKey
@@ -101,6 +103,11 @@ export function createStakeEditionInstruction(
     },
     {
       pubkey: accounts.stakeMintEdition,
+      isWritable: false,
+      isSigner: false,
+    },
+    {
+      pubkey: accounts.stakeMintMetadata,
       isWritable: false,
       isSigner: false,
     },

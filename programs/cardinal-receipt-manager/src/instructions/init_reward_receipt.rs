@@ -1,9 +1,8 @@
 use cardinal_stake_pool::state::StakeEntry;
 
-use {
-    crate::{errors::ErrorCode, state::*},
-    anchor_lang::prelude::*,
-};
+use crate::errors::ErrorCode;
+use crate::state::*;
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct InitRewardReceiptCtx<'info> {
