@@ -6,5 +6,5 @@
     "noEmit": false,
     "outDir": "dist/esm/"
   },
-  "include": ["src/"]
+  "include": ["sdk/"]
 }

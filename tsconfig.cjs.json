@@ -4,5 +4,5 @@
     "module": "CommonJS",
     "outDir": "dist/cjs/"
   },
-  "include": ["src/"]
+  "include": ["sdk/"]
 }
