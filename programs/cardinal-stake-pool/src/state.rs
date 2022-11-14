@@ -33,16 +33,12 @@ pub struct StakeEntry {
 
 pub const STAKE_POOL_PREFIX: &str = "stake-pool";
 // 5 Pubkeys for creators and collections
-pub const STAKE_POOL_SIZE: usize = 8 + 1 + 8 + 1 + 32 + 32 * 5 + 256;
-
+pub const STAKE_POOL_SIZE: usize = 8 + 1 + 8 + 32 + 1 + 4 + 8 + 8 + 16 + 16 + 33 + 33 + 1 + 32 * 5 + 256;
 #[account]
 pub struct StakePool {
     pub bump: u8,
     pub identifier: u64,
     pub authority: Pubkey,
-    pub requires_creators: Vec<Pubkey>,
-    pub requires_collections: Vec<Pubkey>,
-    pub requires_authorization: bool,
     pub reset_on_unstake: bool,
     pub total_staked: u32,
     pub cooldown_seconds: Option<u32>,
@@ -51,6 +47,9 @@ pub struct StakePool {
     pub payment_amount: Option<u64>,
     pub payment_mint: Option<Pubkey>,
     pub payment_manager: Option<Pubkey>,
+    pub requires_authorization: bool,
+    pub requires_creators: Vec<Pubkey>,
+    pub requires_collections: Vec<Pubkey>,
 }
 
 pub fn assert_stake_boost_payment_manager(pubkey: &Pubkey) -> Result<()> {
@@ -104,7 +103,10 @@ pub fn get_stake_seed(supply: u64, user: Pubkey) -> Pubkey {
 }
 
 pub fn assert_allowed_payment_info(mint: &str) -> Result<()> {
-    let payment_mints = get_payment_mints();
+    let payment_mints = HashMap::from([
+        ("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ", 1_u64.pow(9)),
+        ("So11111111111111111111111111111111111111112", 2_000_000),
+    ]);
     if !payment_mints.contains_key(mint) {
         return Err(error!(ErrorCode::InvalidPaymentMint));
     }
@@ -116,11 +118,4 @@ pub fn assert_stake_pool_payment_manager(pubkey: &Pubkey) -> Result<()> {
         return Err(error!(ErrorCode::InvalidPaymentManager));
     }
     Ok(())
-}
-
-pub fn get_payment_mints() -> HashMap<&'static str, u64> {
-    HashMap::from([
-        ("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ", 1_u64.pow(9)),
-        ("So11111111111111111111111111111111111111112", 2_000_000),
-    ])
 }
