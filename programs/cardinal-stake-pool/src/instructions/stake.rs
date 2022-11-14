@@ -3,6 +3,8 @@ use cardinal_payment_manager::program::CardinalPaymentManager;
 use mpl_token_metadata::instruction::freeze_delegated_account;
 use solana_program::program::invoke_signed;
 
+use super::update_total_stake_seconds::increment_total_stake_seconds;
+
 use {
     crate::{errors::ErrorCode, state::*},
     anchor_lang::prelude::*,
@@ -61,13 +63,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     }
 
     if stake_entry.amount != 0 {
-        stake_entry.total_stake_seconds = stake_entry.total_stake_seconds.saturating_add(
-            (u128::try_from(stake_entry.cooldown_start_seconds.unwrap_or(Clock::get().unwrap().unix_timestamp))
-                .unwrap()
-                .saturating_sub(u128::try_from(stake_entry.last_staked_at).unwrap()))
-            .checked_mul(u128::try_from(stake_entry.amount).unwrap())
-            .unwrap(),
-        );
+        increment_total_stake_seconds(stake_entry)?;
         stake_entry.cooldown_start_seconds = None;
     }
 
@@ -115,8 +111,9 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     if stake_pool.reset_on_stake && stake_entry.amount == 0 {
         stake_entry.total_stake_seconds = 0;
     }
-    stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.last_staker = ctx.accounts.user.key();
+    stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
+    stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.amount = stake_entry.amount.checked_add(amount).unwrap();
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
 

@@ -62,6 +62,8 @@ pub enum ErrorCode {
     InvalidPaymentMint,
     #[msg("Invalid payment mint token account")]
     InvalidPaymentMintTokenAccount,
+    #[msg("Cannot update unstaked entry")]
+    CannotUpdateUnstakedEntry,
     // boost errors
     #[msg("Cannot boost unstaked token")]
     CannotBoostUnstakedToken,

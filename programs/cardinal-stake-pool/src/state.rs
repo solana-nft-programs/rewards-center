@@ -2,8 +2,6 @@ use crate::errors::ErrorCode;
 use anchor_lang::prelude::*;
 use std::{collections::HashMap, str::FromStr};
 
-pub const USER_ESCROW_PREFIX: &str = "escrow";
-
 pub const STAKE_ENTRY_PREFIX: &str = "stake-entry";
 pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
 
@@ -22,6 +20,7 @@ pub struct StakeEntry {
     pub stake_mint: Pubkey,
     pub last_staker: Pubkey,
     pub last_staked_at: i64,
+    pub last_updated_at: i64,
     pub total_stake_seconds: u128,
     pub kind: u8,
     pub cooldown_start_seconds: Option<i64>,
