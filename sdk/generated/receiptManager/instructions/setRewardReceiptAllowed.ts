@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,8 +14,8 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type SetRewardReceiptAllowedInstructionArgs = {
-  allowed: boolean;
-};
+  allowed: boolean
+}
 /**
  * @category Instructions
  * @category SetRewardReceiptAllowed
@@ -23,15 +23,15 @@ export type SetRewardReceiptAllowedInstructionArgs = {
  */
 export const setRewardReceiptAllowedStruct = new beet.BeetArgsStruct<
   SetRewardReceiptAllowedInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["allowed", beet.bool],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['allowed', beet.bool],
   ],
-  "SetRewardReceiptAllowedInstructionArgs"
-);
+  'SetRewardReceiptAllowedInstructionArgs'
+)
 /**
  * Accounts required by the _setRewardReceiptAllowed_ instruction
  *
@@ -43,14 +43,14 @@ export const setRewardReceiptAllowedStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type SetRewardReceiptAllowedInstructionAccounts = {
-  receiptManager: web3.PublicKey;
-  rewardReceipt: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  receiptManager: web3.PublicKey
+  rewardReceipt: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const setRewardReceiptAllowedInstructionDiscriminator = [
   249, 167, 0, 176, 129, 78, 102, 23,
-];
+]
 
 /**
  * Creates a _SetRewardReceiptAllowed_ instruction.
@@ -65,12 +65,12 @@ export const setRewardReceiptAllowedInstructionDiscriminator = [
 export function createSetRewardReceiptAllowedInstruction(
   accounts: SetRewardReceiptAllowedInstructionAccounts,
   args: SetRewardReceiptAllowedInstructionArgs,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = setRewardReceiptAllowedStruct.serialize({
     instructionDiscriminator: setRewardReceiptAllowedInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptManager,
@@ -87,12 +87,12 @@ export function createSetRewardReceiptAllowedInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

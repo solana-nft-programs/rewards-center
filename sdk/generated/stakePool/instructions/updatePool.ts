@@ -5,11 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { UpdatePoolIx } from "../types/UpdatePoolIx";
-import { updatePoolIxBeet } from "../types/UpdatePoolIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import { UpdatePoolIx, updatePoolIxBeet } from '../types/UpdatePoolIx'
 
 /**
  * @category Instructions
@@ -17,8 +15,8 @@ import { updatePoolIxBeet } from "../types/UpdatePoolIx";
  * @category generated
  */
 export type UpdatePoolInstructionArgs = {
-  ix: UpdatePoolIx;
-};
+  ix: UpdatePoolIx
+}
 /**
  * @category Instructions
  * @category UpdatePool
@@ -26,15 +24,15 @@ export type UpdatePoolInstructionArgs = {
  */
 export const updatePoolStruct = new beet.FixableBeetArgsStruct<
   UpdatePoolInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", updatePoolIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', updatePoolIxBeet],
   ],
-  "UpdatePoolInstructionArgs"
-);
+  'UpdatePoolInstructionArgs'
+)
 /**
  * Accounts required by the _updatePool_ instruction
  *
@@ -45,13 +43,13 @@ export const updatePoolStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type UpdatePoolInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  payer: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  payer: web3.PublicKey
+}
 
 export const updatePoolInstructionDiscriminator = [
   239, 214, 170, 78, 36, 35, 30, 34,
-];
+]
 
 /**
  * Creates a _UpdatePool_ instruction.
@@ -66,12 +64,12 @@ export const updatePoolInstructionDiscriminator = [
 export function createUpdatePoolInstruction(
   accounts: UpdatePoolInstructionAccounts,
   args: UpdatePoolInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = updatePoolStruct.serialize({
     instructionDiscriminator: updatePoolInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -83,12 +81,12 @@ export function createUpdatePoolInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

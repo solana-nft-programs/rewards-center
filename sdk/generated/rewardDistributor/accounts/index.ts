@@ -1,7 +1,7 @@
-import { RewardDistributor } from "./RewardDistributor";
-import { RewardEntry } from "./RewardEntry";
+export * from './RewardDistributor'
+export * from './RewardEntry'
 
-export * from "./RewardDistributor";
-export * from "./RewardEntry";
+import { RewardEntry } from './RewardEntry'
+import { RewardDistributor } from './RewardDistributor'
 
-export const accountProviders = { RewardEntry, RewardDistributor };
+export const accountProviders = { RewardEntry, RewardDistributor }

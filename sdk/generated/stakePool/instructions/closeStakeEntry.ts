@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const closeStakeEntryStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "CloseStakeEntryInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'CloseStakeEntryInstructionArgs'
+)
 /**
  * Accounts required by the _closeStakeEntry_ instruction
  *
@@ -30,14 +30,14 @@ export const closeStakeEntryStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type CloseStakeEntryInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const closeStakeEntryInstructionDiscriminator = [
   48, 103, 249, 196, 41, 126, 174, 32,
-];
+]
 
 /**
  * Creates a _CloseStakeEntry_ instruction.
@@ -49,11 +49,11 @@ export const closeStakeEntryInstructionDiscriminator = [
  */
 export function createCloseStakeEntryInstruction(
   accounts: CloseStakeEntryInstructionAccounts,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = closeStakeEntryStruct.serialize({
     instructionDiscriminator: closeStakeEntryInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -70,12 +70,12 @@ export function createCloseStakeEntryInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

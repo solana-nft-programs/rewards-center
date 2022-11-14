@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link Identifier}
@@ -15,11 +15,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type IdentifierArgs = {
-  bump: number;
-  count: beet.bignum;
-};
+  bump: number
+  count: beet.bignum
+}
 
-export const identifierDiscriminator = [204, 189, 217, 160, 27, 67, 108, 181];
+export const identifierDiscriminator = [204, 189, 217, 160, 27, 67, 108, 181]
 /**
  * Holds the data for the {@link Identifier} Account and provides de/serialization
  * functionality for that data
@@ -34,7 +34,7 @@ export class Identifier implements IdentifierArgs {
    * Creates a {@link Identifier} instance from the provided args.
    */
   static fromArgs(args: IdentifierArgs) {
-    return new Identifier(args.bump, args.count);
+    return new Identifier(args.bump, args.count)
   }
 
   /**
@@ -45,7 +45,7 @@ export class Identifier implements IdentifierArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [Identifier, number] {
-    return Identifier.deserialize(accountInfo.data, offset);
+    return Identifier.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -58,11 +58,11 @@ export class Identifier implements IdentifierArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<Identifier> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find Identifier account at ${address}`);
+      throw new Error(`Unable to find Identifier account at ${address}`)
     }
-    return Identifier.fromAccountInfo(accountInfo, 0)[0];
+    return Identifier.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -73,10 +73,10 @@ export class Identifier implements IdentifierArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+      'stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, identifierBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, identifierBeet)
   }
 
   /**
@@ -84,7 +84,7 @@ export class Identifier implements IdentifierArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [Identifier, number] {
-    return identifierBeet.deserialize(buf, offset);
+    return identifierBeet.deserialize(buf, offset)
   }
 
   /**
@@ -95,7 +95,7 @@ export class Identifier implements IdentifierArgs {
     return identifierBeet.serialize({
       accountDiscriminator: identifierDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -103,7 +103,7 @@ export class Identifier implements IdentifierArgs {
    * {@link Identifier}
    */
   static get byteSize() {
-    return identifierBeet.byteSize;
+    return identifierBeet.byteSize
   }
 
   /**
@@ -119,7 +119,7 @@ export class Identifier implements IdentifierArgs {
     return connection.getMinimumBalanceForRentExemption(
       Identifier.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -127,7 +127,7 @@ export class Identifier implements IdentifierArgs {
    * hold {@link Identifier} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === Identifier.byteSize;
+    return buf.byteLength - offset === Identifier.byteSize
   }
 
   /**
@@ -138,17 +138,17 @@ export class Identifier implements IdentifierArgs {
     return {
       bump: this.bump,
       count: (() => {
-        const x = <{ toNumber: () => number }>this.count;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.count
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-    };
+    }
   }
 }
 
@@ -159,14 +159,14 @@ export class Identifier implements IdentifierArgs {
 export const identifierBeet = new beet.BeetStruct<
   Identifier,
   IdentifierArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["count", beet.u64],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['count', beet.u64],
   ],
   Identifier.fromArgs,
-  "Identifier"
-);
+  'Identifier'
+)

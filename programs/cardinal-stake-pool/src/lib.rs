@@ -10,16 +10,8 @@ declare_id!("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6");
 pub mod cardinal_stake_pool {
     use super::*;
 
-    pub fn init_stake_mint(ctx: Context<InitStakeMintCtx>, ix: InitStakeMintIx) -> Result<()> {
-        init_stake_mint::handler(ctx, ix)
-    }
-
     pub fn stake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
         stake::handler(ctx, amount)
-    }
-
-    pub fn claim_receipt_mint<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ClaimReceiptMintCtx<'info>>) -> Result<()> {
-        claim_receipt_mint::handler(ctx)
     }
 
     pub fn unstake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCtx<'info>>) -> Result<()> {
@@ -28,10 +20,6 @@ pub mod cardinal_stake_pool {
 
     pub fn update_total_stake_seconds(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
         update_total_stake_seconds::handler(ctx)
-    }
-
-    pub fn return_receipt_mint<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ReturnReceiptMintCtx<'info>>) -> Result<()> {
-        return_receipt_mint::handler(ctx)
     }
 
     //// stake_entry ////

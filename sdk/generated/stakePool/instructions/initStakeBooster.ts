@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { InitStakeBoosterIx } from "../types/InitStakeBoosterIx";
-import { initStakeBoosterIxBeet } from "../types/InitStakeBoosterIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  InitStakeBoosterIx,
+  initStakeBoosterIxBeet,
+} from '../types/InitStakeBoosterIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { initStakeBoosterIxBeet } from "../types/InitStakeBoosterIx";
  * @category generated
  */
 export type InitStakeBoosterInstructionArgs = {
-  ix: InitStakeBoosterIx;
-};
+  ix: InitStakeBoosterIx
+}
 /**
  * @category Instructions
  * @category InitStakeBooster
@@ -26,15 +27,15 @@ export type InitStakeBoosterInstructionArgs = {
  */
 export const initStakeBoosterStruct = new beet.BeetArgsStruct<
   InitStakeBoosterInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", initStakeBoosterIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', initStakeBoosterIxBeet],
   ],
-  "InitStakeBoosterInstructionArgs"
-);
+  'InitStakeBoosterInstructionArgs'
+)
 /**
  * Accounts required by the _initStakeBooster_ instruction
  *
@@ -47,16 +48,16 @@ export const initStakeBoosterStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type InitStakeBoosterInstructionAccounts = {
-  stakeBooster: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  authority: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  stakeBooster: web3.PublicKey
+  stakePool: web3.PublicKey
+  authority: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initStakeBoosterInstructionDiscriminator = [
   251, 3, 136, 79, 211, 189, 184, 205,
-];
+]
 
 /**
  * Creates a _InitStakeBooster_ instruction.
@@ -71,12 +72,12 @@ export const initStakeBoosterInstructionDiscriminator = [
 export function createInitStakeBoosterInstruction(
   accounts: InitStakeBoosterInstructionAccounts,
   args: InitStakeBoosterInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = initStakeBoosterStruct.serialize({
     instructionDiscriminator: initStakeBoosterInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakeBooster,
@@ -103,12 +104,12 @@ export function createInitStakeBoosterInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link StakeBooster}
@@ -15,18 +15,18 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type StakeBoosterArgs = {
-  bump: number;
-  stakePool: web3.PublicKey;
-  identifier: beet.bignum;
-  paymentAmount: beet.bignum;
-  paymentMint: web3.PublicKey;
-  paymentManager: web3.PublicKey;
-  paymentRecipient: web3.PublicKey;
-  boostSeconds: beet.bignum;
-  startTimeSeconds: beet.bignum;
-};
+  bump: number
+  stakePool: web3.PublicKey
+  identifier: beet.bignum
+  paymentAmount: beet.bignum
+  paymentMint: web3.PublicKey
+  paymentManager: web3.PublicKey
+  paymentRecipient: web3.PublicKey
+  boostSeconds: beet.bignum
+  startTimeSeconds: beet.bignum
+}
 
-export const stakeBoosterDiscriminator = [133, 242, 13, 224, 46, 151, 169, 50];
+export const stakeBoosterDiscriminator = [133, 242, 13, 224, 46, 151, 169, 50]
 /**
  * Holds the data for the {@link StakeBooster} Account and provides de/serialization
  * functionality for that data
@@ -61,7 +61,7 @@ export class StakeBooster implements StakeBoosterArgs {
       args.paymentRecipient,
       args.boostSeconds,
       args.startTimeSeconds
-    );
+    )
   }
 
   /**
@@ -72,7 +72,7 @@ export class StakeBooster implements StakeBoosterArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [StakeBooster, number] {
-    return StakeBooster.deserialize(accountInfo.data, offset);
+    return StakeBooster.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -85,11 +85,11 @@ export class StakeBooster implements StakeBoosterArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<StakeBooster> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find StakeBooster account at ${address}`);
+      throw new Error(`Unable to find StakeBooster account at ${address}`)
     }
-    return StakeBooster.fromAccountInfo(accountInfo, 0)[0];
+    return StakeBooster.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -100,10 +100,10 @@ export class StakeBooster implements StakeBoosterArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+      'stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, stakeBoosterBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, stakeBoosterBeet)
   }
 
   /**
@@ -111,7 +111,7 @@ export class StakeBooster implements StakeBoosterArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [StakeBooster, number] {
-    return stakeBoosterBeet.deserialize(buf, offset);
+    return stakeBoosterBeet.deserialize(buf, offset)
   }
 
   /**
@@ -122,7 +122,7 @@ export class StakeBooster implements StakeBoosterArgs {
     return stakeBoosterBeet.serialize({
       accountDiscriminator: stakeBoosterDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -130,7 +130,7 @@ export class StakeBooster implements StakeBoosterArgs {
    * {@link StakeBooster}
    */
   static get byteSize() {
-    return stakeBoosterBeet.byteSize;
+    return stakeBoosterBeet.byteSize
   }
 
   /**
@@ -146,7 +146,7 @@ export class StakeBooster implements StakeBoosterArgs {
     return connection.getMinimumBalanceForRentExemption(
       StakeBooster.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -154,7 +154,7 @@ export class StakeBooster implements StakeBoosterArgs {
    * hold {@link StakeBooster} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === StakeBooster.byteSize;
+    return buf.byteLength - offset === StakeBooster.byteSize
   }
 
   /**
@@ -166,53 +166,53 @@ export class StakeBooster implements StakeBoosterArgs {
       bump: this.bump,
       stakePool: this.stakePool.toBase58(),
       identifier: (() => {
-        const x = <{ toNumber: () => number }>this.identifier;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.identifier
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       paymentAmount: (() => {
-        const x = <{ toNumber: () => number }>this.paymentAmount;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.paymentAmount
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       paymentMint: this.paymentMint.toBase58(),
       paymentManager: this.paymentManager.toBase58(),
       paymentRecipient: this.paymentRecipient.toBase58(),
       boostSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.boostSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.boostSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       startTimeSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.startTimeSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.startTimeSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-    };
+    }
   }
 }
 
@@ -223,21 +223,21 @@ export class StakeBooster implements StakeBoosterArgs {
 export const stakeBoosterBeet = new beet.BeetStruct<
   StakeBooster,
   StakeBoosterArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["stakePool", beetSolana.publicKey],
-    ["identifier", beet.u64],
-    ["paymentAmount", beet.u64],
-    ["paymentMint", beetSolana.publicKey],
-    ["paymentManager", beetSolana.publicKey],
-    ["paymentRecipient", beetSolana.publicKey],
-    ["boostSeconds", beet.u128],
-    ["startTimeSeconds", beet.i64],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['stakePool', beetSolana.publicKey],
+    ['identifier', beet.u64],
+    ['paymentAmount', beet.u64],
+    ['paymentMint', beetSolana.publicKey],
+    ['paymentManager', beetSolana.publicKey],
+    ['paymentRecipient', beetSolana.publicKey],
+    ['boostSeconds', beet.u128],
+    ['startTimeSeconds', beet.i64],
   ],
   StakeBooster.fromArgs,
-  "StakeBooster"
-);
+  'StakeBooster'
+)

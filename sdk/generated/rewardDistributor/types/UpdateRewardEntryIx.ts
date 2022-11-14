@@ -5,11 +5,10 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-
+import * as beet from '@metaplex-foundation/beet'
 export type UpdateRewardEntryIx = {
-  multiplier: beet.bignum;
-};
+  multiplier: beet.bignum
+}
 
 /**
  * @category userTypes
@@ -17,6 +16,6 @@ export type UpdateRewardEntryIx = {
  */
 export const updateRewardEntryIxBeet =
   new beet.BeetArgsStruct<UpdateRewardEntryIx>(
-    [["multiplier", beet.u64]],
-    "UpdateRewardEntryIx"
-  );
+    [['multiplier', beet.u64]],
+    'UpdateRewardEntryIx'
+  )

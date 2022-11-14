@@ -5,25 +5,22 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import type * as web3 from "@solana/web3.js";
-
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type UpdatePoolIx = {
-  imageUri: beet.COption<string>;
-  overlayText: string;
-  requiresCollections: web3.PublicKey[];
-  requiresCreators: web3.PublicKey[];
-  requiresAuthorization: boolean;
-  authority: web3.PublicKey;
-  resetOnStake: boolean;
-  cooldownSeconds: beet.COption<number>;
-  minStakeSeconds: beet.COption<number>;
-  endDate: beet.COption<beet.bignum>;
-  paymentAmount: beet.COption<beet.bignum>;
-  paymentMint: beet.COption<web3.PublicKey>;
-  paymentManager: beet.COption<web3.PublicKey>;
-};
+  requiresCollections: web3.PublicKey[]
+  requiresCreators: web3.PublicKey[]
+  requiresAuthorization: boolean
+  authority: web3.PublicKey
+  resetOnStake: boolean
+  cooldownSeconds: beet.COption<number>
+  minStakeSeconds: beet.COption<number>
+  endDate: beet.COption<beet.bignum>
+  paymentAmount: beet.COption<beet.bignum>
+  paymentMint: beet.COption<web3.PublicKey>
+  paymentManager: beet.COption<web3.PublicKey>
+}
 
 /**
  * @category userTypes
@@ -31,19 +28,17 @@ export type UpdatePoolIx = {
  */
 export const updatePoolIxBeet = new beet.FixableBeetArgsStruct<UpdatePoolIx>(
   [
-    ["imageUri", beet.coption(beet.utf8String)],
-    ["overlayText", beet.utf8String],
-    ["requiresCollections", beet.array(beetSolana.publicKey)],
-    ["requiresCreators", beet.array(beetSolana.publicKey)],
-    ["requiresAuthorization", beet.bool],
-    ["authority", beetSolana.publicKey],
-    ["resetOnStake", beet.bool],
-    ["cooldownSeconds", beet.coption(beet.u32)],
-    ["minStakeSeconds", beet.coption(beet.u32)],
-    ["endDate", beet.coption(beet.i64)],
-    ["paymentAmount", beet.coption(beet.u64)],
-    ["paymentMint", beet.coption(beetSolana.publicKey)],
-    ["paymentManager", beet.coption(beetSolana.publicKey)],
+    ['requiresCollections', beet.array(beetSolana.publicKey)],
+    ['requiresCreators', beet.array(beetSolana.publicKey)],
+    ['requiresAuthorization', beet.bool],
+    ['authority', beetSolana.publicKey],
+    ['resetOnStake', beet.bool],
+    ['cooldownSeconds', beet.coption(beet.u32)],
+    ['minStakeSeconds', beet.coption(beet.u32)],
+    ['endDate', beet.coption(beet.i64)],
+    ['paymentAmount', beet.coption(beet.u64)],
+    ['paymentMint', beet.coption(beetSolana.publicKey)],
+    ['paymentManager', beet.coption(beetSolana.publicKey)],
   ],
-  "UpdatePoolIx"
-);
+  'UpdatePoolIx'
+)

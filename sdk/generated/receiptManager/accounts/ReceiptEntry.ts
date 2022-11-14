@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link ReceiptEntry}
@@ -15,12 +15,12 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type ReceiptEntryArgs = {
-  bump: number;
-  stakeEntry: web3.PublicKey;
-  usedStakeSeconds: beet.bignum;
-};
+  bump: number
+  stakeEntry: web3.PublicKey
+  usedStakeSeconds: beet.bignum
+}
 
-export const receiptEntryDiscriminator = [20, 129, 33, 0, 200, 9, 13, 107];
+export const receiptEntryDiscriminator = [20, 129, 33, 0, 200, 9, 13, 107]
 /**
  * Holds the data for the {@link ReceiptEntry} Account and provides de/serialization
  * functionality for that data
@@ -39,7 +39,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
    * Creates a {@link ReceiptEntry} instance from the provided args.
    */
   static fromArgs(args: ReceiptEntryArgs) {
-    return new ReceiptEntry(args.bump, args.stakeEntry, args.usedStakeSeconds);
+    return new ReceiptEntry(args.bump, args.stakeEntry, args.usedStakeSeconds)
   }
 
   /**
@@ -50,7 +50,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [ReceiptEntry, number] {
-    return ReceiptEntry.deserialize(accountInfo.data, offset);
+    return ReceiptEntry.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -63,11 +63,11 @@ export class ReceiptEntry implements ReceiptEntryArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<ReceiptEntry> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find ReceiptEntry account at ${address}`);
+      throw new Error(`Unable to find ReceiptEntry account at ${address}`)
     }
-    return ReceiptEntry.fromAccountInfo(accountInfo, 0)[0];
+    return ReceiptEntry.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -78,10 +78,10 @@ export class ReceiptEntry implements ReceiptEntryArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+      'rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, receiptEntryBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, receiptEntryBeet)
   }
 
   /**
@@ -89,7 +89,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [ReceiptEntry, number] {
-    return receiptEntryBeet.deserialize(buf, offset);
+    return receiptEntryBeet.deserialize(buf, offset)
   }
 
   /**
@@ -100,7 +100,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
     return receiptEntryBeet.serialize({
       accountDiscriminator: receiptEntryDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -108,7 +108,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
    * {@link ReceiptEntry}
    */
   static get byteSize() {
-    return receiptEntryBeet.byteSize;
+    return receiptEntryBeet.byteSize
   }
 
   /**
@@ -124,7 +124,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
     return connection.getMinimumBalanceForRentExemption(
       ReceiptEntry.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -132,7 +132,7 @@ export class ReceiptEntry implements ReceiptEntryArgs {
    * hold {@link ReceiptEntry} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === ReceiptEntry.byteSize;
+    return buf.byteLength - offset === ReceiptEntry.byteSize
   }
 
   /**
@@ -144,17 +144,17 @@ export class ReceiptEntry implements ReceiptEntryArgs {
       bump: this.bump,
       stakeEntry: this.stakeEntry.toBase58(),
       usedStakeSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.usedStakeSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.usedStakeSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-    };
+    }
   }
 }
 
@@ -165,15 +165,15 @@ export class ReceiptEntry implements ReceiptEntryArgs {
 export const receiptEntryBeet = new beet.BeetStruct<
   ReceiptEntry,
   ReceiptEntryArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["stakeEntry", beetSolana.publicKey],
-    ["usedStakeSeconds", beet.u128],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['stakeEntry', beetSolana.publicKey],
+    ['usedStakeSeconds', beet.u128],
   ],
   ReceiptEntry.fromArgs,
-  "ReceiptEntry"
-);
+  'ReceiptEntry'
+)

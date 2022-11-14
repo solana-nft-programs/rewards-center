@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link RewardReceipt}
@@ -15,14 +15,14 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type RewardReceiptArgs = {
-  bump: number;
-  receiptEntry: web3.PublicKey;
-  receiptManager: web3.PublicKey;
-  target: web3.PublicKey;
-  allowed: boolean;
-};
+  bump: number
+  receiptEntry: web3.PublicKey
+  receiptManager: web3.PublicKey
+  target: web3.PublicKey
+  allowed: boolean
+}
 
-export const rewardReceiptDiscriminator = [116, 154, 221, 22, 195, 73, 132, 89];
+export const rewardReceiptDiscriminator = [116, 154, 221, 22, 195, 73, 132, 89]
 /**
  * Holds the data for the {@link RewardReceipt} Account and provides de/serialization
  * functionality for that data
@@ -49,7 +49,7 @@ export class RewardReceipt implements RewardReceiptArgs {
       args.receiptManager,
       args.target,
       args.allowed
-    );
+    )
   }
 
   /**
@@ -60,7 +60,7 @@ export class RewardReceipt implements RewardReceiptArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [RewardReceipt, number] {
-    return RewardReceipt.deserialize(accountInfo.data, offset);
+    return RewardReceipt.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -73,11 +73,11 @@ export class RewardReceipt implements RewardReceiptArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<RewardReceipt> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find RewardReceipt account at ${address}`);
+      throw new Error(`Unable to find RewardReceipt account at ${address}`)
     }
-    return RewardReceipt.fromAccountInfo(accountInfo, 0)[0];
+    return RewardReceipt.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -88,10 +88,10 @@ export class RewardReceipt implements RewardReceiptArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+      'rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, rewardReceiptBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, rewardReceiptBeet)
   }
 
   /**
@@ -99,7 +99,7 @@ export class RewardReceipt implements RewardReceiptArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [RewardReceipt, number] {
-    return rewardReceiptBeet.deserialize(buf, offset);
+    return rewardReceiptBeet.deserialize(buf, offset)
   }
 
   /**
@@ -110,7 +110,7 @@ export class RewardReceipt implements RewardReceiptArgs {
     return rewardReceiptBeet.serialize({
       accountDiscriminator: rewardReceiptDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -118,7 +118,7 @@ export class RewardReceipt implements RewardReceiptArgs {
    * {@link RewardReceipt}
    */
   static get byteSize() {
-    return rewardReceiptBeet.byteSize;
+    return rewardReceiptBeet.byteSize
   }
 
   /**
@@ -134,7 +134,7 @@ export class RewardReceipt implements RewardReceiptArgs {
     return connection.getMinimumBalanceForRentExemption(
       RewardReceipt.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -142,7 +142,7 @@ export class RewardReceipt implements RewardReceiptArgs {
    * hold {@link RewardReceipt} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === RewardReceipt.byteSize;
+    return buf.byteLength - offset === RewardReceipt.byteSize
   }
 
   /**
@@ -156,7 +156,7 @@ export class RewardReceipt implements RewardReceiptArgs {
       receiptManager: this.receiptManager.toBase58(),
       target: this.target.toBase58(),
       allowed: this.allowed,
-    };
+    }
   }
 }
 
@@ -167,17 +167,17 @@ export class RewardReceipt implements RewardReceiptArgs {
 export const rewardReceiptBeet = new beet.BeetStruct<
   RewardReceipt,
   RewardReceiptArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["receiptEntry", beetSolana.publicKey],
-    ["receiptManager", beetSolana.publicKey],
-    ["target", beetSolana.publicKey],
-    ["allowed", beet.bool],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['receiptEntry', beetSolana.publicKey],
+    ['receiptManager', beetSolana.publicKey],
+    ['target', beetSolana.publicKey],
+    ['allowed', beet.bool],
   ],
   RewardReceipt.fromArgs,
-  "RewardReceipt"
-);
+  'RewardReceipt'
+)

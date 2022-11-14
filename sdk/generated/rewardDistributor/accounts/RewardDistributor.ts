@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link RewardDistributor}
@@ -15,23 +15,23 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type RewardDistributorArgs = {
-  bump: number;
-  stakePool: web3.PublicKey;
-  kind: number;
-  authority: web3.PublicKey;
-  rewardMint: web3.PublicKey;
-  rewardAmount: beet.bignum;
-  rewardDurationSeconds: beet.bignum;
-  rewardsIssued: beet.bignum;
-  maxSupply: beet.COption<beet.bignum>;
-  defaultMultiplier: beet.bignum;
-  multiplierDecimals: number;
-  maxRewardSecondsReceived: beet.COption<beet.bignum>;
-};
+  bump: number
+  stakePool: web3.PublicKey
+  kind: number
+  authority: web3.PublicKey
+  rewardMint: web3.PublicKey
+  rewardAmount: beet.bignum
+  rewardDurationSeconds: beet.bignum
+  rewardsIssued: beet.bignum
+  maxSupply: beet.COption<beet.bignum>
+  defaultMultiplier: beet.bignum
+  multiplierDecimals: number
+  maxRewardSecondsReceived: beet.COption<beet.bignum>
+}
 
 export const rewardDistributorDiscriminator = [
   215, 10, 217, 199, 104, 194, 97, 227,
-];
+]
 /**
  * Holds the data for the {@link RewardDistributor} Account and provides de/serialization
  * functionality for that data
@@ -72,7 +72,7 @@ export class RewardDistributor implements RewardDistributorArgs {
       args.defaultMultiplier,
       args.multiplierDecimals,
       args.maxRewardSecondsReceived
-    );
+    )
   }
 
   /**
@@ -83,7 +83,7 @@ export class RewardDistributor implements RewardDistributorArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [RewardDistributor, number] {
-    return RewardDistributor.deserialize(accountInfo.data, offset);
+    return RewardDistributor.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -96,11 +96,11 @@ export class RewardDistributor implements RewardDistributorArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<RewardDistributor> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find RewardDistributor account at ${address}`);
+      throw new Error(`Unable to find RewardDistributor account at ${address}`)
     }
-    return RewardDistributor.fromAccountInfo(accountInfo, 0)[0];
+    return RewardDistributor.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -111,10 +111,10 @@ export class RewardDistributor implements RewardDistributorArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+      'rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, rewardDistributorBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, rewardDistributorBeet)
   }
 
   /**
@@ -122,7 +122,7 @@ export class RewardDistributor implements RewardDistributorArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [RewardDistributor, number] {
-    return rewardDistributorBeet.deserialize(buf, offset);
+    return rewardDistributorBeet.deserialize(buf, offset)
   }
 
   /**
@@ -133,7 +133,7 @@ export class RewardDistributor implements RewardDistributorArgs {
     return rewardDistributorBeet.serialize({
       accountDiscriminator: rewardDistributorDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -144,11 +144,11 @@ export class RewardDistributor implements RewardDistributorArgs {
    * depends on them
    */
   static byteSize(args: RewardDistributorArgs) {
-    const instance = RewardDistributor.fromArgs(args);
+    const instance = RewardDistributor.fromArgs(args)
     return rewardDistributorBeet.toFixedFromValue({
       accountDiscriminator: rewardDistributorDiscriminator,
       ...instance,
-    }).byteSize;
+    }).byteSize
   }
 
   /**
@@ -167,7 +167,7 @@ export class RewardDistributor implements RewardDistributorArgs {
     return connection.getMinimumBalanceForRentExemption(
       RewardDistributor.byteSize(args),
       commitment
-    );
+    )
   }
 
   /**
@@ -182,53 +182,53 @@ export class RewardDistributor implements RewardDistributorArgs {
       authority: this.authority.toBase58(),
       rewardMint: this.rewardMint.toBase58(),
       rewardAmount: (() => {
-        const x = <{ toNumber: () => number }>this.rewardAmount;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.rewardAmount
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       rewardDurationSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.rewardDurationSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.rewardDurationSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       rewardsIssued: (() => {
-        const x = <{ toNumber: () => number }>this.rewardsIssued;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.rewardsIssued
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       maxSupply: this.maxSupply,
       defaultMultiplier: (() => {
-        const x = <{ toNumber: () => number }>this.defaultMultiplier;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.defaultMultiplier
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       multiplierDecimals: this.multiplierDecimals,
       maxRewardSecondsReceived: this.maxRewardSecondsReceived,
-    };
+    }
   }
 }
 
@@ -239,24 +239,24 @@ export class RewardDistributor implements RewardDistributorArgs {
 export const rewardDistributorBeet = new beet.FixableBeetStruct<
   RewardDistributor,
   RewardDistributorArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["stakePool", beetSolana.publicKey],
-    ["kind", beet.u8],
-    ["authority", beetSolana.publicKey],
-    ["rewardMint", beetSolana.publicKey],
-    ["rewardAmount", beet.u64],
-    ["rewardDurationSeconds", beet.u128],
-    ["rewardsIssued", beet.u128],
-    ["maxSupply", beet.coption(beet.u64)],
-    ["defaultMultiplier", beet.u64],
-    ["multiplierDecimals", beet.u8],
-    ["maxRewardSecondsReceived", beet.coption(beet.u128)],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['stakePool', beetSolana.publicKey],
+    ['kind', beet.u8],
+    ['authority', beetSolana.publicKey],
+    ['rewardMint', beetSolana.publicKey],
+    ['rewardAmount', beet.u64],
+    ['rewardDurationSeconds', beet.u128],
+    ['rewardsIssued', beet.u128],
+    ['maxSupply', beet.coption(beet.u64)],
+    ['defaultMultiplier', beet.u64],
+    ['multiplierDecimals', beet.u8],
+    ['maxRewardSecondsReceived', beet.coption(beet.u128)],
   ],
   RewardDistributor.fromArgs,
-  "RewardDistributor"
-);
+  'RewardDistributor'
+)

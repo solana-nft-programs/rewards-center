@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { UpdateRewardDistributorIx } from "../types/UpdateRewardDistributorIx";
-import { updateRewardDistributorIxBeet } from "../types/UpdateRewardDistributorIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  UpdateRewardDistributorIx,
+  updateRewardDistributorIxBeet,
+} from '../types/UpdateRewardDistributorIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { updateRewardDistributorIxBeet } from "../types/UpdateRewardDistributorI
  * @category generated
  */
 export type UpdateRewardDistributorInstructionArgs = {
-  ix: UpdateRewardDistributorIx;
-};
+  ix: UpdateRewardDistributorIx
+}
 /**
  * @category Instructions
  * @category UpdateRewardDistributor
@@ -26,15 +27,15 @@ export type UpdateRewardDistributorInstructionArgs = {
  */
 export const updateRewardDistributorStruct = new beet.FixableBeetArgsStruct<
   UpdateRewardDistributorInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", updateRewardDistributorIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', updateRewardDistributorIxBeet],
   ],
-  "UpdateRewardDistributorInstructionArgs"
-);
+  'UpdateRewardDistributorInstructionArgs'
+)
 /**
  * Accounts required by the _updateRewardDistributor_ instruction
  *
@@ -45,13 +46,13 @@ export const updateRewardDistributorStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type UpdateRewardDistributorInstructionAccounts = {
-  rewardDistributor: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  rewardDistributor: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const updateRewardDistributorInstructionDiscriminator = [
   168, 16, 57, 210, 250, 214, 155, 146,
-];
+]
 
 /**
  * Creates a _UpdateRewardDistributor_ instruction.
@@ -66,12 +67,12 @@ export const updateRewardDistributorInstructionDiscriminator = [
 export function createUpdateRewardDistributorInstruction(
   accounts: UpdateRewardDistributorInstructionAccounts,
   args: UpdateRewardDistributorInstructionArgs,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = updateRewardDistributorStruct.serialize({
     instructionDiscriminator: updateRewardDistributorInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardDistributor,
@@ -83,12 +84,12 @@ export function createUpdateRewardDistributorInstruction(
       isWritable: false,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -137,8 +137,6 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         .unwrap(),
     );
     stake_entry.last_staker = Pubkey::default();
-    stake_entry.original_mint_claimed = false;
-    stake_entry.stake_mint_claimed = false;
     stake_entry.amount = 0;
     stake_entry.cooldown_start_seconds = None;
     stake_pool.total_staked = stake_pool.total_staked.checked_sub(1).expect("Sub error");

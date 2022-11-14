@@ -2,8 +2,6 @@ use {crate::state::*, anchor_lang::prelude::*};
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdatePoolIx {
-    image_uri: Option<String>,
-    overlay_text: String,
     requires_collections: Vec<Pubkey>,
     requires_creators: Vec<Pubkey>,
     requires_authorization: bool,
@@ -32,13 +30,11 @@ pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
     stake_pool.requires_collections = ix.requires_collections;
     stake_pool.requires_creators = ix.requires_creators;
     stake_pool.requires_authorization = ix.requires_authorization;
-    stake_pool.overlay_text = ix.overlay_text;
     stake_pool.authority = ix.authority;
     stake_pool.reset_on_stake = ix.reset_on_stake;
     stake_pool.end_date = ix.end_date;
     stake_pool.cooldown_seconds = ix.cooldown_seconds;
     stake_pool.min_stake_seconds = ix.min_stake_seconds;
-    stake_pool.image_uri = ix.image_uri.unwrap_or_else(|| stake_pool.image_uri.clone());
     stake_pool.payment_mint = ix.payment_mint;
     stake_pool.payment_amount = ix.payment_amount;
     if let Some(payment_manager) = ix.payment_manager {

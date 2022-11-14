@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -15,11 +15,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const closeRewardDistributorStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "CloseRewardDistributorInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'CloseRewardDistributorInstructionArgs'
+)
 /**
  * Accounts required by the _closeRewardDistributor_ instruction
  *
@@ -32,16 +32,16 @@ export const closeRewardDistributorStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type CloseRewardDistributorInstructionAccounts = {
-  rewardDistributor: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  rewardMint: web3.PublicKey;
-  signer: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-};
+  rewardDistributor: web3.PublicKey
+  stakePool: web3.PublicKey
+  rewardMint: web3.PublicKey
+  signer: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+}
 
 export const closeRewardDistributorInstructionDiscriminator = [
   15, 243, 181, 170, 59, 223, 157, 82,
-];
+]
 
 /**
  * Creates a _CloseRewardDistributor_ instruction.
@@ -53,11 +53,11 @@ export const closeRewardDistributorInstructionDiscriminator = [
  */
 export function createCloseRewardDistributorInstruction(
   accounts: CloseRewardDistributorInstructionAccounts,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = closeRewardDistributorStruct.serialize({
     instructionDiscriminator: closeRewardDistributorInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardDistributor,
@@ -84,12 +84,12 @@ export function createCloseRewardDistributorInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

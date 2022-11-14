@@ -5,19 +5,18 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import type * as web3 from "@solana/web3.js";
-
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type InitStakeBoosterIx = {
-  stakePool: web3.PublicKey;
-  identifier: beet.bignum;
-  paymentAmount: beet.bignum;
-  paymentMint: web3.PublicKey;
-  paymentManager: web3.PublicKey;
-  boostSeconds: beet.bignum;
-  startTimeSeconds: beet.bignum;
-};
+  stakePool: web3.PublicKey
+  identifier: beet.bignum
+  paymentAmount: beet.bignum
+  paymentMint: web3.PublicKey
+  paymentManager: web3.PublicKey
+  boostSeconds: beet.bignum
+  startTimeSeconds: beet.bignum
+}
 
 /**
  * @category userTypes
@@ -26,13 +25,13 @@ export type InitStakeBoosterIx = {
 export const initStakeBoosterIxBeet =
   new beet.BeetArgsStruct<InitStakeBoosterIx>(
     [
-      ["stakePool", beetSolana.publicKey],
-      ["identifier", beet.u64],
-      ["paymentAmount", beet.u64],
-      ["paymentMint", beetSolana.publicKey],
-      ["paymentManager", beetSolana.publicKey],
-      ["boostSeconds", beet.u128],
-      ["startTimeSeconds", beet.i64],
+      ['stakePool', beetSolana.publicKey],
+      ['identifier', beet.u64],
+      ['paymentAmount', beet.u64],
+      ['paymentMint', beetSolana.publicKey],
+      ['paymentManager', beetSolana.publicKey],
+      ['boostSeconds', beet.u128],
+      ['startTimeSeconds', beet.i64],
     ],
-    "InitStakeBoosterIx"
-  );
+    'InitStakeBoosterIx'
+  )

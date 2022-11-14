@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { InitReceiptManagerIx } from "../types/InitReceiptManagerIx";
-import { initReceiptManagerIxBeet } from "../types/InitReceiptManagerIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  InitReceiptManagerIx,
+  initReceiptManagerIxBeet,
+} from '../types/InitReceiptManagerIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { initReceiptManagerIxBeet } from "../types/InitReceiptManagerIx";
  * @category generated
  */
 export type InitReceiptManagerInstructionArgs = {
-  ix: InitReceiptManagerIx;
-};
+  ix: InitReceiptManagerIx
+}
 /**
  * @category Instructions
  * @category InitReceiptManager
@@ -26,15 +27,15 @@ export type InitReceiptManagerInstructionArgs = {
  */
 export const initReceiptManagerStruct = new beet.FixableBeetArgsStruct<
   InitReceiptManagerInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", initReceiptManagerIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', initReceiptManagerIxBeet],
   ],
-  "InitReceiptManagerInstructionArgs"
-);
+  'InitReceiptManagerInstructionArgs'
+)
 /**
  * Accounts required by the _initReceiptManager_ instruction
  *
@@ -46,15 +47,15 @@ export const initReceiptManagerStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type InitReceiptManagerInstructionAccounts = {
-  receiptManager: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  receiptManager: web3.PublicKey
+  stakePool: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initReceiptManagerInstructionDiscriminator = [
   119, 43, 115, 26, 239, 21, 10, 245,
-];
+]
 
 /**
  * Creates a _InitReceiptManager_ instruction.
@@ -69,12 +70,12 @@ export const initReceiptManagerInstructionDiscriminator = [
 export function createInitReceiptManagerInstruction(
   accounts: InitReceiptManagerInstructionAccounts,
   args: InitReceiptManagerInstructionArgs,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = initReceiptManagerStruct.serialize({
     instructionDiscriminator: initReceiptManagerInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptManager,
@@ -96,12 +97,12 @@ export function createInitReceiptManagerInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

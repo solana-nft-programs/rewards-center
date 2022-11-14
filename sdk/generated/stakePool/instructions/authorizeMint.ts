@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
+import * as beet from '@metaplex-foundation/beet'
 
 /**
  * @category Instructions
@@ -15,8 +15,8 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type AuthorizeMintInstructionArgs = {
-  mint: web3.PublicKey;
-};
+  mint: web3.PublicKey
+}
 /**
  * @category Instructions
  * @category AuthorizeMint
@@ -24,15 +24,15 @@ export type AuthorizeMintInstructionArgs = {
  */
 export const authorizeMintStruct = new beet.BeetArgsStruct<
   AuthorizeMintInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["mint", beetSolana.publicKey],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['mint', beetSolana.publicKey],
   ],
-  "AuthorizeMintInstructionArgs"
-);
+  'AuthorizeMintInstructionArgs'
+)
 /**
  * Accounts required by the _authorizeMint_ instruction
  *
@@ -44,15 +44,15 @@ export const authorizeMintStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type AuthorizeMintInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  stakeAuthorizationRecord: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  stakeAuthorizationRecord: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const authorizeMintInstructionDiscriminator = [
   9, 39, 140, 25, 174, 113, 9, 242,
-];
+]
 
 /**
  * Creates a _AuthorizeMint_ instruction.
@@ -67,12 +67,12 @@ export const authorizeMintInstructionDiscriminator = [
 export function createAuthorizeMintInstruction(
   accounts: AuthorizeMintInstructionAccounts,
   args: AuthorizeMintInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = authorizeMintStruct.serialize({
     instructionDiscriminator: authorizeMintInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -94,12 +94,12 @@ export function createAuthorizeMintInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

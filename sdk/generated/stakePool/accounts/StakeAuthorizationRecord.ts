@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link StakeAuthorizationRecord}
@@ -15,14 +15,14 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type StakeAuthorizationRecordArgs = {
-  bump: number;
-  pool: web3.PublicKey;
-  mint: web3.PublicKey;
-};
+  bump: number
+  pool: web3.PublicKey
+  mint: web3.PublicKey
+}
 
 export const stakeAuthorizationRecordDiscriminator = [
   36, 54, 48, 7, 224, 193, 207, 76,
-];
+]
 /**
  * Holds the data for the {@link StakeAuthorizationRecord} Account and provides de/serialization
  * functionality for that data
@@ -41,7 +41,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
    * Creates a {@link StakeAuthorizationRecord} instance from the provided args.
    */
   static fromArgs(args: StakeAuthorizationRecordArgs) {
-    return new StakeAuthorizationRecord(args.bump, args.pool, args.mint);
+    return new StakeAuthorizationRecord(args.bump, args.pool, args.mint)
   }
 
   /**
@@ -52,7 +52,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [StakeAuthorizationRecord, number] {
-    return StakeAuthorizationRecord.deserialize(accountInfo.data, offset);
+    return StakeAuthorizationRecord.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -65,13 +65,13 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<StakeAuthorizationRecord> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
       throw new Error(
         `Unable to find StakeAuthorizationRecord account at ${address}`
-      );
+      )
     }
-    return StakeAuthorizationRecord.fromAccountInfo(accountInfo, 0)[0];
+    return StakeAuthorizationRecord.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -82,13 +82,13 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+      'stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6'
     )
   ) {
     return beetSolana.GpaBuilder.fromStruct(
       programId,
       stakeAuthorizationRecordBeet
-    );
+    )
   }
 
   /**
@@ -99,7 +99,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
     buf: Buffer,
     offset = 0
   ): [StakeAuthorizationRecord, number] {
-    return stakeAuthorizationRecordBeet.deserialize(buf, offset);
+    return stakeAuthorizationRecordBeet.deserialize(buf, offset)
   }
 
   /**
@@ -110,7 +110,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
     return stakeAuthorizationRecordBeet.serialize({
       accountDiscriminator: stakeAuthorizationRecordDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -118,7 +118,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
    * {@link StakeAuthorizationRecord}
    */
   static get byteSize() {
-    return stakeAuthorizationRecordBeet.byteSize;
+    return stakeAuthorizationRecordBeet.byteSize
   }
 
   /**
@@ -134,7 +134,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
     return connection.getMinimumBalanceForRentExemption(
       StakeAuthorizationRecord.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -142,7 +142,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
    * hold {@link StakeAuthorizationRecord} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === StakeAuthorizationRecord.byteSize;
+    return buf.byteLength - offset === StakeAuthorizationRecord.byteSize
   }
 
   /**
@@ -154,7 +154,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
       bump: this.bump,
       pool: this.pool.toBase58(),
       mint: this.mint.toBase58(),
-    };
+    }
   }
 }
 
@@ -165,15 +165,15 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
 export const stakeAuthorizationRecordBeet = new beet.BeetStruct<
   StakeAuthorizationRecord,
   StakeAuthorizationRecordArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["pool", beetSolana.publicKey],
-    ["mint", beetSolana.publicKey],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['pool', beetSolana.publicKey],
+    ['mint', beetSolana.publicKey],
   ],
   StakeAuthorizationRecord.fromArgs,
-  "StakeAuthorizationRecord"
-);
+  'StakeAuthorizationRecord'
+)

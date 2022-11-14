@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link StakeEntry}
@@ -15,21 +15,19 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type StakeEntryArgs = {
-  bump: number;
-  pool: web3.PublicKey;
-  amount: beet.bignum;
-  originalMint: web3.PublicKey;
-  originalMintClaimed: boolean;
-  lastStaker: web3.PublicKey;
-  lastStakedAt: beet.bignum;
-  totalStakeSeconds: beet.bignum;
-  stakeMintClaimed: boolean;
-  kind: number;
-  stakeMint: beet.COption<web3.PublicKey>;
-  cooldownStartSeconds: beet.COption<beet.bignum>;
-};
+  bump: number
+  pool: web3.PublicKey
+  amount: beet.bignum
+  mint: web3.PublicKey
+  lastStaker: web3.PublicKey
+  lastStakedAt: beet.bignum
+  totalStakeSeconds: beet.bignum
+  kind: number
+  stakeMint: beet.COption<web3.PublicKey>
+  cooldownStartSeconds: beet.COption<beet.bignum>
+}
 
-export const stakeEntryDiscriminator = [187, 127, 9, 35, 155, 68, 86, 40];
+export const stakeEntryDiscriminator = [187, 127, 9, 35, 155, 68, 86, 40]
 /**
  * Holds the data for the {@link StakeEntry} Account and provides de/serialization
  * functionality for that data
@@ -42,12 +40,10 @@ export class StakeEntry implements StakeEntryArgs {
     readonly bump: number,
     readonly pool: web3.PublicKey,
     readonly amount: beet.bignum,
-    readonly originalMint: web3.PublicKey,
-    readonly originalMintClaimed: boolean,
+    readonly mint: web3.PublicKey,
     readonly lastStaker: web3.PublicKey,
     readonly lastStakedAt: beet.bignum,
     readonly totalStakeSeconds: beet.bignum,
-    readonly stakeMintClaimed: boolean,
     readonly kind: number,
     readonly stakeMint: beet.COption<web3.PublicKey>,
     readonly cooldownStartSeconds: beet.COption<beet.bignum>
@@ -61,16 +57,14 @@ export class StakeEntry implements StakeEntryArgs {
       args.bump,
       args.pool,
       args.amount,
-      args.originalMint,
-      args.originalMintClaimed,
+      args.mint,
       args.lastStaker,
       args.lastStakedAt,
       args.totalStakeSeconds,
-      args.stakeMintClaimed,
       args.kind,
       args.stakeMint,
       args.cooldownStartSeconds
-    );
+    )
   }
 
   /**
@@ -81,7 +75,7 @@ export class StakeEntry implements StakeEntryArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [StakeEntry, number] {
-    return StakeEntry.deserialize(accountInfo.data, offset);
+    return StakeEntry.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -94,11 +88,11 @@ export class StakeEntry implements StakeEntryArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<StakeEntry> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find StakeEntry account at ${address}`);
+      throw new Error(`Unable to find StakeEntry account at ${address}`)
     }
-    return StakeEntry.fromAccountInfo(accountInfo, 0)[0];
+    return StakeEntry.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -109,10 +103,10 @@ export class StakeEntry implements StakeEntryArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+      'stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, stakeEntryBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, stakeEntryBeet)
   }
 
   /**
@@ -120,7 +114,7 @@ export class StakeEntry implements StakeEntryArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [StakeEntry, number] {
-    return stakeEntryBeet.deserialize(buf, offset);
+    return stakeEntryBeet.deserialize(buf, offset)
   }
 
   /**
@@ -131,7 +125,7 @@ export class StakeEntry implements StakeEntryArgs {
     return stakeEntryBeet.serialize({
       accountDiscriminator: stakeEntryDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -142,11 +136,11 @@ export class StakeEntry implements StakeEntryArgs {
    * depends on them
    */
   static byteSize(args: StakeEntryArgs) {
-    const instance = StakeEntry.fromArgs(args);
+    const instance = StakeEntry.fromArgs(args)
     return stakeEntryBeet.toFixedFromValue({
       accountDiscriminator: stakeEntryDiscriminator,
       ...instance,
-    }).byteSize;
+    }).byteSize
   }
 
   /**
@@ -165,7 +159,7 @@ export class StakeEntry implements StakeEntryArgs {
     return connection.getMinimumBalanceForRentExemption(
       StakeEntry.byteSize(args),
       commitment
-    );
+    )
   }
 
   /**
@@ -177,46 +171,44 @@ export class StakeEntry implements StakeEntryArgs {
       bump: this.bump,
       pool: this.pool.toBase58(),
       amount: (() => {
-        const x = <{ toNumber: () => number }>this.amount;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.amount
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-      originalMint: this.originalMint.toBase58(),
-      originalMintClaimed: this.originalMintClaimed,
+      mint: this.mint.toBase58(),
       lastStaker: this.lastStaker.toBase58(),
       lastStakedAt: (() => {
-        const x = <{ toNumber: () => number }>this.lastStakedAt;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.lastStakedAt
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       totalStakeSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.totalStakeSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.totalStakeSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-      stakeMintClaimed: this.stakeMintClaimed,
       kind: this.kind,
       stakeMint: this.stakeMint,
       cooldownStartSeconds: this.cooldownStartSeconds,
-    };
+    }
   }
 }
 
@@ -227,24 +219,22 @@ export class StakeEntry implements StakeEntryArgs {
 export const stakeEntryBeet = new beet.FixableBeetStruct<
   StakeEntry,
   StakeEntryArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["pool", beetSolana.publicKey],
-    ["amount", beet.u64],
-    ["originalMint", beetSolana.publicKey],
-    ["originalMintClaimed", beet.bool],
-    ["lastStaker", beetSolana.publicKey],
-    ["lastStakedAt", beet.i64],
-    ["totalStakeSeconds", beet.u128],
-    ["stakeMintClaimed", beet.bool],
-    ["kind", beet.u8],
-    ["stakeMint", beet.coption(beetSolana.publicKey)],
-    ["cooldownStartSeconds", beet.coption(beet.i64)],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['pool', beetSolana.publicKey],
+    ['amount', beet.u64],
+    ['mint', beetSolana.publicKey],
+    ['lastStaker', beetSolana.publicKey],
+    ['lastStakedAt', beet.i64],
+    ['totalStakeSeconds', beet.u128],
+    ['kind', beet.u8],
+    ['stakeMint', beet.coption(beetSolana.publicKey)],
+    ['cooldownStartSeconds', beet.coption(beet.i64)],
   ],
   StakeEntry.fromArgs,
-  "StakeEntry"
-);
+  'StakeEntry'
+)

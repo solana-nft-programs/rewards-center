@@ -1,2 +1,2 @@
-export * from "./InitReceiptManagerIx";
-export * from "./UpdateReceiptManagerIx";
+export * from './InitReceiptManagerIx'
+export * from './UpdateReceiptManagerIx'

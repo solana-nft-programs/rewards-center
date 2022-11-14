@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { ReassignStakeEntryIx } from "../types/ReassignStakeEntryIx";
-import { reassignStakeEntryIxBeet } from "../types/ReassignStakeEntryIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  ReassignStakeEntryIx,
+  reassignStakeEntryIxBeet,
+} from '../types/ReassignStakeEntryIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { reassignStakeEntryIxBeet } from "../types/ReassignStakeEntryIx";
  * @category generated
  */
 export type ReasssignStakeEntryInstructionArgs = {
-  ix: ReassignStakeEntryIx;
-};
+  ix: ReassignStakeEntryIx
+}
 /**
  * @category Instructions
  * @category ReasssignStakeEntry
@@ -26,15 +27,15 @@ export type ReasssignStakeEntryInstructionArgs = {
  */
 export const reasssignStakeEntryStruct = new beet.BeetArgsStruct<
   ReasssignStakeEntryInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", reassignStakeEntryIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', reassignStakeEntryIxBeet],
   ],
-  "ReasssignStakeEntryInstructionArgs"
-);
+  'ReasssignStakeEntryInstructionArgs'
+)
 /**
  * Accounts required by the _reasssignStakeEntry_ instruction
  *
@@ -46,14 +47,14 @@ export const reasssignStakeEntryStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type ReasssignStakeEntryInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  lastStaker: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  lastStaker: web3.PublicKey
+}
 
 export const reasssignStakeEntryInstructionDiscriminator = [
   40, 97, 18, 150, 188, 255, 13, 149,
-];
+]
 
 /**
  * Creates a _ReasssignStakeEntry_ instruction.
@@ -68,12 +69,12 @@ export const reasssignStakeEntryInstructionDiscriminator = [
 export function createReasssignStakeEntryInstruction(
   accounts: ReasssignStakeEntryInstructionAccounts,
   args: ReasssignStakeEntryInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = reasssignStakeEntryStruct.serialize({
     instructionDiscriminator: reasssignStakeEntryInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -90,12 +91,12 @@ export function createReasssignStakeEntryInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

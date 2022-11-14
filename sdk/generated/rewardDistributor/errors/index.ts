@@ -5,11 +5,11 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-type ErrorWithCode = Error & { code: number };
-type MaybeErrorWithCode = ErrorWithCode | null | undefined;
+type ErrorWithCode = Error & { code: number }
+type MaybeErrorWithCode = ErrorWithCode | null | undefined
 
-const createErrorFromCodeLookup: Map<number, () => ErrorWithCode> = new Map();
-const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map();
+const createErrorFromCodeLookup: Map<number, () => ErrorWithCode> = new Map()
+const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map()
 
 /**
  * InvalidTokenAccount: 'Invalid token account'
@@ -18,21 +18,21 @@ const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map();
  * @category generated
  */
 export class InvalidTokenAccountError extends Error {
-  readonly code: number = 0x1770;
-  readonly name: string = "InvalidTokenAccount";
+  readonly code: number = 0x1770
+  readonly name: string = 'InvalidTokenAccount'
   constructor() {
-    super("Invalid token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidTokenAccountError);
+    super('Invalid token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidTokenAccountError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1770, () => new InvalidTokenAccountError());
+createErrorFromCodeLookup.set(0x1770, () => new InvalidTokenAccountError())
 createErrorFromNameLookup.set(
-  "InvalidTokenAccount",
+  'InvalidTokenAccount',
   () => new InvalidTokenAccountError()
-);
+)
 
 /**
  * InvalidRewardMint: 'Invalid reward mint'
@@ -41,21 +41,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardMintError extends Error {
-  readonly code: number = 0x1771;
-  readonly name: string = "InvalidRewardMint";
+  readonly code: number = 0x1771
+  readonly name: string = 'InvalidRewardMint'
   constructor() {
-    super("Invalid reward mint");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardMintError);
+    super('Invalid reward mint')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardMintError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1771, () => new InvalidRewardMintError());
+createErrorFromCodeLookup.set(0x1771, () => new InvalidRewardMintError())
 createErrorFromNameLookup.set(
-  "InvalidRewardMint",
+  'InvalidRewardMint',
   () => new InvalidRewardMintError()
-);
+)
 
 /**
  * InvalidUserRewardMintTokenAccount: 'Invalid user reward mint token account'
@@ -64,12 +64,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidUserRewardMintTokenAccountError extends Error {
-  readonly code: number = 0x1772;
-  readonly name: string = "InvalidUserRewardMintTokenAccount";
+  readonly code: number = 0x1772
+  readonly name: string = 'InvalidUserRewardMintTokenAccount'
   constructor() {
-    super("Invalid user reward mint token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidUserRewardMintTokenAccountError);
+    super('Invalid user reward mint token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidUserRewardMintTokenAccountError)
     }
   }
 }
@@ -77,11 +77,11 @@ export class InvalidUserRewardMintTokenAccountError extends Error {
 createErrorFromCodeLookup.set(
   0x1772,
   () => new InvalidUserRewardMintTokenAccountError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidUserRewardMintTokenAccount",
+  'InvalidUserRewardMintTokenAccount',
   () => new InvalidUserRewardMintTokenAccountError()
-);
+)
 
 /**
  * InvalidRewardDistributor: 'Invalid reward distributor'
@@ -90,24 +90,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardDistributorError extends Error {
-  readonly code: number = 0x1773;
-  readonly name: string = "InvalidRewardDistributor";
+  readonly code: number = 0x1773
+  readonly name: string = 'InvalidRewardDistributor'
   constructor() {
-    super("Invalid reward distributor");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardDistributorError);
+    super('Invalid reward distributor')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(
-  0x1773,
-  () => new InvalidRewardDistributorError()
-);
+createErrorFromCodeLookup.set(0x1773, () => new InvalidRewardDistributorError())
 createErrorFromNameLookup.set(
-  "InvalidRewardDistributor",
+  'InvalidRewardDistributor',
   () => new InvalidRewardDistributorError()
-);
+)
 
 /**
  * InvalidRewardDistributorAuthority: 'Invalid reward distributor authority'
@@ -116,12 +113,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardDistributorAuthorityError extends Error {
-  readonly code: number = 0x1774;
-  readonly name: string = "InvalidRewardDistributorAuthority";
+  readonly code: number = 0x1774
+  readonly name: string = 'InvalidRewardDistributorAuthority'
   constructor() {
-    super("Invalid reward distributor authority");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardDistributorAuthorityError);
+    super('Invalid reward distributor authority')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorAuthorityError)
     }
   }
 }
@@ -129,11 +126,11 @@ export class InvalidRewardDistributorAuthorityError extends Error {
 createErrorFromCodeLookup.set(
   0x1774,
   () => new InvalidRewardDistributorAuthorityError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidRewardDistributorAuthority",
+  'InvalidRewardDistributorAuthority',
   () => new InvalidRewardDistributorAuthorityError()
-);
+)
 
 /**
  * InvalidRewardDistributorKind: 'Invalid reward distributor kind'
@@ -142,12 +139,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardDistributorKindError extends Error {
-  readonly code: number = 0x1775;
-  readonly name: string = "InvalidRewardDistributorKind";
+  readonly code: number = 0x1775
+  readonly name: string = 'InvalidRewardDistributorKind'
   constructor() {
-    super("Invalid reward distributor kind");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardDistributorKindError);
+    super('Invalid reward distributor kind')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorKindError)
     }
   }
 }
@@ -155,11 +152,11 @@ export class InvalidRewardDistributorKindError extends Error {
 createErrorFromCodeLookup.set(
   0x1775,
   () => new InvalidRewardDistributorKindError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidRewardDistributorKind",
+  'InvalidRewardDistributorKind',
   () => new InvalidRewardDistributorKindError()
-);
+)
 
 /**
  * SupplyRequired: 'Initial supply required for kind treasury'
@@ -168,21 +165,18 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class SupplyRequiredError extends Error {
-  readonly code: number = 0x1776;
-  readonly name: string = "SupplyRequired";
+  readonly code: number = 0x1776
+  readonly name: string = 'SupplyRequired'
   constructor() {
-    super("Initial supply required for kind treasury");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, SupplyRequiredError);
+    super('Initial supply required for kind treasury')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, SupplyRequiredError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1776, () => new SupplyRequiredError());
-createErrorFromNameLookup.set(
-  "SupplyRequired",
-  () => new SupplyRequiredError()
-);
+createErrorFromCodeLookup.set(0x1776, () => new SupplyRequiredError())
+createErrorFromNameLookup.set('SupplyRequired', () => new SupplyRequiredError())
 
 /**
  * InvalidAuthority: 'Invalid authority'
@@ -191,21 +185,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidAuthorityError extends Error {
-  readonly code: number = 0x1777;
-  readonly name: string = "InvalidAuthority";
+  readonly code: number = 0x1777
+  readonly name: string = 'InvalidAuthority'
   constructor() {
-    super("Invalid authority");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidAuthorityError);
+    super('Invalid authority')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidAuthorityError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1777, () => new InvalidAuthorityError());
+createErrorFromCodeLookup.set(0x1777, () => new InvalidAuthorityError())
 createErrorFromNameLookup.set(
-  "InvalidAuthority",
+  'InvalidAuthority',
   () => new InvalidAuthorityError()
-);
+)
 
 /**
  * InvalidPoolDistributor: 'Invalid distributor for pool'
@@ -214,21 +208,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPoolDistributorError extends Error {
-  readonly code: number = 0x1778;
-  readonly name: string = "InvalidPoolDistributor";
+  readonly code: number = 0x1778
+  readonly name: string = 'InvalidPoolDistributor'
   constructor() {
-    super("Invalid distributor for pool");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPoolDistributorError);
+    super('Invalid distributor for pool')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPoolDistributorError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1778, () => new InvalidPoolDistributorError());
+createErrorFromCodeLookup.set(0x1778, () => new InvalidPoolDistributorError())
 createErrorFromNameLookup.set(
-  "InvalidPoolDistributor",
+  'InvalidPoolDistributor',
   () => new InvalidPoolDistributorError()
-);
+)
 
 /**
  * DistributorNotClosed: 'Distributor is already open'
@@ -237,21 +231,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class DistributorNotClosedError extends Error {
-  readonly code: number = 0x1779;
-  readonly name: string = "DistributorNotClosed";
+  readonly code: number = 0x1779
+  readonly name: string = 'DistributorNotClosed'
   constructor() {
-    super("Distributor is already open");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, DistributorNotClosedError);
+    super('Distributor is already open')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, DistributorNotClosedError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1779, () => new DistributorNotClosedError());
+createErrorFromCodeLookup.set(0x1779, () => new DistributorNotClosedError())
 createErrorFromNameLookup.set(
-  "DistributorNotClosed",
+  'DistributorNotClosed',
   () => new DistributorNotClosedError()
-);
+)
 
 /**
  * DistributorAlreadyClosed: 'Distributor is already closed'
@@ -260,24 +254,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class DistributorAlreadyClosedError extends Error {
-  readonly code: number = 0x177a;
-  readonly name: string = "DistributorAlreadyClosed";
+  readonly code: number = 0x177a
+  readonly name: string = 'DistributorAlreadyClosed'
   constructor() {
-    super("Distributor is already closed");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, DistributorAlreadyClosedError);
+    super('Distributor is already closed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, DistributorAlreadyClosedError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(
-  0x177a,
-  () => new DistributorAlreadyClosedError()
-);
+createErrorFromCodeLookup.set(0x177a, () => new DistributorAlreadyClosedError())
 createErrorFromNameLookup.set(
-  "DistributorAlreadyClosed",
+  'DistributorAlreadyClosed',
   () => new DistributorAlreadyClosedError()
-);
+)
 
 /**
  * InvalidStakeEntry: 'Invalid stake entry'
@@ -286,21 +277,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidStakeEntryError extends Error {
-  readonly code: number = 0x177b;
-  readonly name: string = "InvalidStakeEntry";
+  readonly code: number = 0x177b
+  readonly name: string = 'InvalidStakeEntry'
   constructor() {
-    super("Invalid stake entry");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidStakeEntryError);
+    super('Invalid stake entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidStakeEntryError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177b, () => new InvalidStakeEntryError());
+createErrorFromCodeLookup.set(0x177b, () => new InvalidStakeEntryError())
 createErrorFromNameLookup.set(
-  "InvalidStakeEntry",
+  'InvalidStakeEntry',
   () => new InvalidStakeEntryError()
-);
+)
 
 /**
  * InvalidRewardEntry: 'Invalid reward entry'
@@ -309,21 +300,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardEntryError extends Error {
-  readonly code: number = 0x177c;
-  readonly name: string = "InvalidRewardEntry";
+  readonly code: number = 0x177c
+  readonly name: string = 'InvalidRewardEntry'
   constructor() {
-    super("Invalid reward entry");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardEntryError);
+    super('Invalid reward entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardEntryError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177c, () => new InvalidRewardEntryError());
+createErrorFromCodeLookup.set(0x177c, () => new InvalidRewardEntryError())
 createErrorFromNameLookup.set(
-  "InvalidRewardEntry",
+  'InvalidRewardEntry',
   () => new InvalidRewardEntryError()
-);
+)
 
 /**
  * InvalidRewardDistributorTokenAccount: 'Invalid reward distributor token account'
@@ -332,12 +323,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardDistributorTokenAccountError extends Error {
-  readonly code: number = 0x177d;
-  readonly name: string = "InvalidRewardDistributorTokenAccount";
+  readonly code: number = 0x177d
+  readonly name: string = 'InvalidRewardDistributorTokenAccount'
   constructor() {
-    super("Invalid reward distributor token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardDistributorTokenAccountError);
+    super('Invalid reward distributor token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorTokenAccountError)
     }
   }
 }
@@ -345,11 +336,11 @@ export class InvalidRewardDistributorTokenAccountError extends Error {
 createErrorFromCodeLookup.set(
   0x177d,
   () => new InvalidRewardDistributorTokenAccountError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidRewardDistributorTokenAccount",
+  'InvalidRewardDistributorTokenAccount',
   () => new InvalidRewardDistributorTokenAccountError()
-);
+)
 
 /**
  * InvalidAuthorityTokenAccount: 'Invalid authority token account'
@@ -358,12 +349,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidAuthorityTokenAccountError extends Error {
-  readonly code: number = 0x177e;
-  readonly name: string = "InvalidAuthorityTokenAccount";
+  readonly code: number = 0x177e
+  readonly name: string = 'InvalidAuthorityTokenAccount'
   constructor() {
-    super("Invalid authority token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidAuthorityTokenAccountError);
+    super('Invalid authority token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidAuthorityTokenAccountError)
     }
   }
 }
@@ -371,11 +362,11 @@ export class InvalidAuthorityTokenAccountError extends Error {
 createErrorFromCodeLookup.set(
   0x177e,
   () => new InvalidAuthorityTokenAccountError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidAuthorityTokenAccount",
+  'InvalidAuthorityTokenAccount',
   () => new InvalidAuthorityTokenAccountError()
-);
+)
 
 /**
  * InvalidPayer: 'Invalid payer'
@@ -384,18 +375,18 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPayerError extends Error {
-  readonly code: number = 0x177f;
-  readonly name: string = "InvalidPayer";
+  readonly code: number = 0x177f
+  readonly name: string = 'InvalidPayer'
   constructor() {
-    super("Invalid payer");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPayerError);
+    super('Invalid payer')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPayerError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177f, () => new InvalidPayerError());
-createErrorFromNameLookup.set("InvalidPayer", () => new InvalidPayerError());
+createErrorFromCodeLookup.set(0x177f, () => new InvalidPayerError())
+createErrorFromNameLookup.set('InvalidPayer', () => new InvalidPayerError())
 
 /**
  * Attempts to resolve a custom program error from the provided error code.
@@ -403,8 +394,8 @@ createErrorFromNameLookup.set("InvalidPayer", () => new InvalidPayerError());
  * @category generated
  */
 export function errorFromCode(code: number): MaybeErrorWithCode {
-  const createError = createErrorFromCodeLookup.get(code);
-  return createError != null ? createError() : null;
+  const createError = createErrorFromCodeLookup.get(code)
+  return createError != null ? createError() : null
 }
 
 /**
@@ -413,6 +404,6 @@ export function errorFromCode(code: number): MaybeErrorWithCode {
  * @category generated
  */
 export function errorFromName(name: string): MaybeErrorWithCode {
-  const createError = createErrorFromNameLookup.get(name);
-  return createError != null ? createError() : null;
+  const createError = createErrorFromNameLookup.get(name)
+  return createError != null ? createError() : null
 }

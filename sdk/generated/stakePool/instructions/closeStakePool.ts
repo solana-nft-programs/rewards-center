@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const closeStakePoolStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "CloseStakePoolInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'CloseStakePoolInstructionArgs'
+)
 /**
  * Accounts required by the _closeStakePool_ instruction
  *
@@ -29,13 +29,13 @@ export const closeStakePoolStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type CloseStakePoolInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const closeStakePoolInstructionDiscriminator = [
   247, 11, 104, 96, 182, 127, 246, 3,
-];
+]
 
 /**
  * Creates a _CloseStakePool_ instruction.
@@ -47,11 +47,11 @@ export const closeStakePoolInstructionDiscriminator = [
  */
 export function createCloseStakePoolInstruction(
   accounts: CloseStakePoolInstructionAccounts,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = closeStakePoolStruct.serialize({
     instructionDiscriminator: closeStakePoolInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -63,12 +63,12 @@ export function createCloseStakePoolInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const initIdentifierStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "InitIdentifierInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'InitIdentifierInstructionArgs'
+)
 /**
  * Accounts required by the _initIdentifier_ instruction
  *
@@ -29,14 +29,14 @@ export const initIdentifierStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type InitIdentifierInstructionAccounts = {
-  identifier: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  identifier: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initIdentifierInstructionDiscriminator = [
   205, 45, 79, 182, 215, 136, 160, 46,
-];
+]
 
 /**
  * Creates a _InitIdentifier_ instruction.
@@ -48,11 +48,11 @@ export const initIdentifierInstructionDiscriminator = [
  */
 export function createInitIdentifierInstruction(
   accounts: InitIdentifierInstructionAccounts,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = initIdentifierStruct.serialize({
     instructionDiscriminator: initIdentifierInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.identifier,
@@ -69,12 +69,12 @@ export function createInitIdentifierInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

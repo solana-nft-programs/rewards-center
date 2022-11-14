@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const initReceiptEntryStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "InitReceiptEntryInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'InitReceiptEntryInstructionArgs'
+)
 /**
  * Accounts required by the _initReceiptEntry_ instruction
  *
@@ -30,15 +30,15 @@ export const initReceiptEntryStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type InitReceiptEntryInstructionAccounts = {
-  receiptEntry: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  receiptEntry: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initReceiptEntryInstructionDiscriminator = [
   133, 94, 121, 16, 41, 185, 20, 30,
-];
+]
 
 /**
  * Creates a _InitReceiptEntry_ instruction.
@@ -50,11 +50,11 @@ export const initReceiptEntryInstructionDiscriminator = [
  */
 export function createInitReceiptEntryInstruction(
   accounts: InitReceiptEntryInstructionAccounts,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = initReceiptEntryStruct.serialize({
     instructionDiscriminator: initReceiptEntryInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptEntry,
@@ -76,12 +76,12 @@ export function createInitReceiptEntryInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const closeReceiptEntryStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "CloseReceiptEntryInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'CloseReceiptEntryInstructionArgs'
+)
 /**
  * Accounts required by the _closeReceiptEntry_ instruction
  *
@@ -31,15 +31,15 @@ export const closeReceiptEntryStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type CloseReceiptEntryInstructionAccounts = {
-  receiptEntry: web3.PublicKey;
-  receiptManager: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  receiptEntry: web3.PublicKey
+  receiptManager: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const closeReceiptEntryInstructionDiscriminator = [
   159, 45, 46, 164, 195, 185, 109, 77,
-];
+]
 
 /**
  * Creates a _CloseReceiptEntry_ instruction.
@@ -51,11 +51,11 @@ export const closeReceiptEntryInstructionDiscriminator = [
  */
 export function createCloseReceiptEntryInstruction(
   accounts: CloseReceiptEntryInstructionAccounts,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = closeReceiptEntryStruct.serialize({
     instructionDiscriminator: closeReceiptEntryInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptEntry,
@@ -77,12 +77,12 @@ export function createCloseReceiptEntryInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

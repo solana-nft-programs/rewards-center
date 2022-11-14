@@ -5,12 +5,13 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
-
-import type { BoostStakeEntryIx } from "../types/BoostStakeEntryIx";
-import { boostStakeEntryIxBeet } from "../types/BoostStakeEntryIx";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  BoostStakeEntryIx,
+  boostStakeEntryIxBeet,
+} from '../types/BoostStakeEntryIx'
 
 /**
  * @category Instructions
@@ -18,8 +19,8 @@ import { boostStakeEntryIxBeet } from "../types/BoostStakeEntryIx";
  * @category generated
  */
 export type BoostStakeEntryInstructionArgs = {
-  ix: BoostStakeEntryIx;
-};
+  ix: BoostStakeEntryIx
+}
 /**
  * @category Instructions
  * @category BoostStakeEntry
@@ -27,15 +28,15 @@ export type BoostStakeEntryInstructionArgs = {
  */
 export const boostStakeEntryStruct = new beet.BeetArgsStruct<
   BoostStakeEntryInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", boostStakeEntryIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', boostStakeEntryIxBeet],
   ],
-  "BoostStakeEntryInstructionArgs"
-);
+  'BoostStakeEntryInstructionArgs'
+)
 /**
  * Accounts required by the _boostStakeEntry_ instruction
  *
@@ -54,23 +55,23 @@ export const boostStakeEntryStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type BoostStakeEntryInstructionAccounts = {
-  stakeBooster: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  originalMint: web3.PublicKey;
-  payerTokenAccount: web3.PublicKey;
-  paymentRecipientTokenAccount: web3.PublicKey;
-  payer: web3.PublicKey;
-  paymentManager: web3.PublicKey;
-  feeCollectorTokenAccount: web3.PublicKey;
-  cardinalPaymentManager: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  stakeBooster: web3.PublicKey
+  stakePool: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  originalMint: web3.PublicKey
+  payerTokenAccount: web3.PublicKey
+  paymentRecipientTokenAccount: web3.PublicKey
+  payer: web3.PublicKey
+  paymentManager: web3.PublicKey
+  feeCollectorTokenAccount: web3.PublicKey
+  cardinalPaymentManager: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const boostStakeEntryInstructionDiscriminator = [
   0, 74, 151, 187, 119, 53, 170, 181,
-];
+]
 
 /**
  * Creates a _BoostStakeEntry_ instruction.
@@ -85,12 +86,12 @@ export const boostStakeEntryInstructionDiscriminator = [
 export function createBoostStakeEntryInstruction(
   accounts: BoostStakeEntryInstructionAccounts,
   args: BoostStakeEntryInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = boostStakeEntryStruct.serialize({
     instructionDiscriminator: boostStakeEntryInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakeBooster,
@@ -152,12 +153,12 @@ export function createBoostStakeEntryInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

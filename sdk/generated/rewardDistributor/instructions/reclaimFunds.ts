@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -15,8 +15,8 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type ReclaimFundsInstructionArgs = {
-  amount: beet.bignum;
-};
+  amount: beet.bignum
+}
 /**
  * @category Instructions
  * @category ReclaimFunds
@@ -24,15 +24,15 @@ export type ReclaimFundsInstructionArgs = {
  */
 export const reclaimFundsStruct = new beet.BeetArgsStruct<
   ReclaimFundsInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["amount", beet.u64],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['amount', beet.u64],
   ],
-  "ReclaimFundsInstructionArgs"
-);
+  'ReclaimFundsInstructionArgs'
+)
 /**
  * Accounts required by the _reclaimFunds_ instruction
  *
@@ -45,16 +45,16 @@ export const reclaimFundsStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type ReclaimFundsInstructionAccounts = {
-  rewardDistributor: web3.PublicKey;
-  rewardDistributorTokenAccount: web3.PublicKey;
-  authorityTokenAccount: web3.PublicKey;
-  authority: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-};
+  rewardDistributor: web3.PublicKey
+  rewardDistributorTokenAccount: web3.PublicKey
+  authorityTokenAccount: web3.PublicKey
+  authority: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+}
 
 export const reclaimFundsInstructionDiscriminator = [
   38, 246, 147, 248, 43, 41, 43, 198,
-];
+]
 
 /**
  * Creates a _ReclaimFunds_ instruction.
@@ -69,12 +69,12 @@ export const reclaimFundsInstructionDiscriminator = [
 export function createReclaimFundsInstruction(
   accounts: ReclaimFundsInstructionAccounts,
   args: ReclaimFundsInstructionArgs,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = reclaimFundsStruct.serialize({
     instructionDiscriminator: reclaimFundsInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardDistributor,
@@ -101,12 +101,12 @@ export function createReclaimFundsInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

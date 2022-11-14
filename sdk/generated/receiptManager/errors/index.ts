@@ -5,11 +5,11 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-type ErrorWithCode = Error & { code: number };
-type MaybeErrorWithCode = ErrorWithCode | null | undefined;
+type ErrorWithCode = Error & { code: number }
+type MaybeErrorWithCode = ErrorWithCode | null | undefined
 
-const createErrorFromCodeLookup: Map<number, () => ErrorWithCode> = new Map();
-const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map();
+const createErrorFromCodeLookup: Map<number, () => ErrorWithCode> = new Map()
+const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map()
 
 /**
  * InvalidAuthority: 'Invalid authority'
@@ -18,21 +18,21 @@ const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map();
  * @category generated
  */
 export class InvalidAuthorityError extends Error {
-  readonly code: number = 0x1770;
-  readonly name: string = "InvalidAuthority";
+  readonly code: number = 0x1770
+  readonly name: string = 'InvalidAuthority'
   constructor() {
-    super("Invalid authority");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidAuthorityError);
+    super('Invalid authority')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidAuthorityError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1770, () => new InvalidAuthorityError());
+createErrorFromCodeLookup.set(0x1770, () => new InvalidAuthorityError())
 createErrorFromNameLookup.set(
-  "InvalidAuthority",
+  'InvalidAuthority',
   () => new InvalidAuthorityError()
-);
+)
 
 /**
  * MaxNumberOfReceiptsExceeded: 'Max number of receipts exceeded'
@@ -41,12 +41,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class MaxNumberOfReceiptsExceededError extends Error {
-  readonly code: number = 0x1771;
-  readonly name: string = "MaxNumberOfReceiptsExceeded";
+  readonly code: number = 0x1771
+  readonly name: string = 'MaxNumberOfReceiptsExceeded'
   constructor() {
-    super("Max number of receipts exceeded");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, MaxNumberOfReceiptsExceededError);
+    super('Max number of receipts exceeded')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, MaxNumberOfReceiptsExceededError)
     }
   }
 }
@@ -54,11 +54,11 @@ export class MaxNumberOfReceiptsExceededError extends Error {
 createErrorFromCodeLookup.set(
   0x1771,
   () => new MaxNumberOfReceiptsExceededError()
-);
+)
 createErrorFromNameLookup.set(
-  "MaxNumberOfReceiptsExceeded",
+  'MaxNumberOfReceiptsExceeded',
   () => new MaxNumberOfReceiptsExceededError()
-);
+)
 
 /**
  * InvalidClaimer: 'Invalid claimer'
@@ -67,21 +67,18 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidClaimerError extends Error {
-  readonly code: number = 0x1772;
-  readonly name: string = "InvalidClaimer";
+  readonly code: number = 0x1772
+  readonly name: string = 'InvalidClaimer'
   constructor() {
-    super("Invalid claimer");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidClaimerError);
+    super('Invalid claimer')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidClaimerError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1772, () => new InvalidClaimerError());
-createErrorFromNameLookup.set(
-  "InvalidClaimer",
-  () => new InvalidClaimerError()
-);
+createErrorFromCodeLookup.set(0x1772, () => new InvalidClaimerError())
+createErrorFromNameLookup.set('InvalidClaimer', () => new InvalidClaimerError())
 
 /**
  * RewardSecondsNotSatisfied: 'Reward seconds not satisifed'
@@ -90,12 +87,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RewardSecondsNotSatisfiedError extends Error {
-  readonly code: number = 0x1773;
-  readonly name: string = "RewardSecondsNotSatisfied";
+  readonly code: number = 0x1773
+  readonly name: string = 'RewardSecondsNotSatisfied'
   constructor() {
-    super("Reward seconds not satisifed");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, RewardSecondsNotSatisfiedError);
+    super('Reward seconds not satisifed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardSecondsNotSatisfiedError)
     }
   }
 }
@@ -103,11 +100,11 @@ export class RewardSecondsNotSatisfiedError extends Error {
 createErrorFromCodeLookup.set(
   0x1773,
   () => new RewardSecondsNotSatisfiedError()
-);
+)
 createErrorFromNameLookup.set(
-  "RewardSecondsNotSatisfied",
+  'RewardSecondsNotSatisfied',
   () => new RewardSecondsNotSatisfiedError()
-);
+)
 
 /**
  * InvalidPayerTokenAcount: 'Invalid payer token account'
@@ -116,21 +113,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPayerTokenAcountError extends Error {
-  readonly code: number = 0x1774;
-  readonly name: string = "InvalidPayerTokenAcount";
+  readonly code: number = 0x1774
+  readonly name: string = 'InvalidPayerTokenAcount'
   constructor() {
-    super("Invalid payer token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPayerTokenAcountError);
+    super('Invalid payer token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPayerTokenAcountError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1774, () => new InvalidPayerTokenAcountError());
+createErrorFromCodeLookup.set(0x1774, () => new InvalidPayerTokenAcountError())
 createErrorFromNameLookup.set(
-  "InvalidPayerTokenAcount",
+  'InvalidPayerTokenAcount',
   () => new InvalidPayerTokenAcountError()
-);
+)
 
 /**
  * InvalidPaymentMint: 'Invalid payment mint'
@@ -139,21 +136,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPaymentMintError extends Error {
-  readonly code: number = 0x1775;
-  readonly name: string = "InvalidPaymentMint";
+  readonly code: number = 0x1775
+  readonly name: string = 'InvalidPaymentMint'
   constructor() {
-    super("Invalid payment mint");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPaymentMintError);
+    super('Invalid payment mint')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentMintError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1775, () => new InvalidPaymentMintError());
+createErrorFromCodeLookup.set(0x1775, () => new InvalidPaymentMintError())
 createErrorFromNameLookup.set(
-  "InvalidPaymentMint",
+  'InvalidPaymentMint',
   () => new InvalidPaymentMintError()
-);
+)
 
 /**
  * InvalidPaymentManager: 'Invalid payment manager'
@@ -162,21 +159,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPaymentManagerError extends Error {
-  readonly code: number = 0x1776;
-  readonly name: string = "InvalidPaymentManager";
+  readonly code: number = 0x1776
+  readonly name: string = 'InvalidPaymentManager'
   constructor() {
-    super("Invalid payment manager");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPaymentManagerError);
+    super('Invalid payment manager')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentManagerError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1776, () => new InvalidPaymentManagerError());
+createErrorFromCodeLookup.set(0x1776, () => new InvalidPaymentManagerError())
 createErrorFromNameLookup.set(
-  "InvalidPaymentManager",
+  'InvalidPaymentManager',
   () => new InvalidPaymentManagerError()
-);
+)
 
 /**
  * InvalidMaxClaimedReceipts: 'Invalid max claimed receipts'
@@ -185,12 +182,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidMaxClaimedReceiptsError extends Error {
-  readonly code: number = 0x1777;
-  readonly name: string = "InvalidMaxClaimedReceipts";
+  readonly code: number = 0x1777
+  readonly name: string = 'InvalidMaxClaimedReceipts'
   constructor() {
-    super("Invalid max claimed receipts");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidMaxClaimedReceiptsError);
+    super('Invalid max claimed receipts')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidMaxClaimedReceiptsError)
     }
   }
 }
@@ -198,11 +195,11 @@ export class InvalidMaxClaimedReceiptsError extends Error {
 createErrorFromCodeLookup.set(
   0x1777,
   () => new InvalidMaxClaimedReceiptsError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidMaxClaimedReceipts",
+  'InvalidMaxClaimedReceipts',
   () => new InvalidMaxClaimedReceiptsError()
-);
+)
 
 /**
  * InvalidPaymentTokenAccount: 'Invalid payment token account'
@@ -211,12 +208,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPaymentTokenAccountError extends Error {
-  readonly code: number = 0x1778;
-  readonly name: string = "InvalidPaymentTokenAccount";
+  readonly code: number = 0x1778
+  readonly name: string = 'InvalidPaymentTokenAccount'
   constructor() {
-    super("Invalid payment token account");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPaymentTokenAccountError);
+    super('Invalid payment token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentTokenAccountError)
     }
   }
 }
@@ -224,11 +221,11 @@ export class InvalidPaymentTokenAccountError extends Error {
 createErrorFromCodeLookup.set(
   0x1778,
   () => new InvalidPaymentTokenAccountError()
-);
+)
 createErrorFromNameLookup.set(
-  "InvalidPaymentTokenAccount",
+  'InvalidPaymentTokenAccount',
   () => new InvalidPaymentTokenAccountError()
-);
+)
 
 /**
  * InvalidPaymentCollector: 'Invalid payment collector'
@@ -237,21 +234,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPaymentCollectorError extends Error {
-  readonly code: number = 0x1779;
-  readonly name: string = "InvalidPaymentCollector";
+  readonly code: number = 0x1779
+  readonly name: string = 'InvalidPaymentCollector'
   constructor() {
-    super("Invalid payment collector");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidPaymentCollectorError);
+    super('Invalid payment collector')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentCollectorError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1779, () => new InvalidPaymentCollectorError());
+createErrorFromCodeLookup.set(0x1779, () => new InvalidPaymentCollectorError())
 createErrorFromNameLookup.set(
-  "InvalidPaymentCollector",
+  'InvalidPaymentCollector',
   () => new InvalidPaymentCollectorError()
-);
+)
 
 /**
  * InvalidRewardReceipt: 'Invalid reward receipt'
@@ -260,21 +257,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidRewardReceiptError extends Error {
-  readonly code: number = 0x177a;
-  readonly name: string = "InvalidRewardReceipt";
+  readonly code: number = 0x177a
+  readonly name: string = 'InvalidRewardReceipt'
   constructor() {
-    super("Invalid reward receipt");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidRewardReceiptError);
+    super('Invalid reward receipt')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardReceiptError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177a, () => new InvalidRewardReceiptError());
+createErrorFromCodeLookup.set(0x177a, () => new InvalidRewardReceiptError())
 createErrorFromNameLookup.set(
-  "InvalidRewardReceipt",
+  'InvalidRewardReceipt',
   () => new InvalidRewardReceiptError()
-);
+)
 
 /**
  * InvalidReceiptEntry: 'Invalid receipt entry'
@@ -283,21 +280,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidReceiptEntryError extends Error {
-  readonly code: number = 0x177b;
-  readonly name: string = "InvalidReceiptEntry";
+  readonly code: number = 0x177b
+  readonly name: string = 'InvalidReceiptEntry'
   constructor() {
-    super("Invalid receipt entry");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidReceiptEntryError);
+    super('Invalid receipt entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidReceiptEntryError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177b, () => new InvalidReceiptEntryError());
+createErrorFromCodeLookup.set(0x177b, () => new InvalidReceiptEntryError())
 createErrorFromNameLookup.set(
-  "InvalidReceiptEntry",
+  'InvalidReceiptEntry',
   () => new InvalidReceiptEntryError()
-);
+)
 
 /**
  * InsufficientAvailableStakeSeconds: 'Insufficient available stake seconds to use'
@@ -306,12 +303,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InsufficientAvailableStakeSecondsError extends Error {
-  readonly code: number = 0x177c;
-  readonly name: string = "InsufficientAvailableStakeSeconds";
+  readonly code: number = 0x177c
+  readonly name: string = 'InsufficientAvailableStakeSeconds'
   constructor() {
-    super("Insufficient available stake seconds to use");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InsufficientAvailableStakeSecondsError);
+    super('Insufficient available stake seconds to use')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InsufficientAvailableStakeSecondsError)
     }
   }
 }
@@ -319,11 +316,11 @@ export class InsufficientAvailableStakeSecondsError extends Error {
 createErrorFromCodeLookup.set(
   0x177c,
   () => new InsufficientAvailableStakeSecondsError()
-);
+)
 createErrorFromNameLookup.set(
-  "InsufficientAvailableStakeSeconds",
+  'InsufficientAvailableStakeSeconds',
   () => new InsufficientAvailableStakeSecondsError()
-);
+)
 
 /**
  * InvalidStakeEntry: 'Invalid stake entry'
@@ -332,21 +329,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidStakeEntryError extends Error {
-  readonly code: number = 0x177d;
-  readonly name: string = "InvalidStakeEntry";
+  readonly code: number = 0x177d
+  readonly name: string = 'InvalidStakeEntry'
   constructor() {
-    super("Invalid stake entry");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidStakeEntryError);
+    super('Invalid stake entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidStakeEntryError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177d, () => new InvalidStakeEntryError());
+createErrorFromCodeLookup.set(0x177d, () => new InvalidStakeEntryError())
 createErrorFromNameLookup.set(
-  "InvalidStakeEntry",
+  'InvalidStakeEntry',
   () => new InvalidStakeEntryError()
-);
+)
 
 /**
  * InvalidReceiptManager: 'Invalid receipt manager'
@@ -355,21 +352,21 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidReceiptManagerError extends Error {
-  readonly code: number = 0x177e;
-  readonly name: string = "InvalidReceiptManager";
+  readonly code: number = 0x177e
+  readonly name: string = 'InvalidReceiptManager'
   constructor() {
-    super("Invalid receipt manager");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, InvalidReceiptManagerError);
+    super('Invalid receipt manager')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidReceiptManagerError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177e, () => new InvalidReceiptManagerError());
+createErrorFromCodeLookup.set(0x177e, () => new InvalidReceiptManagerError())
 createErrorFromNameLookup.set(
-  "InvalidReceiptManager",
+  'InvalidReceiptManager',
   () => new InvalidReceiptManagerError()
-);
+)
 
 /**
  * RewardReceiptIsNotAllowed: 'Reward receipt is not allowed'
@@ -378,12 +375,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RewardReceiptIsNotAllowedError extends Error {
-  readonly code: number = 0x177f;
-  readonly name: string = "RewardReceiptIsNotAllowed";
+  readonly code: number = 0x177f
+  readonly name: string = 'RewardReceiptIsNotAllowed'
   constructor() {
-    super("Reward receipt is not allowed");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, RewardReceiptIsNotAllowedError);
+    super('Reward receipt is not allowed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardReceiptIsNotAllowedError)
     }
   }
 }
@@ -391,11 +388,11 @@ export class RewardReceiptIsNotAllowedError extends Error {
 createErrorFromCodeLookup.set(
   0x177f,
   () => new RewardReceiptIsNotAllowedError()
-);
+)
 createErrorFromNameLookup.set(
-  "RewardReceiptIsNotAllowed",
+  'RewardReceiptIsNotAllowed',
   () => new RewardReceiptIsNotAllowedError()
-);
+)
 
 /**
  * RewardReceiptAlreadyClaimed: 'Reward receipt already claimed'
@@ -404,12 +401,12 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RewardReceiptAlreadyClaimedError extends Error {
-  readonly code: number = 0x1780;
-  readonly name: string = "RewardReceiptAlreadyClaimed";
+  readonly code: number = 0x1780
+  readonly name: string = 'RewardReceiptAlreadyClaimed'
   constructor() {
-    super("Reward receipt already claimed");
-    if (typeof Error.captureStackTrace === "function") {
-      Error.captureStackTrace(this, RewardReceiptAlreadyClaimedError);
+    super('Reward receipt already claimed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardReceiptAlreadyClaimedError)
     }
   }
 }
@@ -417,11 +414,11 @@ export class RewardReceiptAlreadyClaimedError extends Error {
 createErrorFromCodeLookup.set(
   0x1780,
   () => new RewardReceiptAlreadyClaimedError()
-);
+)
 createErrorFromNameLookup.set(
-  "RewardReceiptAlreadyClaimed",
+  'RewardReceiptAlreadyClaimed',
   () => new RewardReceiptAlreadyClaimedError()
-);
+)
 
 /**
  * Attempts to resolve a custom program error from the provided error code.
@@ -429,8 +426,8 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export function errorFromCode(code: number): MaybeErrorWithCode {
-  const createError = createErrorFromCodeLookup.get(code);
-  return createError != null ? createError() : null;
+  const createError = createErrorFromCodeLookup.get(code)
+  return createError != null ? createError() : null
 }
 
 /**
@@ -439,6 +436,6 @@ export function errorFromCode(code: number): MaybeErrorWithCode {
  * @category generated
  */
 export function errorFromName(name: string): MaybeErrorWithCode {
-  const createError = createErrorFromNameLookup.get(name);
-  return createError != null ? createError() : null;
+  const createError = createErrorFromNameLookup.get(name)
+  return createError != null ? createError() : null
 }

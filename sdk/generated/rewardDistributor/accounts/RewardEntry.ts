@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link RewardEntry}
@@ -15,14 +15,14 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type RewardEntryArgs = {
-  bump: number;
-  stakeEntry: web3.PublicKey;
-  rewardDistributor: web3.PublicKey;
-  rewardSecondsReceived: beet.bignum;
-  multiplier: beet.bignum;
-};
+  bump: number
+  stakeEntry: web3.PublicKey
+  rewardDistributor: web3.PublicKey
+  rewardSecondsReceived: beet.bignum
+  multiplier: beet.bignum
+}
 
-export const rewardEntryDiscriminator = [208, 191, 173, 14, 213, 84, 179, 162];
+export const rewardEntryDiscriminator = [208, 191, 173, 14, 213, 84, 179, 162]
 /**
  * Holds the data for the {@link RewardEntry} Account and provides de/serialization
  * functionality for that data
@@ -49,7 +49,7 @@ export class RewardEntry implements RewardEntryArgs {
       args.rewardDistributor,
       args.rewardSecondsReceived,
       args.multiplier
-    );
+    )
   }
 
   /**
@@ -60,7 +60,7 @@ export class RewardEntry implements RewardEntryArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [RewardEntry, number] {
-    return RewardEntry.deserialize(accountInfo.data, offset);
+    return RewardEntry.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -73,11 +73,11 @@ export class RewardEntry implements RewardEntryArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<RewardEntry> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find RewardEntry account at ${address}`);
+      throw new Error(`Unable to find RewardEntry account at ${address}`)
     }
-    return RewardEntry.fromAccountInfo(accountInfo, 0)[0];
+    return RewardEntry.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -88,10 +88,10 @@ export class RewardEntry implements RewardEntryArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
+      'rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, rewardEntryBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, rewardEntryBeet)
   }
 
   /**
@@ -99,7 +99,7 @@ export class RewardEntry implements RewardEntryArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [RewardEntry, number] {
-    return rewardEntryBeet.deserialize(buf, offset);
+    return rewardEntryBeet.deserialize(buf, offset)
   }
 
   /**
@@ -110,7 +110,7 @@ export class RewardEntry implements RewardEntryArgs {
     return rewardEntryBeet.serialize({
       accountDiscriminator: rewardEntryDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -118,7 +118,7 @@ export class RewardEntry implements RewardEntryArgs {
    * {@link RewardEntry}
    */
   static get byteSize() {
-    return rewardEntryBeet.byteSize;
+    return rewardEntryBeet.byteSize
   }
 
   /**
@@ -134,7 +134,7 @@ export class RewardEntry implements RewardEntryArgs {
     return connection.getMinimumBalanceForRentExemption(
       RewardEntry.byteSize,
       commitment
-    );
+    )
   }
 
   /**
@@ -142,7 +142,7 @@ export class RewardEntry implements RewardEntryArgs {
    * hold {@link RewardEntry} data.
    */
   static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === RewardEntry.byteSize;
+    return buf.byteLength - offset === RewardEntry.byteSize
   }
 
   /**
@@ -155,28 +155,28 @@ export class RewardEntry implements RewardEntryArgs {
       stakeEntry: this.stakeEntry.toBase58(),
       rewardDistributor: this.rewardDistributor.toBase58(),
       rewardSecondsReceived: (() => {
-        const x = <{ toNumber: () => number }>this.rewardSecondsReceived;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.rewardSecondsReceived
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       multiplier: (() => {
-        const x = <{ toNumber: () => number }>this.multiplier;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.multiplier
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
-    };
+    }
   }
 }
 
@@ -187,17 +187,17 @@ export class RewardEntry implements RewardEntryArgs {
 export const rewardEntryBeet = new beet.BeetStruct<
   RewardEntry,
   RewardEntryArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["stakeEntry", beetSolana.publicKey],
-    ["rewardDistributor", beetSolana.publicKey],
-    ["rewardSecondsReceived", beet.u128],
-    ["multiplier", beet.u64],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['stakeEntry', beetSolana.publicKey],
+    ['rewardDistributor', beetSolana.publicKey],
+    ['rewardSecondsReceived', beet.u128],
+    ['multiplier', beet.u64],
   ],
   RewardEntry.fromArgs,
-  "RewardEntry"
-);
+  'RewardEntry'
+)

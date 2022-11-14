@@ -5,13 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import type * as web3 from "@solana/web3.js";
-
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
+import * as beet from '@metaplex-foundation/beet'
 export type ReassignStakeEntryIx = {
-  target: web3.PublicKey;
-};
+  target: web3.PublicKey
+}
 
 /**
  * @category userTypes
@@ -19,6 +18,6 @@ export type ReassignStakeEntryIx = {
  */
 export const reassignStakeEntryIxBeet =
   new beet.BeetArgsStruct<ReassignStakeEntryIx>(
-    [["target", beetSolana.publicKey]],
-    "ReassignStakeEntryIx"
-  );
+    [['target', beetSolana.publicKey]],
+    'ReassignStakeEntryIx'
+  )

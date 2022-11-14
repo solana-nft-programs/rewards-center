@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const updateTotalStakeSecondsStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "UpdateTotalStakeSecondsInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'UpdateTotalStakeSecondsInstructionArgs'
+)
 /**
  * Accounts required by the _updateTotalStakeSeconds_ instruction
  *
@@ -29,13 +29,13 @@ export const updateTotalStakeSecondsStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type UpdateTotalStakeSecondsInstructionAccounts = {
-  stakeEntry: web3.PublicKey;
-  lastStaker: web3.PublicKey;
-};
+  stakeEntry: web3.PublicKey
+  lastStaker: web3.PublicKey
+}
 
 export const updateTotalStakeSecondsInstructionDiscriminator = [
   156, 69, 149, 195, 171, 223, 177, 245,
-];
+]
 
 /**
  * Creates a _UpdateTotalStakeSeconds_ instruction.
@@ -47,11 +47,11 @@ export const updateTotalStakeSecondsInstructionDiscriminator = [
  */
 export function createUpdateTotalStakeSecondsInstruction(
   accounts: UpdateTotalStakeSecondsInstructionAccounts,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = updateTotalStakeSecondsStruct.serialize({
     instructionDiscriminator: updateTotalStakeSecondsInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakeEntry,
@@ -63,12 +63,12 @@ export function createUpdateTotalStakeSecondsInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { UpdateRewardEntryIx } from "../types/UpdateRewardEntryIx";
-import { updateRewardEntryIxBeet } from "../types/UpdateRewardEntryIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  UpdateRewardEntryIx,
+  updateRewardEntryIxBeet,
+} from '../types/UpdateRewardEntryIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { updateRewardEntryIxBeet } from "../types/UpdateRewardEntryIx";
  * @category generated
  */
 export type UpdateRewardEntryInstructionArgs = {
-  ix: UpdateRewardEntryIx;
-};
+  ix: UpdateRewardEntryIx
+}
 /**
  * @category Instructions
  * @category UpdateRewardEntry
@@ -26,15 +27,15 @@ export type UpdateRewardEntryInstructionArgs = {
  */
 export const updateRewardEntryStruct = new beet.BeetArgsStruct<
   UpdateRewardEntryInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", updateRewardEntryIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', updateRewardEntryIxBeet],
   ],
-  "UpdateRewardEntryInstructionArgs"
-);
+  'UpdateRewardEntryInstructionArgs'
+)
 /**
  * Accounts required by the _updateRewardEntry_ instruction
  *
@@ -46,14 +47,14 @@ export const updateRewardEntryStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type UpdateRewardEntryInstructionAccounts = {
-  rewardEntry: web3.PublicKey;
-  rewardDistributor: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  rewardEntry: web3.PublicKey
+  rewardDistributor: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const updateRewardEntryInstructionDiscriminator = [
   102, 76, 212, 206, 101, 194, 250, 16,
-];
+]
 
 /**
  * Creates a _UpdateRewardEntry_ instruction.
@@ -68,12 +69,12 @@ export const updateRewardEntryInstructionDiscriminator = [
 export function createUpdateRewardEntryInstruction(
   accounts: UpdateRewardEntryInstructionAccounts,
   args: UpdateRewardEntryInstructionArgs,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = updateRewardEntryStruct.serialize({
     instructionDiscriminator: updateRewardEntryInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardEntry,
@@ -90,12 +91,12 @@ export function createUpdateRewardEntryInstruction(
       isWritable: false,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

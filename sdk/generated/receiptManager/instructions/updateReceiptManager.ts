@@ -5,11 +5,12 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
-
-import type { UpdateReceiptManagerIx } from "../types/UpdateReceiptManagerIx";
-import { updateReceiptManagerIxBeet } from "../types/UpdateReceiptManagerIx";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  UpdateReceiptManagerIx,
+  updateReceiptManagerIxBeet,
+} from '../types/UpdateReceiptManagerIx'
 
 /**
  * @category Instructions
@@ -17,8 +18,8 @@ import { updateReceiptManagerIxBeet } from "../types/UpdateReceiptManagerIx";
  * @category generated
  */
 export type UpdateReceiptManagerInstructionArgs = {
-  ix: UpdateReceiptManagerIx;
-};
+  ix: UpdateReceiptManagerIx
+}
 /**
  * @category Instructions
  * @category UpdateReceiptManager
@@ -26,15 +27,15 @@ export type UpdateReceiptManagerInstructionArgs = {
  */
 export const updateReceiptManagerStruct = new beet.FixableBeetArgsStruct<
   UpdateReceiptManagerInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", updateReceiptManagerIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', updateReceiptManagerIxBeet],
   ],
-  "UpdateReceiptManagerInstructionArgs"
-);
+  'UpdateReceiptManagerInstructionArgs'
+)
 /**
  * Accounts required by the _updateReceiptManager_ instruction
  *
@@ -45,13 +46,13 @@ export const updateReceiptManagerStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type UpdateReceiptManagerInstructionAccounts = {
-  receiptManager: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  receiptManager: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const updateReceiptManagerInstructionDiscriminator = [
   18, 45, 212, 2, 210, 18, 61, 93,
-];
+]
 
 /**
  * Creates a _UpdateReceiptManager_ instruction.
@@ -66,12 +67,12 @@ export const updateReceiptManagerInstructionDiscriminator = [
 export function createUpdateReceiptManagerInstruction(
   accounts: UpdateReceiptManagerInstructionAccounts,
   args: UpdateReceiptManagerInstructionArgs,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = updateReceiptManagerStruct.serialize({
     instructionDiscriminator: updateReceiptManagerInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptManager,
@@ -83,12 +84,12 @@ export function createUpdateReceiptManagerInstruction(
       isWritable: false,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

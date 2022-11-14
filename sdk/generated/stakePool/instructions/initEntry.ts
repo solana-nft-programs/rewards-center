@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
+import * as beet from '@metaplex-foundation/beet'
 
 /**
  * @category Instructions
@@ -15,8 +15,8 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type InitEntryInstructionArgs = {
-  user: web3.PublicKey;
-};
+  user: web3.PublicKey
+}
 /**
  * @category Instructions
  * @category InitEntry
@@ -24,15 +24,15 @@ export type InitEntryInstructionArgs = {
  */
 export const initEntryStruct = new beet.BeetArgsStruct<
   InitEntryInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["user", beetSolana.publicKey],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['user', beetSolana.publicKey],
   ],
-  "InitEntryInstructionArgs"
-);
+  'InitEntryInstructionArgs'
+)
 /**
  * Accounts required by the _initEntry_ instruction
  *
@@ -46,17 +46,17 @@ export const initEntryStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type InitEntryInstructionAccounts = {
-  stakeEntry: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  originalMint: web3.PublicKey;
-  originalMintMetadata: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  stakeEntry: web3.PublicKey
+  stakePool: web3.PublicKey
+  originalMint: web3.PublicKey
+  originalMintMetadata: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initEntryInstructionDiscriminator = [
   207, 80, 17, 185, 229, 148, 170, 183,
-];
+]
 
 /**
  * Creates a _InitEntry_ instruction.
@@ -71,12 +71,12 @@ export const initEntryInstructionDiscriminator = [
 export function createInitEntryInstruction(
   accounts: InitEntryInstructionAccounts,
   args: InitEntryInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = initEntryStruct.serialize({
     instructionDiscriminator: initEntryInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakeEntry,
@@ -108,12 +108,12 @@ export function createInitEntryInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

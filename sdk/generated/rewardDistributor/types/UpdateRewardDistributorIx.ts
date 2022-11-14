@@ -5,15 +5,14 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-
+import * as beet from '@metaplex-foundation/beet'
 export type UpdateRewardDistributorIx = {
-  defaultMultiplier: beet.bignum;
-  multiplierDecimals: number;
-  rewardAmount: beet.bignum;
-  rewardDurationSeconds: beet.bignum;
-  maxRewardSecondsReceived: beet.COption<beet.bignum>;
-};
+  defaultMultiplier: beet.bignum
+  multiplierDecimals: number
+  rewardAmount: beet.bignum
+  rewardDurationSeconds: beet.bignum
+  maxRewardSecondsReceived: beet.COption<beet.bignum>
+}
 
 /**
  * @category userTypes
@@ -22,11 +21,11 @@ export type UpdateRewardDistributorIx = {
 export const updateRewardDistributorIxBeet =
   new beet.FixableBeetArgsStruct<UpdateRewardDistributorIx>(
     [
-      ["defaultMultiplier", beet.u64],
-      ["multiplierDecimals", beet.u8],
-      ["rewardAmount", beet.u64],
-      ["rewardDurationSeconds", beet.u128],
-      ["maxRewardSecondsReceived", beet.coption(beet.u128)],
+      ['defaultMultiplier', beet.u64],
+      ['multiplierDecimals', beet.u8],
+      ['rewardAmount', beet.u64],
+      ['rewardDurationSeconds', beet.u128],
+      ['maxRewardSecondsReceived', beet.coption(beet.u128)],
     ],
-    "UpdateRewardDistributorIx"
-  );
+    'UpdateRewardDistributorIx'
+  )

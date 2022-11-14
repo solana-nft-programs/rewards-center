@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -15,11 +15,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const unstakeStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "UnstakeInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'UnstakeInstructionArgs'
+)
 /**
  * Accounts required by the _unstake_ instruction
  *
@@ -36,20 +36,20 @@ export const unstakeStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type UnstakeInstructionAccounts = {
-  stakePool: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  originalMint: web3.PublicKey;
-  originalMintEdition: web3.PublicKey;
-  stakeEntryOriginalMintTokenAccount: web3.PublicKey;
-  user: web3.PublicKey;
-  userOriginalMintTokenAccount: web3.PublicKey;
-  tokenMetadataProgram: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-};
+  stakePool: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  originalMint: web3.PublicKey
+  originalMintEdition: web3.PublicKey
+  stakeEntryOriginalMintTokenAccount: web3.PublicKey
+  user: web3.PublicKey
+  userOriginalMintTokenAccount: web3.PublicKey
+  tokenMetadataProgram: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+}
 
 export const unstakeInstructionDiscriminator = [
   90, 95, 107, 42, 205, 124, 50, 225,
-];
+]
 
 /**
  * Creates a _Unstake_ instruction.
@@ -61,11 +61,11 @@ export const unstakeInstructionDiscriminator = [
  */
 export function createUnstakeInstruction(
   accounts: UnstakeInstructionAccounts,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = unstakeStruct.serialize({
     instructionDiscriminator: unstakeInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakePool,
@@ -112,12 +112,12 @@ export function createUnstakeInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

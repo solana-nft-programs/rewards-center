@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link ReceiptManager}
@@ -15,23 +15,23 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type ReceiptManagerArgs = {
-  bump: number;
-  stakePool: web3.PublicKey;
-  authority: web3.PublicKey;
-  requiredStakeSeconds: beet.bignum;
-  stakeSecondsToUse: beet.bignum;
-  claimedReceiptsCounter: beet.bignum;
-  paymentMint: web3.PublicKey;
-  paymentManager: web3.PublicKey;
-  paymentRecipient: web3.PublicKey;
-  requiresAuthorization: boolean;
-  name: string;
-  maxClaimedReceipts: beet.COption<beet.bignum>;
-};
+  bump: number
+  stakePool: web3.PublicKey
+  authority: web3.PublicKey
+  requiredStakeSeconds: beet.bignum
+  stakeSecondsToUse: beet.bignum
+  claimedReceiptsCounter: beet.bignum
+  paymentMint: web3.PublicKey
+  paymentManager: web3.PublicKey
+  paymentRecipient: web3.PublicKey
+  requiresAuthorization: boolean
+  name: string
+  maxClaimedReceipts: beet.COption<beet.bignum>
+}
 
 export const receiptManagerDiscriminator = [
   153, 143, 251, 115, 216, 68, 70, 152,
-];
+]
 /**
  * Holds the data for the {@link ReceiptManager} Account and provides de/serialization
  * functionality for that data
@@ -72,7 +72,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
       args.requiresAuthorization,
       args.name,
       args.maxClaimedReceipts
-    );
+    )
   }
 
   /**
@@ -83,7 +83,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [ReceiptManager, number] {
-    return ReceiptManager.deserialize(accountInfo.data, offset);
+    return ReceiptManager.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -96,11 +96,11 @@ export class ReceiptManager implements ReceiptManagerArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<ReceiptManager> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find ReceiptManager account at ${address}`);
+      throw new Error(`Unable to find ReceiptManager account at ${address}`)
     }
-    return ReceiptManager.fromAccountInfo(accountInfo, 0)[0];
+    return ReceiptManager.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -111,10 +111,10 @@ export class ReceiptManager implements ReceiptManagerArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+      'rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, receiptManagerBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, receiptManagerBeet)
   }
 
   /**
@@ -122,7 +122,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [ReceiptManager, number] {
-    return receiptManagerBeet.deserialize(buf, offset);
+    return receiptManagerBeet.deserialize(buf, offset)
   }
 
   /**
@@ -133,7 +133,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
     return receiptManagerBeet.serialize({
       accountDiscriminator: receiptManagerDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -144,11 +144,11 @@ export class ReceiptManager implements ReceiptManagerArgs {
    * depends on them
    */
   static byteSize(args: ReceiptManagerArgs) {
-    const instance = ReceiptManager.fromArgs(args);
+    const instance = ReceiptManager.fromArgs(args)
     return receiptManagerBeet.toFixedFromValue({
       accountDiscriminator: receiptManagerDiscriminator,
       ...instance,
-    }).byteSize;
+    }).byteSize
   }
 
   /**
@@ -167,7 +167,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
     return connection.getMinimumBalanceForRentExemption(
       ReceiptManager.byteSize(args),
       commitment
-    );
+    )
   }
 
   /**
@@ -180,37 +180,37 @@ export class ReceiptManager implements ReceiptManagerArgs {
       stakePool: this.stakePool.toBase58(),
       authority: this.authority.toBase58(),
       requiredStakeSeconds: (() => {
-        const x = <{ toNumber: () => number }>this.requiredStakeSeconds;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.requiredStakeSeconds
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       stakeSecondsToUse: (() => {
-        const x = <{ toNumber: () => number }>this.stakeSecondsToUse;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.stakeSecondsToUse
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       claimedReceiptsCounter: (() => {
-        const x = <{ toNumber: () => number }>this.claimedReceiptsCounter;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.claimedReceiptsCounter
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       paymentMint: this.paymentMint.toBase58(),
       paymentManager: this.paymentManager.toBase58(),
@@ -218,7 +218,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
       requiresAuthorization: this.requiresAuthorization,
       name: this.name,
       maxClaimedReceipts: this.maxClaimedReceipts,
-    };
+    }
   }
 }
 
@@ -229,24 +229,24 @@ export class ReceiptManager implements ReceiptManagerArgs {
 export const receiptManagerBeet = new beet.FixableBeetStruct<
   ReceiptManager,
   ReceiptManagerArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["stakePool", beetSolana.publicKey],
-    ["authority", beetSolana.publicKey],
-    ["requiredStakeSeconds", beet.u128],
-    ["stakeSecondsToUse", beet.u128],
-    ["claimedReceiptsCounter", beet.u128],
-    ["paymentMint", beetSolana.publicKey],
-    ["paymentManager", beetSolana.publicKey],
-    ["paymentRecipient", beetSolana.publicKey],
-    ["requiresAuthorization", beet.bool],
-    ["name", beet.utf8String],
-    ["maxClaimedReceipts", beet.coption(beet.u128)],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['stakePool', beetSolana.publicKey],
+    ['authority', beetSolana.publicKey],
+    ['requiredStakeSeconds', beet.u128],
+    ['stakeSecondsToUse', beet.u128],
+    ['claimedReceiptsCounter', beet.u128],
+    ['paymentMint', beetSolana.publicKey],
+    ['paymentManager', beetSolana.publicKey],
+    ['paymentRecipient', beetSolana.publicKey],
+    ['requiresAuthorization', beet.bool],
+    ['name', beet.utf8String],
+    ['maxClaimedReceipts', beet.coption(beet.u128)],
   ],
   ReceiptManager.fromArgs,
-  "ReceiptManager"
-);
+  'ReceiptManager'
+)

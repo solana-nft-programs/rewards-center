@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -15,8 +15,8 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type StakeInstructionArgs = {
-  amount: beet.bignum;
-};
+  amount: beet.bignum
+}
 /**
  * @category Instructions
  * @category Stake
@@ -24,15 +24,15 @@ export type StakeInstructionArgs = {
  */
 export const stakeStruct = new beet.BeetArgsStruct<
   StakeInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["amount", beet.u64],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['amount', beet.u64],
   ],
-  "StakeInstructionArgs"
-);
+  'StakeInstructionArgs'
+)
 /**
  * Accounts required by the _stake_ instruction
  *
@@ -49,20 +49,20 @@ export const stakeStruct = new beet.BeetArgsStruct<
  * @category generated
  */
 export type StakeInstructionAccounts = {
-  stakeEntry: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  stakeEntryOriginalMintTokenAccount: web3.PublicKey;
-  originalMint: web3.PublicKey;
-  originalMintEdition: web3.PublicKey;
-  user: web3.PublicKey;
-  userOriginalMintTokenAccount: web3.PublicKey;
-  tokenMetadataProgram: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-};
+  stakeEntry: web3.PublicKey
+  stakePool: web3.PublicKey
+  stakeEntryOriginalMintTokenAccount: web3.PublicKey
+  originalMint: web3.PublicKey
+  originalMintEdition: web3.PublicKey
+  user: web3.PublicKey
+  userOriginalMintTokenAccount: web3.PublicKey
+  tokenMetadataProgram: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+}
 
 export const stakeInstructionDiscriminator = [
   206, 176, 202, 18, 200, 209, 179, 108,
-];
+]
 
 /**
  * Creates a _Stake_ instruction.
@@ -77,12 +77,12 @@ export const stakeInstructionDiscriminator = [
 export function createStakeInstruction(
   accounts: StakeInstructionAccounts,
   args: StakeInstructionArgs,
-  programId = new web3.PublicKey("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6")
+  programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
   const [data] = stakeStruct.serialize({
     instructionDiscriminator: stakeInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.stakeEntry,
@@ -129,12 +129,12 @@ export function createStakeInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,12 +5,13 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
-
-import type { InitRewardDistributorIx } from "../types/InitRewardDistributorIx";
-import { initRewardDistributorIxBeet } from "../types/InitRewardDistributorIx";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import {
+  InitRewardDistributorIx,
+  initRewardDistributorIxBeet,
+} from '../types/InitRewardDistributorIx'
 
 /**
  * @category Instructions
@@ -18,8 +19,8 @@ import { initRewardDistributorIxBeet } from "../types/InitRewardDistributorIx";
  * @category generated
  */
 export type InitRewardDistributorInstructionArgs = {
-  ix: InitRewardDistributorIx;
-};
+  ix: InitRewardDistributorIx
+}
 /**
  * @category Instructions
  * @category InitRewardDistributor
@@ -27,15 +28,15 @@ export type InitRewardDistributorInstructionArgs = {
  */
 export const initRewardDistributorStruct = new beet.FixableBeetArgsStruct<
   InitRewardDistributorInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */;
+    instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["ix", initRewardDistributorIxBeet],
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['ix', initRewardDistributorIxBeet],
   ],
-  "InitRewardDistributorInstructionArgs"
-);
+  'InitRewardDistributorInstructionArgs'
+)
 /**
  * Accounts required by the _initRewardDistributor_ instruction
  *
@@ -49,18 +50,18 @@ export const initRewardDistributorStruct = new beet.FixableBeetArgsStruct<
  * @category generated
  */
 export type InitRewardDistributorInstructionAccounts = {
-  rewardDistributor: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  rewardMint: web3.PublicKey;
-  authority: web3.PublicKey;
-  payer: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  rewardDistributor: web3.PublicKey
+  stakePool: web3.PublicKey
+  rewardMint: web3.PublicKey
+  authority: web3.PublicKey
+  payer: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initRewardDistributorInstructionDiscriminator = [
   195, 125, 227, 27, 152, 100, 218, 38,
-];
+]
 
 /**
  * Creates a _InitRewardDistributor_ instruction.
@@ -75,12 +76,12 @@ export const initRewardDistributorInstructionDiscriminator = [
 export function createInitRewardDistributorInstruction(
   accounts: InitRewardDistributorInstructionAccounts,
   args: InitRewardDistributorInstructionArgs,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = initRewardDistributorStruct.serialize({
     instructionDiscriminator: initRewardDistributorInstructionDiscriminator,
     ...args,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardDistributor,
@@ -117,12 +118,12 @@ export function createInitRewardDistributorInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

@@ -5,17 +5,16 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-
+import * as beet from '@metaplex-foundation/beet'
 export type BoostStakeEntryIx = {
-  secondsToBoost: beet.bignum;
-};
+  secondsToBoost: beet.bignum
+}
 
 /**
  * @category userTypes
  * @category generated
  */
 export const boostStakeEntryIxBeet = new beet.BeetArgsStruct<BoostStakeEntryIx>(
-  [["secondsToBoost", beet.u64]],
-  "BoostStakeEntryIx"
-);
+  [['secondsToBoost', beet.u64]],
+  'BoostStakeEntryIx'
+)

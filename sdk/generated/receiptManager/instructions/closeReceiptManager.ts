@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const closeReceiptManagerStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "CloseReceiptManagerInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'CloseReceiptManagerInstructionArgs'
+)
 /**
  * Accounts required by the _closeReceiptManager_ instruction
  *
@@ -29,13 +29,13 @@ export const closeReceiptManagerStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type CloseReceiptManagerInstructionAccounts = {
-  receiptManager: web3.PublicKey;
-  authority: web3.PublicKey;
-};
+  receiptManager: web3.PublicKey
+  authority: web3.PublicKey
+}
 
 export const closeReceiptManagerInstructionDiscriminator = [
   197, 111, 141, 82, 48, 138, 70, 79,
-];
+]
 
 /**
  * Creates a _CloseReceiptManager_ instruction.
@@ -47,11 +47,11 @@ export const closeReceiptManagerInstructionDiscriminator = [
  */
 export function createCloseReceiptManagerInstruction(
   accounts: CloseReceiptManagerInstructionAccounts,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = closeReceiptManagerStruct.serialize({
     instructionDiscriminator: closeReceiptManagerInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.receiptManager,
@@ -63,12 +63,12 @@ export function createCloseReceiptManagerInstruction(
       isWritable: true,
       isSigner: true,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

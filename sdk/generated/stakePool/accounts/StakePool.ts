@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as beetSolana from "@metaplex-foundation/beet-solana";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 
 /**
  * Arguments used to create {@link StakePool}
@@ -15,25 +15,23 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export type StakePoolArgs = {
-  bump: number;
-  identifier: beet.bignum;
-  authority: web3.PublicKey;
-  requiresCreators: web3.PublicKey[];
-  requiresCollections: web3.PublicKey[];
-  requiresAuthorization: boolean;
-  overlayText: string;
-  imageUri: string;
-  resetOnStake: boolean;
-  totalStaked: number;
-  cooldownSeconds: beet.COption<number>;
-  minStakeSeconds: beet.COption<number>;
-  endDate: beet.COption<beet.bignum>;
-  paymentAmount: beet.COption<beet.bignum>;
-  paymentMint: beet.COption<web3.PublicKey>;
-  paymentManager: beet.COption<web3.PublicKey>;
-};
+  bump: number
+  identifier: beet.bignum
+  authority: web3.PublicKey
+  requiresCreators: web3.PublicKey[]
+  requiresCollections: web3.PublicKey[]
+  requiresAuthorization: boolean
+  resetOnStake: boolean
+  totalStaked: number
+  cooldownSeconds: beet.COption<number>
+  minStakeSeconds: beet.COption<number>
+  endDate: beet.COption<beet.bignum>
+  paymentAmount: beet.COption<beet.bignum>
+  paymentMint: beet.COption<web3.PublicKey>
+  paymentManager: beet.COption<web3.PublicKey>
+}
 
-export const stakePoolDiscriminator = [121, 34, 206, 21, 79, 127, 255, 28];
+export const stakePoolDiscriminator = [121, 34, 206, 21, 79, 127, 255, 28]
 /**
  * Holds the data for the {@link StakePool} Account and provides de/serialization
  * functionality for that data
@@ -49,8 +47,6 @@ export class StakePool implements StakePoolArgs {
     readonly requiresCreators: web3.PublicKey[],
     readonly requiresCollections: web3.PublicKey[],
     readonly requiresAuthorization: boolean,
-    readonly overlayText: string,
-    readonly imageUri: string,
     readonly resetOnStake: boolean,
     readonly totalStaked: number,
     readonly cooldownSeconds: beet.COption<number>,
@@ -72,8 +68,6 @@ export class StakePool implements StakePoolArgs {
       args.requiresCreators,
       args.requiresCollections,
       args.requiresAuthorization,
-      args.overlayText,
-      args.imageUri,
       args.resetOnStake,
       args.totalStaked,
       args.cooldownSeconds,
@@ -82,7 +76,7 @@ export class StakePool implements StakePoolArgs {
       args.paymentAmount,
       args.paymentMint,
       args.paymentManager
-    );
+    )
   }
 
   /**
@@ -93,7 +87,7 @@ export class StakePool implements StakePoolArgs {
     accountInfo: web3.AccountInfo<Buffer>,
     offset = 0
   ): [StakePool, number] {
-    return StakePool.deserialize(accountInfo.data, offset);
+    return StakePool.deserialize(accountInfo.data, offset)
   }
 
   /**
@@ -106,11 +100,11 @@ export class StakePool implements StakePoolArgs {
     connection: web3.Connection,
     address: web3.PublicKey
   ): Promise<StakePool> {
-    const accountInfo = await connection.getAccountInfo(address);
+    const accountInfo = await connection.getAccountInfo(address)
     if (accountInfo == null) {
-      throw new Error(`Unable to find StakePool account at ${address}`);
+      throw new Error(`Unable to find StakePool account at ${address}`)
     }
-    return StakePool.fromAccountInfo(accountInfo, 0)[0];
+    return StakePool.fromAccountInfo(accountInfo, 0)[0]
   }
 
   /**
@@ -121,10 +115,10 @@ export class StakePool implements StakePoolArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
+      'stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6'
     )
   ) {
-    return beetSolana.GpaBuilder.fromStruct(programId, stakePoolBeet);
+    return beetSolana.GpaBuilder.fromStruct(programId, stakePoolBeet)
   }
 
   /**
@@ -132,7 +126,7 @@ export class StakePool implements StakePoolArgs {
    * @returns a tuple of the account data and the offset up to which the buffer was read to obtain it.
    */
   static deserialize(buf: Buffer, offset = 0): [StakePool, number] {
-    return stakePoolBeet.deserialize(buf, offset);
+    return stakePoolBeet.deserialize(buf, offset)
   }
 
   /**
@@ -143,7 +137,7 @@ export class StakePool implements StakePoolArgs {
     return stakePoolBeet.serialize({
       accountDiscriminator: stakePoolDiscriminator,
       ...this,
-    });
+    })
   }
 
   /**
@@ -154,11 +148,11 @@ export class StakePool implements StakePoolArgs {
    * depends on them
    */
   static byteSize(args: StakePoolArgs) {
-    const instance = StakePool.fromArgs(args);
+    const instance = StakePool.fromArgs(args)
     return stakePoolBeet.toFixedFromValue({
       accountDiscriminator: stakePoolDiscriminator,
       ...instance,
-    }).byteSize;
+    }).byteSize
   }
 
   /**
@@ -177,7 +171,7 @@ export class StakePool implements StakePoolArgs {
     return connection.getMinimumBalanceForRentExemption(
       StakePool.byteSize(args),
       commitment
-    );
+    )
   }
 
   /**
@@ -188,22 +182,20 @@ export class StakePool implements StakePoolArgs {
     return {
       bump: this.bump,
       identifier: (() => {
-        const x = <{ toNumber: () => number }>this.identifier;
-        if (typeof x.toNumber === "function") {
+        const x = <{ toNumber: () => number }>this.identifier
+        if (typeof x.toNumber === 'function') {
           try {
-            return x.toNumber();
+            return x.toNumber()
           } catch (_) {
-            return x;
+            return x
           }
         }
-        return x;
+        return x
       })(),
       authority: this.authority.toBase58(),
       requiresCreators: this.requiresCreators,
       requiresCollections: this.requiresCollections,
       requiresAuthorization: this.requiresAuthorization,
-      overlayText: this.overlayText,
-      imageUri: this.imageUri,
       resetOnStake: this.resetOnStake,
       totalStaked: this.totalStaked,
       cooldownSeconds: this.cooldownSeconds,
@@ -212,7 +204,7 @@ export class StakePool implements StakePoolArgs {
       paymentAmount: this.paymentAmount,
       paymentMint: this.paymentMint,
       paymentManager: this.paymentManager,
-    };
+    }
   }
 }
 
@@ -223,28 +215,26 @@ export class StakePool implements StakePoolArgs {
 export const stakePoolBeet = new beet.FixableBeetStruct<
   StakePool,
   StakePoolArgs & {
-    accountDiscriminator: number[] /* size: 8 */;
+    accountDiscriminator: number[] /* size: 8 */
   }
 >(
   [
-    ["accountDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)],
-    ["bump", beet.u8],
-    ["identifier", beet.u64],
-    ["authority", beetSolana.publicKey],
-    ["requiresCreators", beet.array(beetSolana.publicKey)],
-    ["requiresCollections", beet.array(beetSolana.publicKey)],
-    ["requiresAuthorization", beet.bool],
-    ["overlayText", beet.utf8String],
-    ["imageUri", beet.utf8String],
-    ["resetOnStake", beet.bool],
-    ["totalStaked", beet.u32],
-    ["cooldownSeconds", beet.coption(beet.u32)],
-    ["minStakeSeconds", beet.coption(beet.u32)],
-    ["endDate", beet.coption(beet.i64)],
-    ["paymentAmount", beet.coption(beet.u64)],
-    ["paymentMint", beet.coption(beetSolana.publicKey)],
-    ["paymentManager", beet.coption(beetSolana.publicKey)],
+    ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['bump', beet.u8],
+    ['identifier', beet.u64],
+    ['authority', beetSolana.publicKey],
+    ['requiresCreators', beet.array(beetSolana.publicKey)],
+    ['requiresCollections', beet.array(beetSolana.publicKey)],
+    ['requiresAuthorization', beet.bool],
+    ['resetOnStake', beet.bool],
+    ['totalStaked', beet.u32],
+    ['cooldownSeconds', beet.coption(beet.u32)],
+    ['minStakeSeconds', beet.coption(beet.u32)],
+    ['endDate', beet.coption(beet.i64)],
+    ['paymentAmount', beet.coption(beet.u64)],
+    ['paymentMint', beet.coption(beetSolana.publicKey)],
+    ['paymentManager', beet.coption(beetSolana.publicKey)],
   ],
   StakePool.fromArgs,
-  "StakePool"
-);
+  'StakePool'
+)

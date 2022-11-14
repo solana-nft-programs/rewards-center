@@ -5,9 +5,9 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as splToken from "@solana/spl-token";
-import * as web3 from "@solana/web3.js";
+import * as splToken from '@solana/spl-token'
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -15,11 +15,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const claimRewardsStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "ClaimRewardsInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'ClaimRewardsInstructionArgs'
+)
 /**
  * Accounts required by the _claimRewards_ instruction
  *
@@ -36,21 +36,21 @@ export const claimRewardsStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type ClaimRewardsInstructionAccounts = {
-  rewardEntry: web3.PublicKey;
-  rewardDistributor: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  stakePool: web3.PublicKey;
-  rewardMint: web3.PublicKey;
-  userRewardMintTokenAccount: web3.PublicKey;
-  rewardManager: web3.PublicKey;
-  user: web3.PublicKey;
-  tokenProgram?: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  rewardEntry: web3.PublicKey
+  rewardDistributor: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  stakePool: web3.PublicKey
+  rewardMint: web3.PublicKey
+  userRewardMintTokenAccount: web3.PublicKey
+  rewardManager: web3.PublicKey
+  user: web3.PublicKey
+  tokenProgram?: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const claimRewardsInstructionDiscriminator = [
   4, 144, 132, 71, 116, 23, 151, 80,
-];
+]
 
 /**
  * Creates a _ClaimRewards_ instruction.
@@ -62,11 +62,11 @@ export const claimRewardsInstructionDiscriminator = [
  */
 export function createClaimRewardsInstruction(
   accounts: ClaimRewardsInstructionAccounts,
-  programId = new web3.PublicKey("rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA")
+  programId = new web3.PublicKey('rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA')
 ) {
   const [data] = claimRewardsStruct.serialize({
     instructionDiscriminator: claimRewardsInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardEntry,
@@ -118,12 +118,12 @@ export function createClaimRewardsInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }

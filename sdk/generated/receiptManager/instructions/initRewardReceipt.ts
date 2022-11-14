@@ -5,8 +5,8 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from "@metaplex-foundation/beet";
-import * as web3 from "@solana/web3.js";
+import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
@@ -14,11 +14,11 @@ import * as web3 from "@solana/web3.js";
  * @category generated
  */
 export const initRewardReceiptStruct = new beet.BeetArgsStruct<{
-  instructionDiscriminator: number[] /* size: 8 */;
+  instructionDiscriminator: number[] /* size: 8 */
 }>(
-  [["instructionDiscriminator", beet.uniformFixedSizeArray(beet.u8, 8)]],
-  "InitRewardReceiptInstructionArgs"
-);
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'InitRewardReceiptInstructionArgs'
+)
 /**
  * Accounts required by the _initRewardReceipt_ instruction
  *
@@ -32,17 +32,17 @@ export const initRewardReceiptStruct = new beet.BeetArgsStruct<{
  * @category generated
  */
 export type InitRewardReceiptInstructionAccounts = {
-  rewardReceipt: web3.PublicKey;
-  receiptManager: web3.PublicKey;
-  receiptEntry: web3.PublicKey;
-  stakeEntry: web3.PublicKey;
-  payer: web3.PublicKey;
-  systemProgram?: web3.PublicKey;
-};
+  rewardReceipt: web3.PublicKey
+  receiptManager: web3.PublicKey
+  receiptEntry: web3.PublicKey
+  stakeEntry: web3.PublicKey
+  payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
+}
 
 export const initRewardReceiptInstructionDiscriminator = [
   107, 148, 66, 165, 24, 246, 30, 120,
-];
+]
 
 /**
  * Creates a _InitRewardReceipt_ instruction.
@@ -54,11 +54,11 @@ export const initRewardReceiptInstructionDiscriminator = [
  */
 export function createInitRewardReceiptInstruction(
   accounts: InitRewardReceiptInstructionAccounts,
-  programId = new web3.PublicKey("rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp")
+  programId = new web3.PublicKey('rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp')
 ) {
   const [data] = initRewardReceiptStruct.serialize({
     instructionDiscriminator: initRewardReceiptInstructionDiscriminator,
-  });
+  })
   const keys: web3.AccountMeta[] = [
     {
       pubkey: accounts.rewardReceipt,
@@ -90,12 +90,12 @@ export function createInitRewardReceiptInstruction(
       isWritable: false,
       isSigner: false,
     },
-  ];
+  ]
 
   const ix = new web3.TransactionInstruction({
     programId,
     keys,
     data,
-  });
-  return ix;
+  })
+  return ix
 }
