@@ -2,6 +2,17 @@ use crate::errors::ErrorCode;
 use anchor_lang::prelude::*;
 use std::{collections::HashMap, str::FromStr};
 
+pub const USER_ESCROW_PREFIX: &str = "escrow";
+#[inline]
+pub fn get_escrow_seeds(user: &Pubkey, expected_key: &Pubkey) -> Result<Vec<Vec<u8>>> {
+    let seeds = vec![USER_ESCROW_PREFIX.as_bytes().as_ref().to_vec(), user.as_ref().to_vec()];
+    let (key, _bump) = Pubkey::find_program_address(&seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>(), &crate::id());
+    if key != *expected_key {
+        return Err(error!(ErrorCode::InvalidEscrow));
+    }
+    Ok(seeds)
+}
+
 pub const STAKE_ENTRY_PREFIX: &str = "stake-entry";
 pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
 

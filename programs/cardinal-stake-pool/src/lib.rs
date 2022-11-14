@@ -10,14 +10,6 @@ declare_id!("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6");
 pub mod cardinal_stake_pool {
     use super::*;
 
-    pub fn stake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
-        stake::handler(ctx, amount)
-    }
-
-    pub fn unstake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCtx<'info>>) -> Result<()> {
-        unstake::handler(ctx)
-    }
-
     //// stake_entry ////
     pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
         stake_entry::init_entry::handler(ctx, user)
@@ -76,5 +68,14 @@ pub mod cardinal_stake_pool {
 
     pub fn close_stake_booster(ctx: Context<CloseStakeBoosterCtx>) -> Result<()> {
         stake_booster::close_stake_booster::handler(ctx)
+    }
+
+    //// editions ////
+    pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
+        editions::stake_edition::handler(ctx, amount)
+    }
+
+    pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCtx<'info>>) -> Result<()> {
+        editions::unstake_edition::handler(ctx)
     }
 }

@@ -64,6 +64,8 @@ pub enum ErrorCode {
     InvalidPaymentMintTokenAccount,
     #[msg("Cannot update unstaked entry")]
     CannotUpdateUnstakedEntry,
+    #[msg("Mismatched user and escrow")]
+    InvalidEscrow,
     // boost errors
     #[msg("Cannot boost unstaked token")]
     CannotBoostUnstakedToken,

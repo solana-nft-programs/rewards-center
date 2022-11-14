@@ -3,7 +3,7 @@ use cardinal_payment_manager::program::CardinalPaymentManager;
 use mpl_token_metadata::instruction::freeze_delegated_account;
 use solana_program::program::invoke_signed;
 
-use super::update_total_stake_seconds::increment_total_stake_seconds;
+use crate::instructions::stake_entry::increment_total_stake_seconds;
 
 use {
     crate::{errors::ErrorCode, state::*},
@@ -19,13 +19,6 @@ pub struct StakeCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
 
-    // stake_entry token accounts
-    #[account(mut, constraint =
-        stake_entry_stake_mint_token_account.mint == stake_entry.stake_mint
-        && stake_entry_stake_mint_token_account.owner == stake_entry.key()
-        @ ErrorCode::InvalidStakeEntryOriginalMintTokenAccount
-    )]
-    stake_entry_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     stake_mint_edition: UncheckedAccount<'info>,
@@ -33,6 +26,8 @@ pub struct StakeCtx<'info> {
     // user
     #[account(mut)]
     user: Signer<'info>,
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    user_escrow: UncheckedAccount<'info>,
     #[account(mut, constraint =
         user_stake_mint_token_account.amount > 0
         && user_stake_mint_token_account.mint == stake_entry.stake_mint
@@ -52,67 +47,39 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     let stake_entry = &mut ctx.accounts.stake_entry;
 
     let user = ctx.accounts.user.key();
-    let stake_pool_key = stake_pool.key();
-    let stake_mint = ctx.accounts.stake_mint.key();
-    let seed = get_stake_seed(ctx.accounts.stake_mint.supply, user);
-    let stake_entry_seed = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool_key.as_ref(), stake_mint.as_ref(), seed.as_ref(), &[stake_entry.bump]];
-    let stake_entry_signer = &[&stake_entry_seed[..]];
+    let user_escrow = ctx.accounts.user_escrow.key();
+    let escrow_seeds = get_escrow_seeds(&user, &user_escrow)?;
+    let escrow_signer = &escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>();
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
     }
 
-    if stake_entry.amount != 0 {
-        increment_total_stake_seconds(stake_entry)?;
-        stake_entry.cooldown_start_seconds = None;
-    }
+    let cpi_accounts = Approve {
+        to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
+        delegate: stake_entry.to_account_info(),
+        authority: ctx.accounts.user.to_account_info(),
+    };
+    let cpi_program = ctx.accounts.token_program.to_account_info();
+    let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
+    token::approve(cpi_context, amount)?;
 
-    if ctx.accounts.stake_mint.supply == 1
-        && ctx.accounts.stake_mint.freeze_authority.is_some()
-        && ctx.accounts.stake_mint.freeze_authority.expect("Invalid freze authority").eq(&ctx.accounts.stake_mint_edition.key())
-    {
-        let cpi_accounts = Approve {
-            to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
-            delegate: stake_entry.to_account_info(),
-            authority: ctx.accounts.user.to_account_info(),
-        };
-        let cpi_program = ctx.accounts.token_program.to_account_info();
-        let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-        token::approve(cpi_context, amount)?;
-
-        invoke_signed(
-            &freeze_delegated_account(
-                ctx.accounts.token_metadata_program.key(),
-                stake_entry.key(),
-                ctx.accounts.user_stake_mint_token_account.key(),
-                ctx.accounts.stake_mint_edition.key(),
-                ctx.accounts.stake_mint.key(),
-            ),
-            &[
-                stake_entry.to_account_info(),
-                ctx.accounts.user_stake_mint_token_account.to_account_info(),
-                ctx.accounts.stake_mint_edition.to_account_info(),
-                ctx.accounts.stake_mint.to_account_info(),
-            ],
-            stake_entry_signer,
-        )?;
-    } else {
-        let cpi_accounts = token::Transfer {
-            from: ctx.accounts.user_stake_mint_token_account.to_account_info(),
-            to: ctx.accounts.stake_entry_stake_mint_token_account.to_account_info(),
-            authority: ctx.accounts.user.to_account_info(),
-        };
-        let cpi_program = ctx.accounts.token_program.to_account_info();
-        let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-        token::transfer(cpi_context, amount)?;
-    }
-
-    // update stake entry
-    stake_entry.last_staker = ctx.accounts.user.key();
-    stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
-    stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
-    stake_entry.amount = stake_entry.amount.checked_add(amount).unwrap();
-    stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
+    invoke_signed(
+        &freeze_delegated_account(
+            ctx.accounts.token_metadata_program.key(),
+            user_escrow.key(),
+            ctx.accounts.user_stake_mint_token_account.key(),
+            ctx.accounts.stake_mint_edition.key(),
+            ctx.accounts.stake_mint.key(),
+        ),
+        &[
+            ctx.accounts.user_escrow.to_account_info(),
+            ctx.accounts.user_stake_mint_token_account.to_account_info(),
+            ctx.accounts.stake_mint_edition.to_account_info(),
+            ctx.accounts.stake_mint.to_account_info(),
+        ],
+        &[escrow_signer],
+    )?;
 
     // handle payment
     if let Some(payment_mint) = stake_pool.payment_mint {
@@ -143,6 +110,17 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         let cpi_ctx = CpiContext::new(cardinal_payment_manager.to_account_info(), cpi_accounts);
         cardinal_payment_manager::cpi::manage_payment(cpi_ctx, payment_amount)?;
     }
+
+    // update stake entry
+    if stake_entry.amount != 0 {
+        increment_total_stake_seconds(stake_entry)?;
+        stake_entry.cooldown_start_seconds = None;
+    }
+    stake_entry.last_staker = ctx.accounts.user.key();
+    stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
+    stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
+    stake_entry.amount = stake_entry.amount.checked_add(amount).unwrap();
+    stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
 
     Ok(())
 }
