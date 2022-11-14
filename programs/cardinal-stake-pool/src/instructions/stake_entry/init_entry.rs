@@ -49,6 +49,7 @@ pub fn handler(ctx: Context<InitEntryCtx>, _user: Pubkey) -> Result<()> {
             ctx.accounts.original_mint.key().as_ref(),
         ],
     )?;
+
     // check allowlist
     if !stake_pool.requires_creators.is_empty() || !stake_pool.requires_collections.is_empty() || stake_pool.requires_authorization {
         let mut allowed = false;

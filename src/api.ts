@@ -16,7 +16,6 @@ import { ReceiptType } from "./programs/stakePool";
 import { getStakeEntry, getStakePool } from "./programs/stakePool/accounts";
 import {
   withAuthorizeStakeEntry,
-  withClaimReceiptMint,
   withInitStakeEntry,
   withInitStakeMint,
   withInitStakePool,
@@ -382,19 +381,6 @@ export const stake = async (
       stakeEntryData?.parsed.originalMintClaimed
     ) {
       throw new Error("Receipt has already been claimed.");
-    }
-
-    if (
-      !stakeEntryData?.parsed ||
-      stakeEntryData.parsed.amount.toNumber() === 0
-    ) {
-      await withClaimReceiptMint(transaction, connection, wallet, {
-        stakePoolId: params.stakePoolId,
-        stakeEntryId: stakeEntryId,
-        originalMintId: params.originalMintId,
-        receiptMintId: receiptMintId,
-        receiptType: params.receiptType,
-      });
     }
   }
 

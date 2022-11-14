@@ -10,28 +10,8 @@ declare_id!("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6");
 pub mod cardinal_stake_pool {
     use super::*;
 
-    pub fn init_identifier(ctx: Context<InitIdentifierCtx>) -> Result<()> {
-        init_identifier::handler(ctx)
-    }
-
-    pub fn init_pool(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
-        init_pool::handler(ctx, ix)
-    }
-
-    pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
-        init_entry::handler(ctx, user)
-    }
-
     pub fn init_stake_mint(ctx: Context<InitStakeMintCtx>, ix: InitStakeMintIx) -> Result<()> {
         init_stake_mint::handler(ctx, ix)
-    }
-
-    pub fn authorize_mint(ctx: Context<AuthorizeMintCtx>, mint: Pubkey) -> Result<()> {
-        authorize_mint::handler(ctx, mint)
-    }
-
-    pub fn deauthorize_mint(ctx: Context<DeauthorizeMintCtx>) -> Result<()> {
-        deauthorize_mint::handler(ctx)
     }
 
     pub fn stake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCtx<'info>>, amount: u64) -> Result<()> {
@@ -46,10 +26,6 @@ pub mod cardinal_stake_pool {
         unstake::handler(ctx)
     }
 
-    pub fn update_pool(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
-        update_pool::handler(ctx, ix)
-    }
-
     pub fn update_total_stake_seconds(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
         update_total_stake_seconds::handler(ctx)
     }
@@ -58,20 +34,43 @@ pub mod cardinal_stake_pool {
         return_receipt_mint::handler(ctx)
     }
 
-    pub fn close_stake_pool(ctx: Context<CloseStakePoolCtx>) -> Result<()> {
-        close_stake_pool::handler(ctx)
-    }
-
-    pub fn close_stake_entry(ctx: Context<CloseStakeEntryCtx>) -> Result<()> {
-        close_stake_entry::handler(ctx)
-    }
-
-    pub fn stake_pool_fill_zeros(ctx: Context<StakePoolFillZeros>) -> Result<()> {
-        stake_pool_fill_zeros::handler(ctx)
+    //// stake_entry ////
+    pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
+        stake_entry::init_entry::handler(ctx, user)
     }
 
     pub fn reasssign_stake_entry(ctx: Context<ReassignStakeEntryCtx>, ix: ReassignStakeEntryIx) -> Result<()> {
-        reassign_stake_entry::handler(ctx, ix)
+        stake_entry::reassign_stake_entry::handler(ctx, ix)
+    }
+
+    pub fn close_stake_entry(ctx: Context<CloseStakeEntryCtx>) -> Result<()> {
+        stake_entry::close_stake_entry::handler(ctx)
+    }
+
+    //// stake_pool ////
+    pub fn init_identifier(ctx: Context<InitIdentifierCtx>) -> Result<()> {
+        stake_pool::init_identifier::handler(ctx)
+    }
+
+    pub fn init_pool(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
+        stake_pool::init_pool::handler(ctx, ix)
+    }
+
+    pub fn update_pool(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
+        stake_pool::update_pool::handler(ctx, ix)
+    }
+
+    pub fn close_stake_pool(ctx: Context<CloseStakePoolCtx>) -> Result<()> {
+        stake_pool::close_stake_pool::handler(ctx)
+    }
+
+    //// authorization ////
+    pub fn authorize_mint(ctx: Context<AuthorizeMintCtx>, mint: Pubkey) -> Result<()> {
+        authorization::authorize_mint::handler(ctx, mint)
+    }
+
+    pub fn deauthorize_mint(ctx: Context<DeauthorizeMintCtx>) -> Result<()> {
+        authorization::deauthorize_mint::handler(ctx)
     }
 
     //// stake_booster ////
