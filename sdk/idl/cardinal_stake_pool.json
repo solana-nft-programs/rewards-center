@@ -16,17 +16,17 @@
           "isSigner": false
         },
         {
-          "name": "stakeEntryOriginalMintTokenAccount",
+          "name": "stakeEntryStakeMintTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "originalMint",
+          "name": "stakeMint",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "originalMintEdition",
+          "name": "stakeMintEdition",
           "isMut": false,
           "isSigner": false
         },
@@ -36,7 +36,7 @@
           "isSigner": true
         },
         {
-          "name": "userOriginalMintTokenAccount",
+          "name": "userStakeMintTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -72,17 +72,17 @@
           "isSigner": false
         },
         {
-          "name": "originalMint",
+          "name": "stakeMint",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "originalMintEdition",
+          "name": "stakeMintEdition",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "stakeEntryOriginalMintTokenAccount",
+          "name": "stakeEntryStakeMintTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -92,7 +92,7 @@
           "isSigner": true
         },
         {
-          "name": "userOriginalMintTokenAccount",
+          "name": "userStakeMintTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -139,12 +139,12 @@
           "isSigner": false
         },
         {
-          "name": "originalMint",
+          "name": "stakeMint",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "originalMintMetadata",
+          "name": "stakeMintMetadata",
           "isMut": false,
           "isSigner": false
         },
@@ -445,7 +445,7 @@
           "isSigner": false
         },
         {
-          "name": "originalMint",
+          "name": "stakeMint",
           "isMut": false,
           "isSigner": false
         },
@@ -540,7 +540,7 @@
             "type": "u64"
           },
           {
-            "name": "mint",
+            "name": "stakeMint",
             "type": "publicKey"
           },
           {
@@ -558,12 +558,6 @@
           {
             "name": "kind",
             "type": "u8"
-          },
-          {
-            "name": "stakeMint",
-            "type": {
-              "option": "publicKey"
-            }
           },
           {
             "name": "cooldownStartSeconds",

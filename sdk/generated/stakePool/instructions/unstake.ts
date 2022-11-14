@@ -25,11 +25,11 @@ export const unstakeStruct = new beet.BeetArgsStruct<{
  *
  * @property [_writable_] stakePool
  * @property [_writable_] stakeEntry
- * @property [] originalMint
- * @property [] originalMintEdition
- * @property [_writable_] stakeEntryOriginalMintTokenAccount
+ * @property [] stakeMint
+ * @property [] stakeMintEdition
+ * @property [_writable_] stakeEntryStakeMintTokenAccount
  * @property [_writable_, **signer**] user
- * @property [_writable_] userOriginalMintTokenAccount
+ * @property [_writable_] userStakeMintTokenAccount
  * @property [] tokenMetadataProgram
  * @category Instructions
  * @category Unstake
@@ -38,11 +38,11 @@ export const unstakeStruct = new beet.BeetArgsStruct<{
 export type UnstakeInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
-  originalMint: web3.PublicKey
-  originalMintEdition: web3.PublicKey
-  stakeEntryOriginalMintTokenAccount: web3.PublicKey
+  stakeMint: web3.PublicKey
+  stakeMintEdition: web3.PublicKey
+  stakeEntryStakeMintTokenAccount: web3.PublicKey
   user: web3.PublicKey
-  userOriginalMintTokenAccount: web3.PublicKey
+  userStakeMintTokenAccount: web3.PublicKey
   tokenMetadataProgram: web3.PublicKey
   tokenProgram?: web3.PublicKey
 }
@@ -78,17 +78,17 @@ export function createUnstakeInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.originalMint,
+      pubkey: accounts.stakeMint,
       isWritable: false,
       isSigner: false,
     },
     {
-      pubkey: accounts.originalMintEdition,
+      pubkey: accounts.stakeMintEdition,
       isWritable: false,
       isSigner: false,
     },
     {
-      pubkey: accounts.stakeEntryOriginalMintTokenAccount,
+      pubkey: accounts.stakeEntryStakeMintTokenAccount,
       isWritable: true,
       isSigner: false,
     },
@@ -98,7 +98,7 @@ export function createUnstakeInstruction(
       isSigner: true,
     },
     {
-      pubkey: accounts.userOriginalMintTokenAccount,
+      pubkey: accounts.userStakeMintTokenAccount,
       isWritable: true,
       isSigner: false,
     },

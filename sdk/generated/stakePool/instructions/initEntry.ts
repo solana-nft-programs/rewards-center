@@ -38,8 +38,8 @@ export const initEntryStruct = new beet.BeetArgsStruct<
  *
  * @property [_writable_] stakeEntry
  * @property [_writable_] stakePool
- * @property [] originalMint
- * @property [] originalMintMetadata
+ * @property [] stakeMint
+ * @property [] stakeMintMetadata
  * @property [_writable_, **signer**] payer
  * @category Instructions
  * @category InitEntry
@@ -48,8 +48,8 @@ export const initEntryStruct = new beet.BeetArgsStruct<
 export type InitEntryInstructionAccounts = {
   stakeEntry: web3.PublicKey
   stakePool: web3.PublicKey
-  originalMint: web3.PublicKey
-  originalMintMetadata: web3.PublicKey
+  stakeMint: web3.PublicKey
+  stakeMintMetadata: web3.PublicKey
   payer: web3.PublicKey
   systemProgram?: web3.PublicKey
 }
@@ -89,12 +89,12 @@ export function createInitEntryInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.originalMint,
+      pubkey: accounts.stakeMint,
       isWritable: false,
       isSigner: false,
     },
     {
-      pubkey: accounts.originalMintMetadata,
+      pubkey: accounts.stakeMintMetadata,
       isWritable: false,
       isSigner: false,
     },

@@ -18,8 +18,8 @@ pub struct BoostStakeEntryCtx<'info> {
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakeEntry)]
     stake_entry: Box<Account<'info, StakeEntry>>,
-    #[account(constraint = stake_entry.original_mint == original_mint.key() @ ErrorCode::InvalidStakePool)]
-    original_mint: Box<Account<'info, Mint>>,
+    #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakePool)]
+    stake_mint: Box<Account<'info, Mint>>,
 
     #[account(mut, constraint =
         payer_token_account.owner == payer.key()
@@ -53,7 +53,7 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         return Err(error!(ErrorCode::CannotBoostUnstakedToken));
     }
 
-    if ctx.accounts.original_mint.supply > 1 || stake_entry.amount > 1 {
+    if ctx.accounts.stake_mint.supply > 1 || stake_entry.amount > 1 {
         return Err(error!(ErrorCode::CannotBoostUnstakedToken));
     }
 

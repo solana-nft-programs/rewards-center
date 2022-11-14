@@ -16,27 +16,27 @@ pub struct UnstakeCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
-    original_mint: Box<Account<'info, Mint>>,
+    stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
-    original_mint_edition: UncheckedAccount<'info>,
+    stake_mint_edition: UncheckedAccount<'info>,
 
     // stake_entry token accounts
     #[account(mut, constraint =
-        (stake_entry_original_mint_token_account.amount > 0 || stake_pool.cooldown_seconds.is_some() || stake_pool.min_stake_seconds.is_some())
-        && stake_entry_original_mint_token_account.mint == stake_entry.original_mint
-        && stake_entry_original_mint_token_account.owner == stake_entry.key()
+        (stake_entry_stake_mint_token_account.amount > 0 || stake_pool.cooldown_seconds.is_some() || stake_pool.min_stake_seconds.is_some())
+        && stake_entry_stake_mint_token_account.mint == stake_entry.stake_mint
+        && stake_entry_stake_mint_token_account.owner == stake_entry.key()
         @ ErrorCode::InvalidStakeEntryOriginalMintTokenAccount)]
-    stake_entry_original_mint_token_account: Box<Account<'info, TokenAccount>>,
+    stake_entry_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     // user
     #[account(mut, constraint = user.key() == stake_entry.last_staker @ ErrorCode::InvalidUnstakeUser)]
     user: Signer<'info>,
     #[account(mut, constraint =
-        user_original_mint_token_account.mint == stake_entry.original_mint
-        && user_original_mint_token_account.owner == user.key()
+        user_stake_mint_token_account.mint == stake_entry.stake_mint
+        && user_stake_mint_token_account.owner == user.key()
         @ ErrorCode::InvalidUserOriginalMintTokenAccount
     )]
-    user_original_mint_token_account: Box<Account<'info, TokenAccount>>,
+    user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = mpl_token_metadata::id())]
@@ -48,12 +48,12 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
 
-    let original_mint = stake_entry.original_mint;
+    let stake_mint = stake_entry.stake_mint;
     let user = ctx.accounts.user.key();
     let stake_pool_key = stake_pool.key();
-    let seed = get_stake_seed(ctx.accounts.original_mint.supply, user);
+    let seed = get_stake_seed(ctx.accounts.stake_mint.supply, user);
 
-    let stake_entry_seed = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool_key.as_ref(), original_mint.as_ref(), seed.as_ref(), &[stake_entry.bump]];
+    let stake_entry_seed = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool_key.as_ref(), stake_mint.as_ref(), seed.as_ref(), &[stake_entry.bump]];
     let stake_entry_signer = &[&stake_entry_seed[..]];
 
     if stake_pool.min_stake_seconds.is_some()
@@ -72,47 +72,29 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         }
     }
 
-    // If receipt has been minted, ensure it is back in the stake_entry
-    if stake_entry.stake_mint.is_some() {
-        let remaining_accs = &mut ctx.remaining_accounts.iter();
-        let stake_entry_receipt_mint_token_account_info = next_account_info(remaining_accs)?;
-        let stake_entry_receipt_mint_token_account = Account::<TokenAccount>::try_from(stake_entry_receipt_mint_token_account_info)?;
-        if stake_entry_receipt_mint_token_account.mint != stake_entry.stake_mint.unwrap()
-            || stake_entry_receipt_mint_token_account.owner != stake_entry.key()
-            || stake_entry_receipt_mint_token_account.amount == 0
-        {
-            return Err(error!(ErrorCode::InvalidStakeEntryStakeTokenAccount));
-        }
-    }
-
-    if ctx.accounts.original_mint.supply == 1
-        && ctx.accounts.original_mint.freeze_authority.is_some()
-        && ctx
-            .accounts
-            .original_mint
-            .freeze_authority
-            .expect("Invalid freze authority")
-            .eq(&ctx.accounts.original_mint_edition.key())
+    if ctx.accounts.stake_mint.supply == 1
+        && ctx.accounts.stake_mint.freeze_authority.is_some()
+        && ctx.accounts.stake_mint.freeze_authority.expect("Invalid freze authority").eq(&ctx.accounts.stake_mint_edition.key())
     {
         invoke_signed(
             &thaw_delegated_account(
                 ctx.accounts.token_metadata_program.key(),
                 stake_entry.key(),
-                ctx.accounts.user_original_mint_token_account.key(),
-                ctx.accounts.original_mint_edition.key(),
-                ctx.accounts.original_mint.key(),
+                ctx.accounts.user_stake_mint_token_account.key(),
+                ctx.accounts.stake_mint_edition.key(),
+                ctx.accounts.stake_mint.key(),
             ),
             &[
                 stake_entry.to_account_info(),
-                ctx.accounts.user_original_mint_token_account.to_account_info(),
-                ctx.accounts.original_mint_edition.to_account_info(),
-                ctx.accounts.original_mint.to_account_info(),
+                ctx.accounts.user_stake_mint_token_account.to_account_info(),
+                ctx.accounts.stake_mint_edition.to_account_info(),
+                ctx.accounts.stake_mint.to_account_info(),
             ],
             stake_entry_signer,
         )?;
 
         let cpi_accounts = Revoke {
-            source: ctx.accounts.user_original_mint_token_account.to_account_info(),
+            source: ctx.accounts.user_stake_mint_token_account.to_account_info(),
             authority: ctx.accounts.user.to_account_info(),
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
@@ -120,8 +102,8 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         token::revoke(cpi_context)?;
     } else {
         let cpi_accounts = token::Transfer {
-            from: ctx.accounts.stake_entry_original_mint_token_account.to_account_info(),
-            to: ctx.accounts.user_original_mint_token_account.to_account_info(),
+            from: ctx.accounts.stake_entry_stake_mint_token_account.to_account_info(),
+            to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
             authority: stake_entry.to_account_info(),
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();

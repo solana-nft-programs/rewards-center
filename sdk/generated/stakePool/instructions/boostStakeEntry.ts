@@ -43,7 +43,7 @@ export const boostStakeEntryStruct = new beet.BeetArgsStruct<
  * @property [_writable_] stakeBooster
  * @property [_writable_] stakePool
  * @property [_writable_] stakeEntry
- * @property [] originalMint
+ * @property [] stakeMint
  * @property [_writable_] payerTokenAccount
  * @property [_writable_] paymentRecipientTokenAccount
  * @property [_writable_, **signer**] payer
@@ -58,7 +58,7 @@ export type BoostStakeEntryInstructionAccounts = {
   stakeBooster: web3.PublicKey
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
-  originalMint: web3.PublicKey
+  stakeMint: web3.PublicKey
   payerTokenAccount: web3.PublicKey
   paymentRecipientTokenAccount: web3.PublicKey
   payer: web3.PublicKey
@@ -109,7 +109,7 @@ export function createBoostStakeEntryInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.originalMint,
+      pubkey: accounts.stakeMint,
       isWritable: false,
       isSigner: false,
     },

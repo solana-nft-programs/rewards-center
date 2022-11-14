@@ -11,7 +11,7 @@ use {
 
 #[derive(Accounts)]
 pub struct StakeCtx<'info> {
-    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.original_mint.as_ref(), get_stake_seed(original_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
+    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), get_stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
@@ -19,25 +19,25 @@ pub struct StakeCtx<'info> {
 
     // stake_entry token accounts
     #[account(mut, constraint =
-        stake_entry_original_mint_token_account.mint == stake_entry.original_mint
-        && stake_entry_original_mint_token_account.owner == stake_entry.key()
+        stake_entry_stake_mint_token_account.mint == stake_entry.stake_mint
+        && stake_entry_stake_mint_token_account.owner == stake_entry.key()
         @ ErrorCode::InvalidStakeEntryOriginalMintTokenAccount
     )]
-    stake_entry_original_mint_token_account: Box<Account<'info, TokenAccount>>,
-    original_mint: Box<Account<'info, Mint>>,
+    stake_entry_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
+    stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
-    original_mint_edition: UncheckedAccount<'info>,
+    stake_mint_edition: UncheckedAccount<'info>,
 
     // user
     #[account(mut)]
     user: Signer<'info>,
     #[account(mut, constraint =
-        user_original_mint_token_account.amount > 0
-        && user_original_mint_token_account.mint == stake_entry.original_mint
-        && user_original_mint_token_account.owner == user.key()
+        user_stake_mint_token_account.amount > 0
+        && user_stake_mint_token_account.mint == stake_entry.stake_mint
+        && user_stake_mint_token_account.owner == user.key()
         @ ErrorCode::InvalidUserOriginalMintTokenAccount
     )]
-    user_original_mint_token_account: Box<Account<'info, TokenAccount>>,
+    user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = mpl_token_metadata::id())]
@@ -51,9 +51,9 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let stake_pool_key = stake_pool.key();
-    let original_mint = ctx.accounts.original_mint.key();
-    let seed = get_stake_seed(ctx.accounts.original_mint.supply, user);
-    let stake_entry_seed = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool_key.as_ref(), original_mint.as_ref(), seed.as_ref(), &[stake_entry.bump]];
+    let stake_mint = ctx.accounts.stake_mint.key();
+    let seed = get_stake_seed(ctx.accounts.stake_mint.supply, user);
+    let stake_entry_seed = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool_key.as_ref(), stake_mint.as_ref(), seed.as_ref(), &[stake_entry.bump]];
     let stake_entry_signer = &[&stake_entry_seed[..]];
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
@@ -71,17 +71,12 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         stake_entry.cooldown_start_seconds = None;
     }
 
-    if ctx.accounts.original_mint.supply == 1
-        && ctx.accounts.original_mint.freeze_authority.is_some()
-        && ctx
-            .accounts
-            .original_mint
-            .freeze_authority
-            .expect("Invalid freze authority")
-            .eq(&ctx.accounts.original_mint_edition.key())
+    if ctx.accounts.stake_mint.supply == 1
+        && ctx.accounts.stake_mint.freeze_authority.is_some()
+        && ctx.accounts.stake_mint.freeze_authority.expect("Invalid freze authority").eq(&ctx.accounts.stake_mint_edition.key())
     {
         let cpi_accounts = Approve {
-            to: ctx.accounts.user_original_mint_token_account.to_account_info(),
+            to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
             delegate: stake_entry.to_account_info(),
             authority: ctx.accounts.user.to_account_info(),
         };
@@ -93,22 +88,22 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
             &freeze_delegated_account(
                 ctx.accounts.token_metadata_program.key(),
                 stake_entry.key(),
-                ctx.accounts.user_original_mint_token_account.key(),
-                ctx.accounts.original_mint_edition.key(),
-                ctx.accounts.original_mint.key(),
+                ctx.accounts.user_stake_mint_token_account.key(),
+                ctx.accounts.stake_mint_edition.key(),
+                ctx.accounts.stake_mint.key(),
             ),
             &[
                 stake_entry.to_account_info(),
-                ctx.accounts.user_original_mint_token_account.to_account_info(),
-                ctx.accounts.original_mint_edition.to_account_info(),
-                ctx.accounts.original_mint.to_account_info(),
+                ctx.accounts.user_stake_mint_token_account.to_account_info(),
+                ctx.accounts.stake_mint_edition.to_account_info(),
+                ctx.accounts.stake_mint.to_account_info(),
             ],
             stake_entry_signer,
         )?;
     } else {
         let cpi_accounts = token::Transfer {
-            from: ctx.accounts.user_original_mint_token_account.to_account_info(),
-            to: ctx.accounts.stake_entry_original_mint_token_account.to_account_info(),
+            from: ctx.accounts.user_stake_mint_token_account.to_account_info(),
+            to: ctx.accounts.stake_entry_stake_mint_token_account.to_account_info(),
             authority: ctx.accounts.user.to_account_info(),
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();

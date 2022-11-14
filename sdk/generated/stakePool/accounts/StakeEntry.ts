@@ -18,12 +18,11 @@ export type StakeEntryArgs = {
   bump: number
   pool: web3.PublicKey
   amount: beet.bignum
-  mint: web3.PublicKey
+  stakeMint: web3.PublicKey
   lastStaker: web3.PublicKey
   lastStakedAt: beet.bignum
   totalStakeSeconds: beet.bignum
   kind: number
-  stakeMint: beet.COption<web3.PublicKey>
   cooldownStartSeconds: beet.COption<beet.bignum>
 }
 
@@ -40,12 +39,11 @@ export class StakeEntry implements StakeEntryArgs {
     readonly bump: number,
     readonly pool: web3.PublicKey,
     readonly amount: beet.bignum,
-    readonly mint: web3.PublicKey,
+    readonly stakeMint: web3.PublicKey,
     readonly lastStaker: web3.PublicKey,
     readonly lastStakedAt: beet.bignum,
     readonly totalStakeSeconds: beet.bignum,
     readonly kind: number,
-    readonly stakeMint: beet.COption<web3.PublicKey>,
     readonly cooldownStartSeconds: beet.COption<beet.bignum>
   ) {}
 
@@ -57,12 +55,11 @@ export class StakeEntry implements StakeEntryArgs {
       args.bump,
       args.pool,
       args.amount,
-      args.mint,
+      args.stakeMint,
       args.lastStaker,
       args.lastStakedAt,
       args.totalStakeSeconds,
       args.kind,
-      args.stakeMint,
       args.cooldownStartSeconds
     )
   }
@@ -181,7 +178,7 @@ export class StakeEntry implements StakeEntryArgs {
         }
         return x
       })(),
-      mint: this.mint.toBase58(),
+      stakeMint: this.stakeMint.toBase58(),
       lastStaker: this.lastStaker.toBase58(),
       lastStakedAt: (() => {
         const x = <{ toNumber: () => number }>this.lastStakedAt
@@ -206,7 +203,6 @@ export class StakeEntry implements StakeEntryArgs {
         return x
       })(),
       kind: this.kind,
-      stakeMint: this.stakeMint,
       cooldownStartSeconds: this.cooldownStartSeconds,
     }
   }
@@ -227,12 +223,11 @@ export const stakeEntryBeet = new beet.FixableBeetStruct<
     ['bump', beet.u8],
     ['pool', beetSolana.publicKey],
     ['amount', beet.u64],
-    ['mint', beetSolana.publicKey],
+    ['stakeMint', beetSolana.publicKey],
     ['lastStaker', beetSolana.publicKey],
     ['lastStakedAt', beet.i64],
     ['totalStakeSeconds', beet.u128],
     ['kind', beet.u8],
-    ['stakeMint', beet.coption(beetSolana.publicKey)],
     ['cooldownStartSeconds', beet.coption(beet.i64)],
   ],
   StakeEntry.fromArgs,
