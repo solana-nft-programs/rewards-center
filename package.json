@@ -32,7 +32,7 @@
     "sdk:generate": "node generate-sdk.js",
     "typecheck": "tsc",
     "lint": "eslint 'sdk/**/*.{js,ts}' --fix",
-    "test": "jest --setupFiles dotenv/config",
+    "test": "jest --setupFiles dotenv/config --detectOpenHandles",
     "docs:generate": "typedoc --excludePrivate --includeVersion --out site/ src/index.ts"
   },
   "dependencies": {
