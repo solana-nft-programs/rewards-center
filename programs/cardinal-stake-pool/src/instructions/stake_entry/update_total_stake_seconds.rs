@@ -12,6 +12,7 @@ pub struct UpdateTotalStakeSecondsCtx<'info> {
 pub fn handler(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
     let stake_entry = &mut ctx.accounts.stake_entry;
 
+    //// FEATURE: Cooldown
     if stake_entry.cooldown_start_seconds.is_some() {
         return Err(error!(ErrorCode::CooldownSecondRemaining));
     }

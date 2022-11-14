@@ -1,10 +1,8 @@
 pub mod stake;
 pub mod unstake;
-pub mod update_total_stake_seconds;
 
 pub use stake::*;
 pub use unstake::*;
-pub use update_total_stake_seconds::*;
 
 // stake_pool
 pub mod stake_pool;
@@ -18,11 +16,13 @@ pub mod stake_entry;
 pub use stake_entry::close_stake_entry::*;
 pub use stake_entry::init_entry::*;
 pub use stake_entry::reassign_stake_entry::*;
+pub use stake_entry::update_total_stake_seconds::*;
 
 // authorization
 pub mod authorization;
 pub use authorization::authorize_mint::*;
 pub use authorization::deauthorize_mint::*;
+
 // stake_booster
 pub mod stake_booster;
 pub use stake_booster::boost_stake_entry::*;
