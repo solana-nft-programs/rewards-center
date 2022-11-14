@@ -8,6 +8,7 @@ pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
 #[account]
 pub struct StakeEntry {
     pub bump: u8,
+    pub kind: u8,
     pub pool: Pubkey,
     pub amount: u64,
     pub stake_mint: Pubkey,
@@ -15,7 +16,6 @@ pub struct StakeEntry {
     pub last_staked_at: i64,
     pub last_updated_at: i64,
     pub total_stake_seconds: u128,
-    pub kind: u8,
     pub cooldown_start_seconds: Option<i64>,
 }
 
@@ -31,7 +31,7 @@ pub struct StakePool {
     pub requires_creators: Vec<Pubkey>,
     pub requires_collections: Vec<Pubkey>,
     pub requires_authorization: bool,
-    pub reset_on_stake: bool,
+    pub reset_on_unstake: bool,
     pub total_staked: u32,
     pub cooldown_seconds: Option<u32>,
     pub min_stake_seconds: Option<u32>,

@@ -6,7 +6,7 @@ pub struct UpdatePoolIx {
     requires_creators: Vec<Pubkey>,
     requires_authorization: bool,
     authority: Pubkey,
-    reset_on_stake: bool,
+    reset_on_unstake: bool,
     cooldown_seconds: Option<u32>,
     min_stake_seconds: Option<u32>,
     end_date: Option<i64>,
@@ -31,7 +31,7 @@ pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
     stake_pool.requires_creators = ix.requires_creators;
     stake_pool.requires_authorization = ix.requires_authorization;
     stake_pool.authority = ix.authority;
-    stake_pool.reset_on_stake = ix.reset_on_stake;
+    stake_pool.reset_on_unstake = ix.reset_on_unstake;
     stake_pool.end_date = ix.end_date;
     stake_pool.cooldown_seconds = ix.cooldown_seconds;
     stake_pool.min_stake_seconds = ix.min_stake_seconds;

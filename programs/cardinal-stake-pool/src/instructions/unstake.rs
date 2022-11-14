@@ -118,6 +118,9 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     stake_entry.amount = 0;
     stake_entry.cooldown_start_seconds = None;
     stake_pool.total_staked = stake_pool.total_staked.checked_sub(1).expect("Sub error");
+    if stake_pool.reset_on_unstake {
+        stake_entry.total_stake_seconds = 0;
+    }
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();

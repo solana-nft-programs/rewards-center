@@ -108,9 +108,6 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     }
 
     // update stake entry
-    if stake_pool.reset_on_stake && stake_entry.amount == 0 {
-        stake_entry.total_stake_seconds = 0;
-    }
     stake_entry.last_staker = ctx.accounts.user.key();
     stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
