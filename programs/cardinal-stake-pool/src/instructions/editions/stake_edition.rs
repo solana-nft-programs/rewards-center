@@ -3,7 +3,7 @@ use cardinal_payment_manager::program::CardinalPaymentManager;
 use mpl_token_metadata::instruction::freeze_delegated_account;
 use solana_program::program::invoke_signed;
 
-use crate::instructions::stake_entry::increment_total_stake_seconds;
+use crate::instructions::{mint_is_allowed, stake_entry::increment_total_stake_seconds};
 
 use {
     crate::{errors::ErrorCode, state::*},
@@ -20,13 +20,14 @@ pub struct StakeCtx<'info> {
     stake_pool: Box<Account<'info, StakePool>>,
 
     stake_mint: Box<Account<'info, Mint>>,
-    /// CHECK: This is not dangerous because we don't read or write from this account
+    /// CHECK: Checked in handler
     stake_mint_edition: UncheckedAccount<'info>,
+    /// CHECK: Checked in handler
+    stake_mint_metadata: UncheckedAccount<'info>,
 
-    // user
     #[account(mut)]
     user: Signer<'info>,
-    /// CHECK: This is not dangerous because we don't read or write from this account
+    /// CHECK: Checked in handler
     user_escrow: UncheckedAccount<'info>,
     #[account(mut, constraint =
         user_stake_mint_token_account.amount > 0
@@ -36,7 +37,7 @@ pub struct StakeCtx<'info> {
     )]
     user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
-    /// CHECK: This is not dangerous because we don't read or write from this account
+    /// CHECK: Address checked
     #[account(address = mpl_token_metadata::id())]
     token_metadata_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
@@ -54,6 +55,10 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
     }
+
+    // check allowlist
+    let remaining_accounts = &mut ctx.remaining_accounts.iter();
+    mint_is_allowed(stake_pool, &ctx.accounts.stake_mint_metadata, ctx.accounts.stake_mint.key(), remaining_accounts)?;
 
     let cpi_accounts = Approve {
         to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
