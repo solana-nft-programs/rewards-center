@@ -8,13 +8,12 @@ install:
 	yarn install
 
 build:
-	anchor build
-	yarn idl:generate
+	cargo build-bpf
+	yarn idl:generate && yarn sdk:generate && yarn lint
 
 start:
 	solana-test-validator --url https://api.mainnet-beta.solana.com \
 		--clone metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s --clone PwDiXFxQsGra4sFFTT8r1QWRMd4vfumiWC1jfWNfdYT \
-		--clone mgr99QFMYByTqGPWmNqunV7vBLmWWXdSrHUfV8Jf3JM --clone ojLGErfqghuAqpJXE1dguXF7kKfvketCEeah8ig6GU3 \
 		--clone pmvYY6Wgvpe3DEj3UX1FcRpMx43sMLYLJrFTVGcqpdn --clone 355AtuHH98Jy9XFg5kWodfmvSfrhcxYUKGoJe8qziFNY \
 		--clone FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi \
 		--bpf-program stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6 ./target/deploy/cardinal_stake_pool.so \
@@ -26,7 +25,7 @@ start:
 	solana airdrop 1000 $(TEST_KEY) --url http://localhost:8899
 
 test:
-	anchor test --skip-local-validator --skip-build --skip-deploy --provider.cluster localnet
+	yarn test
 
 stop:
 	pkill solana-test-validator
