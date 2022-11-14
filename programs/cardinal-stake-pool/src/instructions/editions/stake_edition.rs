@@ -31,6 +31,7 @@ pub struct StakeEditionCtx<'info> {
     #[account(mut)]
     user: Signer<'info>,
     /// CHECK: Checked in handler
+    #[account(mut)]
     user_escrow: UncheckedAccount<'info>,
     #[account(mut, constraint =
         user_stake_mint_token_account.amount > 0
@@ -44,6 +45,7 @@ pub struct StakeEditionCtx<'info> {
     #[account(address = mpl_token_metadata::id())]
     token_metadata_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
+    system_program: Program<'info, System>,
 }
 
 pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
@@ -52,8 +54,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = get_escrow_seeds(&user, &user_escrow)?;
-    let escrow_signer = &escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>();
+    let escrow_seeds = get_escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
@@ -65,7 +66,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let cpi_accounts = Approve {
         to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
-        delegate: stake_entry.to_account_info(),
+        delegate: ctx.accounts.user_escrow.to_account_info(),
         authority: ctx.accounts.user.to_account_info(),
     };
     let cpi_program = ctx.accounts.token_program.to_account_info();
@@ -86,7 +87,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
             ctx.accounts.stake_mint_edition.to_account_info(),
             ctx.accounts.stake_mint.to_account_info(),
         ],
-        &[escrow_signer],
+        &[&escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
     // handle payment

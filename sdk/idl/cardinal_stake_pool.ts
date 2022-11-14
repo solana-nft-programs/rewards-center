@@ -422,7 +422,7 @@ export type CardinalStakePool = {
         },
         {
           name: "userEscrow";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -437,6 +437,11 @@ export type CardinalStakePool = {
         },
         {
           name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
           isMut: false;
           isSigner: false;
         }
@@ -478,7 +483,7 @@ export type CardinalStakePool = {
         },
         {
           name: "userEscrow";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -1544,7 +1549,7 @@ export const IDL: CardinalStakePool = {
         },
         {
           name: "userEscrow",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -1559,6 +1564,11 @@ export const IDL: CardinalStakePool = {
         },
         {
           name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
           isMut: false,
           isSigner: false,
         },
@@ -1600,7 +1610,7 @@ export const IDL: CardinalStakePool = {
         },
         {
           name: "userEscrow",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

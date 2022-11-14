@@ -8,7 +8,7 @@ install:
 	yarn install
 
 build:
-	cargo build-bpf && cargo +nightly fmt
+	anchor build && cargo +nightly fmt
 	yarn idl:generate && yarn sdk:generate && yarn lint
 
 start:

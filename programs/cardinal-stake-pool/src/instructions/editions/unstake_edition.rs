@@ -28,6 +28,7 @@ pub struct UnstakeEditionCtx<'info> {
     #[account(mut, constraint = user.key() == stake_entry.last_staker @ ErrorCode::InvalidUnstakeUser)]
     user: Signer<'info>,
     /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
     user_escrow: UncheckedAccount<'info>,
     #[account(mut, constraint =
         user_stake_mint_token_account.amount > 0
@@ -49,8 +50,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = get_escrow_seeds(&user, &user_escrow)?;
-    let escrow_signer = &escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>();
+    let escrow_seeds = get_escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
 
     //// FEATURE: Minimum stake seconds
     if stake_pool.min_stake_seconds.is_some()
@@ -84,7 +84,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
             ctx.accounts.stake_mint_edition.to_account_info(),
             ctx.accounts.stake_mint.to_account_info(),
         ],
-        &[escrow_signer],
+        &[&escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
     let cpi_accounts = Revoke {

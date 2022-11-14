@@ -28,7 +28,7 @@ export const unstakeEditionStruct = new beet.BeetArgsStruct<{
  * @property [] stakeMint
  * @property [] stakeMintEdition
  * @property [_writable_, **signer**] user
- * @property [] userEscrow
+ * @property [_writable_] userEscrow
  * @property [_writable_] userStakeMintTokenAccount
  * @property [] tokenMetadataProgram
  * @category Instructions
@@ -94,7 +94,7 @@ export function createUnstakeEditionInstruction(
     },
     {
       pubkey: accounts.userEscrow,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

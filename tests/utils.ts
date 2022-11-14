@@ -1,3 +1,7 @@
+import {
+  createCreateMasterEditionV3Instruction,
+  createCreateMetadataAccountV2Instruction,
+} from "@metaplex-foundation/mpl-token-metadata";
 import { utils, Wallet } from "@project-serum/anchor";
 import {
   createAssociatedTokenAccountInstruction,
@@ -17,6 +21,7 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
+import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 export async function newAccountWithLamports(
   connection: Connection,
@@ -119,9 +124,6 @@ export const handleError = (e: any) => {
   const logs = (e as SendTransactionError).logs;
   if (logs) {
     console.log(logs);
-    // const parsed = parseProgramLogs(logs, message);
-    // const fmt = formatInstructionLogsForConsole(parsed);
-    // console.log(fmt);
   } else {
     console.log(e, message);
   }
@@ -168,21 +170,79 @@ export const secondaryConnectionFor = (
 
 export const createMintTx = async (
   connection: Connection,
-  mint: PublicKey,
+  mintId: PublicKey,
   authority: PublicKey,
   target = authority
 ) => {
-  const ata = getAssociatedTokenAddressSync(mint, target);
+  const ata = getAssociatedTokenAddressSync(mintId, target);
   return new Transaction().add(
     SystemProgram.createAccount({
       fromPubkey: authority,
-      newAccountPubkey: mint,
+      newAccountPubkey: mintId,
       space: MINT_SIZE,
       lamports: await getMinimumBalanceForRentExemptMint(connection),
       programId: TOKEN_PROGRAM_ID,
     }),
-    createInitializeMint2Instruction(mint, 0, authority, authority),
-    createAssociatedTokenAccountInstruction(authority, ata, target, mint),
-    createMintToInstruction(mint, ata, authority, 1)
+    createInitializeMint2Instruction(mintId, 0, authority, authority),
+    createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
+    createMintToInstruction(mintId, ata, authority, 1)
+  );
+};
+
+export const createMasterEditionTx = async (
+  connection: Connection,
+  mintId: PublicKey,
+  authority: PublicKey,
+  target = authority
+) => {
+  const ata = getAssociatedTokenAddressSync(mintId, target);
+  const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+
+  return new Transaction().add(
+    SystemProgram.createAccount({
+      fromPubkey: authority,
+      newAccountPubkey: mintId,
+      space: MINT_SIZE,
+      lamports: await getMinimumBalanceForRentExemptMint(connection),
+      programId: TOKEN_PROGRAM_ID,
+    }),
+    createInitializeMint2Instruction(mintId, 0, authority, authority),
+    createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
+    createMintToInstruction(mintId, ata, authority, 1),
+    createCreateMetadataAccountV2Instruction(
+      {
+        metadata: metadataId,
+        mint: mintId,
+        updateAuthority: authority,
+        mintAuthority: authority,
+        payer: authority,
+      },
+      {
+        createMetadataAccountArgsV2: {
+          data: {
+            name: `name-${Math.random()}`,
+            symbol: "SYMB",
+            uri: `uri-${Math.random()}`,
+            sellerFeeBasisPoints: 0,
+            creators: [{ address: authority, share: 100, verified: true }],
+            collection: null,
+            uses: null,
+          },
+          isMutable: true,
+        },
+      }
+    ),
+    createCreateMasterEditionV3Instruction(
+      {
+        edition: editionId,
+        mint: mintId,
+        updateAuthority: authority,
+        mintAuthority: authority,
+        metadata: metadataId,
+        payer: authority,
+      },
+      { createMasterEditionArgs: { maxSupply: 0 } }
+    )
   );
 };

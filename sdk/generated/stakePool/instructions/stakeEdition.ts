@@ -42,7 +42,7 @@ export const stakeEditionStruct = new beet.BeetArgsStruct<
  * @property [] stakeMintEdition
  * @property [] stakeMintMetadata
  * @property [_writable_, **signer**] user
- * @property [] userEscrow
+ * @property [_writable_] userEscrow
  * @property [_writable_] userStakeMintTokenAccount
  * @property [] tokenMetadataProgram
  * @category Instructions
@@ -60,6 +60,7 @@ export type StakeEditionInstructionAccounts = {
   userStakeMintTokenAccount: web3.PublicKey
   tokenMetadataProgram: web3.PublicKey
   tokenProgram?: web3.PublicKey
+  systemProgram?: web3.PublicKey
 }
 
 export const stakeEditionInstructionDiscriminator = [
@@ -118,7 +119,7 @@ export function createStakeEditionInstruction(
     },
     {
       pubkey: accounts.userEscrow,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {
@@ -133,6 +134,11 @@ export function createStakeEditionInstruction(
     },
     {
       pubkey: accounts.tokenProgram ?? splToken.TOKEN_PROGRAM_ID,
+      isWritable: false,
+      isSigner: false,
+    },
+    {
+      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
       isWritable: false,
       isSigner: false,
     },
