@@ -21,7 +21,7 @@ export type StakePoolArgs = {
   requiresCreators: web3.PublicKey[]
   requiresCollections: web3.PublicKey[]
   requiresAuthorization: boolean
-  resetOnStake: boolean
+  resetOnUnstake: boolean
   totalStaked: number
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
@@ -47,7 +47,7 @@ export class StakePool implements StakePoolArgs {
     readonly requiresCreators: web3.PublicKey[],
     readonly requiresCollections: web3.PublicKey[],
     readonly requiresAuthorization: boolean,
-    readonly resetOnStake: boolean,
+    readonly resetOnUnstake: boolean,
     readonly totalStaked: number,
     readonly cooldownSeconds: beet.COption<number>,
     readonly minStakeSeconds: beet.COption<number>,
@@ -68,7 +68,7 @@ export class StakePool implements StakePoolArgs {
       args.requiresCreators,
       args.requiresCollections,
       args.requiresAuthorization,
-      args.resetOnStake,
+      args.resetOnUnstake,
       args.totalStaked,
       args.cooldownSeconds,
       args.minStakeSeconds,
@@ -196,7 +196,7 @@ export class StakePool implements StakePoolArgs {
       requiresCreators: this.requiresCreators,
       requiresCollections: this.requiresCollections,
       requiresAuthorization: this.requiresAuthorization,
-      resetOnStake: this.resetOnStake,
+      resetOnUnstake: this.resetOnUnstake,
       totalStaked: this.totalStaked,
       cooldownSeconds: this.cooldownSeconds,
       minStakeSeconds: this.minStakeSeconds,
@@ -226,7 +226,7 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['requiresCreators', beet.array(beetSolana.publicKey)],
     ['requiresCollections', beet.array(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
-    ['resetOnStake', beet.bool],
+    ['resetOnUnstake', beet.bool],
     ['totalStaked', beet.u32],
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],

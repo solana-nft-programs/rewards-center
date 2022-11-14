@@ -13,7 +13,7 @@ export type InitPoolIx = {
   requiresCreators: web3.PublicKey[]
   requiresAuthorization: boolean
   authority: web3.PublicKey
-  resetOnStake: boolean
+  resetOnUnstake: boolean
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
   endDate: beet.COption<beet.bignum>
@@ -32,7 +32,7 @@ export const initPoolIxBeet = new beet.FixableBeetArgsStruct<InitPoolIx>(
     ['requiresCreators', beet.array(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
     ['authority', beetSolana.publicKey],
-    ['resetOnStake', beet.bool],
+    ['resetOnUnstake', beet.bool],
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],
     ['endDate', beet.coption(beet.i64)],

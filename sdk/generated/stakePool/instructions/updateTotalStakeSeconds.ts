@@ -23,14 +23,14 @@ export const updateTotalStakeSecondsStruct = new beet.BeetArgsStruct<{
  * Accounts required by the _updateTotalStakeSeconds_ instruction
  *
  * @property [_writable_] stakeEntry
- * @property [_writable_, **signer**] lastStaker
+ * @property [_writable_, **signer**] updater
  * @category Instructions
  * @category UpdateTotalStakeSeconds
  * @category generated
  */
 export type UpdateTotalStakeSecondsInstructionAccounts = {
   stakeEntry: web3.PublicKey
-  lastStaker: web3.PublicKey
+  updater: web3.PublicKey
 }
 
 export const updateTotalStakeSecondsInstructionDiscriminator = [
@@ -59,7 +59,7 @@ export function createUpdateTotalStakeSecondsInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.lastStaker,
+      pubkey: accounts.updater,
       isWritable: true,
       isSigner: true,
     },

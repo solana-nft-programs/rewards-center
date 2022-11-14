@@ -3,129 +3,6 @@
   "name": "cardinal_stake_pool",
   "instructions": [
     {
-      "name": "stake",
-      "accounts": [
-        {
-          "name": "stakeEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakePool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntryStakeMintTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "stakeMintEdition",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "user",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "userStakeMintTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "unstake",
-      "accounts": [
-        {
-          "name": "stakePool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "stakeMintEdition",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntryStakeMintTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "user",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "userStakeMintTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "updateTotalStakeSeconds",
-      "accounts": [
-        {
-          "name": "stakeEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "lastStaker",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initEntry",
       "accounts": [
         {
@@ -193,6 +70,22 @@
           }
         }
       ]
+    },
+    {
+      "name": "updateTotalStakeSeconds",
+      "accounts": [
+        {
+          "name": "stakeEntry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "updater",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
     },
     {
       "name": "closeStakeEntry",
@@ -519,6 +412,113 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "stakeEdition",
+      "accounts": [
+        {
+          "name": "stakeEntry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeMintEdition",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userEscrow",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userStakeMintTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "unstakeEdition",
+      "accounts": [
+        {
+          "name": "stakePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeEntry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeMintEdition",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userEscrow",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userStakeMintTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -529,6 +529,10 @@
         "fields": [
           {
             "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "kind",
             "type": "u8"
           },
           {
@@ -552,12 +556,12 @@
             "type": "i64"
           },
           {
-            "name": "totalStakeSeconds",
-            "type": "u128"
+            "name": "lastUpdatedAt",
+            "type": "i64"
           },
           {
-            "name": "kind",
-            "type": "u8"
+            "name": "totalStakeSeconds",
+            "type": "u128"
           },
           {
             "name": "cooldownStartSeconds",
@@ -602,7 +606,7 @@
             "type": "bool"
           },
           {
-            "name": "resetOnStake",
+            "name": "resetOnUnstake",
             "type": "bool"
           },
           {
@@ -844,7 +848,7 @@
             "type": "publicKey"
           },
           {
-            "name": "resetOnStake",
+            "name": "resetOnUnstake",
             "type": "bool"
           },
           {
@@ -912,7 +916,7 @@
             "type": "publicKey"
           },
           {
-            "name": "resetOnStake",
+            "name": "resetOnUnstake",
             "type": "bool"
           },
           {
@@ -950,20 +954,6 @@
             "type": {
               "option": "publicKey"
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "StakeEntryKind",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Permissionless"
-          },
-          {
-            "name": "Permissioned"
           }
         ]
       }
@@ -1122,31 +1112,41 @@
     },
     {
       "code": 6030,
+      "name": "CannotUpdateUnstakedEntry",
+      "msg": "Cannot update unstaked entry"
+    },
+    {
+      "code": 6031,
+      "name": "InvalidEscrow",
+      "msg": "Mismatched user and escrow"
+    },
+    {
+      "code": 6032,
       "name": "CannotBoostUnstakedToken",
       "msg": "Cannot boost unstaked token"
     },
     {
-      "code": 6031,
+      "code": 6033,
       "name": "CannotBoostMoreThanCurrentTime",
       "msg": "Cannot boost past current time less than start time"
     },
     {
-      "code": 6032,
+      "code": 6034,
       "name": "InvalidBoostPayerTokenAccount",
       "msg": "Invalid boost payer token account"
     },
     {
-      "code": 6033,
+      "code": 6035,
       "name": "InvalidBoostPaymentRecipientTokenAccount",
       "msg": "Invalid boost payment recipient token account"
     },
     {
-      "code": 6034,
+      "code": 6036,
       "name": "InvalidPaymentManager",
       "msg": "Invalid payment manager"
     },
     {
-      "code": 6035,
+      "code": 6037,
       "name": "CannotBoostFungibleToken",
       "msg": "Cannot boost a fungible token stake entry"
     }

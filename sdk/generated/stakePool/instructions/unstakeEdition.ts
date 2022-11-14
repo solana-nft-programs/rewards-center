@@ -11,91 +11,69 @@ import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
- * @category Stake
+ * @category UnstakeEdition
  * @category generated
  */
-export type StakeInstructionArgs = {
-  amount: beet.bignum
-}
-/**
- * @category Instructions
- * @category Stake
- * @category generated
- */
-export const stakeStruct = new beet.BeetArgsStruct<
-  StakeInstructionArgs & {
-    instructionDiscriminator: number[] /* size: 8 */
-  }
->(
-  [
-    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['amount', beet.u64],
-  ],
-  'StakeInstructionArgs'
+export const unstakeEditionStruct = new beet.BeetArgsStruct<{
+  instructionDiscriminator: number[] /* size: 8 */
+}>(
+  [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
+  'UnstakeEditionInstructionArgs'
 )
 /**
- * Accounts required by the _stake_ instruction
+ * Accounts required by the _unstakeEdition_ instruction
  *
- * @property [_writable_] stakeEntry
  * @property [_writable_] stakePool
- * @property [_writable_] stakeEntryStakeMintTokenAccount
+ * @property [_writable_] stakeEntry
  * @property [] stakeMint
  * @property [] stakeMintEdition
  * @property [_writable_, **signer**] user
+ * @property [] userEscrow
  * @property [_writable_] userStakeMintTokenAccount
  * @property [] tokenMetadataProgram
  * @category Instructions
- * @category Stake
+ * @category UnstakeEdition
  * @category generated
  */
-export type StakeInstructionAccounts = {
-  stakeEntry: web3.PublicKey
+export type UnstakeEditionInstructionAccounts = {
   stakePool: web3.PublicKey
-  stakeEntryStakeMintTokenAccount: web3.PublicKey
+  stakeEntry: web3.PublicKey
   stakeMint: web3.PublicKey
   stakeMintEdition: web3.PublicKey
   user: web3.PublicKey
+  userEscrow: web3.PublicKey
   userStakeMintTokenAccount: web3.PublicKey
   tokenMetadataProgram: web3.PublicKey
   tokenProgram?: web3.PublicKey
 }
 
-export const stakeInstructionDiscriminator = [
-  206, 176, 202, 18, 200, 209, 179, 108,
+export const unstakeEditionInstructionDiscriminator = [
+  14, 46, 5, 175, 171, 28, 33, 151,
 ]
 
 /**
- * Creates a _Stake_ instruction.
+ * Creates a _UnstakeEdition_ instruction.
  *
  * @param accounts that will be accessed while the instruction is processed
- * @param args to provide as instruction data to the program
- *
  * @category Instructions
- * @category Stake
+ * @category UnstakeEdition
  * @category generated
  */
-export function createStakeInstruction(
-  accounts: StakeInstructionAccounts,
-  args: StakeInstructionArgs,
+export function createUnstakeEditionInstruction(
+  accounts: UnstakeEditionInstructionAccounts,
   programId = new web3.PublicKey('stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6')
 ) {
-  const [data] = stakeStruct.serialize({
-    instructionDiscriminator: stakeInstructionDiscriminator,
-    ...args,
+  const [data] = unstakeEditionStruct.serialize({
+    instructionDiscriminator: unstakeEditionInstructionDiscriminator,
   })
   const keys: web3.AccountMeta[] = [
-    {
-      pubkey: accounts.stakeEntry,
-      isWritable: true,
-      isSigner: false,
-    },
     {
       pubkey: accounts.stakePool,
       isWritable: true,
       isSigner: false,
     },
     {
-      pubkey: accounts.stakeEntryStakeMintTokenAccount,
+      pubkey: accounts.stakeEntry,
       isWritable: true,
       isSigner: false,
     },
@@ -113,6 +91,11 @@ export function createStakeInstruction(
       pubkey: accounts.user,
       isWritable: true,
       isSigner: true,
+    },
+    {
+      pubkey: accounts.userEscrow,
+      isWritable: false,
+      isSigner: false,
     },
     {
       pubkey: accounts.userStakeMintTokenAccount,

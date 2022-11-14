@@ -16,13 +16,14 @@ import * as beetSolana from '@metaplex-foundation/beet-solana'
  */
 export type StakeEntryArgs = {
   bump: number
+  kind: number
   pool: web3.PublicKey
   amount: beet.bignum
   stakeMint: web3.PublicKey
   lastStaker: web3.PublicKey
   lastStakedAt: beet.bignum
+  lastUpdatedAt: beet.bignum
   totalStakeSeconds: beet.bignum
-  kind: number
   cooldownStartSeconds: beet.COption<beet.bignum>
 }
 
@@ -37,13 +38,14 @@ export const stakeEntryDiscriminator = [187, 127, 9, 35, 155, 68, 86, 40]
 export class StakeEntry implements StakeEntryArgs {
   private constructor(
     readonly bump: number,
+    readonly kind: number,
     readonly pool: web3.PublicKey,
     readonly amount: beet.bignum,
     readonly stakeMint: web3.PublicKey,
     readonly lastStaker: web3.PublicKey,
     readonly lastStakedAt: beet.bignum,
+    readonly lastUpdatedAt: beet.bignum,
     readonly totalStakeSeconds: beet.bignum,
-    readonly kind: number,
     readonly cooldownStartSeconds: beet.COption<beet.bignum>
   ) {}
 
@@ -53,13 +55,14 @@ export class StakeEntry implements StakeEntryArgs {
   static fromArgs(args: StakeEntryArgs) {
     return new StakeEntry(
       args.bump,
+      args.kind,
       args.pool,
       args.amount,
       args.stakeMint,
       args.lastStaker,
       args.lastStakedAt,
+      args.lastUpdatedAt,
       args.totalStakeSeconds,
-      args.kind,
       args.cooldownStartSeconds
     )
   }
@@ -166,6 +169,7 @@ export class StakeEntry implements StakeEntryArgs {
   pretty() {
     return {
       bump: this.bump,
+      kind: this.kind,
       pool: this.pool.toBase58(),
       amount: (() => {
         const x = <{ toNumber: () => number }>this.amount
@@ -191,6 +195,17 @@ export class StakeEntry implements StakeEntryArgs {
         }
         return x
       })(),
+      lastUpdatedAt: (() => {
+        const x = <{ toNumber: () => number }>this.lastUpdatedAt
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber()
+          } catch (_) {
+            return x
+          }
+        }
+        return x
+      })(),
       totalStakeSeconds: (() => {
         const x = <{ toNumber: () => number }>this.totalStakeSeconds
         if (typeof x.toNumber === 'function') {
@@ -202,7 +217,6 @@ export class StakeEntry implements StakeEntryArgs {
         }
         return x
       })(),
-      kind: this.kind,
       cooldownStartSeconds: this.cooldownStartSeconds,
     }
   }
@@ -221,13 +235,14 @@ export const stakeEntryBeet = new beet.FixableBeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['bump', beet.u8],
+    ['kind', beet.u8],
     ['pool', beetSolana.publicKey],
     ['amount', beet.u64],
     ['stakeMint', beetSolana.publicKey],
     ['lastStaker', beetSolana.publicKey],
     ['lastStakedAt', beet.i64],
+    ['lastUpdatedAt', beet.i64],
     ['totalStakeSeconds', beet.u128],
-    ['kind', beet.u8],
     ['cooldownStartSeconds', beet.coption(beet.i64)],
   ],
   StakeEntry.fromArgs,

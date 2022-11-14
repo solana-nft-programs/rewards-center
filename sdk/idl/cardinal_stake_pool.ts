@@ -3,129 +3,6 @@ export type CardinalStakePool = {
   name: "cardinal_stake_pool";
   instructions: [
     {
-      name: "stake";
-      accounts: [
-        {
-          name: "stakeEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakePool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntryStakeMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "stakeMintEdition";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "user";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "userStakeMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenMetadataProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "amount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "unstake";
-      accounts: [
-        {
-          name: "stakePool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "stakeMintEdition";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntryStakeMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "user";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "userStakeMintTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenMetadataProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "updateTotalStakeSeconds";
-      accounts: [
-        {
-          name: "stakeEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lastStaker";
-          isMut: true;
-          isSigner: true;
-        }
-      ];
-      args: [];
-    },
-    {
       name: "initEntry";
       accounts: [
         {
@@ -193,6 +70,22 @@ export type CardinalStakePool = {
           };
         }
       ];
+    },
+    {
+      name: "updateTotalStakeSeconds";
+      accounts: [
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "updater";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [];
     },
     {
       name: "closeStakeEntry";
@@ -519,6 +412,113 @@ export type CardinalStakePool = {
         }
       ];
       args: [];
+    },
+    {
+      name: "stakeEdition";
+      accounts: [
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintEdition";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "amount";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "unstakeEdition";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintEdition";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
     }
   ];
   accounts: [
@@ -529,6 +529,10 @@ export type CardinalStakePool = {
         fields: [
           {
             name: "bump";
+            type: "u8";
+          },
+          {
+            name: "kind";
             type: "u8";
           },
           {
@@ -552,12 +556,12 @@ export type CardinalStakePool = {
             type: "i64";
           },
           {
-            name: "totalStakeSeconds";
-            type: "u128";
+            name: "lastUpdatedAt";
+            type: "i64";
           },
           {
-            name: "kind";
-            type: "u8";
+            name: "totalStakeSeconds";
+            type: "u128";
           },
           {
             name: "cooldownStartSeconds";
@@ -602,7 +606,7 @@ export type CardinalStakePool = {
             type: "bool";
           },
           {
-            name: "resetOnStake";
+            name: "resetOnUnstake";
             type: "bool";
           },
           {
@@ -844,7 +848,7 @@ export type CardinalStakePool = {
             type: "publicKey";
           },
           {
-            name: "resetOnStake";
+            name: "resetOnUnstake";
             type: "bool";
           },
           {
@@ -912,7 +916,7 @@ export type CardinalStakePool = {
             type: "publicKey";
           },
           {
-            name: "resetOnStake";
+            name: "resetOnUnstake";
             type: "bool";
           },
           {
@@ -950,20 +954,6 @@ export type CardinalStakePool = {
             type: {
               option: "publicKey";
             };
-          }
-        ];
-      };
-    },
-    {
-      name: "StakeEntryKind";
-      type: {
-        kind: "enum";
-        variants: [
-          {
-            name: "Permissionless";
-          },
-          {
-            name: "Permissioned";
           }
         ];
       };
@@ -1122,31 +1112,41 @@ export type CardinalStakePool = {
     },
     {
       code: 6030;
+      name: "CannotUpdateUnstakedEntry";
+      msg: "Cannot update unstaked entry";
+    },
+    {
+      code: 6031;
+      name: "InvalidEscrow";
+      msg: "Mismatched user and escrow";
+    },
+    {
+      code: 6032;
       name: "CannotBoostUnstakedToken";
       msg: "Cannot boost unstaked token";
     },
     {
-      code: 6031;
+      code: 6033;
       name: "CannotBoostMoreThanCurrentTime";
       msg: "Cannot boost past current time less than start time";
     },
     {
-      code: 6032;
+      code: 6034;
       name: "InvalidBoostPayerTokenAccount";
       msg: "Invalid boost payer token account";
     },
     {
-      code: 6033;
+      code: 6035;
       name: "InvalidBoostPaymentRecipientTokenAccount";
       msg: "Invalid boost payment recipient token account";
     },
     {
-      code: 6034;
+      code: 6036;
       name: "InvalidPaymentManager";
       msg: "Invalid payment manager";
     },
     {
-      code: 6035;
+      code: 6037;
       name: "CannotBoostFungibleToken";
       msg: "Cannot boost a fungible token stake entry";
     }
@@ -1157,129 +1157,6 @@ export const IDL: CardinalStakePool = {
   version: "1.10.7",
   name: "cardinal_stake_pool",
   instructions: [
-    {
-      name: "stake",
-      accounts: [
-        {
-          name: "stakeEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntryStakeMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "stakeMintEdition",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "user",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "userStakeMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenMetadataProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "amount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "unstake",
-      accounts: [
-        {
-          name: "stakePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "stakeMintEdition",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntryStakeMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "user",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "userStakeMintTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenMetadataProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "updateTotalStakeSeconds",
-      accounts: [
-        {
-          name: "stakeEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lastStaker",
-          isMut: true,
-          isSigner: true,
-        },
-      ],
-      args: [],
-    },
     {
       name: "initEntry",
       accounts: [
@@ -1348,6 +1225,22 @@ export const IDL: CardinalStakePool = {
           },
         },
       ],
+    },
+    {
+      name: "updateTotalStakeSeconds",
+      accounts: [
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "updater",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [],
     },
     {
       name: "closeStakeEntry",
@@ -1675,6 +1568,113 @@ export const IDL: CardinalStakePool = {
       ],
       args: [],
     },
+    {
+      name: "stakeEdition",
+      accounts: [
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintEdition",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "unstakeEdition",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintEdition",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
@@ -1684,6 +1684,10 @@ export const IDL: CardinalStakePool = {
         fields: [
           {
             name: "bump",
+            type: "u8",
+          },
+          {
+            name: "kind",
             type: "u8",
           },
           {
@@ -1707,12 +1711,12 @@ export const IDL: CardinalStakePool = {
             type: "i64",
           },
           {
-            name: "totalStakeSeconds",
-            type: "u128",
+            name: "lastUpdatedAt",
+            type: "i64",
           },
           {
-            name: "kind",
-            type: "u8",
+            name: "totalStakeSeconds",
+            type: "u128",
           },
           {
             name: "cooldownStartSeconds",
@@ -1757,7 +1761,7 @@ export const IDL: CardinalStakePool = {
             type: "bool",
           },
           {
-            name: "resetOnStake",
+            name: "resetOnUnstake",
             type: "bool",
           },
           {
@@ -1999,7 +2003,7 @@ export const IDL: CardinalStakePool = {
             type: "publicKey",
           },
           {
-            name: "resetOnStake",
+            name: "resetOnUnstake",
             type: "bool",
           },
           {
@@ -2067,7 +2071,7 @@ export const IDL: CardinalStakePool = {
             type: "publicKey",
           },
           {
-            name: "resetOnStake",
+            name: "resetOnUnstake",
             type: "bool",
           },
           {
@@ -2105,20 +2109,6 @@ export const IDL: CardinalStakePool = {
             type: {
               option: "publicKey",
             },
-          },
-        ],
-      },
-    },
-    {
-      name: "StakeEntryKind",
-      type: {
-        kind: "enum",
-        variants: [
-          {
-            name: "Permissionless",
-          },
-          {
-            name: "Permissioned",
           },
         ],
       },
@@ -2277,31 +2267,41 @@ export const IDL: CardinalStakePool = {
     },
     {
       code: 6030,
+      name: "CannotUpdateUnstakedEntry",
+      msg: "Cannot update unstaked entry",
+    },
+    {
+      code: 6031,
+      name: "InvalidEscrow",
+      msg: "Mismatched user and escrow",
+    },
+    {
+      code: 6032,
       name: "CannotBoostUnstakedToken",
       msg: "Cannot boost unstaked token",
     },
     {
-      code: 6031,
+      code: 6033,
       name: "CannotBoostMoreThanCurrentTime",
       msg: "Cannot boost past current time less than start time",
     },
     {
-      code: 6032,
+      code: 6034,
       name: "InvalidBoostPayerTokenAccount",
       msg: "Invalid boost payer token account",
     },
     {
-      code: 6033,
+      code: 6035,
       name: "InvalidBoostPaymentRecipientTokenAccount",
       msg: "Invalid boost payment recipient token account",
     },
     {
-      code: 6034,
+      code: 6036,
       name: "InvalidPaymentManager",
       msg: "Invalid payment manager",
     },
     {
-      code: 6035,
+      code: 6037,
       name: "CannotBoostFungibleToken",
       msg: "Cannot boost a fungible token stake entry",
     },

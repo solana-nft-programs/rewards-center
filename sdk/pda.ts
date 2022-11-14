@@ -4,9 +4,16 @@ import type { PublicKey } from "@solana/web3.js";
 
 import { PROGRAM_ID } from "./generated/stakePool";
 
-export const findStakeEntryId = (mintId: PublicKey): PublicKey => {
+export const findStakeEntryId = (
+  stakePoolId: PublicKey,
+  mintId: PublicKey
+): PublicKey => {
   return findProgramAddressSync(
-    [utils.bytes.utf8.encode("stake-entry"), mintId.toBuffer()],
+    [
+      utils.bytes.utf8.encode("stake-entry"),
+      stakePoolId.toBuffer(),
+      mintId.toBuffer(),
+    ],
     PROGRAM_ID
   )[0];
 };
@@ -14,6 +21,13 @@ export const findStakeEntryId = (mintId: PublicKey): PublicKey => {
 export const findStakePoolId = (name: string): PublicKey => {
   return findProgramAddressSync(
     [utils.bytes.utf8.encode("stake-pool"), utils.bytes.utf8.encode(name)],
+    PROGRAM_ID
+  )[0];
+};
+
+export const findUserEscrowId = (user: PublicKey): PublicKey => {
+  return findProgramAddressSync(
+    [utils.bytes.utf8.encode("escrow"), user.toBuffer()],
     PROGRAM_ID
   )[0];
 };

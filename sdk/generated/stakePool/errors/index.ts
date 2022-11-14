@@ -735,13 +735,59 @@ createErrorFromNameLookup.set(
 )
 
 /**
+ * CannotUpdateUnstakedEntry: 'Cannot update unstaked entry'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class CannotUpdateUnstakedEntryError extends Error {
+  readonly code: number = 0x178e
+  readonly name: string = 'CannotUpdateUnstakedEntry'
+  constructor() {
+    super('Cannot update unstaked entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, CannotUpdateUnstakedEntryError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x178e,
+  () => new CannotUpdateUnstakedEntryError()
+)
+createErrorFromNameLookup.set(
+  'CannotUpdateUnstakedEntry',
+  () => new CannotUpdateUnstakedEntryError()
+)
+
+/**
+ * InvalidEscrow: 'Mismatched user and escrow'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidEscrowError extends Error {
+  readonly code: number = 0x178f
+  readonly name: string = 'InvalidEscrow'
+  constructor() {
+    super('Mismatched user and escrow')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidEscrowError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x178f, () => new InvalidEscrowError())
+createErrorFromNameLookup.set('InvalidEscrow', () => new InvalidEscrowError())
+
+/**
  * CannotBoostUnstakedToken: 'Cannot boost unstaked token'
  *
  * @category Errors
  * @category generated
  */
 export class CannotBoostUnstakedTokenError extends Error {
-  readonly code: number = 0x178e
+  readonly code: number = 0x1790
   readonly name: string = 'CannotBoostUnstakedToken'
   constructor() {
     super('Cannot boost unstaked token')
@@ -751,7 +797,7 @@ export class CannotBoostUnstakedTokenError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178e, () => new CannotBoostUnstakedTokenError())
+createErrorFromCodeLookup.set(0x1790, () => new CannotBoostUnstakedTokenError())
 createErrorFromNameLookup.set(
   'CannotBoostUnstakedToken',
   () => new CannotBoostUnstakedTokenError()
@@ -764,7 +810,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class CannotBoostMoreThanCurrentTimeError extends Error {
-  readonly code: number = 0x178f
+  readonly code: number = 0x1791
   readonly name: string = 'CannotBoostMoreThanCurrentTime'
   constructor() {
     super('Cannot boost past current time less than start time')
@@ -775,7 +821,7 @@ export class CannotBoostMoreThanCurrentTimeError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x178f,
+  0x1791,
   () => new CannotBoostMoreThanCurrentTimeError()
 )
 createErrorFromNameLookup.set(
@@ -790,7 +836,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidBoostPayerTokenAccountError extends Error {
-  readonly code: number = 0x1790
+  readonly code: number = 0x1792
   readonly name: string = 'InvalidBoostPayerTokenAccount'
   constructor() {
     super('Invalid boost payer token account')
@@ -801,7 +847,7 @@ export class InvalidBoostPayerTokenAccountError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x1790,
+  0x1792,
   () => new InvalidBoostPayerTokenAccountError()
 )
 createErrorFromNameLookup.set(
@@ -816,7 +862,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidBoostPaymentRecipientTokenAccountError extends Error {
-  readonly code: number = 0x1791
+  readonly code: number = 0x1793
   readonly name: string = 'InvalidBoostPaymentRecipientTokenAccount'
   constructor() {
     super('Invalid boost payment recipient token account')
@@ -830,7 +876,7 @@ export class InvalidBoostPaymentRecipientTokenAccountError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x1791,
+  0x1793,
   () => new InvalidBoostPaymentRecipientTokenAccountError()
 )
 createErrorFromNameLookup.set(
@@ -845,7 +891,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidPaymentManagerError extends Error {
-  readonly code: number = 0x1792
+  readonly code: number = 0x1794
   readonly name: string = 'InvalidPaymentManager'
   constructor() {
     super('Invalid payment manager')
@@ -855,7 +901,7 @@ export class InvalidPaymentManagerError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1792, () => new InvalidPaymentManagerError())
+createErrorFromCodeLookup.set(0x1794, () => new InvalidPaymentManagerError())
 createErrorFromNameLookup.set(
   'InvalidPaymentManager',
   () => new InvalidPaymentManagerError()
@@ -868,7 +914,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class CannotBoostFungibleTokenError extends Error {
-  readonly code: number = 0x1793
+  readonly code: number = 0x1795
   readonly name: string = 'CannotBoostFungibleToken'
   constructor() {
     super('Cannot boost a fungible token stake entry')
@@ -878,7 +924,7 @@ export class CannotBoostFungibleTokenError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1793, () => new CannotBoostFungibleTokenError())
+createErrorFromCodeLookup.set(0x1795, () => new CannotBoostFungibleTokenError())
 createErrorFromNameLookup.set(
   'CannotBoostFungibleToken',
   () => new CannotBoostFungibleTokenError()
