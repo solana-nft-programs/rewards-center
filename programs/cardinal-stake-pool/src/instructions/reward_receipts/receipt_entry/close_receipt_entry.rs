@@ -1,6 +1,6 @@
-use cardinal_stake_pool::state::StakeEntry;
-
 use crate::errors::ErrorCode;
+use crate::instructions::reward_receipts::ReceiptEntry;
+use crate::instructions::reward_receipts::ReceiptManager;
 use crate::state::*;
 use anchor_lang::prelude::*;
 

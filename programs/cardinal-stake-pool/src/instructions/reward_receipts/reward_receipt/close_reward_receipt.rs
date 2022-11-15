@@ -1,5 +1,6 @@
 use crate::errors::ErrorCode;
-use crate::state::*;
+use crate::instructions::reward_receipts::ReceiptManager;
+use crate::instructions::reward_receipts::RewardReceipt;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]

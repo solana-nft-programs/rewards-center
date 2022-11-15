@@ -16,12 +16,6 @@ const configs = [
     programDir: "programs/cardinal-reward-distributor",
     outDir: path.join(__dirname, "sdk", "generated/rewardDistributor"),
   },
-  {
-    programName: "cardinal_receipt_manager",
-    programId: "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp",
-    programDir: "programs/cardinal-receipt-manager",
-    outDir: path.join(__dirname, "sdk", "generated/receiptManager"),
-  },
 ];
 
 async function main() {

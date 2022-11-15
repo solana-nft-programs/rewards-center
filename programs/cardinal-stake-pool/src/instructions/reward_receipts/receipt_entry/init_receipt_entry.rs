@@ -1,6 +1,8 @@
+use crate::instructions::reward_receipts::ReceiptEntry;
+use crate::instructions::reward_receipts::RECEIPT_ENTRY_SEED;
+use crate::instructions::reward_receipts::RECEIPT_ENTRY_SIZE;
 use crate::state::*;
 use anchor_lang::prelude::*;
-use cardinal_stake_pool::state::StakeEntry;
 
 #[derive(Accounts)]
 pub struct InitReceiptEntryCtx<'info> {

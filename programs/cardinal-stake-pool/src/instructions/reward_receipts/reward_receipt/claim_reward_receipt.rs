@@ -2,14 +2,17 @@ use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use cardinal_payment_manager::program::CardinalPaymentManager;
 use cardinal_payment_manager::state::PaymentManager;
-use cardinal_stake_pool::state::StakeEntry;
 
 use crate::errors::ErrorCode;
+use crate::instructions::reward_receipts::get_payment_mints;
+use crate::instructions::reward_receipts::ReceiptEntry;
+use crate::instructions::reward_receipts::ReceiptManager;
+use crate::instructions::reward_receipts::RewardReceipt;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-pub struct CreateRewardReceiptCtx<'info> {
+pub struct ClaimRewardReceiptCtx<'info> {
     #[account(mut, constraint = reward_receipt.receipt_manager == receipt_manager.key() && reward_receipt.receipt_entry == receipt_entry.key() @ ErrorCode::InvalidRewardReceipt)]
     reward_receipt: Box<Account<'info, RewardReceipt>>,
     #[account(mut)]
@@ -40,7 +43,7 @@ pub struct CreateRewardReceiptCtx<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<CreateRewardReceiptCtx>) -> Result<()> {
+pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     let reward_receipt = &mut ctx.accounts.reward_receipt;
 
     if reward_receipt.target != Pubkey::default() {

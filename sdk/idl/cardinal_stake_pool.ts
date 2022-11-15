@@ -518,6 +518,284 @@ export type CardinalStakePool = {
         }
       ];
       args: [];
+    },
+    {
+      name: "initReceiptManager";
+      accounts: [
+        {
+          name: "receiptManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "InitReceiptManagerIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "updateReceiptManager";
+      accounts: [
+        {
+          name: "receiptManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdateReceiptManagerIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "closeReceiptManager";
+      accounts: [
+        {
+          name: "receiptManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initReceiptEntry";
+      accounts: [
+        {
+          name: "receiptEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "closeReceiptEntry";
+      accounts: [
+        {
+          name: "receiptEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "receiptManager";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initRewardReceipt";
+      accounts: [
+        {
+          name: "rewardReceipt";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "receiptManager";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receiptEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "closeRewardReceipt";
+      accounts: [
+        {
+          name: "rewardReceipt";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "receiptManager";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "claimRewardReceipt";
+      accounts: [
+        {
+          name: "rewardReceipt";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "receiptManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receiptEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "paymentManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "feeCollectorTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "paymentRecipientTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payerTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "claimer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "cardinalPaymentManager";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "setRewardReceiptAllowed";
+      accounts: [
+        {
+          name: "receiptManager";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardReceipt";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "allowed";
+          type: "bool";
+        }
+      ];
     }
   ];
   accounts: [
@@ -537,6 +815,112 @@ export type CardinalStakePool = {
           {
             name: "mint";
             type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "receiptManager";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "requiredStakeSeconds";
+            type: "u128";
+          },
+          {
+            name: "stakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "claimedReceiptsCounter";
+            type: "u128";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentManager";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
+            type: "publicKey";
+          },
+          {
+            name: "requiresAuthorization";
+            type: "bool";
+          },
+          {
+            name: "name";
+            type: "string";
+          },
+          {
+            name: "maxClaimedReceipts";
+            type: {
+              option: "u128";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "receiptEntry";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakeEntry";
+            type: "publicKey";
+          },
+          {
+            name: "usedStakeSeconds";
+            type: "u128";
+          }
+        ];
+      };
+    },
+    {
+      name: "rewardReceipt";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "receiptEntry";
+            type: "publicKey";
+          },
+          {
+            name: "receiptManager";
+            type: "publicKey";
+          },
+          {
+            name: "target";
+            type: "publicKey";
+          },
+          {
+            name: "allowed";
+            type: "bool";
           }
         ];
       };
@@ -723,6 +1107,94 @@ export type CardinalStakePool = {
     }
   ];
   types: [
+    {
+      name: "InitReceiptManagerIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "name";
+            type: "string";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "requiredStakeSeconds";
+            type: "u128";
+          },
+          {
+            name: "stakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentManager";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
+            type: "publicKey";
+          },
+          {
+            name: "requiresAuthorization";
+            type: "bool";
+          },
+          {
+            name: "maxClaimedReceipts";
+            type: {
+              option: "u128";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdateReceiptManagerIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "requiredStakeSeconds";
+            type: "u128";
+          },
+          {
+            name: "stakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentManager";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
+            type: "publicKey";
+          },
+          {
+            name: "requiresAuthorization";
+            type: "bool";
+          },
+          {
+            name: "maxClaimedReceipts";
+            type: {
+              option: "u128";
+            };
+          }
+        ];
+      };
+    },
     {
       name: "BoostStakeEntryIx";
       type: {
@@ -1079,6 +1551,71 @@ export type CardinalStakePool = {
       code: 6065;
       name: "CannotBoostFungibleToken";
       msg: "Cannot boost a fungible token stake entry";
+    },
+    {
+      code: 6070;
+      name: "MaxNumberOfReceiptsExceeded";
+      msg: "Max number of receipts exceeded";
+    },
+    {
+      code: 6071;
+      name: "InvalidClaimer";
+      msg: "Invalid claimer";
+    },
+    {
+      code: 6072;
+      name: "RewardSecondsNotSatisfied";
+      msg: "Reward seconds not satisifed";
+    },
+    {
+      code: 6073;
+      name: "InvalidPayerTokenAcount";
+      msg: "Invalid payer token account";
+    },
+    {
+      code: 6074;
+      name: "InvalidMaxClaimedReceipts";
+      msg: "Invalid max claimed receipts";
+    },
+    {
+      code: 6075;
+      name: "InvalidPaymentTokenAccount";
+      msg: "Invalid payment token account";
+    },
+    {
+      code: 6076;
+      name: "InvalidPaymentCollector";
+      msg: "Invalid payment collector";
+    },
+    {
+      code: 6077;
+      name: "InvalidRewardReceipt";
+      msg: "Invalid reward receipt";
+    },
+    {
+      code: 6078;
+      name: "InvalidReceiptEntry";
+      msg: "Invalid receipt entry";
+    },
+    {
+      code: 6079;
+      name: "InsufficientAvailableStakeSeconds";
+      msg: "Insufficient available stake seconds to use";
+    },
+    {
+      code: 6080;
+      name: "InvalidReceiptManager";
+      msg: "Invalid receipt manager";
+    },
+    {
+      code: 6081;
+      name: "RewardReceiptIsNotAllowed";
+      msg: "Reward receipt is not allowed";
+    },
+    {
+      code: 6082;
+      name: "RewardReceiptAlreadyClaimed";
+      msg: "Reward receipt already claimed";
     }
   ];
 };
@@ -1604,6 +2141,284 @@ export const IDL: CardinalStakePool = {
       ],
       args: [],
     },
+    {
+      name: "initReceiptManager",
+      accounts: [
+        {
+          name: "receiptManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "InitReceiptManagerIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "updateReceiptManager",
+      accounts: [
+        {
+          name: "receiptManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdateReceiptManagerIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "closeReceiptManager",
+      accounts: [
+        {
+          name: "receiptManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initReceiptEntry",
+      accounts: [
+        {
+          name: "receiptEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "closeReceiptEntry",
+      accounts: [
+        {
+          name: "receiptEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "receiptManager",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initRewardReceipt",
+      accounts: [
+        {
+          name: "rewardReceipt",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "receiptManager",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receiptEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "closeRewardReceipt",
+      accounts: [
+        {
+          name: "rewardReceipt",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "receiptManager",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "claimRewardReceipt",
+      accounts: [
+        {
+          name: "rewardReceipt",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "receiptManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receiptEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "paymentManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "feeCollectorTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "paymentRecipientTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payerTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "claimer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "cardinalPaymentManager",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "setRewardReceiptAllowed",
+      accounts: [
+        {
+          name: "receiptManager",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardReceipt",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "allowed",
+          type: "bool",
+        },
+      ],
+    },
   ],
   accounts: [
     {
@@ -1622,6 +2437,112 @@ export const IDL: CardinalStakePool = {
           {
             name: "mint",
             type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "receiptManager",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "requiredStakeSeconds",
+            type: "u128",
+          },
+          {
+            name: "stakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "claimedReceiptsCounter",
+            type: "u128",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentManager",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
+            type: "publicKey",
+          },
+          {
+            name: "requiresAuthorization",
+            type: "bool",
+          },
+          {
+            name: "name",
+            type: "string",
+          },
+          {
+            name: "maxClaimedReceipts",
+            type: {
+              option: "u128",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "receiptEntry",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakeEntry",
+            type: "publicKey",
+          },
+          {
+            name: "usedStakeSeconds",
+            type: "u128",
+          },
+        ],
+      },
+    },
+    {
+      name: "rewardReceipt",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "receiptEntry",
+            type: "publicKey",
+          },
+          {
+            name: "receiptManager",
+            type: "publicKey",
+          },
+          {
+            name: "target",
+            type: "publicKey",
+          },
+          {
+            name: "allowed",
+            type: "bool",
           },
         ],
       },
@@ -1808,6 +2729,94 @@ export const IDL: CardinalStakePool = {
     },
   ],
   types: [
+    {
+      name: "InitReceiptManagerIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "name",
+            type: "string",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "requiredStakeSeconds",
+            type: "u128",
+          },
+          {
+            name: "stakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentManager",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
+            type: "publicKey",
+          },
+          {
+            name: "requiresAuthorization",
+            type: "bool",
+          },
+          {
+            name: "maxClaimedReceipts",
+            type: {
+              option: "u128",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdateReceiptManagerIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "requiredStakeSeconds",
+            type: "u128",
+          },
+          {
+            name: "stakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentManager",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
+            type: "publicKey",
+          },
+          {
+            name: "requiresAuthorization",
+            type: "bool",
+          },
+          {
+            name: "maxClaimedReceipts",
+            type: {
+              option: "u128",
+            },
+          },
+        ],
+      },
+    },
     {
       name: "BoostStakeEntryIx",
       type: {
@@ -2164,6 +3173,71 @@ export const IDL: CardinalStakePool = {
       code: 6065,
       name: "CannotBoostFungibleToken",
       msg: "Cannot boost a fungible token stake entry",
+    },
+    {
+      code: 6070,
+      name: "MaxNumberOfReceiptsExceeded",
+      msg: "Max number of receipts exceeded",
+    },
+    {
+      code: 6071,
+      name: "InvalidClaimer",
+      msg: "Invalid claimer",
+    },
+    {
+      code: 6072,
+      name: "RewardSecondsNotSatisfied",
+      msg: "Reward seconds not satisifed",
+    },
+    {
+      code: 6073,
+      name: "InvalidPayerTokenAcount",
+      msg: "Invalid payer token account",
+    },
+    {
+      code: 6074,
+      name: "InvalidMaxClaimedReceipts",
+      msg: "Invalid max claimed receipts",
+    },
+    {
+      code: 6075,
+      name: "InvalidPaymentTokenAccount",
+      msg: "Invalid payment token account",
+    },
+    {
+      code: 6076,
+      name: "InvalidPaymentCollector",
+      msg: "Invalid payment collector",
+    },
+    {
+      code: 6077,
+      name: "InvalidRewardReceipt",
+      msg: "Invalid reward receipt",
+    },
+    {
+      code: 6078,
+      name: "InvalidReceiptEntry",
+      msg: "Invalid receipt entry",
+    },
+    {
+      code: 6079,
+      name: "InsufficientAvailableStakeSeconds",
+      msg: "Insufficient available stake seconds to use",
+    },
+    {
+      code: 6080,
+      name: "InvalidReceiptManager",
+      msg: "Invalid receipt manager",
+    },
+    {
+      code: 6081,
+      name: "RewardReceiptIsNotAllowed",
+      msg: "Reward receipt is not allowed",
+    },
+    {
+      code: 6082,
+      name: "RewardReceiptAlreadyClaimed",
+      msg: "Reward receipt already claimed",
     },
   ],
 };

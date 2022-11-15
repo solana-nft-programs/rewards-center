@@ -1,8 +1,12 @@
-use cardinal_stake_pool::state::StakeEntry;
-
 use crate::errors::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
+
+use crate::instructions::reward_receipts::ReceiptEntry;
+use crate::instructions::reward_receipts::ReceiptManager;
+use crate::instructions::reward_receipts::RewardReceipt;
+use crate::instructions::reward_receipts::REWARD_RECEIPT_SEED;
+use crate::instructions::reward_receipts::REWARD_RECEIPT_SIZE;
 
 #[derive(Accounts)]
 pub struct InitRewardReceiptCtx<'info> {

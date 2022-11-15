@@ -1,11 +1,11 @@
-use cardinal_stake_pool::state::StakePool;
-
+use crate::errors::ErrorCode;
+use crate::instructions::reward_receipts::assert_allowed_payment_manager;
+use crate::instructions::reward_receipts::ReceiptManager;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct InitReceiptManagerIx {
-    pub name: String,
+pub struct UpdateReceiptManagerIx {
     pub authority: Pubkey,
     pub required_stake_seconds: u128,
     pub stake_seconds_to_use: u128,
@@ -17,35 +17,28 @@ pub struct InitReceiptManagerIx {
 }
 
 #[derive(Accounts)]
-#[instruction(ix: InitReceiptManagerIx)]
-pub struct InitReceiptManagerCtx<'info> {
-    #[account(
-        init,
-        payer = payer,
-        space = RECEIPT_MANAGER_SIZE,
-        seeds = [RECEIPT_MANAGER_SEED.as_bytes(), stake_pool.key().as_ref(), ix.name.as_ref()],
-        bump,
-    )]
-    receipt_manager: Box<Account<'info, ReceiptManager>>,
-    stake_pool: Box<Account<'info, StakePool>>,
-
+#[instruction(ix: UpdateReceiptManagerIx)]
+pub struct UpdateReceiptManagerCtx<'info> {
     #[account(mut)]
-    payer: Signer<'info>,
-    system_program: Program<'info, System>,
+    receipt_manager: Box<Account<'info, ReceiptManager>>,
+    #[account(constraint = authority.key() == receipt_manager.authority @ ErrorCode::InvalidAuthority)]
+    authority: Signer<'info>,
 }
 
-pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
-    let receipt_manager = &mut ctx.accounts.receipt_manager;
+pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx) -> Result<()> {
     assert_allowed_payment_info(&ix.payment_mint.to_string())?;
     assert_allowed_payment_manager(&ix.payment_manager.to_string(), &ix.payment_recipient.to_string())?;
 
-    receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
-    receipt_manager.name = ix.name;
-    receipt_manager.stake_pool = ctx.accounts.stake_pool.key();
+    if let Some(max_claimed_receipts) = ix.max_claimed_receipts {
+        if ctx.accounts.receipt_manager.claimed_receipts_counter > max_claimed_receipts {
+            return Err(error!(ErrorCode::InvalidMaxClaimedReceipts));
+        }
+    }
+
+    let receipt_manager = &mut ctx.accounts.receipt_manager;
     receipt_manager.authority = ix.authority;
     receipt_manager.required_stake_seconds = ix.required_stake_seconds;
     receipt_manager.stake_seconds_to_use = ix.stake_seconds_to_use;
-    receipt_manager.claimed_receipts_counter = 0;
     receipt_manager.payment_mint = ix.payment_mint;
     receipt_manager.payment_manager = ix.payment_manager;
     receipt_manager.payment_recipient = ix.payment_recipient;

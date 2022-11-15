@@ -565,6 +565,323 @@ createErrorFromNameLookup.set(
 )
 
 /**
+ * MaxNumberOfReceiptsExceeded: 'Max number of receipts exceeded'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class MaxNumberOfReceiptsExceededError extends Error {
+  readonly code: number = 0x17b6
+  readonly name: string = 'MaxNumberOfReceiptsExceeded'
+  constructor() {
+    super('Max number of receipts exceeded')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, MaxNumberOfReceiptsExceededError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17b6,
+  () => new MaxNumberOfReceiptsExceededError()
+)
+createErrorFromNameLookup.set(
+  'MaxNumberOfReceiptsExceeded',
+  () => new MaxNumberOfReceiptsExceededError()
+)
+
+/**
+ * InvalidClaimer: 'Invalid claimer'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidClaimerError extends Error {
+  readonly code: number = 0x17b7
+  readonly name: string = 'InvalidClaimer'
+  constructor() {
+    super('Invalid claimer')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidClaimerError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17b7, () => new InvalidClaimerError())
+createErrorFromNameLookup.set('InvalidClaimer', () => new InvalidClaimerError())
+
+/**
+ * RewardSecondsNotSatisfied: 'Reward seconds not satisifed'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class RewardSecondsNotSatisfiedError extends Error {
+  readonly code: number = 0x17b8
+  readonly name: string = 'RewardSecondsNotSatisfied'
+  constructor() {
+    super('Reward seconds not satisifed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardSecondsNotSatisfiedError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17b8,
+  () => new RewardSecondsNotSatisfiedError()
+)
+createErrorFromNameLookup.set(
+  'RewardSecondsNotSatisfied',
+  () => new RewardSecondsNotSatisfiedError()
+)
+
+/**
+ * InvalidPayerTokenAcount: 'Invalid payer token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPayerTokenAcountError extends Error {
+  readonly code: number = 0x17b9
+  readonly name: string = 'InvalidPayerTokenAcount'
+  constructor() {
+    super('Invalid payer token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPayerTokenAcountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17b9, () => new InvalidPayerTokenAcountError())
+createErrorFromNameLookup.set(
+  'InvalidPayerTokenAcount',
+  () => new InvalidPayerTokenAcountError()
+)
+
+/**
+ * InvalidMaxClaimedReceipts: 'Invalid max claimed receipts'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidMaxClaimedReceiptsError extends Error {
+  readonly code: number = 0x17ba
+  readonly name: string = 'InvalidMaxClaimedReceipts'
+  constructor() {
+    super('Invalid max claimed receipts')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidMaxClaimedReceiptsError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17ba,
+  () => new InvalidMaxClaimedReceiptsError()
+)
+createErrorFromNameLookup.set(
+  'InvalidMaxClaimedReceipts',
+  () => new InvalidMaxClaimedReceiptsError()
+)
+
+/**
+ * InvalidPaymentTokenAccount: 'Invalid payment token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPaymentTokenAccountError extends Error {
+  readonly code: number = 0x17bb
+  readonly name: string = 'InvalidPaymentTokenAccount'
+  constructor() {
+    super('Invalid payment token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17bb,
+  () => new InvalidPaymentTokenAccountError()
+)
+createErrorFromNameLookup.set(
+  'InvalidPaymentTokenAccount',
+  () => new InvalidPaymentTokenAccountError()
+)
+
+/**
+ * InvalidPaymentCollector: 'Invalid payment collector'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPaymentCollectorError extends Error {
+  readonly code: number = 0x17bc
+  readonly name: string = 'InvalidPaymentCollector'
+  constructor() {
+    super('Invalid payment collector')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentCollectorError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17bc, () => new InvalidPaymentCollectorError())
+createErrorFromNameLookup.set(
+  'InvalidPaymentCollector',
+  () => new InvalidPaymentCollectorError()
+)
+
+/**
+ * InvalidRewardReceipt: 'Invalid reward receipt'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardReceiptError extends Error {
+  readonly code: number = 0x17bd
+  readonly name: string = 'InvalidRewardReceipt'
+  constructor() {
+    super('Invalid reward receipt')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardReceiptError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17bd, () => new InvalidRewardReceiptError())
+createErrorFromNameLookup.set(
+  'InvalidRewardReceipt',
+  () => new InvalidRewardReceiptError()
+)
+
+/**
+ * InvalidReceiptEntry: 'Invalid receipt entry'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidReceiptEntryError extends Error {
+  readonly code: number = 0x17be
+  readonly name: string = 'InvalidReceiptEntry'
+  constructor() {
+    super('Invalid receipt entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidReceiptEntryError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17be, () => new InvalidReceiptEntryError())
+createErrorFromNameLookup.set(
+  'InvalidReceiptEntry',
+  () => new InvalidReceiptEntryError()
+)
+
+/**
+ * InsufficientAvailableStakeSeconds: 'Insufficient available stake seconds to use'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InsufficientAvailableStakeSecondsError extends Error {
+  readonly code: number = 0x17bf
+  readonly name: string = 'InsufficientAvailableStakeSeconds'
+  constructor() {
+    super('Insufficient available stake seconds to use')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InsufficientAvailableStakeSecondsError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17bf,
+  () => new InsufficientAvailableStakeSecondsError()
+)
+createErrorFromNameLookup.set(
+  'InsufficientAvailableStakeSeconds',
+  () => new InsufficientAvailableStakeSecondsError()
+)
+
+/**
+ * InvalidReceiptManager: 'Invalid receipt manager'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidReceiptManagerError extends Error {
+  readonly code: number = 0x17c0
+  readonly name: string = 'InvalidReceiptManager'
+  constructor() {
+    super('Invalid receipt manager')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidReceiptManagerError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17c0, () => new InvalidReceiptManagerError())
+createErrorFromNameLookup.set(
+  'InvalidReceiptManager',
+  () => new InvalidReceiptManagerError()
+)
+
+/**
+ * RewardReceiptIsNotAllowed: 'Reward receipt is not allowed'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class RewardReceiptIsNotAllowedError extends Error {
+  readonly code: number = 0x17c1
+  readonly name: string = 'RewardReceiptIsNotAllowed'
+  constructor() {
+    super('Reward receipt is not allowed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardReceiptIsNotAllowedError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17c1,
+  () => new RewardReceiptIsNotAllowedError()
+)
+createErrorFromNameLookup.set(
+  'RewardReceiptIsNotAllowed',
+  () => new RewardReceiptIsNotAllowedError()
+)
+
+/**
+ * RewardReceiptAlreadyClaimed: 'Reward receipt already claimed'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class RewardReceiptAlreadyClaimedError extends Error {
+  readonly code: number = 0x17c2
+  readonly name: string = 'RewardReceiptAlreadyClaimed'
+  constructor() {
+    super('Reward receipt already claimed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, RewardReceiptAlreadyClaimedError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17c2,
+  () => new RewardReceiptAlreadyClaimedError()
+)
+createErrorFromNameLookup.set(
+  'RewardReceiptAlreadyClaimed',
+  () => new RewardReceiptAlreadyClaimedError()
+)
+
+/**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  * @category generated

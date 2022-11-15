@@ -27,3 +27,15 @@ pub use stake_booster::update_stake_booster::*;
 pub mod editions;
 pub use editions::stake_edition::*;
 pub use editions::unstake_edition::*;
+
+// reward_receipts
+pub mod reward_receipts;
+pub use reward_receipts::receipt_entry::close_receipt_entry::*;
+pub use reward_receipts::receipt_entry::init_receipt_entry::*;
+pub use reward_receipts::receipt_manager::close_receipt_manager::*;
+pub use reward_receipts::receipt_manager::init_receipt_manager::*;
+pub use reward_receipts::receipt_manager::update_receipt_manager::*;
+pub use reward_receipts::reward_receipt::claim_reward_receipt::*;
+pub use reward_receipts::reward_receipt::close_reward_receipt::*;
+pub use reward_receipts::reward_receipt::init_reward_receipt::*;
+pub use reward_receipts::reward_receipt::set_reward_receipt_allowed::*;
