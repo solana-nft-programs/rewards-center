@@ -1,10 +1,20 @@
+pub mod stake_pool;
+pub use stake_pool::*;
+pub mod stake_entry;
+pub use stake_entry::*;
+pub mod authorization;
+pub use authorization::*;
+pub mod reward_distribution;
+pub use reward_distribution::*;
+pub mod stake_booster;
+pub use stake_booster::*;
+pub mod reward_receipts;
+pub use reward_receipts::*;
+
 pub mod errors;
-pub mod instructions;
-pub mod state;
 pub mod utils;
 
 use anchor_lang::prelude::*;
-use instructions::*;
 
 declare_id!("rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ");
 
