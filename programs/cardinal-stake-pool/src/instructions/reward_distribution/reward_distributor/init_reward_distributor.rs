@@ -1,12 +1,15 @@
 use crate::errors::ErrorCode;
-use crate::state::*;
+use crate::instructions::reward_distribution::RewardDistributor;
+use crate::instructions::reward_distribution::RewardDistributorKind;
+use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SEED;
+use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SIZE;
+use crate::state::StakePool;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use anchor_spl::token::SetAuthority;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
-use cardinal_stake_pool::state::StakePool;
 use spl_token::instruction::AuthorityType;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]

@@ -1,5 +1,10 @@
 use crate::errors::ErrorCode;
-use crate::state::*;
+use crate::instructions::reward_distribution::RewardDistributor;
+use crate::instructions::reward_distribution::RewardDistributorKind;
+use crate::instructions::reward_distribution::RewardEntry;
+use crate::instructions::reward_distribution::{assert_reward_manager, CLAIM_REWARD_LAMPORTS, REWARD_DISTRIBUTOR_SEED};
+use crate::state::StakeEntry;
+use crate::state::StakePool;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_lang::solana_program::system_instruction::transfer;
@@ -7,8 +12,6 @@ use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
-use cardinal_stake_pool::state::StakeEntry;
-use cardinal_stake_pool::state::StakePool;
 use std::cmp::min;
 
 #[derive(Accounts)]

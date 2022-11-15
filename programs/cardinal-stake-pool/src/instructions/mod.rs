@@ -39,3 +39,13 @@ pub use reward_receipts::reward_receipt::claim_reward_receipt::*;
 pub use reward_receipts::reward_receipt::close_reward_receipt::*;
 pub use reward_receipts::reward_receipt::init_reward_receipt::*;
 pub use reward_receipts::reward_receipt::set_reward_receipt_allowed::*;
+
+// reward_distribution
+pub mod reward_distribution;
+pub use reward_distribution::reward_distributor::close_reward_distributor::*;
+pub use reward_distribution::reward_distributor::init_reward_distributor::*;
+pub use reward_distribution::reward_distributor::update_reward_distributor::*;
+pub use reward_distribution::reward_entry::claim_rewards::*;
+pub use reward_distribution::reward_entry::close_reward_entry::*;
+pub use reward_distribution::reward_entry::init_reward_entry::*;
+pub use reward_distribution::reward_entry::update_reward_entry::*;

@@ -1,5 +1,6 @@
 use crate::errors::ErrorCode;
-use crate::state::*;
+use crate::instructions::reward_distribution::RewardDistributor;
+use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;

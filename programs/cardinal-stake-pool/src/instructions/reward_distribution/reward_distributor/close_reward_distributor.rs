@@ -1,18 +1,19 @@
-use anchor_lang::AccountsClose;
-
 use crate::errors::ErrorCode;
-use crate::state::*;
+use crate::instructions::reward_distribution::RewardDistributor;
+use crate::instructions::reward_distribution::RewardDistributorKind;
+use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SEED;
+use crate::state::StakePool;
 use anchor_lang::prelude::*;
+use anchor_lang::AccountsClose;
 use anchor_spl::token::Mint;
 use anchor_spl::token::SetAuthority;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
-use cardinal_stake_pool::state::StakePool;
 use spl_token::instruction::AuthorityType;
 
 #[derive(Accounts)]
-pub struct CloseCtx<'info> {
+pub struct CloseRewardDistributorCtx<'info> {
     #[account(mut, constraint = reward_distributor.stake_pool == stake_pool.key())]
     reward_distributor: Box<Account<'info, RewardDistributor>>,
     stake_pool: Box<Account<'info, StakePool>>,
@@ -26,7 +27,7 @@ pub struct CloseCtx<'info> {
     token_program: Program<'info, Token>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, CloseCtx<'info>>) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, CloseRewardDistributorCtx<'info>>) -> Result<()> {
     let reward_distributor = &mut ctx.accounts.reward_distributor;
     let reward_distributor_seed = &[REWARD_DISTRIBUTOR_SEED.as_bytes(), reward_distributor.stake_pool.as_ref(), &[reward_distributor.bump]];
     let reward_distributor_signer = &[&reward_distributor_seed[..]];

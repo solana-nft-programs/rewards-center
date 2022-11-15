@@ -425,18 +425,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cardinal-reward-distributor"
-version = "1.10.7"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "cardinal-stake-pool",
- "proptest",
- "solana-program",
- "spl-token",
-]
-
-[[package]]
 name = "cardinal-stake-pool"
 version = "1.10.7"
 dependencies = [

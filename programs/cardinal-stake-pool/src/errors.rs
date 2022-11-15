@@ -89,4 +89,32 @@ pub enum ErrorCode {
     RewardReceiptIsNotAllowed,
     #[msg("Reward receipt already claimed")]
     RewardReceiptAlreadyClaimed,
+
+    // reward_distribution errors
+    #[msg("Invalid token account")]
+    InvalidTokenAccount = 90,
+    #[msg("Invalid reward mint")]
+    InvalidRewardMint,
+    #[msg("Invalid user reward mint token account")]
+    InvalidUserRewardMintTokenAccount,
+    #[msg("Invalid reward distributor")]
+    InvalidRewardDistributor,
+    #[msg("Invalid reward distributor authority")]
+    InvalidRewardDistributorAuthority,
+    #[msg("Invalid reward distributor kind")]
+    InvalidRewardDistributorKind,
+    #[msg("Initial supply required for kind treasury")]
+    SupplyRequired,
+    #[msg("Invalid distributor for pool")]
+    InvalidPoolDistributor,
+    #[msg("Distributor is already open")]
+    DistributorNotClosed,
+    #[msg("Distributor is already closed")]
+    DistributorAlreadyClosed,
+    #[msg("Invalid reward entry")]
+    InvalidRewardEntry,
+    #[msg("Invalid reward distributor token account")]
+    InvalidRewardDistributorTokenAccount,
+    #[msg("Invalid authority token account")]
+    InvalidAuthorityTokenAccount,
 }

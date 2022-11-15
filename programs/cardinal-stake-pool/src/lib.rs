@@ -100,4 +100,30 @@ pub mod cardinal_stake_pool {
     pub fn set_reward_receipt_allowed(ctx: Context<SetRewardReceiptAllowedCtx>, allowed: bool) -> Result<()> {
         reward_receipts::reward_receipt::set_reward_receipt_allowed::handler(ctx, allowed)
     }
+
+    //// reward_distribution ////
+    //// reward_distribution::reward_distributor ////
+    pub fn init_reward_distributor<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, InitRewardDistributorCtx<'info>>, ix: InitRewardDistributorIx) -> Result<()> {
+        reward_distribution::reward_distributor::init_reward_distributor::handler(ctx, ix)
+    }
+    pub fn update_reward_distributor(ctx: Context<UpdateRewardDistributorCtx>, ix: UpdateRewardDistributorIx) -> Result<()> {
+        reward_distribution::reward_distributor::update_reward_distributor::handler(ctx, ix)
+    }
+    pub fn close_reward_distributor<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, CloseRewardDistributorCtx<'info>>) -> Result<()> {
+        reward_distribution::reward_distributor::close_reward_distributor::handler(ctx)
+    }
+
+    //// reward_distribution::reward_entry ////
+    pub fn init_reward_entry(ctx: Context<InitRewardEntryCtx>) -> Result<()> {
+        reward_distribution::reward_entry::init_reward_entry::handler(ctx)
+    }
+    pub fn close_reward_entry(ctx: Context<CloseRewardEntryCtx>) -> Result<()> {
+        reward_distribution::reward_entry::close_reward_entry::handler(ctx)
+    }
+    pub fn update_reward_entry(ctx: Context<UpdateRewardEntryCtx>, ix: UpdateRewardEntryIx) -> Result<()> {
+        reward_distribution::reward_entry::update_reward_entry::handler(ctx, ix)
+    }
+    pub fn claim_rewards<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ClaimRewardsCtx<'info>>) -> Result<()> {
+        reward_distribution::reward_entry::claim_rewards::handler(ctx)
+    }
 }

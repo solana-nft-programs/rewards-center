@@ -1,6 +1,8 @@
-use cardinal_stake_pool::state::StakeEntry;
-
-use crate::state::*;
+use crate::instructions::reward_distribution::RewardDistributor;
+use crate::instructions::reward_distribution::RewardEntry;
+use crate::instructions::reward_distribution::REWARD_ENTRY_SEED;
+use crate::instructions::reward_distribution::REWARD_ENTRY_SIZE;
+use crate::state::StakeEntry;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
