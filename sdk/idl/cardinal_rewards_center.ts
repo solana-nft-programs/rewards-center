@@ -1127,6 +1127,10 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
+            name: "identifier";
+            type: "u64";
+          },
+          {
             name: "rewardMint";
             type: "publicKey";
           },
@@ -1469,6 +1473,10 @@ export type CardinalRewardsCenter = {
           {
             name: "rewardDurationSeconds";
             type: "u128";
+          },
+          {
+            name: "identifier";
+            type: "u64";
           },
           {
             name: "kind";
@@ -3264,6 +3272,10 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
+            name: "identifier",
+            type: "u64",
+          },
+          {
             name: "rewardMint",
             type: "publicKey",
           },
@@ -3606,6 +3618,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "rewardDurationSeconds",
             type: "u128",
+          },
+          {
+            name: "identifier",
+            type: "u64",
           },
           {
             name: "kind",

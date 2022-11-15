@@ -1,5 +1,5 @@
-use crate::assert_stake_pool_payment_info;
-use crate::assert_stake_pool_payment_manager;
+use crate::stake_pool::assert_stake_pool_payment_info;
+use crate::stake_pool::assert_stake_pool_payment_manager;
 use crate::utils::resize_account;
 use crate::StakePool;
 use anchor_lang::prelude::*;

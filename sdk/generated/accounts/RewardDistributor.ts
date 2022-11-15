@@ -19,6 +19,7 @@ export type RewardDistributorArgs = {
   stakePool: web3.PublicKey
   kind: number
   authority: web3.PublicKey
+  identifier: beet.bignum
   rewardMint: web3.PublicKey
   rewardAmount: beet.bignum
   rewardDurationSeconds: beet.bignum
@@ -45,6 +46,7 @@ export class RewardDistributor implements RewardDistributorArgs {
     readonly stakePool: web3.PublicKey,
     readonly kind: number,
     readonly authority: web3.PublicKey,
+    readonly identifier: beet.bignum,
     readonly rewardMint: web3.PublicKey,
     readonly rewardAmount: beet.bignum,
     readonly rewardDurationSeconds: beet.bignum,
@@ -64,6 +66,7 @@ export class RewardDistributor implements RewardDistributorArgs {
       args.stakePool,
       args.kind,
       args.authority,
+      args.identifier,
       args.rewardMint,
       args.rewardAmount,
       args.rewardDurationSeconds,
@@ -180,6 +183,17 @@ export class RewardDistributor implements RewardDistributorArgs {
       stakePool: this.stakePool.toBase58(),
       kind: this.kind,
       authority: this.authority.toBase58(),
+      identifier: (() => {
+        const x = <{ toNumber: () => number }>this.identifier
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber()
+          } catch (_) {
+            return x
+          }
+        }
+        return x
+      })(),
       rewardMint: this.rewardMint.toBase58(),
       rewardAmount: (() => {
         const x = <{ toNumber: () => number }>this.rewardAmount
@@ -248,6 +262,7 @@ export const rewardDistributorBeet = new beet.FixableBeetStruct<
     ['stakePool', beetSolana.publicKey],
     ['kind', beet.u8],
     ['authority', beetSolana.publicKey],
+    ['identifier', beet.u64],
     ['rewardMint', beetSolana.publicKey],
     ['rewardAmount', beet.u64],
     ['rewardDurationSeconds', beet.u128],
