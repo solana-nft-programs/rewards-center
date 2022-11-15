@@ -47,18 +47,15 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     if reward_receipt.target != Pubkey::default() {
         return Err(error!(ErrorCode::RewardReceiptAlreadyClaimed));
     }
-
-    reward_receipt.target = ctx.accounts.claimer.key();
-    // increment counter
-    ctx.accounts.receipt_manager.claimed_receipts_counter = ctx.accounts.receipt_manager.claimed_receipts_counter.checked_add(1).expect("Add error");
-
     if ctx.accounts.receipt_manager.requires_authorization && !reward_receipt.allowed {
         return Err(error!(ErrorCode::RewardReceiptIsNotAllowed));
     }
-
     if ctx.accounts.stake_entry.total_stake_seconds < ctx.accounts.receipt_manager.required_stake_seconds {
         return Err(error!(ErrorCode::RewardSecondsNotSatisfied));
     }
+
+    reward_receipt.target = ctx.accounts.claimer.key();
+    ctx.accounts.receipt_manager.claimed_receipts_counter = ctx.accounts.receipt_manager.claimed_receipts_counter.checked_add(1).expect("Add error");
 
     let receipt_manager = &mut ctx.accounts.receipt_manager;
     if let Some(max_reward_receipts) = receipt_manager.max_claimed_receipts {
@@ -74,18 +71,6 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     if receipt_entry.used_stake_seconds > ctx.accounts.stake_entry.total_stake_seconds {
         return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
     }
-    // same check as ^^
-    // if ctx.accounts.receipt_manager.stake_seconds_to_use != 0
-    //     && ctx
-    //         .accounts
-    //         .stake_entry
-    //         .total_stake_seconds
-    //         .checked_sub(ctx.accounts.receipt_entry.used_stake_seconds)
-    //         .expect("Sub error")
-    //         < ctx.accounts.receipt_manager.stake_seconds_to_use
-    // {
-    //     return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
-    // }
 
     // handle payment
     let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
