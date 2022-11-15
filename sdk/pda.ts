@@ -1,7 +1,7 @@
 import { utils } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
-import { REWARDS_CENTER_ADDRESS } from "./constants";
+import { PROGRAM_ID } from "./generated";
 
 export const STAKE_ENTRY_SEED = "stake-entry";
 export const findStakeEntryId = (
@@ -16,7 +16,7 @@ export const findStakeEntryId = (
       mintId.toBuffer(),
       user ? user.toBuffer() : PublicKey.default.toBuffer(),
     ],
-    REWARDS_CENTER_ADDRESS
+    PROGRAM_ID
   )[0];
 };
 
@@ -27,7 +27,7 @@ export const findStakePoolId = (identifier: string): PublicKey => {
       utils.bytes.utf8.encode(STAKE_POOL_SEED),
       utils.bytes.utf8.encode(identifier),
     ],
-    REWARDS_CENTER_ADDRESS
+    PROGRAM_ID
   )[0];
 };
 
@@ -42,6 +42,6 @@ export const findUserEscrowId = (
       stakePoolId.toBuffer(),
       user.toBuffer(),
     ],
-    REWARDS_CENTER_ADDRESS
+    PROGRAM_ID
   )[0];
 };
