@@ -1,7 +1,12 @@
 import { beforeAll, expect, test } from "@jest/globals";
 import { Transaction } from "@solana/web3.js";
 
-import { findStakePoolId, stakePool } from "../../sdk";
+import { findStakePoolId } from "../../sdk";
+import {
+  createInitPoolInstruction,
+  createUpdatePoolInstruction,
+  StakePool,
+} from "../../sdk/generated";
 import type { CardinalProvider } from "../utils";
 import { executeTransaction, getProvider } from "../utils";
 
@@ -15,7 +20,7 @@ test("Init", async () => {
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   tx.add(
-    stakePool.createInitPoolInstruction(
+    createInitPoolInstruction(
       {
         stakePool: stakePoolId,
         payer: provider.wallet.publicKey,
@@ -40,7 +45,7 @@ test("Init", async () => {
     )
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await stakePool.StakePool.fromAccountAddress(
+  const pool = await StakePool.fromAccountAddress(
     provider.connection,
     stakePoolId
   );
@@ -52,7 +57,7 @@ test("Update", async () => {
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   tx.add(
-    stakePool.createUpdatePoolInstruction(
+    createUpdatePoolInstruction(
       {
         stakePool: stakePoolId,
         payer: provider.wallet.publicKey,
@@ -76,7 +81,7 @@ test("Update", async () => {
     )
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await stakePool.StakePool.fromAccountAddress(
+  const pool = await StakePool.fromAccountAddress(
     provider.connection,
     stakePoolId
   );

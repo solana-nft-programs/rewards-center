@@ -4,12 +4,15 @@ import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
+import { findStakeEntryId, findStakePoolId, findUserEscrowId } from "../../sdk";
 import {
-  findStakeEntryId,
-  findStakePoolId,
-  findUserEscrowId,
-  stakePool,
-} from "../../sdk";
+  createInitEntryInstruction,
+  createInitPoolInstruction,
+  createStakeEditionInstruction,
+  createUnstakeEditionInstruction,
+  StakeEntry,
+  StakePool,
+} from "../../sdk/generated";
 import type { CardinalProvider } from "../utils";
 import {
   createMasterEditionTx,
@@ -40,7 +43,7 @@ test("Init pool", async () => {
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   tx.add(
-    stakePool.createInitPoolInstruction(
+    createInitPoolInstruction(
       {
         stakePool: stakePoolId,
         payer: provider.wallet.publicKey,
@@ -65,7 +68,7 @@ test("Init pool", async () => {
     )
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await stakePool.StakePool.fromAccountAddress(
+  const pool = await StakePool.fromAccountAddress(
     provider.connection,
     stakePoolId
   );
@@ -79,7 +82,7 @@ test("Init entry", async () => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   tx.add(
-    stakePool.createInitEntryInstruction(
+    createInitEntryInstruction(
       {
         stakeEntry: stakeEntryId,
         stakePool: stakePoolId,
@@ -93,7 +96,7 @@ test("Init entry", async () => {
     )
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const entry = await stakePool.StakeEntry.fromAccountAddress(
+  const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId
   );
@@ -112,7 +115,7 @@ test("Stake", async () => {
     provider.wallet.publicKey
   );
   tx.add(
-    stakePool.createStakeEditionInstruction(
+    createStakeEditionInstruction(
       {
         stakeEntry: stakeEntryId,
         stakePool: stakePoolId,
@@ -130,7 +133,7 @@ test("Stake", async () => {
     )
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const entry = await stakePool.StakeEntry.fromAccountAddress(
+  const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId
   );
@@ -161,7 +164,7 @@ test("Unstake", async () => {
     provider.wallet.publicKey
   );
   tx.add(
-    stakePool.createUnstakeEditionInstruction({
+    createUnstakeEditionInstruction({
       stakeEntry: stakeEntryId,
       stakePool: stakePoolId,
       stakeMint: mintId,
@@ -173,7 +176,7 @@ test("Unstake", async () => {
     })
   );
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const entry = await stakePool.StakeEntry.fromAccountAddress(
+  const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId
   );

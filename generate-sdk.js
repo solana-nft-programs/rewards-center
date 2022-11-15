@@ -8,7 +8,7 @@ const configs = [
     programName: "cardinal_rewards_center",
     programId: "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ",
     programDir: "programs/cardinal-rewards-center",
-    outDir: path.join(__dirname, "sdk", "generated/rewardsCenter"),
+    outDir: path.join(__dirname, "sdk", "generated"),
   },
 ];
 
