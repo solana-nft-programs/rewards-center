@@ -3,21 +3,13 @@ cluster = "localnet"
 wallet = "./tests/test-key.json"
 
 [programs.mainnet]
-cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
-cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
-cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+cardinal_rewards_center = "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ"
 
 [programs.devnet]
-cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
-cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
-cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+cardinal_rewards_center = "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ"
 
 [programs.testnet]
-cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
-cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
-cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+cardinal_rewards_center = "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ"
 
 [programs.localnet]
-cardinal_stake_pool = "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6"
-cardinal_reward_distributor = "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA"
-cardinal_receipt_manager = "rrm26Uq1x1Rx8TwZaReKqUEu5fnNKufyANpgbon5otp"
+cardinal_rewards_center = "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ"

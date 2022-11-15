@@ -5,10 +5,10 @@ const path = require("path");
 const idlDir = path.join(__dirname, "sdk/idl");
 const configs = [
   {
-    programName: "cardinal_stake_pool",
-    programId: "stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6",
-    programDir: "programs/cardinal-stake-pool",
-    outDir: path.join(__dirname, "sdk", "generated/stakePool"),
+    programName: "cardinal_rewards_center",
+    programId: "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ",
+    programDir: "programs/cardinal-rewards-center",
+    outDir: path.join(__dirname, "sdk", "generated/rewardsCenter"),
   },
 ];
 

@@ -1,14 +1,14 @@
-# Cardinal Staking
+# Cardinal rewards-center
 
-[![License](https://img.shields.io/badge/license-AGPL%203.0-blue)](https://github.com/cardinal-labs/cardinal-staking/blob/master/LICENSE)
-[![Release](https://github.com/cardinal-labs/cardinal-staking/actions/workflows/release.yml/badge.svg?branch=v0.0.27)](https://github.com/cardinal-labs/cardinal-staking/actions/workflows/release.yml)
+[![License](https://img.shields.io/badge/license-AGPL%203.0-blue)](https://github.com/cardinal-labs/cardinal-rewards-center/blob/master/LICENSE)
+[![Release](https://github.com/cardinal-labs/cardinal-rewards-center/actions/workflows/release.yml/badge.svg?branch=v0.0.27)](https://github.com/cardinal-labs/cardinal-rewards-center/actions/workflows/release.yml)
 
 <div style="text-align: center; width: 100%;">
   <img style="height: 450px" src="./doc-assets/banner.png" />
 </div>
 
 <p align="center">
-    An open protocol for staking NFTs and FTs.
+    An open protocol for rewards-center NFTs and FTs.
 </p>
 
 ## Background
@@ -17,22 +17,21 @@ Cardinal staking encompasses a suite of contracts for issuing and staking NFTs a
 
 ## Packages
 
-| Package                       | Description                              | Version                                                                                                                           | Docs                                                                                                             |
-| :---------------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `cardinal-stake-pool`         | Stake pool tracking total stake duration | [![Crates.io](https://img.shields.io/crates/v/cardinal-stake-pool)](https://crates.io/crates/cardinal-stake-pool)                 | [![Docs.rs](https://docs.rs/cardinal-stake-pool/badge.svg)](https://docs.rs/cardinal-stake-pool)                 |
-| `cardinal-reward-distributor` | Simple token minting rewards distributor | [![Crates.io](https://img.shields.io/crates/v/cardinal-reward-distributor)](https://crates.io/crates/cardinal-reward-distributor) | [![Docs.rs](https://docs.rs/cardinal-reward-distributor/badge.svg)](https://docs.rs/cardinal-reward-distributor) |
-| `@cardinal/staking`           | TypeScript SDK for staking               | [![npm](https://img.shields.io/npm/v/@cardinal/staking.svg)](https://www.npmjs.com/package/@cardinal/staking)                     | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://cardinal-labs.github.io/cardinal-staking/)     |
+| Package                    | Description                              | Version                                                                                                                     | Docs                                                                                                                |
+| :------------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| `cardinal-rewards-center`  | Stake pool tracking total stake duration | [![Crates.io](https://img.shields.io/crates/v/cardinal-rewards-center)](https://crates.io/crates/cardinal-rewards-center)   | [![Docs.rs](https://docs.rs/cardinal-rewards-center/badge.svg)](https://docs.rs/cardinal-rewards-center)            |
+| `@cardinal/rewards-center` | TypeScript SDK for rewards-center        | [![npm](https://img.shields.io/npm/v/@cardinal/rewards-center.svg)](https://www.npmjs.com/package/@cardinal/rewards-center) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://cardinal-labs.github.io/cardinal-rewards-center/) |
 
 ## Addresses
 
 Program addresses are the same on devnet, testnet, and mainnet-beta.
 
-- StakePool: [`stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6`](https://explorer.solana.com/address/stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6)
+- StakePool: [`rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ`](https://explorer.solana.com/address/rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ)
 - RewardDistributor: [`rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA`](https://explorer.solana.com/address/rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA)
 
 ## Questions & Support
 
-If you are developing using Cardinal staking contracts and libraries, feel free to reach out for support on Discord. We will work with you or your team to answer questions, provide development support and discuss new feature requests.
+If you are developing using Cardinal rewards-center contracts and libraries, feel free to reach out for support on Discord. We will work with you or your team to answer questions, provide development support and discuss new feature requests.
 
 For issues please, file a GitHub issue.
 
