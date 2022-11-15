@@ -1,3 +1,4 @@
+use crate::assert_stake_pool_payment_info;
 use crate::assert_stake_pool_payment_manager;
 use crate::utils::resize_account;
 use crate::StakePool;
@@ -61,6 +62,12 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
 
     if let Some(payment_manager) = ix.payment_manager {
         assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");
+    }
+    if let (Some(payment_mint), Some(payment_amount)) = (ix.payment_mint, ix.stake_payment_amount) {
+        assert_stake_pool_payment_info(&payment_mint, payment_amount).expect("Stake payment info error");
+    }
+    if let (Some(payment_mint), Some(payment_amount)) = (ix.payment_mint, ix.unstake_payment_amount) {
+        assert_stake_pool_payment_info(&payment_mint, payment_amount).expect("Unstake payment info error");
     }
 
     let stake_pool = &mut ctx.accounts.stake_pool;

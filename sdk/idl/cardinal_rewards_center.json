@@ -1199,6 +1199,10 @@
             "type": "publicKey"
           },
           {
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
             "name": "paymentManager",
             "type": "publicKey"
           },
@@ -1571,6 +1575,10 @@
             "type": "publicKey"
           },
           {
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
             "name": "paymentManager",
             "type": "publicKey"
           },
@@ -1611,6 +1619,10 @@
           {
             "name": "paymentMint",
             "type": "publicKey"
+          },
+          {
+            "name": "paymentAmount",
+            "type": "u64"
           },
           {
             "name": "paymentManager",

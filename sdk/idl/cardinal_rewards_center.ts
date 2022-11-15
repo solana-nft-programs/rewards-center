@@ -1199,6 +1199,10 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
             name: "paymentManager";
             type: "publicKey";
           },
@@ -1571,6 +1575,10 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
             name: "paymentManager";
             type: "publicKey";
           },
@@ -1611,6 +1619,10 @@ export type CardinalRewardsCenter = {
           {
             name: "paymentMint";
             type: "publicKey";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
           },
           {
             name: "paymentManager";
@@ -3324,6 +3336,10 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
             name: "paymentManager",
             type: "publicKey",
           },
@@ -3696,6 +3712,10 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
             name: "paymentManager",
             type: "publicKey",
           },
@@ -3736,6 +3756,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "paymentMint",
             type: "publicKey",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
           },
           {
             name: "paymentManager",

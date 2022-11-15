@@ -13,6 +13,7 @@ export type UpdateReceiptManagerIx = {
   requiredStakeSeconds: beet.bignum
   stakeSecondsToUse: beet.bignum
   paymentMint: web3.PublicKey
+  paymentAmount: beet.bignum
   paymentManager: web3.PublicKey
   paymentRecipient: web3.PublicKey
   requiresAuthorization: boolean
@@ -30,6 +31,7 @@ export const updateReceiptManagerIxBeet =
       ['requiredStakeSeconds', beet.u128],
       ['stakeSecondsToUse', beet.u128],
       ['paymentMint', beetSolana.publicKey],
+      ['paymentAmount', beet.u64],
       ['paymentManager', beetSolana.publicKey],
       ['paymentRecipient', beetSolana.publicKey],
       ['requiresAuthorization', beet.bool],

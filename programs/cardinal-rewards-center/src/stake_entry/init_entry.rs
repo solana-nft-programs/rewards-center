@@ -1,5 +1,5 @@
 use crate::authorization::mint_is_allowed;
-use crate::get_stake_seed;
+use crate::stake_seed;
 use crate::StakeEntry;
 use crate::StakePool;
 use crate::STAKE_ENTRY_PREFIX;
@@ -14,7 +14,7 @@ pub struct InitEntryCtx<'info> {
         init,
         payer = payer,
         space = STAKE_ENTRY_SIZE,
-        seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool.key().as_ref(), stake_mint.key().as_ref(), get_stake_seed(stake_mint.supply, user).as_ref()],
+        seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_pool.key().as_ref(), stake_mint.key().as_ref(), stake_seed(stake_mint.supply, user).as_ref()],
         bump,
     )]
     stake_entry: Box<Account<'info, StakeEntry>>,

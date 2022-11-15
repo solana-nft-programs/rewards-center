@@ -1,8 +1,8 @@
 use crate::errors::ErrorCode;
-use crate::reward_distribution::assert_reward_manager;
+use crate::reward_distribution::claim_rewards_manager;
 use crate::reward_distribution::RewardDistributor;
 use crate::reward_distribution::RewardEntry;
-use crate::reward_distribution::CLAIM_REWARD_LAMPORTS;
+use crate::reward_distribution::CLAIM_REWARDS_LAMPORTS;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::StakeEntry;
 use crate::StakePool;
@@ -38,7 +38,7 @@ pub struct ClaimRewardsCtx<'info> {
     authority_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut, constraint = assert_reward_manager(&reward_manager.key()))]
+    #[account(mut, constraint = claim_rewards_manager(&reward_manager.key()))]
     reward_manager: UncheckedAccount<'info>,
 
     #[account(mut, constraint = user.key() == stake_entry.last_staker || user.key() == reward_distributor.authority @ ErrorCode::InvalidAuthority)]
@@ -116,7 +116,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         reward_entry.reward_seconds_received = reward_entry.reward_seconds_received.checked_add(reward_time_to_receive).unwrap();
 
         invoke(
-            &transfer(&ctx.accounts.user.to_account_info().key(), &ctx.accounts.reward_manager.key(), CLAIM_REWARD_LAMPORTS),
+            &transfer(&ctx.accounts.user.to_account_info().key(), &ctx.accounts.reward_manager.key(), CLAIM_REWARDS_LAMPORTS),
             &[
                 ctx.accounts.user.to_account_info(),
                 ctx.accounts.reward_manager.to_account_info(),

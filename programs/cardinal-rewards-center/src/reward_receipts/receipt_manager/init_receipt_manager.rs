@@ -1,5 +1,5 @@
-use crate::assert_allowed_payment_info;
-use crate::reward_receipts::assert_allowed_payment_manager;
+use crate::reward_receipts::assert_receipt_manager_payment_info;
+use crate::reward_receipts::assert_receipt_manager_payment_manager;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RECEIPT_MANAGER_SEED;
 use crate::reward_receipts::RECEIPT_MANAGER_SIZE;
@@ -13,6 +13,7 @@ pub struct InitReceiptManagerIx {
     pub required_stake_seconds: u128,
     pub stake_seconds_to_use: u128,
     pub payment_mint: Pubkey,
+    pub payment_amount: u64,
     pub payment_manager: Pubkey,
     pub payment_recipient: Pubkey,
     pub requires_authorization: bool,
@@ -39,8 +40,8 @@ pub struct InitReceiptManagerCtx<'info> {
 
 pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
-    assert_allowed_payment_info(&ix.payment_mint.to_string())?;
-    assert_allowed_payment_manager(&ix.payment_manager.to_string(), &ix.payment_recipient.to_string())?;
+    assert_receipt_manager_payment_info(&ix.payment_mint.to_string(), ix.payment_amount)?;
+    assert_receipt_manager_payment_manager(&ix.payment_manager)?;
 
     receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
     receipt_manager.name = ix.name;
@@ -50,6 +51,7 @@ pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) ->
     receipt_manager.stake_seconds_to_use = ix.stake_seconds_to_use;
     receipt_manager.claimed_receipts_counter = 0;
     receipt_manager.payment_mint = ix.payment_mint;
+    receipt_manager.payment_amount = ix.payment_amount;
     receipt_manager.payment_manager = ix.payment_manager;
     receipt_manager.payment_recipient = ix.payment_recipient;
     receipt_manager.requires_authorization = ix.requires_authorization;

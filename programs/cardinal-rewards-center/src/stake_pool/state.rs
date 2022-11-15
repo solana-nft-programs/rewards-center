@@ -23,12 +23,12 @@ pub struct StakePool {
     pub identifier: String,
 }
 
-pub fn assert_stake_pool_payment_info(mint: &str) -> Result<()> {
+pub fn assert_stake_pool_payment_info(mint: &Pubkey, _amount: u64) -> Result<()> {
     let payment_mints = HashMap::from([
         ("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ", 1_u64.pow(9)),
         ("So11111111111111111111111111111111111111112", 2_000_000),
     ]);
-    if !payment_mints.contains_key(mint) {
+    if !payment_mints.contains_key(mint.to_string().as_str()) {
         return Err(error!(ErrorCode::InvalidPaymentMint));
     }
     Ok(())

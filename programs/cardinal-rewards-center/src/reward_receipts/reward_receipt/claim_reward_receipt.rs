@@ -1,5 +1,4 @@
 use crate::errors::ErrorCode;
-use crate::reward_receipts::get_payment_mints;
 use crate::reward_receipts::ReceiptEntry;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RewardReceipt;
@@ -27,7 +26,7 @@ pub struct ClaimRewardReceiptCtx<'info> {
     payment_manager: Box<Account<'info, PaymentManager>>,
     #[account(mut)]
     fee_collector_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut, constraint = payment_recipient_token_account.owner == receipt_manager.payment_recipient @ ErrorCode::InvalidPaymentTokenAccount)]
+    #[account(mut, constraint = payment_recipient_token_account.mint == receipt_manager.payment_mint && payment_recipient_token_account.owner == receipt_manager.payment_recipient @ ErrorCode::InvalidPaymentTokenAccount)]
     payment_recipient_token_account: Box<Account<'info, TokenAccount>>,
     #[account(mut, constraint = payer_token_account.mint == receipt_manager.payment_mint && payer_token_account.owner == payer.key() @ ErrorCode::InvalidPayerTokenAcount)]
     payer_token_account: Box<Account<'info, TokenAccount>>,
@@ -89,9 +88,6 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     // }
 
     // handle payment
-    let payment_mints = get_payment_mints();
-    let payment_mint = &ctx.accounts.receipt_manager.payment_mint.to_string()[..];
-    let payment_amount = payment_mints.get(payment_mint).expect("Could not fetch payment amount");
     let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
         payment_manager: ctx.accounts.payment_manager.to_account_info(),
         payer_token_account: ctx.accounts.payer_token_account.to_account_info(),
@@ -101,7 +97,7 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
         token_program: ctx.accounts.token_program.to_account_info(),
     };
     let cpi_ctx = CpiContext::new(ctx.accounts.cardinal_payment_manager.to_account_info(), cpi_accounts);
-    cardinal_payment_manager::cpi::manage_payment(cpi_ctx, *payment_amount)?;
+    cardinal_payment_manager::cpi::manage_payment(cpi_ctx, ctx.accounts.receipt_manager.payment_amount)?;
 
     Ok(())
 }

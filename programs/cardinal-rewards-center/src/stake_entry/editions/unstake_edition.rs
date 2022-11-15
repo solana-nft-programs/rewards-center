@@ -1,6 +1,6 @@
 use crate::assert_stake_pool_payment_info;
 use crate::errors::ErrorCode;
-use crate::get_escrow_seeds;
+use crate::escrow_seeds;
 use crate::stake_entry::increment_total_stake_seconds;
 use crate::StakeEntry;
 use crate::StakePool;
@@ -53,7 +53,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = get_escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
+    let escrow_seeds = escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
 
     //// FEATURE: Minimum stake seconds
     if stake_pool.min_stake_seconds.is_some()
@@ -114,7 +114,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         let cardinal_payment_manager = next_account_info(remaining_accounts)?;
         assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
 
-        assert_stake_pool_payment_info(&payment_mint.to_string()).expect("Payment manager error");
+        assert_stake_pool_payment_info(&payment_mint, payment_amount).expect("Payment manager error");
         let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
             payment_manager: payment_manager.to_account_info(),
             payer_token_account: payer_token_account_info.to_account_info(),

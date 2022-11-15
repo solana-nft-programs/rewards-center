@@ -1,6 +1,6 @@
-use crate::assert_allowed_payment_info;
 use crate::errors::ErrorCode;
-use crate::reward_receipts::assert_allowed_payment_manager;
+use crate::reward_receipts::assert_receipt_manager_payment_info;
+use crate::reward_receipts::assert_receipt_manager_payment_manager;
 use crate::reward_receipts::ReceiptManager;
 use anchor_lang::prelude::*;
 
@@ -10,6 +10,7 @@ pub struct UpdateReceiptManagerIx {
     pub required_stake_seconds: u128,
     pub stake_seconds_to_use: u128,
     pub payment_mint: Pubkey,
+    pub payment_amount: u64,
     pub payment_manager: Pubkey,
     pub payment_recipient: Pubkey,
     pub requires_authorization: bool,
@@ -26,8 +27,8 @@ pub struct UpdateReceiptManagerCtx<'info> {
 }
 
 pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx) -> Result<()> {
-    assert_allowed_payment_info(&ix.payment_mint.to_string())?;
-    assert_allowed_payment_manager(&ix.payment_manager.to_string(), &ix.payment_recipient.to_string())?;
+    assert_receipt_manager_payment_info(&ix.payment_mint.to_string(), ix.payment_amount)?;
+    assert_receipt_manager_payment_manager(&ix.payment_manager)?;
 
     if let Some(max_claimed_receipts) = ix.max_claimed_receipts {
         if ctx.accounts.receipt_manager.claimed_receipts_counter > max_claimed_receipts {
@@ -40,6 +41,7 @@ pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx
     receipt_manager.required_stake_seconds = ix.required_stake_seconds;
     receipt_manager.stake_seconds_to_use = ix.stake_seconds_to_use;
     receipt_manager.payment_mint = ix.payment_mint;
+    receipt_manager.payment_amount = ix.payment_amount;
     receipt_manager.payment_manager = ix.payment_manager;
     receipt_manager.payment_recipient = ix.payment_recipient;
     receipt_manager.requires_authorization = ix.requires_authorization;

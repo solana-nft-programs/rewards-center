@@ -1,9 +1,9 @@
 use crate::assert_stake_pool_payment_info;
 use crate::authorization::mint_is_allowed;
 use crate::errors::ErrorCode;
-use crate::get_escrow_seeds;
-use crate::get_stake_seed;
+use crate::escrow_seeds;
 use crate::stake_entry::increment_total_stake_seconds;
+use crate::stake_seed;
 use crate::StakeEntry;
 use crate::StakePool;
 use crate::STAKE_ENTRY_PREFIX;
@@ -21,7 +21,7 @@ use solana_program::program::invoke_signed;
 pub struct StakeEditionCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
-    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), get_stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
+    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
@@ -57,7 +57,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = get_escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
+    let escrow_seeds = escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
@@ -109,7 +109,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         let cardinal_payment_manager = next_account_info(remaining_accounts)?;
         assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
 
-        assert_stake_pool_payment_info(&payment_mint.to_string()).expect("Payment manager error");
+        assert_stake_pool_payment_info(&payment_mint, payment_amount).expect("Payment manager error");
         let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
             payment_manager: payment_manager.to_account_info(),
             payer_token_account: payer_token_account_info.to_account_info(),
