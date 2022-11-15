@@ -1,6 +1,6 @@
-use super::assert_stake_boost_payment_manager;
 use super::StakeBooster;
 use crate::errors::ErrorCode;
+use crate::stake_booster::assert_stake_booster_payment_info;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
@@ -78,7 +78,11 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         .expect("Division error");
 
     // handle payment
-    assert_stake_boost_payment_manager(&ctx.accounts.payment_manager.key())?;
+    assert_stake_booster_payment_info(
+        &ctx.accounts.stake_booster.payment_mint,
+        ctx.accounts.stake_booster.payment_amount,
+        &ctx.accounts.stake_booster.payment_manager,
+    )?;
     let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
         payment_manager: ctx.accounts.payment_manager.to_account_info(),
         payer_token_account: ctx.accounts.payer_token_account.to_account_info(),

@@ -42,19 +42,15 @@ pub struct RewardReceipt {
     pub allowed: bool,
 }
 
-pub(super) fn assert_receipt_manager_payment_info(mint: &str, _amount: u64) -> Result<()> {
+pub(super) fn assert_receipt_manager_payment_info(payment_mint: &Pubkey, _payment_amount: u64, payment_manager: &Pubkey) -> Result<()> {
     let payment_mints = HashMap::from([
         ("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ", 1_u64.pow(9)),
         ("So11111111111111111111111111111111111111112", 2_000_000),
     ]);
-    if !payment_mints.contains_key(mint) {
+    if !payment_mints.contains_key(payment_mint.to_string().as_str()) {
         return Err(error!(ErrorCode::InvalidPaymentMint));
     }
-    Ok(())
-}
-
-pub(super) fn assert_receipt_manager_payment_manager(pubkey: &Pubkey) -> Result<()> {
-    if pubkey.to_string() != Pubkey::from_str("FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi").unwrap().to_string() {
+    if payment_manager.to_string() != Pubkey::from_str("FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi").unwrap().to_string() {
         return Err(error!(ErrorCode::InvalidPaymentManager));
     }
     Ok(())

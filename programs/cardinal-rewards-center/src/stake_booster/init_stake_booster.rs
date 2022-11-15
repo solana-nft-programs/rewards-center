@@ -1,8 +1,8 @@
-use super::assert_stake_boost_payment_manager;
 use super::StakeBooster;
 use super::STAKE_BOOSTER_PREFIX;
 use super::STAKE_BOOSTER_SIZE;
 use crate::errors::ErrorCode;
+use crate::stake_booster::assert_stake_booster_payment_info;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 
@@ -39,7 +39,7 @@ pub struct InitStakeBoosterCtx<'info> {
 
 pub fn handler(ctx: Context<InitStakeBoosterCtx>, ix: InitStakeBoosterIx) -> Result<()> {
     let stake_booster = &mut ctx.accounts.stake_booster;
-    assert_stake_boost_payment_manager(&ix.payment_manager)?;
+    assert_stake_booster_payment_info(&ix.payment_mint, ix.payment_amount, &ix.payment_manager)?;
     stake_booster.bump = *ctx.bumps.get("stake_booster").unwrap();
     stake_booster.stake_pool = ctx.accounts.stake_pool.key();
     stake_booster.identifier = ix.identifier;

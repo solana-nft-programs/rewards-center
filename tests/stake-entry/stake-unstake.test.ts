@@ -51,8 +51,8 @@ test("Init pool", async () => {
       {
         ix: {
           identifier: stakePoolIdentifier,
-          requiresCollections: [],
-          requiresCreators: [],
+          allowedCollections: [],
+          allowedCreators: [],
           requiresAuthorization: false,
           authority: provider.wallet.publicKey,
           resetOnUnstake: false,

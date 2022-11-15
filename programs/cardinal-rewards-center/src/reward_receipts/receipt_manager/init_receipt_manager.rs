@@ -1,5 +1,4 @@
 use crate::reward_receipts::assert_receipt_manager_payment_info;
-use crate::reward_receipts::assert_receipt_manager_payment_manager;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RECEIPT_MANAGER_SEED;
 use crate::reward_receipts::RECEIPT_MANAGER_SIZE;
@@ -40,8 +39,7 @@ pub struct InitReceiptManagerCtx<'info> {
 
 pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
-    assert_receipt_manager_payment_info(&ix.payment_mint.to_string(), ix.payment_amount)?;
-    assert_receipt_manager_payment_manager(&ix.payment_manager)?;
+    assert_receipt_manager_payment_info(&ix.payment_mint, ix.payment_amount, &ix.payment_manager)?;
 
     receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
     receipt_manager.name = ix.name;

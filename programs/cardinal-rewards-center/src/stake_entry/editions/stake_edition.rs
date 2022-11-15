@@ -94,10 +94,10 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     )?;
 
     // handle payment
-    if let (Some(payment_mint), Some(payment_amount)) = (stake_pool.payment_mint, stake_pool.stake_payment_amount) {
+    if let (Some(payment_mint), Some(payment_amount), Some(payment_manager)) = (stake_pool.payment_mint, stake_pool.stake_payment_amount, stake_pool.payment_manager) {
         let remaining_accounts = &mut ctx.remaining_accounts.iter();
-        let payment_manager = next_account_info(remaining_accounts)?;
-        assert_eq!(stake_pool.payment_manager.expect("Invalid payment manager"), payment_manager.key());
+        let payment_manager_account_info = next_account_info(remaining_accounts)?;
+        assert_eq!(payment_manager, payment_manager_account_info.key());
 
         let payer_token_account_info = next_account_info(remaining_accounts)?;
         let payer_token_account = Account::<TokenAccount>::try_from(payer_token_account_info)?;
@@ -109,9 +109,9 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         let cardinal_payment_manager = next_account_info(remaining_accounts)?;
         assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
 
-        assert_stake_pool_payment_info(&payment_mint, payment_amount).expect("Payment manager error");
+        assert_stake_pool_payment_info(&payment_mint, payment_amount, &payment_manager)?;
         let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
-            payment_manager: payment_manager.to_account_info(),
+            payment_manager: payment_manager_account_info.to_account_info(),
             payer_token_account: payer_token_account_info.to_account_info(),
             fee_collector_token_account: fee_collector_token_account.to_account_info(),
             payment_token_account: payment_token_account.to_account_info(),

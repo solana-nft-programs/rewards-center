@@ -28,8 +28,8 @@ test("Init", async () => {
       {
         ix: {
           identifier: stakePoolIdentifier,
-          requiresCollections: [],
-          requiresCreators: [],
+          allowedCollections: [],
+          allowedCreators: [],
           requiresAuthorization: false,
           authority: provider.wallet.publicKey,
           resetOnUnstake: false,
@@ -64,8 +64,8 @@ test("Update", async () => {
       },
       {
         ix: {
-          requiresCollections: [],
-          requiresCreators: [],
+          allowedCollections: [],
+          allowedCreators: [],
           requiresAuthorization: true,
           authority: provider.wallet.publicKey,
           resetOnUnstake: false,

@@ -1,6 +1,5 @@
 use crate::errors::ErrorCode;
 use crate::reward_receipts::assert_receipt_manager_payment_info;
-use crate::reward_receipts::assert_receipt_manager_payment_manager;
 use crate::reward_receipts::ReceiptManager;
 use anchor_lang::prelude::*;
 
@@ -27,9 +26,7 @@ pub struct UpdateReceiptManagerCtx<'info> {
 }
 
 pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx) -> Result<()> {
-    assert_receipt_manager_payment_info(&ix.payment_mint.to_string(), ix.payment_amount)?;
-    assert_receipt_manager_payment_manager(&ix.payment_manager)?;
-
+    assert_receipt_manager_payment_info(&ix.payment_mint, ix.payment_amount, &ix.payment_manager)?;
     if let Some(max_claimed_receipts) = ix.max_claimed_receipts {
         if ctx.accounts.receipt_manager.claimed_receipts_counter > max_claimed_receipts {
             return Err(error!(ErrorCode::InvalidMaxClaimedReceipts));
