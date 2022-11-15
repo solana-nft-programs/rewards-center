@@ -796,6 +796,264 @@ export type CardinalStakePool = {
           type: "bool";
         }
       ];
+    },
+    {
+      name: "initRewardDistributor";
+      accounts: [
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "InitRewardDistributorIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "updateRewardDistributor";
+      accounts: [
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdateRewardDistributorIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "closeRewardDistributor";
+      accounts: [
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributorTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorityTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initRewardEntry";
+      accounts: [
+        {
+          name: "rewardEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "closeRewardEntry";
+      accounts: [
+        {
+          name: "rewardDistributor";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "updateRewardEntry";
+      accounts: [
+        {
+          name: "rewardEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributor";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdateRewardEntryIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "claimRewards";
+      accounts: [
+        {
+          name: "rewardEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rewardMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userRewardMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributorTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorityTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
     }
   ];
   accounts: [
@@ -815,6 +1073,94 @@ export type CardinalStakePool = {
           {
             name: "mint";
             type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "rewardEntry";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakeEntry";
+            type: "publicKey";
+          },
+          {
+            name: "rewardDistributor";
+            type: "publicKey";
+          },
+          {
+            name: "rewardSecondsReceived";
+            type: "u128";
+          },
+          {
+            name: "multiplier";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "rewardDistributor";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "kind";
+            type: "u8";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "rewardMint";
+            type: "publicKey";
+          },
+          {
+            name: "rewardAmount";
+            type: "u64";
+          },
+          {
+            name: "rewardDurationSeconds";
+            type: "u128";
+          },
+          {
+            name: "rewardsIssued";
+            type: "u128";
+          },
+          {
+            name: "maxSupply";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "defaultMultiplier";
+            type: "u64";
+          },
+          {
+            name: "multiplierDecimals";
+            type: "u8";
+          },
+          {
+            name: "maxRewardSecondsReceived";
+            type: {
+              option: "u128";
+            };
           }
         ];
       };
@@ -1107,6 +1453,98 @@ export type CardinalStakePool = {
     }
   ];
   types: [
+    {
+      name: "InitRewardDistributorIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "rewardAmount";
+            type: "u64";
+          },
+          {
+            name: "rewardDurationSeconds";
+            type: "u128";
+          },
+          {
+            name: "kind";
+            type: "u8";
+          },
+          {
+            name: "supply";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "maxSupply";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "defaultMultiplier";
+            type: {
+              option: "u64";
+            };
+          },
+          {
+            name: "multiplierDecimals";
+            type: {
+              option: "u8";
+            };
+          },
+          {
+            name: "maxRewardSecondsReceived";
+            type: {
+              option: "u128";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdateRewardDistributorIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "defaultMultiplier";
+            type: "u64";
+          },
+          {
+            name: "multiplierDecimals";
+            type: "u8";
+          },
+          {
+            name: "rewardAmount";
+            type: "u64";
+          },
+          {
+            name: "rewardDurationSeconds";
+            type: "u128";
+          },
+          {
+            name: "maxRewardSecondsReceived";
+            type: {
+              option: "u128";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdateRewardEntryIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "multiplier";
+            type: "u64";
+          }
+        ];
+      };
+    },
     {
       name: "InitReceiptManagerIx";
       type: {
@@ -1616,6 +2054,71 @@ export type CardinalStakePool = {
       code: 6082;
       name: "RewardReceiptAlreadyClaimed";
       msg: "Reward receipt already claimed";
+    },
+    {
+      code: 6090;
+      name: "InvalidTokenAccount";
+      msg: "Invalid token account";
+    },
+    {
+      code: 6091;
+      name: "InvalidRewardMint";
+      msg: "Invalid reward mint";
+    },
+    {
+      code: 6092;
+      name: "InvalidUserRewardMintTokenAccount";
+      msg: "Invalid user reward mint token account";
+    },
+    {
+      code: 6093;
+      name: "InvalidRewardDistributor";
+      msg: "Invalid reward distributor";
+    },
+    {
+      code: 6094;
+      name: "InvalidRewardDistributorAuthority";
+      msg: "Invalid reward distributor authority";
+    },
+    {
+      code: 6095;
+      name: "InvalidRewardDistributorKind";
+      msg: "Invalid reward distributor kind";
+    },
+    {
+      code: 6096;
+      name: "SupplyRequired";
+      msg: "Initial supply required for kind treasury";
+    },
+    {
+      code: 6097;
+      name: "InvalidPoolDistributor";
+      msg: "Invalid distributor for pool";
+    },
+    {
+      code: 6098;
+      name: "DistributorNotClosed";
+      msg: "Distributor is already open";
+    },
+    {
+      code: 6099;
+      name: "DistributorAlreadyClosed";
+      msg: "Distributor is already closed";
+    },
+    {
+      code: 6100;
+      name: "InvalidRewardEntry";
+      msg: "Invalid reward entry";
+    },
+    {
+      code: 6101;
+      name: "InvalidRewardDistributorTokenAccount";
+      msg: "Invalid reward distributor token account";
+    },
+    {
+      code: 6102;
+      name: "InvalidAuthorityTokenAccount";
+      msg: "Invalid authority token account";
     }
   ];
 };
@@ -2419,6 +2922,264 @@ export const IDL: CardinalStakePool = {
         },
       ],
     },
+    {
+      name: "initRewardDistributor",
+      accounts: [
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "InitRewardDistributorIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "updateRewardDistributor",
+      accounts: [
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdateRewardDistributorIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "closeRewardDistributor",
+      accounts: [
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributorTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorityTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initRewardEntry",
+      accounts: [
+        {
+          name: "rewardEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "closeRewardEntry",
+      accounts: [
+        {
+          name: "rewardDistributor",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "updateRewardEntry",
+      accounts: [
+        {
+          name: "rewardEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributor",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdateRewardEntryIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "claimRewards",
+      accounts: [
+        {
+          name: "rewardEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rewardMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userRewardMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributorTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorityTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
@@ -2437,6 +3198,94 @@ export const IDL: CardinalStakePool = {
           {
             name: "mint",
             type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "rewardEntry",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakeEntry",
+            type: "publicKey",
+          },
+          {
+            name: "rewardDistributor",
+            type: "publicKey",
+          },
+          {
+            name: "rewardSecondsReceived",
+            type: "u128",
+          },
+          {
+            name: "multiplier",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "rewardDistributor",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "kind",
+            type: "u8",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "rewardMint",
+            type: "publicKey",
+          },
+          {
+            name: "rewardAmount",
+            type: "u64",
+          },
+          {
+            name: "rewardDurationSeconds",
+            type: "u128",
+          },
+          {
+            name: "rewardsIssued",
+            type: "u128",
+          },
+          {
+            name: "maxSupply",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "defaultMultiplier",
+            type: "u64",
+          },
+          {
+            name: "multiplierDecimals",
+            type: "u8",
+          },
+          {
+            name: "maxRewardSecondsReceived",
+            type: {
+              option: "u128",
+            },
           },
         ],
       },
@@ -2729,6 +3578,98 @@ export const IDL: CardinalStakePool = {
     },
   ],
   types: [
+    {
+      name: "InitRewardDistributorIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "rewardAmount",
+            type: "u64",
+          },
+          {
+            name: "rewardDurationSeconds",
+            type: "u128",
+          },
+          {
+            name: "kind",
+            type: "u8",
+          },
+          {
+            name: "supply",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "maxSupply",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "defaultMultiplier",
+            type: {
+              option: "u64",
+            },
+          },
+          {
+            name: "multiplierDecimals",
+            type: {
+              option: "u8",
+            },
+          },
+          {
+            name: "maxRewardSecondsReceived",
+            type: {
+              option: "u128",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdateRewardDistributorIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "defaultMultiplier",
+            type: "u64",
+          },
+          {
+            name: "multiplierDecimals",
+            type: "u8",
+          },
+          {
+            name: "rewardAmount",
+            type: "u64",
+          },
+          {
+            name: "rewardDurationSeconds",
+            type: "u128",
+          },
+          {
+            name: "maxRewardSecondsReceived",
+            type: {
+              option: "u128",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdateRewardEntryIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "multiplier",
+            type: "u64",
+          },
+        ],
+      },
+    },
     {
       name: "InitReceiptManagerIx",
       type: {
@@ -3238,6 +4179,71 @@ export const IDL: CardinalStakePool = {
       code: 6082,
       name: "RewardReceiptAlreadyClaimed",
       msg: "Reward receipt already claimed",
+    },
+    {
+      code: 6090,
+      name: "InvalidTokenAccount",
+      msg: "Invalid token account",
+    },
+    {
+      code: 6091,
+      name: "InvalidRewardMint",
+      msg: "Invalid reward mint",
+    },
+    {
+      code: 6092,
+      name: "InvalidUserRewardMintTokenAccount",
+      msg: "Invalid user reward mint token account",
+    },
+    {
+      code: 6093,
+      name: "InvalidRewardDistributor",
+      msg: "Invalid reward distributor",
+    },
+    {
+      code: 6094,
+      name: "InvalidRewardDistributorAuthority",
+      msg: "Invalid reward distributor authority",
+    },
+    {
+      code: 6095,
+      name: "InvalidRewardDistributorKind",
+      msg: "Invalid reward distributor kind",
+    },
+    {
+      code: 6096,
+      name: "SupplyRequired",
+      msg: "Initial supply required for kind treasury",
+    },
+    {
+      code: 6097,
+      name: "InvalidPoolDistributor",
+      msg: "Invalid distributor for pool",
+    },
+    {
+      code: 6098,
+      name: "DistributorNotClosed",
+      msg: "Distributor is already open",
+    },
+    {
+      code: 6099,
+      name: "DistributorAlreadyClosed",
+      msg: "Distributor is already closed",
+    },
+    {
+      code: 6100,
+      name: "InvalidRewardEntry",
+      msg: "Invalid reward entry",
+    },
+    {
+      code: 6101,
+      name: "InvalidRewardDistributorTokenAccount",
+      msg: "Invalid reward distributor token account",
+    },
+    {
+      code: 6102,
+      name: "InvalidAuthorityTokenAccount",
+      msg: "Invalid authority token account",
     },
   ],
 };

@@ -882,6 +882,317 @@ createErrorFromNameLookup.set(
 )
 
 /**
+ * InvalidTokenAccount: 'Invalid token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidTokenAccountError extends Error {
+  readonly code: number = 0x17ca
+  readonly name: string = 'InvalidTokenAccount'
+  constructor() {
+    super('Invalid token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17ca, () => new InvalidTokenAccountError())
+createErrorFromNameLookup.set(
+  'InvalidTokenAccount',
+  () => new InvalidTokenAccountError()
+)
+
+/**
+ * InvalidRewardMint: 'Invalid reward mint'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardMintError extends Error {
+  readonly code: number = 0x17cb
+  readonly name: string = 'InvalidRewardMint'
+  constructor() {
+    super('Invalid reward mint')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardMintError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17cb, () => new InvalidRewardMintError())
+createErrorFromNameLookup.set(
+  'InvalidRewardMint',
+  () => new InvalidRewardMintError()
+)
+
+/**
+ * InvalidUserRewardMintTokenAccount: 'Invalid user reward mint token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidUserRewardMintTokenAccountError extends Error {
+  readonly code: number = 0x17cc
+  readonly name: string = 'InvalidUserRewardMintTokenAccount'
+  constructor() {
+    super('Invalid user reward mint token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidUserRewardMintTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17cc,
+  () => new InvalidUserRewardMintTokenAccountError()
+)
+createErrorFromNameLookup.set(
+  'InvalidUserRewardMintTokenAccount',
+  () => new InvalidUserRewardMintTokenAccountError()
+)
+
+/**
+ * InvalidRewardDistributor: 'Invalid reward distributor'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardDistributorError extends Error {
+  readonly code: number = 0x17cd
+  readonly name: string = 'InvalidRewardDistributor'
+  constructor() {
+    super('Invalid reward distributor')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17cd, () => new InvalidRewardDistributorError())
+createErrorFromNameLookup.set(
+  'InvalidRewardDistributor',
+  () => new InvalidRewardDistributorError()
+)
+
+/**
+ * InvalidRewardDistributorAuthority: 'Invalid reward distributor authority'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardDistributorAuthorityError extends Error {
+  readonly code: number = 0x17ce
+  readonly name: string = 'InvalidRewardDistributorAuthority'
+  constructor() {
+    super('Invalid reward distributor authority')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorAuthorityError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17ce,
+  () => new InvalidRewardDistributorAuthorityError()
+)
+createErrorFromNameLookup.set(
+  'InvalidRewardDistributorAuthority',
+  () => new InvalidRewardDistributorAuthorityError()
+)
+
+/**
+ * InvalidRewardDistributorKind: 'Invalid reward distributor kind'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardDistributorKindError extends Error {
+  readonly code: number = 0x17cf
+  readonly name: string = 'InvalidRewardDistributorKind'
+  constructor() {
+    super('Invalid reward distributor kind')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorKindError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17cf,
+  () => new InvalidRewardDistributorKindError()
+)
+createErrorFromNameLookup.set(
+  'InvalidRewardDistributorKind',
+  () => new InvalidRewardDistributorKindError()
+)
+
+/**
+ * SupplyRequired: 'Initial supply required for kind treasury'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class SupplyRequiredError extends Error {
+  readonly code: number = 0x17d0
+  readonly name: string = 'SupplyRequired'
+  constructor() {
+    super('Initial supply required for kind treasury')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, SupplyRequiredError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17d0, () => new SupplyRequiredError())
+createErrorFromNameLookup.set('SupplyRequired', () => new SupplyRequiredError())
+
+/**
+ * InvalidPoolDistributor: 'Invalid distributor for pool'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPoolDistributorError extends Error {
+  readonly code: number = 0x17d1
+  readonly name: string = 'InvalidPoolDistributor'
+  constructor() {
+    super('Invalid distributor for pool')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPoolDistributorError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17d1, () => new InvalidPoolDistributorError())
+createErrorFromNameLookup.set(
+  'InvalidPoolDistributor',
+  () => new InvalidPoolDistributorError()
+)
+
+/**
+ * DistributorNotClosed: 'Distributor is already open'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class DistributorNotClosedError extends Error {
+  readonly code: number = 0x17d2
+  readonly name: string = 'DistributorNotClosed'
+  constructor() {
+    super('Distributor is already open')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, DistributorNotClosedError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17d2, () => new DistributorNotClosedError())
+createErrorFromNameLookup.set(
+  'DistributorNotClosed',
+  () => new DistributorNotClosedError()
+)
+
+/**
+ * DistributorAlreadyClosed: 'Distributor is already closed'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class DistributorAlreadyClosedError extends Error {
+  readonly code: number = 0x17d3
+  readonly name: string = 'DistributorAlreadyClosed'
+  constructor() {
+    super('Distributor is already closed')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, DistributorAlreadyClosedError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17d3, () => new DistributorAlreadyClosedError())
+createErrorFromNameLookup.set(
+  'DistributorAlreadyClosed',
+  () => new DistributorAlreadyClosedError()
+)
+
+/**
+ * InvalidRewardEntry: 'Invalid reward entry'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardEntryError extends Error {
+  readonly code: number = 0x17d4
+  readonly name: string = 'InvalidRewardEntry'
+  constructor() {
+    super('Invalid reward entry')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardEntryError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17d4, () => new InvalidRewardEntryError())
+createErrorFromNameLookup.set(
+  'InvalidRewardEntry',
+  () => new InvalidRewardEntryError()
+)
+
+/**
+ * InvalidRewardDistributorTokenAccount: 'Invalid reward distributor token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidRewardDistributorTokenAccountError extends Error {
+  readonly code: number = 0x17d5
+  readonly name: string = 'InvalidRewardDistributorTokenAccount'
+  constructor() {
+    super('Invalid reward distributor token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidRewardDistributorTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17d5,
+  () => new InvalidRewardDistributorTokenAccountError()
+)
+createErrorFromNameLookup.set(
+  'InvalidRewardDistributorTokenAccount',
+  () => new InvalidRewardDistributorTokenAccountError()
+)
+
+/**
+ * InvalidAuthorityTokenAccount: 'Invalid authority token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidAuthorityTokenAccountError extends Error {
+  readonly code: number = 0x17d6
+  readonly name: string = 'InvalidAuthorityTokenAccount'
+  constructor() {
+    super('Invalid authority token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidAuthorityTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x17d6,
+  () => new InvalidAuthorityTokenAccountError()
+)
+createErrorFromNameLookup.set(
+  'InvalidAuthorityTokenAccount',
+  () => new InvalidAuthorityTokenAccountError()
+)
+
+/**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  * @category generated

@@ -10,12 +10,6 @@ const configs = [
     programDir: "programs/cardinal-stake-pool",
     outDir: path.join(__dirname, "sdk", "generated/stakePool"),
   },
-  {
-    programName: "cardinal_reward_distributor",
-    programId: "rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA",
-    programDir: "programs/cardinal-reward-distributor",
-    outDir: path.join(__dirname, "sdk", "generated/rewardDistributor"),
-  },
 ];
 
 async function main() {

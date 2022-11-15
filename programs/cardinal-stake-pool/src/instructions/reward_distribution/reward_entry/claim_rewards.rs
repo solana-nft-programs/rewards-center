@@ -1,8 +1,9 @@
 use crate::errors::ErrorCode;
+use crate::instructions::reward_distribution::assert_reward_manager;
 use crate::instructions::reward_distribution::RewardDistributor;
-use crate::instructions::reward_distribution::RewardDistributorKind;
 use crate::instructions::reward_distribution::RewardEntry;
-use crate::instructions::reward_distribution::{assert_reward_manager, CLAIM_REWARD_LAMPORTS, REWARD_DISTRIBUTOR_SEED};
+use crate::instructions::reward_distribution::CLAIM_REWARD_LAMPORTS;
+use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::state::StakeEntry;
 use crate::state::StakePool;
 use anchor_lang::prelude::*;
@@ -28,9 +29,13 @@ pub struct ClaimRewardsCtx<'info> {
 
     #[account(mut, constraint = reward_mint.key() == reward_distributor.reward_mint @ ErrorCode::InvalidRewardMint)]
     reward_mint: Box<Account<'info, Mint>>,
-
     #[account(mut, constraint =user_reward_mint_token_account.owner == stake_entry.last_staker &&  user_reward_mint_token_account.mint == reward_distributor.reward_mint @ ErrorCode::InvalidUserRewardMintTokenAccount)]
     user_reward_mint_token_account: Box<Account<'info, TokenAccount>>,
+
+    #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == reward_distributor.key() @ ErrorCode::InvalidTokenAccount)]
+    reward_distributor_token_account: Box<Account<'info, TokenAccount>>,
+    #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == user.key() @ ErrorCode::InvalidTokenAccount)]
+    authority_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut, constraint = assert_reward_manager(&reward_manager.key()))]
@@ -42,7 +47,7 @@ pub struct ClaimRewardsCtx<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ClaimRewardsCtx<'info>>) -> Result<()> {
+pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
     let reward_entry = &mut ctx.accounts.reward_entry;
     let reward_distributor = &mut ctx.accounts.reward_distributor;
     let stake_pool = reward_distributor.stake_pool;
@@ -77,39 +82,19 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         }
 
         // mint to the user
-        let remaining_accs = &mut ctx.remaining_accounts.iter();
-        match reward_distributor.kind {
-            k if k == RewardDistributorKind::Mint as u8 => {
-                let cpi_accounts = token::MintTo {
-                    mint: ctx.accounts.reward_mint.to_account_info(),
-                    to: ctx.accounts.user_reward_mint_token_account.to_account_info(),
-                    authority: reward_distributor.to_account_info(),
-                };
-                let cpi_program = ctx.accounts.token_program.to_account_info();
-                let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(reward_distributor_signer);
-                // todo this could be an issue and get stuck, might need 2 transfers
-                token::mint_to(cpi_context, reward_amount_to_receive.try_into().expect("Too many rewards to receive"))?;
-            }
-            k if k == RewardDistributorKind::Treasury as u8 => {
-                let reward_distributor_token_account_info = next_account_info(remaining_accs)?;
-                let reward_distributor_token_account = Account::<TokenAccount>::try_from(reward_distributor_token_account_info)?;
-
-                if reward_amount_to_receive > reward_distributor_token_account.amount as u128 {
-                    reward_amount_to_receive = reward_distributor_token_account.amount as u128;
-                }
-
-                let cpi_accounts = token::Transfer {
-                    from: reward_distributor_token_account.to_account_info(),
-                    to: ctx.accounts.user_reward_mint_token_account.to_account_info(),
-                    authority: reward_distributor.to_account_info(),
-                };
-                let cpi_program = ctx.accounts.token_program.to_account_info();
-                let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(reward_distributor_signer);
-                // todo this could be an issue and get stuck, might need 2 transfers
-                token::transfer(cpi_context, reward_amount_to_receive.try_into().expect("Too many rewards to receive"))?;
-            }
-            _ => return Err(error!(ErrorCode::InvalidRewardDistributorKind)),
+        if reward_amount_to_receive > ctx.accounts.reward_distributor_token_account.amount as u128 {
+            reward_amount_to_receive = ctx.accounts.reward_distributor_token_account.amount as u128;
         }
+        let cpi_accounts = token::Transfer {
+            from: ctx.accounts.reward_distributor_token_account.to_account_info(),
+            to: ctx.accounts.user_reward_mint_token_account.to_account_info(),
+            authority: reward_distributor.to_account_info(),
+        };
+        let cpi_program = ctx.accounts.token_program.to_account_info();
+        let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(reward_distributor_signer);
+        // todo this could be an issue and get stuck, might need 2 transfers
+        token::transfer(cpi_context, reward_amount_to_receive.try_into().expect("Too many rewards to receive"))?;
+
         // update values
         // this is nuanced about if the rewards are closed, should they get the reward time for that time even though they didnt get any rewards?
         // this only matters if the reward distributor becomes open again and they missed out on some rewards they coudlve gotten

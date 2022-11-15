@@ -1,16 +1,10 @@
-use crate::errors::ErrorCode;
 use crate::instructions::reward_distribution::RewardDistributor;
-use crate::instructions::reward_distribution::RewardDistributorKind;
 use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::instructions::reward_distribution::REWARD_DISTRIBUTOR_SIZE;
 use crate::state::StakePool;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
-use anchor_spl::token::SetAuthority;
 use anchor_spl::token::Token;
-use anchor_spl::token::TokenAccount;
-use anchor_spl::token::{self};
-use spl_token::instruction::AuthorityType;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitRewardDistributorIx {
@@ -46,10 +40,9 @@ pub struct InitRewardDistributorCtx<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, InitRewardDistributorCtx<'info>>, ix: InitRewardDistributorIx) -> Result<()> {
+pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributorIx) -> Result<()> {
     let reward_distributor = &mut ctx.accounts.reward_distributor;
     reward_distributor.bump = *ctx.bumps.get("reward_distributor").unwrap();
-    reward_distributor.kind = ix.kind;
     reward_distributor.authority = ctx.accounts.authority.key();
     reward_distributor.stake_pool = ctx.accounts.stake_pool.key();
     reward_distributor.reward_mint = ctx.accounts.reward_mint.key();
@@ -59,37 +52,5 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     reward_distributor.default_multiplier = ix.default_multiplier.unwrap_or(1);
     reward_distributor.multiplier_decimals = ix.multiplier_decimals.unwrap_or(0);
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
-
-    let remaining_accs = &mut ctx.remaining_accounts.iter();
-    match ix.kind {
-        k if k == RewardDistributorKind::Mint as u8 => {
-            let cpi_accounts = SetAuthority {
-                account_or_mint: ctx.accounts.reward_mint.to_account_info(),
-                current_authority: ctx.accounts.authority.to_account_info(),
-            };
-            let cpi_program = ctx.accounts.token_program.to_account_info();
-            let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-            token::set_authority(cpi_context, AuthorityType::MintTokens, Some(reward_distributor.key()))?;
-        }
-        k if k == RewardDistributorKind::Treasury as u8 => {
-            if ix.supply.is_none() && ix.max_supply.is_none() {
-                return Err(error!(ErrorCode::SupplyRequired));
-            }
-            let reward_distributor_token_account_info = next_account_info(remaining_accs)?;
-            let reward_distributor_token_account = Account::<TokenAccount>::try_from(reward_distributor_token_account_info)?;
-            let authority_token_account_info = next_account_info(remaining_accs)?;
-            let authority_token_account = Account::<TokenAccount>::try_from(authority_token_account_info)?;
-
-            let cpi_accounts = token::Transfer {
-                from: authority_token_account.to_account_info(),
-                to: reward_distributor_token_account.to_account_info(),
-                authority: ctx.accounts.authority.to_account_info(),
-            };
-            let cpi_program = ctx.accounts.token_program.to_account_info();
-            let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-            token::transfer(cpi_context, ix.supply.unwrap_or_else(|| ix.max_supply.unwrap()))?;
-        }
-        _ => return Err(error!(ErrorCode::InvalidRewardDistributorKind)),
-    }
     Ok(())
 }

@@ -103,13 +103,13 @@ pub mod cardinal_stake_pool {
 
     //// reward_distribution ////
     //// reward_distribution::reward_distributor ////
-    pub fn init_reward_distributor<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, InitRewardDistributorCtx<'info>>, ix: InitRewardDistributorIx) -> Result<()> {
+    pub fn init_reward_distributor(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributorIx) -> Result<()> {
         reward_distribution::reward_distributor::init_reward_distributor::handler(ctx, ix)
     }
     pub fn update_reward_distributor(ctx: Context<UpdateRewardDistributorCtx>, ix: UpdateRewardDistributorIx) -> Result<()> {
         reward_distribution::reward_distributor::update_reward_distributor::handler(ctx, ix)
     }
-    pub fn close_reward_distributor<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, CloseRewardDistributorCtx<'info>>) -> Result<()> {
+    pub fn close_reward_distributor(ctx: Context<CloseRewardDistributorCtx>) -> Result<()> {
         reward_distribution::reward_distributor::close_reward_distributor::handler(ctx)
     }
 
@@ -123,7 +123,7 @@ pub mod cardinal_stake_pool {
     pub fn update_reward_entry(ctx: Context<UpdateRewardEntryCtx>, ix: UpdateRewardEntryIx) -> Result<()> {
         reward_distribution::reward_entry::update_reward_entry::handler(ctx, ix)
     }
-    pub fn claim_rewards<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ClaimRewardsCtx<'info>>) -> Result<()> {
+    pub fn claim_rewards(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         reward_distribution::reward_entry::claim_rewards::handler(ctx)
     }
 }
