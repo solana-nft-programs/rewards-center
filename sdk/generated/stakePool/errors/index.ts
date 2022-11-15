@@ -372,7 +372,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class StakePoolHasEndedError extends Error {
-  readonly code: number = 0x1799
+  readonly code: number = 0x17a2
   readonly name: string = 'StakePoolHasEnded'
   constructor() {
     super('Stake pool has ended')
@@ -382,7 +382,7 @@ export class StakePoolHasEndedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1799, () => new StakePoolHasEndedError())
+createErrorFromCodeLookup.set(0x17a2, () => new StakePoolHasEndedError())
 createErrorFromNameLookup.set(
   'StakePoolHasEnded',
   () => new StakePoolHasEndedError()
@@ -395,7 +395,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class MinStakeSecondsNotSatisfiedError extends Error {
-  readonly code: number = 0x17a2
+  readonly code: number = 0x17a3
   readonly name: string = 'MinStakeSecondsNotSatisfied'
   constructor() {
     super('Minimum stake seconds not satisfied')
@@ -406,7 +406,7 @@ export class MinStakeSecondsNotSatisfiedError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x17a2,
+  0x17a3,
   () => new MinStakeSecondsNotSatisfiedError()
 )
 createErrorFromNameLookup.set(

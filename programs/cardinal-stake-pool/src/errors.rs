@@ -44,9 +44,9 @@ pub enum ErrorCode {
 
     // stake_pool errors
     #[msg("Stake pool has ended")]
-    StakePoolHasEnded,
+    StakePoolHasEnded = 50,
     #[msg("Minimum stake seconds not satisfied")]
-    MinStakeSecondsNotSatisfied = 50,
+    MinStakeSecondsNotSatisfied,
 
     // boost errors
     #[msg("Cannot boost unstaked token")]

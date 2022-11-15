@@ -45,6 +45,7 @@ export const updatePoolStruct = new beet.FixableBeetArgsStruct<
 export type UpdatePoolInstructionAccounts = {
   stakePool: web3.PublicKey
   payer: web3.PublicKey
+  systemProgram?: web3.PublicKey
 }
 
 export const updatePoolInstructionDiscriminator = [
@@ -80,6 +81,11 @@ export function createUpdatePoolInstruction(
       pubkey: accounts.payer,
       isWritable: true,
       isSigner: true,
+    },
+    {
+      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+      isWritable: false,
+      isSigner: false,
     },
   ]
 

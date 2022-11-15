@@ -33,8 +33,6 @@ pub struct StakeEntry {
 }
 
 pub const STAKE_POOL_PREFIX: &str = "stake-pool";
-
-pub const STAKE_POOL_SIZE: usize = 8 + 1 + 8 + 32 + 1 + 4 + 8 + 8 + 16 + 16 + 33 + 33 + 1 + 32 * 5 + 24 + 256;
 #[account]
 pub struct StakePool {
     pub bump: u8,

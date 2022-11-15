@@ -14,7 +14,7 @@ pub struct AuthorizeMintCtx<'info> {
     #[account(
         init,
         payer = payer,
-        space = STAKE_POOL_SIZE,
+        space = STAKE_AUTHORIZATION_SIZE,
         seeds = [STAKE_AUTHORIZATION_PREFIX.as_bytes(), stake_pool.key().as_ref(), mint.as_ref()],
         bump
     )]

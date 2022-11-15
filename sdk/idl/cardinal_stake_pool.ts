@@ -148,6 +148,11 @@ export type CardinalStakePool = {
           name: "payer";
           isMut: true;
           isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [
@@ -1036,12 +1041,12 @@ export type CardinalStakePool = {
       msg: "Token still has some cooldown seconds remaining";
     },
     {
-      code: 6041;
+      code: 6050;
       name: "StakePoolHasEnded";
       msg: "Stake pool has ended";
     },
     {
-      code: 6050;
+      code: 6051;
       name: "MinStakeSecondsNotSatisfied";
       msg: "Minimum stake seconds not satisfied";
     },
@@ -1228,6 +1233,11 @@ export const IDL: CardinalStakePool = {
           name: "payer",
           isMut: true,
           isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
       ],
       args: [
@@ -2116,12 +2126,12 @@ export const IDL: CardinalStakePool = {
       msg: "Token still has some cooldown seconds remaining",
     },
     {
-      code: 6041,
+      code: 6050,
       name: "StakePoolHasEnded",
       msg: "Stake pool has ended",
     },
     {
-      code: 6050,
+      code: 6051,
       name: "MinStakeSecondsNotSatisfied",
       msg: "Minimum stake seconds not satisfied",
     },

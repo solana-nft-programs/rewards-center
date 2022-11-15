@@ -1,4 +1,5 @@
 use crate::state::*;
+use crate::utils::resize_account;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
@@ -24,7 +25,7 @@ pub struct InitPoolCtx<'info> {
     #[account(
         init,
         payer = payer,
-        space = STAKE_POOL_SIZE,
+        space = 8 + 1 + 32 + 8 + 1 + 24,
         seeds = [STAKE_POOL_PREFIX.as_bytes(), ix.identifier.as_ref()],
         bump
     )]
@@ -36,24 +37,40 @@ pub struct InitPoolCtx<'info> {
 }
 
 pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
-    let stake_pool = &mut ctx.accounts.stake_pool;
-    stake_pool.bump = *ctx.bumps.get("stake_pool").unwrap();
-    stake_pool.identifier = ix.identifier;
-    stake_pool.requires_collections = ix.requires_collections;
-    stake_pool.requires_creators = ix.requires_creators;
-    stake_pool.requires_authorization = ix.requires_authorization;
-    stake_pool.authority = ix.authority;
-    stake_pool.reset_on_unstake = ix.reset_on_unstake;
-    stake_pool.total_staked = 0;
-    stake_pool.cooldown_seconds = ix.cooldown_seconds;
-    stake_pool.min_stake_seconds = ix.min_stake_seconds;
-    stake_pool.end_date = ix.end_date;
-    stake_pool.payment_mint = ix.payment_mint;
-    stake_pool.stake_payment_amount = ix.stake_payment_amount;
-    stake_pool.unstake_payment_amount = ix.unstake_payment_amount;
-    stake_pool.payment_manager = ix.payment_manager;
+    let bump = *ctx.bumps.get("stake_pool").unwrap();
+    let identifier = ix.identifier;
+    let new_stake_pool = StakePool {
+        bump: bump,
+        authority: ix.authority,
+        total_staked: 0,
+        reset_on_unstake: ix.reset_on_unstake,
+        cooldown_seconds: ix.cooldown_seconds,
+        min_stake_seconds: ix.min_stake_seconds,
+        end_date: ix.end_date,
+        stake_payment_amount: ix.stake_payment_amount,
+        unstake_payment_amount: ix.stake_payment_amount,
+        payment_mint: ix.payment_mint,
+        payment_manager: ix.payment_manager,
+        requires_authorization: ix.requires_authorization,
+        requires_creators: ix.requires_creators,
+        requires_collections: ix.requires_collections,
+        identifier: identifier.clone(),
+    };
+
     if let Some(payment_manager) = ix.payment_manager {
         assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");
     }
+
+    let stake_pool = &mut ctx.accounts.stake_pool;
+    let new_space = new_stake_pool.try_to_vec()?.len() + 8;
+
+    resize_account(
+        &stake_pool.to_account_info(),
+        new_space,
+        &ctx.accounts.payer.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+    )?;
+
+    stake_pool.set_inner(new_stake_pool);
     Ok(())
 }

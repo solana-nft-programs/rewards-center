@@ -148,6 +148,10 @@ test("Stake", async () => {
   const userAta = await getAccount(provider.connection, userAtaId);
   expect(userAta.isFrozen).toBe(true);
   expect(parseInt(userAta.amount.toString())).toBe(1);
+  const activeStakeEntries = await stakePool.StakeEntry.gpaBuilder()
+    .addFilter("lastStaker", provider.wallet.publicKey)
+    .run(provider.connection);
+  expect(activeStakeEntries.length).toBe(1);
 });
 
 test("Unstake", async () => {
@@ -191,4 +195,8 @@ test("Unstake", async () => {
   const userAta = await getAccount(provider.connection, userAtaId);
   expect(userAta.isFrozen).toBe(false);
   expect(parseInt(userAta.amount.toString())).toBe(1);
+  const activeStakeEntries = await stakePool.StakeEntry.gpaBuilder()
+    .addFilter("lastStaker", provider.wallet.publicKey)
+    .run(provider.connection);
+  expect(activeStakeEntries.length).toBe(0);
 });

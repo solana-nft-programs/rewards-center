@@ -1,4 +1,5 @@
 use crate::state::*;
+use crate::utils::resize_account;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
@@ -25,29 +26,40 @@ pub struct UpdatePoolCtx<'info> {
 
     #[account(mut)]
     payer: Signer<'info>,
+    system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
-    stake_pool.requires_collections = ix.requires_collections;
-    stake_pool.requires_creators = ix.requires_creators;
-    stake_pool.requires_authorization = ix.requires_authorization;
-    stake_pool.authority = ix.authority;
-    stake_pool.reset_on_unstake = ix.reset_on_unstake;
-    stake_pool.end_date = ix.end_date;
-    stake_pool.cooldown_seconds = ix.cooldown_seconds;
-    stake_pool.min_stake_seconds = ix.min_stake_seconds;
-    stake_pool.payment_mint = ix.payment_mint;
-    stake_pool.stake_payment_amount = ix.stake_payment_amount;
-    stake_pool.unstake_payment_amount = ix.unstake_payment_amount;
+
     if let Some(payment_manager) = ix.payment_manager {
         assert_stake_pool_payment_manager(&payment_manager).expect("Payment manager error");
     }
+    let new_stake_pool = StakePool {
+        bump: stake_pool.bump,
+        authority: ix.authority,
+        total_staked: stake_pool.total_staked,
+        reset_on_unstake: ix.reset_on_unstake,
+        cooldown_seconds: ix.cooldown_seconds,
+        min_stake_seconds: ix.min_stake_seconds,
+        end_date: ix.end_date,
+        stake_payment_amount: ix.stake_payment_amount,
+        unstake_payment_amount: ix.stake_payment_amount,
+        payment_mint: ix.payment_mint,
+        payment_manager: ix.payment_manager,
+        requires_authorization: ix.requires_authorization,
+        requires_creators: ix.requires_creators,
+        requires_collections: ix.requires_collections,
+        identifier: stake_pool.identifier.clone(),
+    };
+    let new_space = new_stake_pool.try_to_vec()?.len() + 8;
+    stake_pool.set_inner(new_stake_pool);
 
-    // zero extra data
-    let stake_pool_account = stake_pool.to_account_info();
-    let mut stake_pool_data = stake_pool_account.data.borrow_mut();
-    let len = stake_pool_data.len();
-    stake_pool_data[stake_pool.try_to_vec()?.len()..len].iter_mut().for_each(|d| *d = 0);
+    resize_account(
+        &stake_pool.to_account_info(),
+        new_space,
+        &ctx.accounts.payer.to_account_info(),
+        &ctx.accounts.system_program.to_account_info(),
+    )?;
     Ok(())
 }
