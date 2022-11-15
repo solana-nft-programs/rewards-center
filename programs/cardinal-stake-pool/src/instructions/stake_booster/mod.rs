@@ -9,3 +9,6 @@ pub use close_stake_booster::*;
 
 pub mod update_stake_booster;
 pub use update_stake_booster::*;
+
+pub mod state;
+pub use state::*;

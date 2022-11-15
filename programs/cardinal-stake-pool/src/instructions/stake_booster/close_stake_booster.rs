@@ -2,6 +2,8 @@ use crate::errors::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+use super::StakeBooster;
+
 #[derive(Accounts)]
 pub struct CloseStakeBoosterCtx<'info> {
     #[account(mut, close = authority)]

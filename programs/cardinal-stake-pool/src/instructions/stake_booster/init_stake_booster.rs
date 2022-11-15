@@ -2,6 +2,11 @@ use crate::errors::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+use super::assert_stake_boost_payment_manager;
+use super::StakeBooster;
+use super::STAKE_BOOSTER_PREFIX;
+use super::STAKE_BOOSTER_SIZE;
+
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitStakeBoosterIx {
     stake_pool: Pubkey,

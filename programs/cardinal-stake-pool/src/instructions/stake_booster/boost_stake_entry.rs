@@ -7,6 +7,9 @@ use anchor_spl::token::TokenAccount;
 use cardinal_payment_manager::program::CardinalPaymentManager;
 use cardinal_payment_manager::state::PaymentManager;
 
+use super::assert_stake_boost_payment_manager;
+use super::StakeBooster;
+
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct BoostStakeEntryIx {
     seconds_to_boost: u64,

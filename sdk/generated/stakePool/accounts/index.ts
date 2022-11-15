@@ -4,13 +4,13 @@ export * from './StakeEntry'
 export * from './StakePool'
 
 import { StakeAuthorizationRecord } from './StakeAuthorizationRecord'
+import { StakeBooster } from './StakeBooster'
 import { StakeEntry } from './StakeEntry'
 import { StakePool } from './StakePool'
-import { StakeBooster } from './StakeBooster'
 
 export const accountProviders = {
   StakeAuthorizationRecord,
+  StakeBooster,
   StakeEntry,
   StakePool,
-  StakeBooster,
 }

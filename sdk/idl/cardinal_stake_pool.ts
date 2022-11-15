@@ -542,6 +542,50 @@ export type CardinalStakePool = {
       };
     },
     {
+      name: "stakeBooster";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "identifier";
+            type: "u64";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentManager";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
+            type: "publicKey";
+          },
+          {
+            name: "boostSeconds";
+            type: "u128";
+          },
+          {
+            name: "startTimeSeconds";
+            type: "i64";
+          }
+        ];
+      };
+    },
+    {
       name: "stakeEntry";
       type: {
         kind: "struct";
@@ -673,50 +717,6 @@ export type CardinalStakePool = {
           {
             name: "identifier";
             type: "string";
-          }
-        ];
-      };
-    },
-    {
-      name: "stakeBooster";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "bump";
-            type: "u8";
-          },
-          {
-            name: "stakePool";
-            type: "publicKey";
-          },
-          {
-            name: "identifier";
-            type: "u64";
-          },
-          {
-            name: "paymentAmount";
-            type: "u64";
-          },
-          {
-            name: "paymentMint";
-            type: "publicKey";
-          },
-          {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
-            name: "paymentRecipient";
-            type: "publicKey";
-          },
-          {
-            name: "boostSeconds";
-            type: "u128";
-          },
-          {
-            name: "startTimeSeconds";
-            type: "i64";
           }
         ];
       };
@@ -1627,6 +1627,50 @@ export const IDL: CardinalStakePool = {
       },
     },
     {
+      name: "stakeBooster",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "identifier",
+            type: "u64",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentManager",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
+            type: "publicKey",
+          },
+          {
+            name: "boostSeconds",
+            type: "u128",
+          },
+          {
+            name: "startTimeSeconds",
+            type: "i64",
+          },
+        ],
+      },
+    },
+    {
       name: "stakeEntry",
       type: {
         kind: "struct",
@@ -1758,50 +1802,6 @@ export const IDL: CardinalStakePool = {
           {
             name: "identifier",
             type: "string",
-          },
-        ],
-      },
-    },
-    {
-      name: "stakeBooster",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "bump",
-            type: "u8",
-          },
-          {
-            name: "stakePool",
-            type: "publicKey",
-          },
-          {
-            name: "identifier",
-            type: "u64",
-          },
-          {
-            name: "paymentAmount",
-            type: "u64",
-          },
-          {
-            name: "paymentMint",
-            type: "publicKey",
-          },
-          {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
-            name: "paymentRecipient",
-            type: "publicKey",
-          },
-          {
-            name: "boostSeconds",
-            type: "u128",
-          },
-          {
-            name: "startTimeSeconds",
-            type: "i64",
           },
         ],
       },

@@ -2,6 +2,9 @@ use crate::errors::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+use super::assert_stake_boost_payment_manager;
+use super::StakeBooster;
+
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdateStakeBoosterIx {
     payment_amount: u64,
