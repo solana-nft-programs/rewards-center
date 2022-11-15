@@ -9,3 +9,7 @@ pub use reassign_stake_entry::*;
 
 pub mod update_total_stake_seconds;
 pub use update_total_stake_seconds::*;
+
+pub mod editions;
+pub use editions::stake_edition::*;
+pub use editions::unstake_edition::*;

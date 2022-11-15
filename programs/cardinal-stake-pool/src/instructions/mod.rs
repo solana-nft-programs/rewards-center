@@ -7,6 +7,8 @@ pub use stake_pool::update_pool::*;
 // stake_entry
 pub mod stake_entry;
 pub use stake_entry::close_stake_entry::*;
+pub use stake_entry::editions::stake_edition::*;
+pub use stake_entry::editions::unstake_edition::*;
 pub use stake_entry::init_entry::*;
 pub use stake_entry::reassign_stake_entry::*;
 pub use stake_entry::update_total_stake_seconds::*;
@@ -22,11 +24,6 @@ pub use stake_booster::boost_stake_entry::*;
 pub use stake_booster::close_stake_booster::*;
 pub use stake_booster::init_stake_booster::*;
 pub use stake_booster::update_stake_booster::*;
-
-// editions
-pub mod editions;
-pub use editions::stake_edition::*;
-pub use editions::unstake_edition::*;
 
 // reward_receipts
 pub mod reward_receipts;

@@ -12,6 +12,17 @@ declare_id!("stk2688WVNGaHZGiLuuyGdQQWDdt8n69gEEo5eWYFt6");
 pub mod cardinal_stake_pool {
     use super::*;
 
+    //// stake_pool ////
+    pub fn init_pool(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
+        stake_pool::init_pool::handler(ctx, ix)
+    }
+    pub fn update_pool(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
+        stake_pool::update_pool::handler(ctx, ix)
+    }
+    pub fn close_stake_pool(ctx: Context<CloseStakePoolCtx>) -> Result<()> {
+        stake_pool::close_stake_pool::handler(ctx)
+    }
+
     //// stake_entry ////
     pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
         stake_entry::init_entry::handler(ctx, user)
@@ -25,16 +36,12 @@ pub mod cardinal_stake_pool {
     pub fn close_stake_entry(ctx: Context<CloseStakeEntryCtx>) -> Result<()> {
         stake_entry::close_stake_entry::handler(ctx)
     }
-
-    //// stake_pool ////
-    pub fn init_pool(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
-        stake_pool::init_pool::handler(ctx, ix)
+    //// stake_entry::editions ////
+    pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
+        stake_entry::editions::stake_edition::handler(ctx, amount)
     }
-    pub fn update_pool(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
-        stake_pool::update_pool::handler(ctx, ix)
-    }
-    pub fn close_stake_pool(ctx: Context<CloseStakePoolCtx>) -> Result<()> {
-        stake_pool::close_stake_pool::handler(ctx)
+    pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
+        stake_entry::editions::unstake_edition::handler(ctx)
     }
 
     //// authorization ////
@@ -57,14 +64,6 @@ pub mod cardinal_stake_pool {
     }
     pub fn close_stake_booster(ctx: Context<CloseStakeBoosterCtx>) -> Result<()> {
         stake_booster::close_stake_booster::handler(ctx)
-    }
-
-    //// editions ////
-    pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
-        editions::stake_edition::handler(ctx, amount)
-    }
-    pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
-        editions::unstake_edition::handler(ctx)
     }
 
     //// reward_receipts ////
