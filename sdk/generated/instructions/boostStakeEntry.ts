@@ -86,7 +86,7 @@ export const boostStakeEntryInstructionDiscriminator = [
 export function createBoostStakeEntryInstruction(
   accounts: BoostStakeEntryInstructionAccounts,
   args: BoostStakeEntryInstructionArgs,
-  programId = new web3.PublicKey('rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ')
+  programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
   const [data] = boostStakeEntryStruct.serialize({
     instructionDiscriminator: boostStakeEntryInstructionDiscriminator,

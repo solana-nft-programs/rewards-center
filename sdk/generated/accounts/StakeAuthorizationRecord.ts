@@ -82,7 +82,7 @@ export class StakeAuthorizationRecord implements StakeAuthorizationRecordArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      'rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ'
+      'rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U'
     )
   ) {
     return beetSolana.GpaBuilder.fromStruct(

@@ -69,7 +69,7 @@ export const updateStakeBoosterInstructionDiscriminator = [
 export function createUpdateStakeBoosterInstruction(
   accounts: UpdateStakeBoosterInstructionAccounts,
   args: UpdateStakeBoosterInstructionArgs,
-  programId = new web3.PublicKey('rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ')
+  programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
   const [data] = updateStakeBoosterStruct.serialize({
     instructionDiscriminator: updateStakeBoosterInstructionDiscriminator,

@@ -69,7 +69,7 @@ export const reasssignStakeEntryInstructionDiscriminator = [
 export function createReasssignStakeEntryInstruction(
   accounts: ReasssignStakeEntryInstructionAccounts,
   args: ReasssignStakeEntryInstructionArgs,
-  programId = new web3.PublicKey('rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ')
+  programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
   const [data] = reasssignStakeEntryStruct.serialize({
     instructionDiscriminator: reasssignStakeEntryInstructionDiscriminator,

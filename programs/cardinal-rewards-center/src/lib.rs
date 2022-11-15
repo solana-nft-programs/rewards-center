@@ -16,7 +16,7 @@ pub mod utils;
 
 use anchor_lang::prelude::*;
 
-declare_id!("rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ");
+declare_id!("rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U");
 
 #[program]
 pub mod cardinal_rewards_center {

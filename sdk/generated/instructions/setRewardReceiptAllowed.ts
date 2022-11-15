@@ -65,7 +65,7 @@ export const setRewardReceiptAllowedInstructionDiscriminator = [
 export function createSetRewardReceiptAllowedInstruction(
   accounts: SetRewardReceiptAllowedInstructionAccounts,
   args: SetRewardReceiptAllowedInstructionArgs,
-  programId = new web3.PublicKey('rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ')
+  programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
   const [data] = setRewardReceiptAllowedStruct.serialize({
     instructionDiscriminator: setRewardReceiptAllowedInstructionDiscriminator,

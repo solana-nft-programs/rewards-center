@@ -16,7 +16,7 @@ start:
 		--clone metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s --clone PwDiXFxQsGra4sFFTT8r1QWRMd4vfumiWC1jfWNfdYT \
 		--clone pmvYY6Wgvpe3DEj3UX1FcRpMx43sMLYLJrFTVGcqpdn --clone 355AtuHH98Jy9XFg5kWodfmvSfrhcxYUKGoJe8qziFNY \
 		--clone FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi \
-		--bpf-program rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ ./target/deploy/cardinal_rewards_center.so \
+		--bpf-program rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U ./target/deploy/cardinal_rewards_center.so \
 		--reset --quiet & echo $$!
 	sleep 10
 	solana-keygen pubkey ./tests/test-keypairs/test-key.json

@@ -6,7 +6,7 @@ const idlDir = path.join(__dirname, "sdk/idl");
 const configs = [
   {
     programName: "cardinal_rewards_center",
-    programId: "rwcg7ZBhxV8ViZvueh5kRuQXkTGD8TmcoPmEpDutCUJ",
+    programId: "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U",
     programDir: "programs/cardinal-rewards-center",
     outDir: path.join(__dirname, "sdk", "generated"),
   },
