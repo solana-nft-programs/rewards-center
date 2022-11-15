@@ -18,8 +18,8 @@ pub struct StakePool {
     pub payment_mint: Option<Pubkey>,
     pub payment_manager: Option<Pubkey>,
     pub requires_authorization: bool,
-    pub requires_creators: Vec<Pubkey>,
-    pub requires_collections: Vec<Pubkey>,
+    pub allowed_creators: Vec<Pubkey>,
+    pub allowed_collections: Vec<Pubkey>,
     pub identifier: String,
 }
 

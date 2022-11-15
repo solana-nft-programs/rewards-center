@@ -9,8 +9,8 @@ import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type UpdatePoolIx = {
-  requiresCollections: web3.PublicKey[]
-  requiresCreators: web3.PublicKey[]
+  allowedCollections: web3.PublicKey[]
+  allowedCreators: web3.PublicKey[]
   requiresAuthorization: boolean
   authority: web3.PublicKey
   resetOnUnstake: boolean
@@ -29,8 +29,8 @@ export type UpdatePoolIx = {
  */
 export const updatePoolIxBeet = new beet.FixableBeetArgsStruct<UpdatePoolIx>(
   [
-    ['requiresCollections', beet.array(beetSolana.publicKey)],
-    ['requiresCreators', beet.array(beetSolana.publicKey)],
+    ['allowedCollections', beet.array(beetSolana.publicKey)],
+    ['allowedCreators', beet.array(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
     ['authority', beetSolana.publicKey],
     ['resetOnUnstake', beet.bool],

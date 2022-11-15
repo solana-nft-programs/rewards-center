@@ -7,8 +7,8 @@ use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitPoolIx {
-    requires_collections: Vec<Pubkey>,
-    requires_creators: Vec<Pubkey>,
+    allowed_collections: Vec<Pubkey>,
+    allowed_creators: Vec<Pubkey>,
     requires_authorization: bool,
     authority: Pubkey,
     reset_on_unstake: bool,
@@ -55,8 +55,8 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
         payment_mint: ix.payment_mint,
         payment_manager: ix.payment_manager,
         requires_authorization: ix.requires_authorization,
-        requires_creators: ix.requires_creators,
-        requires_collections: ix.requires_collections,
+        allowed_creators: ix.allowed_creators,
+        allowed_collections: ix.allowed_collections,
         identifier: identifier.clone(),
     };
 

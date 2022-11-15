@@ -1441,13 +1441,13 @@ export type CardinalRewardsCenter = {
             type: "bool";
           },
           {
-            name: "requiresCreators";
+            name: "allowedCreators";
             type: {
               vec: "publicKey";
             };
           },
           {
-            name: "requiresCollections";
+            name: "allowedCollections";
             type: {
               vec: "publicKey";
             };
@@ -1747,13 +1747,13 @@ export type CardinalRewardsCenter = {
         kind: "struct";
         fields: [
           {
-            name: "requiresCollections";
+            name: "allowedCollections";
             type: {
               vec: "publicKey";
             };
           },
           {
-            name: "requiresCreators";
+            name: "allowedCreators";
             type: {
               vec: "publicKey";
             };
@@ -1825,13 +1825,13 @@ export type CardinalRewardsCenter = {
         kind: "struct";
         fields: [
           {
-            name: "requiresCollections";
+            name: "allowedCollections";
             type: {
               vec: "publicKey";
             };
           },
           {
-            name: "requiresCreators";
+            name: "allowedCreators";
             type: {
               vec: "publicKey";
             };
@@ -3586,13 +3586,13 @@ export const IDL: CardinalRewardsCenter = {
             type: "bool",
           },
           {
-            name: "requiresCreators",
+            name: "allowedCreators",
             type: {
               vec: "publicKey",
             },
           },
           {
-            name: "requiresCollections",
+            name: "allowedCollections",
             type: {
               vec: "publicKey",
             },
@@ -3892,13 +3892,13 @@ export const IDL: CardinalRewardsCenter = {
         kind: "struct",
         fields: [
           {
-            name: "requiresCollections",
+            name: "allowedCollections",
             type: {
               vec: "publicKey",
             },
           },
           {
-            name: "requiresCreators",
+            name: "allowedCreators",
             type: {
               vec: "publicKey",
             },
@@ -3970,13 +3970,13 @@ export const IDL: CardinalRewardsCenter = {
         kind: "struct",
         fields: [
           {
-            name: "requiresCollections",
+            name: "allowedCollections",
             type: {
               vec: "publicKey",
             },
           },
           {
-            name: "requiresCreators",
+            name: "allowedCreators",
             type: {
               vec: "publicKey",
             },

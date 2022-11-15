@@ -27,8 +27,8 @@ export type StakePoolArgs = {
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
   requiresAuthorization: boolean
-  requiresCreators: web3.PublicKey[]
-  requiresCollections: web3.PublicKey[]
+  allowedCreators: web3.PublicKey[]
+  allowedCollections: web3.PublicKey[]
   identifier: string
 }
 
@@ -54,8 +54,8 @@ export class StakePool implements StakePoolArgs {
     readonly paymentMint: beet.COption<web3.PublicKey>,
     readonly paymentManager: beet.COption<web3.PublicKey>,
     readonly requiresAuthorization: boolean,
-    readonly requiresCreators: web3.PublicKey[],
-    readonly requiresCollections: web3.PublicKey[],
+    readonly allowedCreators: web3.PublicKey[],
+    readonly allowedCollections: web3.PublicKey[],
     readonly identifier: string
   ) {}
 
@@ -76,8 +76,8 @@ export class StakePool implements StakePoolArgs {
       args.paymentMint,
       args.paymentManager,
       args.requiresAuthorization,
-      args.requiresCreators,
-      args.requiresCollections,
+      args.allowedCreators,
+      args.allowedCollections,
       args.identifier
     )
   }
@@ -195,8 +195,8 @@ export class StakePool implements StakePoolArgs {
       paymentMint: this.paymentMint,
       paymentManager: this.paymentManager,
       requiresAuthorization: this.requiresAuthorization,
-      requiresCreators: this.requiresCreators,
-      requiresCollections: this.requiresCollections,
+      allowedCreators: this.allowedCreators,
+      allowedCollections: this.allowedCollections,
       identifier: this.identifier,
     }
   }
@@ -226,8 +226,8 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
-    ['requiresCreators', beet.array(beetSolana.publicKey)],
-    ['requiresCollections', beet.array(beetSolana.publicKey)],
+    ['allowedCreators', beet.array(beetSolana.publicKey)],
+    ['allowedCollections', beet.array(beetSolana.publicKey)],
     ['identifier', beet.utf8String],
   ],
   StakePool.fromArgs,
