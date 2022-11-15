@@ -26,6 +26,7 @@ pub struct RewardDistributor {
     pub stake_pool: Pubkey,
     pub kind: u8,
     pub authority: Pubkey,
+    pub identifier: u64,
     pub reward_mint: Pubkey,
     pub reward_amount: u64,
     pub reward_duration_seconds: u128,

@@ -8,23 +8,25 @@ use anchor_spl::token::Token;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitRewardDistributorIx {
-    pub reward_amount: u64,
-    pub reward_duration_seconds: u128,
-    pub kind: u8,
-    pub supply: Option<u64>,
-    pub max_supply: Option<u64>,
-    pub default_multiplier: Option<u64>,
-    pub multiplier_decimals: Option<u8>,
-    pub max_reward_seconds_received: Option<u128>,
+    reward_amount: u64,
+    reward_duration_seconds: u128,
+    identifier: u64,
+    kind: u8,
+    supply: Option<u64>,
+    max_supply: Option<u64>,
+    default_multiplier: Option<u64>,
+    multiplier_decimals: Option<u8>,
+    max_reward_seconds_received: Option<u128>,
 }
 
 #[derive(Accounts)]
+#[instruction(ix: InitRewardDistributorIx)]
 pub struct InitRewardDistributorCtx<'info> {
     #[account(
         init,
         payer = payer,
         space = REWARD_DISTRIBUTOR_SIZE,
-        seeds = [REWARD_DISTRIBUTOR_SEED.as_bytes(), stake_pool.key().as_ref()],
+        seeds = [REWARD_DISTRIBUTOR_SEED.as_bytes(), stake_pool.key().as_ref(), ix.identifier.to_le_bytes().as_ref()],
         bump,
     )]
     reward_distributor: Box<Account<'info, RewardDistributor>>,
@@ -44,6 +46,7 @@ pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributor
     let reward_distributor = &mut ctx.accounts.reward_distributor;
     reward_distributor.bump = *ctx.bumps.get("reward_distributor").unwrap();
     reward_distributor.authority = ctx.accounts.authority.key();
+    reward_distributor.identifier = ix.identifier;
     reward_distributor.stake_pool = ctx.accounts.stake_pool.key();
     reward_distributor.reward_mint = ctx.accounts.reward_mint.key();
     reward_distributor.reward_amount = ix.reward_amount;
