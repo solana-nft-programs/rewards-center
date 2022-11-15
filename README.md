@@ -8,12 +8,12 @@
 </div>
 
 <p align="center">
-    An open protocol for rewards-center NFTs and FTs.
+    A rewards center for NFTs and FTs on Solana
 </p>
 
 ## Background
 
-Cardinal staking encompasses a suite of contracts for issuing and staking NFTs and FTs. The simple program is a stake pool that tracks total stake duration. In addition, there is an implementation of a token minting reward distributor. Cardinal staking works well with any standard NFT collection and also composes with other programs in the Cardinal NFT infrastructure ecosystem.
+Cardinal rewards center is a modular smart contract for staking tokens and distributing various rewards.
 
 ## Packages
 
@@ -26,8 +26,7 @@ Cardinal staking encompasses a suite of contracts for issuing and staking NFTs a
 
 Program addresses are the same on devnet, testnet, and mainnet-beta.
 
-- StakePool: [`rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U`](https://explorer.solana.com/address/rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U)
-- RewardDistributor: [`rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA`](https://explorer.solana.com/address/rwd2rAm24YWUrtK6VmaNgadvhxcX5N1LVnSauUQZbuA)
+- RewardsCenter: [`rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U`](https://explorer.solana.com/address/rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U)
 
 ## Questions & Support
 
