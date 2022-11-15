@@ -1,4 +1,4 @@
-use crate::instructions::mint_is_allowed;
+use crate::instructions::authorization::mint_is_allowed;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;

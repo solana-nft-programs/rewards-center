@@ -75,16 +75,6 @@ pub struct StakeBooster {
     pub start_time_seconds: i64,
 }
 
-pub const STAKE_AUTHORIZATION_PREFIX: &str = "stake-authorization";
-pub const STAKE_AUTHORIZATION_SIZE: usize = 8 + std::mem::size_of::<StakeAuthorizationRecord>() + 8;
-
-#[account]
-pub struct StakeAuthorizationRecord {
-    pub bump: u8,
-    pub pool: Pubkey,
-    pub mint: Pubkey,
-}
-
 pub fn get_stake_seed(supply: u64, user: Pubkey) -> Pubkey {
     if supply > 1 {
         user

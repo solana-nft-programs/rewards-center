@@ -3,7 +3,7 @@ use cardinal_payment_manager::program::CardinalPaymentManager;
 use mpl_token_metadata::instruction::freeze_delegated_account;
 use solana_program::program::invoke_signed;
 
-use crate::instructions::mint_is_allowed;
+use crate::instructions::authorization::mint_is_allowed;
 use crate::instructions::stake_entry::increment_total_stake_seconds;
 
 use crate::errors::ErrorCode;

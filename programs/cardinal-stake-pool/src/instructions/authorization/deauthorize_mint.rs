@@ -2,6 +2,8 @@ use crate::errors::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+use super::StakeAuthorizationRecord;
+
 #[derive(Accounts)]
 pub struct DeauthorizeMintCtx<'info> {
     #[account(mut)]

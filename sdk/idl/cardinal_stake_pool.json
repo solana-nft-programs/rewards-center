@@ -522,6 +522,26 @@
   ],
   "accounts": [
     {
+      "name": "StakeAuthorizationRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "pool",
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "StakeEntry",
       "type": {
         "kind": "struct",
@@ -697,26 +717,6 @@
           {
             "name": "startTimeSeconds",
             "type": "i64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "StakeAuthorizationRecord",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "pool",
-            "type": "publicKey"
-          },
-          {
-            "name": "mint",
-            "type": "publicKey"
           }
         ]
       }

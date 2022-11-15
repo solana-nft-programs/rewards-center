@@ -522,6 +522,26 @@ export type CardinalStakePool = {
   ];
   accounts: [
     {
+      name: "stakeAuthorizationRecord";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "pool";
+            type: "publicKey";
+          },
+          {
+            name: "mint";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
       name: "stakeEntry";
       type: {
         kind: "struct";
@@ -697,26 +717,6 @@ export type CardinalStakePool = {
           {
             name: "startTimeSeconds";
             type: "i64";
-          }
-        ];
-      };
-    },
-    {
-      name: "stakeAuthorizationRecord";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "bump";
-            type: "u8";
-          },
-          {
-            name: "pool";
-            type: "publicKey";
-          },
-          {
-            name: "mint";
-            type: "publicKey";
           }
         ];
       };
@@ -1607,6 +1607,26 @@ export const IDL: CardinalStakePool = {
   ],
   accounts: [
     {
+      name: "stakeAuthorizationRecord",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "pool",
+            type: "publicKey",
+          },
+          {
+            name: "mint",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
       name: "stakeEntry",
       type: {
         kind: "struct",
@@ -1782,26 +1802,6 @@ export const IDL: CardinalStakePool = {
           {
             name: "startTimeSeconds",
             type: "i64",
-          },
-        ],
-      },
-    },
-    {
-      name: "stakeAuthorizationRecord",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "bump",
-            type: "u8",
-          },
-          {
-            name: "pool",
-            type: "publicKey",
-          },
-          {
-            name: "mint",
-            type: "publicKey",
           },
         ],
       },
