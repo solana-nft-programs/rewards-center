@@ -30,6 +30,7 @@
     "clean": "rm -fr dist/",
     "idl:generate": "./generate-idls.sh",
     "sdk:generate": "node generate-sdk.js",
+    "erd:generate": "node generate-erd.js",
     "docs:generate": "typedoc --excludePrivate --includeVersion --out site/ sdk/index.ts",
     "typecheck": "tsc",
     "lint": "eslint 'sdk/**/*.{js,ts}' --fix",

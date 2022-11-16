@@ -4,7 +4,7 @@
 [![Release](https://github.com/cardinal-labs/cardinal-rewards-center/actions/workflows/release.yml/badge.svg?branch=v0.0.27)](https://github.com/cardinal-labs/cardinal-rewards-center/actions/workflows/release.yml)
 
 <div style="text-align: center; width: 100%;">
-  <img style="height: 450px" src="./doc-assets/banner.png" />
+  <img style="width: 100%" src="./doc-assets/banner.png" />
 </div>
 
 <p align="center">
@@ -27,6 +27,12 @@ Cardinal rewards center is a modular smart contract for staking tokens and distr
 Program addresses are the same on devnet, testnet, and mainnet-beta.
 
 - RewardsCenter: [`rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U`](https://explorer.solana.com/address/rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U)
+
+## State map
+
+<div style="text-align: center; width: 100%;">
+  <img style="width: 100%" src="./doc-assets/diagram.png" />
+</div>
 
 ## Questions & Support
 
