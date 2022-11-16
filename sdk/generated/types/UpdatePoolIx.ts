@@ -21,6 +21,7 @@ export type UpdatePoolIx = {
   unstakePaymentAmount: beet.COption<beet.bignum>
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
+  paymentRecipient: beet.COption<web3.PublicKey>
 }
 
 /**
@@ -41,6 +42,7 @@ export const updatePoolIxBeet = new beet.FixableBeetArgsStruct<UpdatePoolIx>(
     ['unstakePaymentAmount', beet.coption(beet.u64)],
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
+    ['paymentRecipient', beet.coption(beetSolana.publicKey)],
   ],
   'UpdatePoolIx'
 )

@@ -1,4 +1,4 @@
-import { utils } from "@project-serum/anchor";
+import { BN, utils } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
 import { PROGRAM_ID } from "./generated";
@@ -31,6 +31,21 @@ export const findStakePoolId = (identifier: string): PublicKey => {
   )[0];
 };
 
+export const STAKE_AUTHORIZATION_RECORD_SEED = "stake-authorization";
+export const findStakeAuthorizationRecordId = (
+  stakePoolId: PublicKey,
+  mintId: PublicKey
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(STAKE_AUTHORIZATION_RECORD_SEED),
+      stakePoolId.toBuffer(),
+      mintId.toBuffer(),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
 export const USER_ESCROW_SEED = "escrow";
 export const findUserEscrowId = (
   stakePoolId: PublicKey,
@@ -41,6 +56,51 @@ export const findUserEscrowId = (
       utils.bytes.utf8.encode(USER_ESCROW_SEED),
       stakePoolId.toBuffer(),
       user.toBuffer(),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
+export const STAKE_BOOSTER_SEED = "stake-booster";
+export const findStakeBoosterId = (
+  stakePoolId: PublicKey,
+  identifier?: BN
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(REWARD_DISTRIBUTOR_SEED),
+      stakePoolId.toBuffer(),
+      (identifier ?? new BN(0)).toArrayLike(Buffer, "le", 8),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
+export const REWARD_DISTRIBUTOR_SEED = "reward-distributor";
+export const findRewardDistributorId = (
+  stakePoolId: PublicKey,
+  identifier?: BN
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(REWARD_DISTRIBUTOR_SEED),
+      stakePoolId.toBuffer(),
+      (identifier ?? new BN(0)).toArrayLike(Buffer, "le", 8),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
+export const REWARD_ENTRY_SEED = "reward-entry";
+export const findRewardEntryId = (
+  rewardDistributorId: PublicKey,
+  stakeEntryId: PublicKey
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(REWARD_ENTRY_SEED),
+      rewardDistributorId.toBuffer(),
+      stakeEntryId.toBuffer(),
     ],
     PROGRAM_ID
   )[0];

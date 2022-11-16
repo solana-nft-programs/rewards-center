@@ -1,3 +1,13 @@
+import { PublicKey } from "@solana/web3.js";
+
 import { IDL } from "./idl/cardinal_rewards_center";
 
 export const REWARDS_CENTER_IDL = IDL;
+
+export const REWARD_MANAGER_ID = new PublicKey(
+  "crkdpVWjHWdggGgBuSyAqSmZUmAjYLzD435tcLDRLXr"
+);
+
+export const STAKE_POOL_PAYMENT_MANAGER_ID = new PublicKey(
+  "CuEDMUqgkGTVcAaqEDHuVR848XN38MPsD11JrkxcGD6a"
+);

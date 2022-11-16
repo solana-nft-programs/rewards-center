@@ -17,6 +17,7 @@ pub struct UpdatePoolIx {
     unstake_payment_amount: Option<u64>,
     payment_mint: Option<Pubkey>,
     payment_manager: Option<Pubkey>,
+    payment_recipient: Option<Pubkey>,
 }
 
 #[derive(Accounts)]
@@ -46,9 +47,10 @@ pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
         min_stake_seconds: ix.min_stake_seconds,
         end_date: ix.end_date,
         stake_payment_amount: ix.stake_payment_amount,
-        unstake_payment_amount: ix.stake_payment_amount,
+        unstake_payment_amount: ix.unstake_payment_amount,
         payment_mint: ix.payment_mint,
         payment_manager: ix.payment_manager,
+        payment_recipient: ix.payment_recipient,
         requires_authorization: ix.requires_authorization,
         allowed_creators: ix.allowed_creators,
         allowed_collections: ix.allowed_collections,

@@ -1,6 +1,6 @@
-use crate::assert_stake_pool_payment_info;
 use crate::errors::ErrorCode;
 use crate::escrow_seeds;
+use crate::handle_stake_pool_payment;
 use crate::stake_entry::increment_total_stake_seconds;
 use crate::StakeEntry;
 use crate::StakePool;
@@ -10,7 +10,6 @@ use anchor_spl::token::Revoke;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::{self};
-use cardinal_payment_manager::program::CardinalPaymentManager;
 use mpl_token_metadata::instruction::thaw_delegated_account;
 use solana_program::program::invoke_signed;
 
@@ -100,31 +99,17 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    if let (Some(payment_mint), Some(payment_amount), Some(payment_manager)) = (stake_pool.payment_mint, stake_pool.stake_payment_amount, stake_pool.payment_manager) {
-        let payment_manager_account_info = next_account_info(remaining_accounts)?;
-        assert_eq!(stake_pool.payment_manager.expect("Invalid payment manager"), payment_manager_account_info.key());
-
-        let payer_token_account_info = next_account_info(remaining_accounts)?;
-        let payer_token_account = Account::<TokenAccount>::try_from(payer_token_account_info)?;
-        assert_eq!(payer_token_account.mint, payment_mint);
-
-        let fee_collector_token_account = next_account_info(remaining_accounts)?;
-        let payment_token_account = next_account_info(remaining_accounts)?;
-        let payer = next_account_info(remaining_accounts)?;
-        let cardinal_payment_manager = next_account_info(remaining_accounts)?;
-        assert_eq!(CardinalPaymentManager::id(), cardinal_payment_manager.key());
-
-        assert_stake_pool_payment_info(&payment_mint, payment_amount, &payment_manager)?;
-        let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
-            payment_manager: payment_manager_account_info.to_account_info(),
-            payer_token_account: payer_token_account_info.to_account_info(),
-            fee_collector_token_account: fee_collector_token_account.to_account_info(),
-            payment_token_account: payment_token_account.to_account_info(),
-            payer: payer.to_account_info(),
-            token_program: ctx.accounts.token_program.to_account_info(),
-        };
-        let cpi_ctx = CpiContext::new(cardinal_payment_manager.to_account_info(), cpi_accounts);
-        cardinal_payment_manager::cpi::manage_payment(cpi_ctx, payment_amount)?;
+    if let (Some(payment_mint), Some(payment_amount), Some(payment_manager), Some(payment_recipient)) =
+        (stake_pool.payment_mint, stake_pool.unstake_payment_amount, stake_pool.payment_manager, stake_pool.payment_recipient)
+    {
+        handle_stake_pool_payment(
+            payment_mint,
+            payment_amount,
+            payment_manager,
+            payment_recipient,
+            &ctx.accounts.token_program.to_account_info(),
+            remaining_accounts,
+        )?;
     }
 
     increment_total_stake_seconds(stake_entry)?;

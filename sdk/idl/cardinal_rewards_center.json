@@ -1437,6 +1437,12 @@
             }
           },
           {
+            "name": "paymentRecipient",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
             "name": "requiresAuthorization",
             "type": "bool"
           },
@@ -1813,6 +1819,12 @@
             }
           },
           {
+            "name": "paymentRecipient",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
             "name": "identifier",
             "type": "string"
           }
@@ -1886,6 +1898,12 @@
           },
           {
             "name": "paymentManager",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "paymentRecipient",
             "type": {
               "option": "publicKey"
             }

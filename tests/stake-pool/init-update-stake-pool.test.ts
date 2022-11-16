@@ -40,6 +40,7 @@ test("Init", async () => {
           unstakePaymentAmount: null,
           paymentMint: null,
           paymentManager: null,
+          paymentRecipient: null,
         },
       }
     )
@@ -76,6 +77,7 @@ test("Update", async () => {
           unstakePaymentAmount: null,
           paymentMint: null,
           paymentManager: null,
+          paymentRecipient: null,
         },
       }
     )

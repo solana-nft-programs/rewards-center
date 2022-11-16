@@ -6,7 +6,7 @@ use std::slice::Iter;
 use crate::errors::ErrorCode;
 use crate::StakePool;
 
-pub const STAKE_AUTHORIZATION_PREFIX: &str = "stake-authorization";
+pub const STAKE_AUTHORIZATION_SEED: &str = "stake-authorization";
 pub const STAKE_AUTHORIZATION_SIZE: usize = 8 + std::mem::size_of::<StakeAuthorizationRecord>() + 8;
 
 #[account]

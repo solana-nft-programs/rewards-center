@@ -63,6 +63,7 @@ test("Init pool", async () => {
           unstakePaymentAmount: null,
           paymentMint: null,
           paymentManager: null,
+          paymentRecipient: null,
         },
       }
     )

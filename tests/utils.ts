@@ -63,6 +63,40 @@ export async function executeTransaction(
   }
 }
 
+export async function executeTransactions(
+  connection: Connection,
+  txs: Transaction[],
+  wallet: Wallet,
+  signers?: Signer[]
+): Promise<string[]> {
+  const latestBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  const signedTxs = await wallet.signAllTransactions(
+    txs.map((tx) => {
+      tx.recentBlockhash = latestBlockhash;
+      tx.feePayer = wallet.publicKey;
+      if (signers) {
+        tx.partialSign(...signers);
+      }
+      return tx;
+    })
+  );
+  const txids = await Promise.all(
+    signedTxs.map(async (tx) => {
+      try {
+        const txid = await sendAndConfirmRawTransaction(
+          connection,
+          tx.serialize()
+        );
+        return txid;
+      } catch (e) {
+        handleError(e);
+        throw e;
+      }
+    })
+  );
+  return txids;
+}
+
 export type CardinalProvider = {
   connection: Connection;
   wallet: Wallet;
@@ -71,11 +105,7 @@ export type CardinalProvider = {
 
 export async function getProvider(): Promise<CardinalProvider> {
   const connection = getConnection();
-  const keypair = await newAccountWithLamports(
-    connection,
-    LAMPORTS_PER_SOL,
-    keypairFrom(process.env.TEST_KEY ?? "./tests/test-keypairs/test-key.json")
-  );
+  const keypair = await newAccountWithLamports(connection, LAMPORTS_PER_SOL);
   const wallet = new Wallet(keypair);
   return {
     connection,
@@ -172,7 +202,7 @@ export const createMintTx = async (
   connection: Connection,
   mintId: PublicKey,
   authority: PublicKey,
-  target = authority
+  { target = authority, amount = 1 }: { target?: PublicKey; amount?: number }
 ) => {
   const ata = getAssociatedTokenAddressSync(mintId, target);
   return new Transaction().add(
@@ -185,7 +215,7 @@ export const createMintTx = async (
     }),
     createInitializeMint2Instruction(mintId, 0, authority, authority),
     createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
-    createMintToInstruction(mintId, ata, authority, 1)
+    createMintToInstruction(mintId, ata, authority, amount)
   );
 };
 

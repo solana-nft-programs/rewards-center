@@ -1437,6 +1437,12 @@ export type CardinalRewardsCenter = {
             };
           },
           {
+            name: "paymentRecipient";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
             name: "requiresAuthorization";
             type: "bool";
           },
@@ -1813,6 +1819,12 @@ export type CardinalRewardsCenter = {
             };
           },
           {
+            name: "paymentRecipient";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
             name: "identifier";
             type: "string";
           }
@@ -1886,6 +1898,12 @@ export type CardinalRewardsCenter = {
           },
           {
             name: "paymentManager";
+            type: {
+              option: "publicKey";
+            };
+          },
+          {
+            name: "paymentRecipient";
             type: {
               option: "publicKey";
             };
@@ -3582,6 +3600,12 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
+            name: "paymentRecipient",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
             name: "requiresAuthorization",
             type: "bool",
           },
@@ -3958,6 +3982,12 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
+            name: "paymentRecipient",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
             name: "identifier",
             type: "string",
           },
@@ -4031,6 +4061,12 @@ export const IDL: CardinalRewardsCenter = {
           },
           {
             name: "paymentManager",
+            type: {
+              option: "publicKey",
+            },
+          },
+          {
+            name: "paymentRecipient",
             type: {
               option: "publicKey",
             },

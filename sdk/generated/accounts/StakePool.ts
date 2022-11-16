@@ -26,6 +26,7 @@ export type StakePoolArgs = {
   unstakePaymentAmount: beet.COption<beet.bignum>
   paymentMint: beet.COption<web3.PublicKey>
   paymentManager: beet.COption<web3.PublicKey>
+  paymentRecipient: beet.COption<web3.PublicKey>
   requiresAuthorization: boolean
   allowedCreators: web3.PublicKey[]
   allowedCollections: web3.PublicKey[]
@@ -53,6 +54,7 @@ export class StakePool implements StakePoolArgs {
     readonly unstakePaymentAmount: beet.COption<beet.bignum>,
     readonly paymentMint: beet.COption<web3.PublicKey>,
     readonly paymentManager: beet.COption<web3.PublicKey>,
+    readonly paymentRecipient: beet.COption<web3.PublicKey>,
     readonly requiresAuthorization: boolean,
     readonly allowedCreators: web3.PublicKey[],
     readonly allowedCollections: web3.PublicKey[],
@@ -75,6 +77,7 @@ export class StakePool implements StakePoolArgs {
       args.unstakePaymentAmount,
       args.paymentMint,
       args.paymentManager,
+      args.paymentRecipient,
       args.requiresAuthorization,
       args.allowedCreators,
       args.allowedCollections,
@@ -194,6 +197,7 @@ export class StakePool implements StakePoolArgs {
       unstakePaymentAmount: this.unstakePaymentAmount,
       paymentMint: this.paymentMint,
       paymentManager: this.paymentManager,
+      paymentRecipient: this.paymentRecipient,
       requiresAuthorization: this.requiresAuthorization,
       allowedCreators: this.allowedCreators,
       allowedCollections: this.allowedCollections,
@@ -225,6 +229,7 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['unstakePaymentAmount', beet.coption(beet.u64)],
     ['paymentMint', beet.coption(beetSolana.publicKey)],
     ['paymentManager', beet.coption(beetSolana.publicKey)],
+    ['paymentRecipient', beet.coption(beetSolana.publicKey)],
     ['requiresAuthorization', beet.bool],
     ['allowedCreators', beet.array(beetSolana.publicKey)],
     ['allowedCollections', beet.array(beetSolana.publicKey)],
