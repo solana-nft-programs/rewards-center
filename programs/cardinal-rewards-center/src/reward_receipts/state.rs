@@ -36,7 +36,7 @@ pub const REWARD_RECEIPT_SIZE: usize = 8 + std::mem::size_of::<RewardReceipt>() 
 #[account]
 pub struct RewardReceipt {
     pub bump: u8,
-    pub receipt_entry: Pubkey,
+    pub stake_entry: Pubkey,
     pub receipt_manager: Pubkey,
     pub target: Pubkey,
     pub allowed: bool,

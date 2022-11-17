@@ -6,10 +6,6 @@ pub use receipt_manager::close_receipt_manager::*;
 pub use receipt_manager::init_receipt_manager::*;
 pub use receipt_manager::update_receipt_manager::*;
 
-pub mod receipt_entry;
-pub use receipt_entry::close_receipt_entry::*;
-pub use receipt_entry::init_receipt_entry::*;
-
 pub mod reward_receipt;
 pub use reward_receipt::claim_reward_receipt::*;
 pub use reward_receipt::close_reward_receipt::*;

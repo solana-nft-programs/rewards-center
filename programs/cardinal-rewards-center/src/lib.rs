@@ -88,14 +88,6 @@ pub mod cardinal_rewards_center {
         reward_receipts::receipt_manager::close_receipt_manager::handler(ctx)
     }
 
-    //// reward_receipts::receipt_entry ////
-    pub fn init_receipt_entry(ctx: Context<InitReceiptEntryCtx>) -> Result<()> {
-        reward_receipts::receipt_entry::init_receipt_entry::handler(ctx)
-    }
-    pub fn close_receipt_entry(ctx: Context<CloseReceiptEntryCtx>) -> Result<()> {
-        reward_receipts::receipt_entry::close_receipt_entry::handler(ctx)
-    }
-
     //// reward_receipts::reward_receipt ////
     pub fn init_reward_receipt(ctx: Context<InitRewardReceiptCtx>) -> Result<()> {
         reward_receipts::reward_receipt::init_reward_receipt::handler(ctx)

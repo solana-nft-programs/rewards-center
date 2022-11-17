@@ -1,5 +1,4 @@
 use crate::errors::ErrorCode;
-use crate::reward_receipts::ReceiptEntry;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RewardReceipt;
 use crate::StakeEntry;
@@ -11,15 +10,12 @@ use cardinal_payment_manager::state::PaymentManager;
 
 #[derive(Accounts)]
 pub struct ClaimRewardReceiptCtx<'info> {
-    #[account(mut, constraint = reward_receipt.receipt_manager == receipt_manager.key() && reward_receipt.receipt_entry == receipt_entry.key() @ ErrorCode::InvalidRewardReceipt)]
+    #[account(mut, constraint = reward_receipt.receipt_manager == receipt_manager.key() && reward_receipt.stake_entry == stake_entry.key() @ ErrorCode::InvalidRewardReceipt)]
     reward_receipt: Box<Account<'info, RewardReceipt>>,
     #[account(mut)]
     receipt_manager: Box<Account<'info, ReceiptManager>>,
-    #[account(constraint = stake_entry.pool == receipt_manager.stake_pool @ ErrorCode::InvalidStakeEntry)]
+    #[account(mut, constraint = stake_entry.pool == receipt_manager.stake_pool @ ErrorCode::InvalidStakeEntry)]
     stake_entry: Box<Account<'info, StakeEntry>>,
-
-    #[account(mut, constraint = receipt_entry.stake_entry == stake_entry.key() @ ErrorCode::InvalidReceiptEntry)]
-    receipt_entry: Box<Account<'info, ReceiptEntry>>,
 
     // payment manager info
     #[account(mut, constraint = payment_manager.key() == receipt_manager.payment_manager @ ErrorCode::InvalidPaymentManager)]
@@ -65,10 +61,10 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     }
 
     // add to used seconds
-    let receipt_entry = &mut ctx.accounts.receipt_entry;
-    receipt_entry.used_stake_seconds = receipt_entry.used_stake_seconds.checked_add(ctx.accounts.receipt_manager.stake_seconds_to_use).expect("Add error");
+    let stake_entry = &mut ctx.accounts.stake_entry;
+    stake_entry.used_stake_seconds = stake_entry.used_stake_seconds.checked_add(ctx.accounts.receipt_manager.stake_seconds_to_use).expect("Add error");
 
-    if receipt_entry.used_stake_seconds > ctx.accounts.stake_entry.total_stake_seconds {
+    if stake_entry.used_stake_seconds > ctx.accounts.stake_entry.total_stake_seconds {
         return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
     }
 
