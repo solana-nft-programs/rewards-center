@@ -9,11 +9,13 @@ import {
 } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
+import { BN } from "bn.js";
 import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import { fetchAccountDataById } from "./accounts";
 import { REWARD_MANAGER_ID } from "./constants";
 import {
+  createBoostStakeEntryInstruction,
   createClaimRewardReceiptInstruction,
   createClaimRewardsInstruction,
   createInitEntryInstruction,
@@ -26,6 +28,7 @@ import {
 import {
   findRewardEntryId,
   findRewardReceiptId,
+  findStakeBoosterId,
   findStakeEntryId,
   findStakePoolId,
   findUserEscrowId,
@@ -408,8 +411,8 @@ export const claimRewards = async (
  * @param connection
  * @param wallet
  * @param stakePoolIdentifier
- * @param mintInfos
- * @param rewardDistributorIds
+ * @param mintInfo
+ * @param receiptManagerId
  * @returns
  */
 export const claimRewardReceipt = async (
@@ -515,6 +518,123 @@ export const claimRewardReceipt = async (
       claimer: wallet.publicKey,
       cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
     })
+  );
+  return tx;
+};
+
+/**
+ * Boost a given stake entry using the specified stake booster
+ *
+ * @param connection
+ * @param wallet
+ * @param stakePoolIdentifier
+ * @param secondsToBoost
+ * @param mintInfo
+ * @param stakeBoosterIdentifer
+ * @returns
+ */
+export const boost = async (
+  connection: Connection,
+  wallet: Wallet,
+  stakePoolIdentifier: string,
+  mintInfo: {
+    mintId: PublicKey;
+    fungible?: boolean;
+  },
+  secondsToBoost: number,
+  stakeBoosterIdentifer?: number
+) => {
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
+  const stakeEntryId = findStakeEntryId(
+    stakePoolId,
+    mintInfo.mintId,
+    mintInfo.fungible ? wallet.publicKey : undefined
+  );
+  const stakeBoosterId = findStakeBoosterId(
+    stakePoolId,
+    stakeBoosterIdentifer ? new BN(stakeBoosterIdentifer) : undefined
+  );
+
+  const accountDataById = await fetchAccountDataById(connection, [
+    stakeBoosterId,
+  ]);
+  const receiptManagerData = accountDataById[stakeBoosterId.toString()];
+  if (
+    !receiptManagerData?.parsed ||
+    receiptManagerData.type !== "stakeBooster"
+  ) {
+    throw "Stake booster not found";
+  }
+
+  const tx = new Transaction();
+  tx.add(
+    createUpdateTotalStakeSecondsInstruction({
+      stakeEntry: stakeEntryId,
+      updater: wallet.publicKey,
+    })
+  );
+  const paymentManagerData = await getPaymentManager(
+    connection,
+    receiptManagerData.parsed.paymentManager
+  );
+  const payerTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    wallet.publicKey
+  );
+  const paymentRecipientTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    receiptManagerData.parsed.paymentRecipient
+  );
+  const feeCollectorTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    paymentManagerData.parsed.feeCollector
+  );
+
+  const [targetTokenAccountData, feeCollectorTokenAccountData] =
+    await connection.getMultipleAccountsInfo([
+      paymentRecipientTokenAccount,
+      feeCollectorTokenAccount,
+    ]);
+  if (!targetTokenAccountData) {
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        wallet.publicKey,
+        paymentRecipientTokenAccount,
+        receiptManagerData.parsed.paymentRecipient,
+        receiptManagerData.parsed.paymentMint
+      )
+    );
+  }
+  if (!feeCollectorTokenAccountData) {
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        wallet.publicKey,
+        feeCollectorTokenAccount,
+        paymentManagerData.parsed.feeCollector,
+        receiptManagerData.parsed.paymentMint
+      )
+    );
+  }
+  tx.add(
+    createBoostStakeEntryInstruction(
+      {
+        stakePool: stakePoolId,
+        stakeBooster: stakeBoosterId,
+        stakeEntry: stakeEntryId,
+        stakeMint: mintInfo.mintId,
+        paymentManager: receiptManagerData.parsed.paymentManager,
+        feeCollectorTokenAccount: feeCollectorTokenAccount,
+        paymentRecipientTokenAccount: paymentRecipientTokenAccount,
+        payerTokenAccount: payerTokenAccount,
+        payer: wallet.publicKey,
+        cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
+      },
+      {
+        ix: {
+          secondsToBoost,
+        },
+      }
+    )
   );
   return tx;
 };

@@ -9,6 +9,7 @@ pub struct UpdateStakeBoosterIx {
     payment_amount: u64,
     payment_mint: Pubkey,
     payment_manager: Pubkey,
+    payment_recipient: Pubkey,
     boost_seconds: u128,
     start_time_seconds: i64,
 }
@@ -30,6 +31,7 @@ pub fn handler(ctx: Context<UpdateStakeBoosterCtx>, ix: UpdateStakeBoosterIx) ->
     stake_booster.payment_mint = ix.payment_mint;
     stake_booster.boost_seconds = ix.boost_seconds;
     stake_booster.payment_manager = ix.payment_manager;
+    stake_booster.payment_recipient = ix.payment_recipient;
     stake_booster.start_time_seconds = ix.start_time_seconds;
 
     Ok(())

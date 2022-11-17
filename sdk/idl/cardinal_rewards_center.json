@@ -1639,6 +1639,10 @@
             "type": "publicKey"
           },
           {
+            "name": "paymentRecipient",
+            "type": "publicKey"
+          },
+          {
             "name": "boostSeconds",
             "type": "u128"
           },
@@ -1664,6 +1668,10 @@
           },
           {
             "name": "paymentManager",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentRecipient",
             "type": "publicKey"
           },
           {

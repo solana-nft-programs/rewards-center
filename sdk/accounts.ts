@@ -8,6 +8,8 @@ import {
   receiptManagerDiscriminator,
   RewardDistributor,
   rewardDistributorDiscriminator,
+  StakeBooster,
+  stakeBoosterDiscriminator,
   StakeEntry,
   stakeEntryDiscriminator,
   StakePool,
@@ -24,6 +26,7 @@ export type AccountData = AccountInfo<Buffer> &
     | { type: "stakePool"; parsed: StakePool }
     | { type: "stakeEntry"; parsed: StakeEntry }
     | { type: "receiptManager"; parsed: ReceiptManager }
+    | { type: "stakeBooster"; parsed: StakeBooster }
     | { type: "unknown"; parsed: null }
   );
 
@@ -100,6 +103,21 @@ export const deserializeAccountInfos = (
             ...accountInfo,
             type: "receiptManager",
             parsed: ReceiptManager.deserialize(accountInfo.data)[0],
+          };
+        } catch (e) {
+          //
+        }
+        return acc;
+      // stakeBooster
+      case [PROGRAM_ID.toString(), stakeBoosterDiscriminator.join(",")].join(
+        ":"
+      ):
+        try {
+          acc[accountIds[i]!.toString()] = {
+            ...baseData,
+            ...accountInfo,
+            type: "stakeBooster",
+            parsed: StakeBooster.deserialize(accountInfo.data)[0],
           };
         } catch (e) {
           //

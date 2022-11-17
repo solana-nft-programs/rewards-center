@@ -58,7 +58,7 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
     }
 
     if ctx.accounts.stake_mint.supply > 1 || stake_entry.amount > 1 {
-        return Err(error!(ErrorCode::CannotBoostUnstakedToken));
+        return Err(error!(ErrorCode::CannotBoostFungibleToken));
     }
 
     stake_entry.total_stake_seconds = stake_entry.total_stake_seconds.saturating_add(u128::try_from(ix.seconds_to_boost).expect("Number conversion error"));

@@ -46,7 +46,8 @@ export async function executeTransaction(
   connection: Connection,
   tx: Transaction,
   wallet: Wallet,
-  signers?: Signer[]
+  signers?: Signer[],
+  silent?: boolean
 ): Promise<string> {
   tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   tx.feePayer = wallet.publicKey;
@@ -58,7 +59,9 @@ export async function executeTransaction(
     const txid = await sendAndConfirmRawTransaction(connection, tx.serialize());
     return txid;
   } catch (e) {
-    handleError(e);
+    if (!silent) {
+      handleError(e);
+    }
     throw e;
   }
 }

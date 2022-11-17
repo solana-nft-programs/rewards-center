@@ -68,7 +68,7 @@ export const findStakeBoosterId = (
 ): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [
-      utils.bytes.utf8.encode(REWARD_DISTRIBUTOR_SEED),
+      utils.bytes.utf8.encode(STAKE_BOOSTER_SEED),
       stakePoolId.toBuffer(),
       (identifier ?? new BN(0)).toArrayLike(Buffer, "le", 8),
     ],

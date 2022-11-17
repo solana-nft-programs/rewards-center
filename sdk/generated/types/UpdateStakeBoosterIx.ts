@@ -12,6 +12,7 @@ export type UpdateStakeBoosterIx = {
   paymentAmount: beet.bignum
   paymentMint: web3.PublicKey
   paymentManager: web3.PublicKey
+  paymentRecipient: web3.PublicKey
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
 }
@@ -26,6 +27,7 @@ export const updateStakeBoosterIxBeet =
       ['paymentAmount', beet.u64],
       ['paymentMint', beetSolana.publicKey],
       ['paymentManager', beetSolana.publicKey],
+      ['paymentRecipient', beetSolana.publicKey],
       ['boostSeconds', beet.u128],
       ['startTimeSeconds', beet.i64],
     ],
