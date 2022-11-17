@@ -2,7 +2,7 @@ import { PAYMENT_MANAGER_ADDRESS } from "@cardinal/payment-manager";
 import { getPaymentManager } from "@cardinal/payment-manager/dist/cjs/accounts";
 import type * as beet from "@metaplex-foundation/beet";
 import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
-import type { Wallet } from "@project-serum/anchor";
+import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 import {
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddressSync,
