@@ -3,7 +3,10 @@ import { getPaymentManager } from "@cardinal/payment-manager/dist/cjs/accounts";
 import type * as beet from "@metaplex-foundation/beet";
 import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import type { Wallet } from "@project-serum/anchor";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
 import * as tokenMetadatV1 from "mpl-token-metadata-v1";
@@ -440,13 +443,21 @@ export const claimRewardReceipt = async (
   }
 
   const tx = new Transaction();
-  if (!accountDataById[rewardReceiptId.toString()]) {
-    createInitRewardReceiptInstruction({
-      rewardReceipt: rewardReceiptId,
-      receiptManager: receiptManagerId,
+  tx.add(
+    createUpdateTotalStakeSecondsInstruction({
       stakeEntry: stakeEntryId,
-      payer: wallet.publicKey,
-    });
+      updater: wallet.publicKey,
+    })
+  );
+  if (!accountDataById[rewardReceiptId.toString()]?.parsed) {
+    tx.add(
+      createInitRewardReceiptInstruction({
+        rewardReceipt: rewardReceiptId,
+        receiptManager: receiptManagerId,
+        stakeEntry: stakeEntryId,
+        payer: wallet.publicKey,
+      })
+    );
   }
   const paymentManagerData = await getPaymentManager(
     connection,
@@ -464,17 +475,46 @@ export const claimRewardReceipt = async (
     receiptManagerData.parsed.paymentMint,
     paymentManagerData.parsed.feeCollector
   );
-  createClaimRewardReceiptInstruction({
-    rewardReceipt: rewardReceiptId,
-    receiptManager: receiptManagerId,
-    stakeEntry: stakeEntryId,
-    paymentManager: receiptManagerData.parsed.paymentManager,
-    feeCollectorTokenAccount: feeCollectorTokenAccount,
-    paymentRecipientTokenAccount: paymentRecipientTokenAccount,
-    payerTokenAccount: payerTokenAccount,
-    payer: wallet.publicKey,
-    claimer: wallet.publicKey,
-    cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
-  });
+
+  const [targetTokenAccountData, feeCollectorTokenAccountData] =
+    await connection.getMultipleAccountsInfo([
+      paymentRecipientTokenAccount,
+      feeCollectorTokenAccount,
+    ]);
+  if (!targetTokenAccountData) {
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        wallet.publicKey,
+        paymentRecipientTokenAccount,
+        receiptManagerData.parsed.paymentRecipient,
+        receiptManagerData.parsed.paymentMint
+      )
+    );
+  }
+  if (!feeCollectorTokenAccountData) {
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        wallet.publicKey,
+        feeCollectorTokenAccount,
+        paymentManagerData.parsed.feeCollector,
+        receiptManagerData.parsed.paymentMint
+      )
+    );
+  }
+
+  tx.add(
+    createClaimRewardReceiptInstruction({
+      rewardReceipt: rewardReceiptId,
+      receiptManager: receiptManagerId,
+      stakeEntry: stakeEntryId,
+      paymentManager: receiptManagerData.parsed.paymentManager,
+      feeCollectorTokenAccount: feeCollectorTokenAccount,
+      paymentRecipientTokenAccount: paymentRecipientTokenAccount,
+      payerTokenAccount: payerTokenAccount,
+      payer: wallet.publicKey,
+      claimer: wallet.publicKey,
+      cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
+    })
+  );
   return tx;
 };
