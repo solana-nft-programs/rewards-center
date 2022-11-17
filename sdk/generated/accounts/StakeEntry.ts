@@ -24,6 +24,7 @@ export type StakeEntryArgs = {
   lastStakedAt: beet.bignum
   lastUpdatedAt: beet.bignum
   totalStakeSeconds: beet.bignum
+  usedStakeSeconds: beet.bignum
   cooldownStartSeconds: beet.COption<beet.bignum>
 }
 
@@ -46,6 +47,7 @@ export class StakeEntry implements StakeEntryArgs {
     readonly lastStakedAt: beet.bignum,
     readonly lastUpdatedAt: beet.bignum,
     readonly totalStakeSeconds: beet.bignum,
+    readonly usedStakeSeconds: beet.bignum,
     readonly cooldownStartSeconds: beet.COption<beet.bignum>
   ) {}
 
@@ -63,6 +65,7 @@ export class StakeEntry implements StakeEntryArgs {
       args.lastStakedAt,
       args.lastUpdatedAt,
       args.totalStakeSeconds,
+      args.usedStakeSeconds,
       args.cooldownStartSeconds
     )
   }
@@ -217,6 +220,17 @@ export class StakeEntry implements StakeEntryArgs {
         }
         return x
       })(),
+      usedStakeSeconds: (() => {
+        const x = <{ toNumber: () => number }>this.usedStakeSeconds
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber()
+          } catch (_) {
+            return x
+          }
+        }
+        return x
+      })(),
       cooldownStartSeconds: this.cooldownStartSeconds,
     }
   }
@@ -243,6 +257,7 @@ export const stakeEntryBeet = new beet.FixableBeetStruct<
     ['lastStakedAt', beet.i64],
     ['lastUpdatedAt', beet.i64],
     ['totalStakeSeconds', beet.u128],
+    ['usedStakeSeconds', beet.u128],
     ['cooldownStartSeconds', beet.coption(beet.i64)],
   ],
   StakeEntry.fromArgs,

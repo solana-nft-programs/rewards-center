@@ -4,6 +4,8 @@ import type { AccountInfo, Connection, PublicKey } from "@solana/web3.js";
 import type { RewardEntry } from "./generated";
 import {
   PROGRAM_ID,
+  ReceiptManager,
+  receiptManagerDiscriminator,
   RewardDistributor,
   rewardDistributorDiscriminator,
   StakeEntry,
@@ -21,6 +23,7 @@ export type AccountData = AccountInfo<Buffer> &
     | { type: "rewardEntry"; parsed: RewardEntry }
     | { type: "stakePool"; parsed: StakePool }
     | { type: "stakeEntry"; parsed: StakeEntry }
+    | { type: "receiptManager"; parsed: ReceiptManager }
     | { type: "unknown"; parsed: null }
   );
 
@@ -47,13 +50,11 @@ export const deserializeAccountInfos = (
       // stakePool
       case [PROGRAM_ID.toString(), stakePoolDiscriminator.join(",")].join(":"):
         try {
-          const parsed = StakePool.deserialize(accountInfo.data)[0];
-          const type = "stakePool";
           acc[accountIds[i]!.toString()] = {
             ...baseData,
-            type,
             ...accountInfo,
-            parsed,
+            type: "stakePool",
+            parsed: StakePool.deserialize(accountInfo.data)[0],
           };
         } catch (e) {
           //
@@ -65,13 +66,11 @@ export const deserializeAccountInfos = (
         rewardDistributorDiscriminator.join(","),
       ].join(":"):
         try {
-          const parsed = RewardDistributor.deserialize(accountInfo.data)[0];
-          const type = "rewardDistributor";
           acc[accountIds[i]!.toString()] = {
             ...baseData,
-            type,
             ...accountInfo,
-            parsed,
+            type: "rewardDistributor",
+            parsed: RewardDistributor.deserialize(accountInfo.data)[0],
           };
         } catch (e) {
           //
@@ -80,13 +79,27 @@ export const deserializeAccountInfos = (
       // stakeEntry
       case [PROGRAM_ID.toString(), stakeEntryDiscriminator.join(",")].join(":"):
         try {
-          const parsed = StakeEntry.deserialize(accountInfo.data)[0];
-          const type = "stakeEntry";
           acc[accountIds[i]!.toString()] = {
             ...baseData,
-            type,
             ...accountInfo,
-            parsed,
+            type: "stakeEntry",
+            parsed: StakeEntry.deserialize(accountInfo.data)[0],
+          };
+        } catch (e) {
+          //
+        }
+        return acc;
+
+      // receiptManager
+      case [PROGRAM_ID.toString(), receiptManagerDiscriminator.join(",")].join(
+        ":"
+      ):
+        try {
+          acc[accountIds[i]!.toString()] = {
+            ...baseData,
+            ...accountInfo,
+            type: "receiptManager",
+            parsed: ReceiptManager.deserialize(accountInfo.data)[0],
           };
         } catch (e) {
           //
@@ -96,8 +109,8 @@ export const deserializeAccountInfos = (
       default:
         acc[accountIds[i]!.toString()] = {
           ...baseData,
-          type: "unknown",
           ...accountInfo,
+          type: "unknown",
           parsed: null,
         };
         return acc;

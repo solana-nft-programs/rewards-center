@@ -105,3 +105,33 @@ export const findRewardEntryId = (
     PROGRAM_ID
   )[0];
 };
+
+export const RECEIPT_MANAGER_SEED = "receipt-manager";
+export const findReceiptManagerId = (
+  stakePoolId: PublicKey,
+  identifier: string
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(RECEIPT_MANAGER_SEED),
+      stakePoolId.toBuffer(),
+      utils.bytes.utf8.encode(identifier),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
+export const REWARD_RECEIPT_SEED = "reward-receipt";
+export const findRewardReceiptId = (
+  receiptManagerId: PublicKey,
+  stakeEntryId: PublicKey
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(REWARD_RECEIPT_SEED),
+      receiptManagerId.toBuffer(),
+      stakeEntryId.toBuffer(),
+    ],
+    PROGRAM_ID
+  )[0];
+};

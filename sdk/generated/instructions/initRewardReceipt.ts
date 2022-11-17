@@ -24,7 +24,6 @@ export const initRewardReceiptStruct = new beet.BeetArgsStruct<{
  *
  * @property [_writable_] rewardReceipt
  * @property [] receiptManager
- * @property [] receiptEntry
  * @property [] stakeEntry
  * @property [_writable_, **signer**] payer
  * @category Instructions
@@ -34,7 +33,6 @@ export const initRewardReceiptStruct = new beet.BeetArgsStruct<{
 export type InitRewardReceiptInstructionAccounts = {
   rewardReceipt: web3.PublicKey
   receiptManager: web3.PublicKey
-  receiptEntry: web3.PublicKey
   stakeEntry: web3.PublicKey
   payer: web3.PublicKey
   systemProgram?: web3.PublicKey
@@ -67,11 +65,6 @@ export function createInitRewardReceiptInstruction(
     },
     {
       pubkey: accounts.receiptManager,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.receiptEntry,
       isWritable: false,
       isSigner: false,
     },

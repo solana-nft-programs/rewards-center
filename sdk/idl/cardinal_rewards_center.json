@@ -592,58 +592,6 @@
       "args": []
     },
     {
-      "name": "initReceiptEntry",
-      "accounts": [
-        {
-          "name": "receiptEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntry",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "closeReceiptEntry",
-      "accounts": [
-        {
-          "name": "receiptEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "receiptManager",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntry",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initRewardReceipt",
       "accounts": [
         {
@@ -653,11 +601,6 @@
         },
         {
           "name": "receiptManager",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "receiptEntry",
           "isMut": false,
           "isSigner": false
         },
@@ -715,11 +658,6 @@
         },
         {
           "name": "stakeEntry",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "receiptEntry",
           "isMut": true,
           "isSigner": false
         },
@@ -1261,7 +1199,7 @@
             "type": "u8"
           },
           {
-            "name": "receiptEntry",
+            "name": "stakeEntry",
             "type": "publicKey"
           },
           {
@@ -1362,6 +1300,10 @@
           },
           {
             "name": "totalStakeSeconds",
+            "type": "u128"
+          },
+          {
+            "name": "usedStakeSeconds",
             "type": "u128"
           },
           {

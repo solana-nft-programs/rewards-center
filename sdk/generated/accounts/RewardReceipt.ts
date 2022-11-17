@@ -16,7 +16,7 @@ import * as beetSolana from '@metaplex-foundation/beet-solana'
  */
 export type RewardReceiptArgs = {
   bump: number
-  receiptEntry: web3.PublicKey
+  stakeEntry: web3.PublicKey
   receiptManager: web3.PublicKey
   target: web3.PublicKey
   allowed: boolean
@@ -33,7 +33,7 @@ export const rewardReceiptDiscriminator = [116, 154, 221, 22, 195, 73, 132, 89]
 export class RewardReceipt implements RewardReceiptArgs {
   private constructor(
     readonly bump: number,
-    readonly receiptEntry: web3.PublicKey,
+    readonly stakeEntry: web3.PublicKey,
     readonly receiptManager: web3.PublicKey,
     readonly target: web3.PublicKey,
     readonly allowed: boolean
@@ -45,7 +45,7 @@ export class RewardReceipt implements RewardReceiptArgs {
   static fromArgs(args: RewardReceiptArgs) {
     return new RewardReceipt(
       args.bump,
-      args.receiptEntry,
+      args.stakeEntry,
       args.receiptManager,
       args.target,
       args.allowed
@@ -152,7 +152,7 @@ export class RewardReceipt implements RewardReceiptArgs {
   pretty() {
     return {
       bump: this.bump,
-      receiptEntry: this.receiptEntry.toBase58(),
+      stakeEntry: this.stakeEntry.toBase58(),
       receiptManager: this.receiptManager.toBase58(),
       target: this.target.toBase58(),
       allowed: this.allowed,
@@ -173,7 +173,7 @@ export const rewardReceiptBeet = new beet.BeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['bump', beet.u8],
-    ['receiptEntry', beetSolana.publicKey],
+    ['stakeEntry', beetSolana.publicKey],
     ['receiptManager', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
     ['allowed', beet.bool],

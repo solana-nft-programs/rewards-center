@@ -1,3 +1,5 @@
+import { PAYMENT_MANAGER_ADDRESS } from "@cardinal/payment-manager";
+import { getPaymentManager } from "@cardinal/payment-manager/dist/cjs/accounts";
 import type * as beet from "@metaplex-foundation/beet";
 import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import type { Wallet } from "@project-serum/anchor";
@@ -9,15 +11,18 @@ import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 import { fetchAccountDataById } from "./accounts";
 import { REWARD_MANAGER_ID } from "./constants";
 import {
+  createClaimRewardReceiptInstruction,
   createClaimRewardsInstruction,
   createInitEntryInstruction,
   createInitRewardEntryInstruction,
+  createInitRewardReceiptInstruction,
   createStakeEditionInstruction,
   createUnstakeEditionInstruction,
   createUpdateTotalStakeSecondsInstruction,
 } from "./generated";
 import {
   findRewardEntryId,
+  findRewardReceiptId,
   findStakeEntryId,
   findStakePoolId,
   findUserEscrowId,
@@ -392,4 +397,84 @@ export const claimRewards = async (
     txs.push(tx);
   }
   return txs;
+};
+
+/**
+ * Claim reward receipt from a given receipt manager
+ *
+ * @param connection
+ * @param wallet
+ * @param stakePoolIdentifier
+ * @param mintInfos
+ * @param rewardDistributorIds
+ * @returns
+ */
+export const claimRewardReceipt = async (
+  connection: Connection,
+  wallet: Wallet,
+  stakePoolIdentifier: string,
+  mintInfo: {
+    mintId: PublicKey;
+    fungible?: boolean;
+  },
+  receiptManagerId: PublicKey
+) => {
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
+  const stakeEntryId = findStakeEntryId(
+    stakePoolId,
+    mintInfo.mintId,
+    mintInfo.fungible ? wallet.publicKey : undefined
+  );
+  const rewardReceiptId = findRewardReceiptId(receiptManagerId, stakeEntryId);
+
+  const accountDataById = await fetchAccountDataById(connection, [
+    receiptManagerId,
+    rewardReceiptId,
+  ]);
+  const receiptManagerData = accountDataById[receiptManagerId.toString()];
+  if (
+    !receiptManagerData?.parsed ||
+    receiptManagerData.type !== "receiptManager"
+  ) {
+    throw "Receipt manager not found";
+  }
+
+  const tx = new Transaction();
+  if (!accountDataById[rewardReceiptId.toString()]) {
+    createInitRewardReceiptInstruction({
+      rewardReceipt: rewardReceiptId,
+      receiptManager: receiptManagerId,
+      stakeEntry: stakeEntryId,
+      payer: wallet.publicKey,
+    });
+  }
+  const paymentManagerData = await getPaymentManager(
+    connection,
+    receiptManagerData.parsed.paymentManager
+  );
+  const payerTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    wallet.publicKey
+  );
+  const paymentRecipientTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    receiptManagerData.parsed.paymentRecipient
+  );
+  const feeCollectorTokenAccount = getAssociatedTokenAddressSync(
+    receiptManagerData.parsed.paymentMint,
+    paymentManagerData.parsed.feeCollector
+  );
+  createClaimRewardReceiptInstruction({
+    rewardReceipt: rewardReceiptId,
+    receiptManager: receiptManagerId,
+    stakeEntry: stakeEntryId,
+    paymentManager: receiptManagerData.parsed.paymentManager,
+    feeCollectorTokenAccount: feeCollectorTokenAccount,
+    paymentRecipientTokenAccount: paymentRecipientTokenAccount,
+    payerTokenAccount: payerTokenAccount,
+    payer: wallet.publicKey,
+    claimer: wallet.publicKey,
+    cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
+  });
+  return tx;
 };

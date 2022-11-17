@@ -592,58 +592,6 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
-      name: "initReceiptEntry";
-      accounts: [
-        {
-          name: "receiptEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntry";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "closeReceiptEntry";
-      accounts: [
-        {
-          name: "receiptEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "receiptManager";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntry";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        }
-      ];
-      args: [];
-    },
-    {
       name: "initRewardReceipt";
       accounts: [
         {
@@ -653,11 +601,6 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "receiptManager";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "receiptEntry";
           isMut: false;
           isSigner: false;
         },
@@ -715,11 +658,6 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "stakeEntry";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "receiptEntry";
           isMut: true;
           isSigner: false;
         },
@@ -1261,7 +1199,7 @@ export type CardinalRewardsCenter = {
             type: "u8";
           },
           {
-            name: "receiptEntry";
+            name: "stakeEntry";
             type: "publicKey";
           },
           {
@@ -1362,6 +1300,10 @@ export type CardinalRewardsCenter = {
           },
           {
             name: "totalStakeSeconds";
+            type: "u128";
+          },
+          {
+            name: "usedStakeSeconds";
             type: "u128";
           },
           {
@@ -2755,58 +2697,6 @@ export const IDL: CardinalRewardsCenter = {
       args: [],
     },
     {
-      name: "initReceiptEntry",
-      accounts: [
-        {
-          name: "receiptEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntry",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "closeReceiptEntry",
-      accounts: [
-        {
-          name: "receiptEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "receiptManager",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntry",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-      ],
-      args: [],
-    },
-    {
       name: "initRewardReceipt",
       accounts: [
         {
@@ -2816,11 +2706,6 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "receiptManager",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "receiptEntry",
           isMut: false,
           isSigner: false,
         },
@@ -2878,11 +2763,6 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "stakeEntry",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "receiptEntry",
           isMut: true,
           isSigner: false,
         },
@@ -3424,7 +3304,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "u8",
           },
           {
-            name: "receiptEntry",
+            name: "stakeEntry",
             type: "publicKey",
           },
           {
@@ -3525,6 +3405,10 @@ export const IDL: CardinalRewardsCenter = {
           },
           {
             name: "totalStakeSeconds",
+            type: "u128",
+          },
+          {
+            name: "usedStakeSeconds",
             type: "u128",
           },
           {
