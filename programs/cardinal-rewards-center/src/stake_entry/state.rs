@@ -34,5 +34,6 @@ pub struct StakeEntry {
     pub last_staked_at: i64,
     pub last_updated_at: i64,
     pub total_stake_seconds: u128,
+    pub used_stake_seconds: u128,
     pub cooldown_start_seconds: Option<i64>,
 }
