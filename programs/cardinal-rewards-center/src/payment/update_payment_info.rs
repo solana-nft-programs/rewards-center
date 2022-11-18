@@ -41,7 +41,7 @@ pub fn handler(ctx: Context<UpdatePaymentInfoCtx>, ix: UpdatePaymentInfoIx) -> R
         identifier: payment_info.identifier.clone(),
         payment_amount: ix.payment_amount,
         payment_mint: ix.payment_mint,
-        payment_shares: payment_shares,
+        payment_shares,
     };
     let new_space = new_payment_info.try_to_vec()?.len() + 8;
     payment_info.set_inner(new_payment_info);

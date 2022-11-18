@@ -44,12 +44,12 @@ pub fn handler(ctx: Context<InitPaymentInfoCtx>, ix: InitPaymentInfoIx) -> Resul
     }
 
     let new_payment_info = PaymentInfo {
-        bump: bump,
+        bump,
         authority: ix.authority,
-        identifier: identifier.clone(),
+        identifier,
         payment_amount: ix.payment_amount,
         payment_mint: ix.payment_mint,
-        payment_shares: payment_shares,
+        payment_shares,
     };
 
     let payment_info = &mut ctx.accounts.payment_info;

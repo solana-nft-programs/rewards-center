@@ -42,8 +42,12 @@ pub enum Action {
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let action_id = action as u8;
     let default_allowed_payment_infos = match action_id {
-        // cardinal-test (native), // cardinal-test-wsol
-        _ => ["3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string(), "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string()].to_vec(),
+        _ => [
+            "3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string(), // cardinal-test (native)
+            "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string(), // cardinal-test-wsol
+            "HB8ApbkwKNXUTpYxgAXKG5GsRV9uPD7Drsj9rCw4M6a7".to_string(), // 1-dust
+        ]
+        .to_vec(),
     };
     let allowed_payment_infos = match &(stake_pool.key().to_string(), action_id) {
         _ => default_allowed_payment_infos,
@@ -100,8 +104,7 @@ pub fn handle_payment<'info>(payment_amount: u64, payment_mint: Pubkey, payment_
 
     let collectors = &payment_shares;
     let share_amounts: Vec<u64> = collectors
-        .clone()
-        .into_iter()
+        .iter()
         .map(|s| payment_amount.checked_mul(u64::try_from(s.basis_points).expect("Could not cast u8 to u64")).unwrap())
         .collect();
     let share_amounts_sum: u64 = share_amounts.iter().sum();

@@ -42,7 +42,7 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
     let bump = *ctx.bumps.get("stake_pool").unwrap();
     let identifier = ix.identifier;
     let new_stake_pool = StakePool {
-        bump: bump,
+        bump,
         authority: ix.authority,
         total_staked: 0,
         reset_on_unstake: ix.reset_on_unstake,
@@ -54,7 +54,7 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
         requires_authorization: ix.requires_authorization,
         allowed_creators: ix.allowed_creators,
         allowed_collections: ix.allowed_collections,
-        identifier: identifier.clone(),
+        identifier,
     };
 
     assert_payment_info(ctx.accounts.stake_pool.key(), Action::Stake, ix.stake_payment_info)?;

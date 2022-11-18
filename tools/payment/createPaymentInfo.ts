@@ -4,9 +4,8 @@ dotenv.config();
 
 import { connectionFor } from "@cardinal/common";
 import { Wallet } from "@project-serum/anchor";
-import { NATIVE_MINT } from "@solana/spl-token";
 import type { Cluster, Connection } from "@solana/web3.js";
-import { LAMPORTS_PER_SOL, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 
 import type { InitPaymentInfoIx } from "../../sdk";
 import { createInitPaymentInfoInstruction, findPaymentInfoId } from "../../sdk";
@@ -15,13 +14,13 @@ import { executeTransaction, keypairFrom } from "../utils";
 const wallet = keypairFrom(process.env.WALLET ?? "");
 
 const params: InitPaymentInfoIx = {
-  identifier: "cardinal-test-wsol",
+  identifier: "1-dust",
   authority: wallet.publicKey,
-  paymentAmount: LAMPORTS_PER_SOL,
-  paymentMint: NATIVE_MINT,
+  paymentAmount: 1 * 10 ** 9,
+  paymentMint: new PublicKey("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ"),
   paymentShares: [{ address: wallet.publicKey, basisPoints: 10000 }],
 };
-const cluster: Cluster | "mainnet" | "localnet" = "devnet";
+const cluster: Cluster | "mainnet" | "localnet" = "mainnet";
 
 const main = async (
   connection: Connection,
@@ -37,7 +36,12 @@ const main = async (
     )
   );
   await executeTransaction(connection, transaction, wallet);
-  console.log(`Created payment manager ${params.identifier}`, params);
+  console.log(
+    `Created payment manager ${
+      params.identifier
+    } [${paymentInfoId.toString()}]`,
+    params
+  );
 };
 
 main(connectionFor(cluster), new Wallet(wallet), params).catch((e) =>
