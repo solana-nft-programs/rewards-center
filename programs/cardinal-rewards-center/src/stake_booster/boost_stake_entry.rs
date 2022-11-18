@@ -4,7 +4,6 @@ use crate::errors::ErrorCode;
 use crate::handle_payment;
 use crate::handle_payment_info;
 use crate::Action;
-use crate::PaymentShare;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
@@ -59,11 +58,7 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
     handle_payment(
         boost_payment_amount,
         ctx.accounts.stake_booster.payment_mint,
-        &[PaymentShare {
-            address: ctx.accounts.stake_booster.payment_recipient,
-            basis_points: 10000,
-        }]
-        .to_vec(),
+        &ctx.accounts.stake_booster.payment_shares,
         remaining_accounts,
     )?;
 

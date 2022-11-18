@@ -5,7 +5,6 @@ use crate::handle_payment_info;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RewardReceipt;
 use crate::Action;
-use crate::PaymentShare;
 use crate::StakeEntry;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
@@ -64,11 +63,7 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     handle_payment(
         ctx.accounts.receipt_manager.payment_amount,
         ctx.accounts.receipt_manager.payment_mint,
-        &[PaymentShare {
-            address: ctx.accounts.receipt_manager.payment_recipient,
-            basis_points: 10000,
-        }]
-        .to_vec(),
+        &ctx.accounts.receipt_manager.payment_shares,
         remaining_accounts,
     )?;
 

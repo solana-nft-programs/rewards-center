@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::PaymentShare;
+
 pub const RECEIPT_MANAGER_SEED: &str = "receipt-manager";
 pub const RECEIPT_MANAGER_SIZE: usize = 8 + std::mem::size_of::<ReceiptManager>() + 64;
 #[account]
@@ -13,7 +15,7 @@ pub struct ReceiptManager {
     pub requires_authorization: bool,
     pub payment_amount: u64,
     pub payment_mint: Pubkey,
-    pub payment_recipient: Pubkey,
+    pub payment_shares: Vec<PaymentShare>,
     pub claim_action_payment_info: Pubkey,
     pub name: String,
     pub max_claimed_receipts: Option<u128>,

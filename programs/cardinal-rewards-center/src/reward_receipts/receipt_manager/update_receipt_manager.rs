@@ -1,7 +1,7 @@
-use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::reward_receipts::ReceiptManager;
 use crate::Action;
+use crate::{assert_payment_info, PaymentShare};
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
@@ -11,7 +11,7 @@ pub struct UpdateReceiptManagerIx {
     pub stake_seconds_to_use: u128,
     pub payment_mint: Pubkey,
     pub payment_amount: u64,
-    pub payment_recipient: Pubkey,
+    pub payment_shares: Vec<PaymentShare>,
     pub requires_authorization: bool,
     pub claim_action_payment_info: Pubkey,
     pub max_claimed_receipts: Option<u128>,
@@ -40,7 +40,7 @@ pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx
     receipt_manager.requires_authorization = ix.requires_authorization;
     receipt_manager.payment_amount = ix.payment_amount;
     receipt_manager.payment_mint = ix.payment_mint;
-    receipt_manager.payment_recipient = ix.payment_recipient;
+    receipt_manager.payment_shares = ix.payment_shares;
     receipt_manager.claim_action_payment_info = ix.claim_action_payment_info;
     receipt_manager.max_claimed_receipts = ix.max_claimed_receipts;
 

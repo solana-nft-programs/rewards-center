@@ -2,6 +2,7 @@ use super::StakeBooster;
 use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::Action;
+use crate::PaymentShare;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 
@@ -10,7 +11,7 @@ pub struct UpdateStakeBoosterIx {
     payment_info: Pubkey,
     payment_amount: u64,
     payment_mint: Pubkey,
-    payment_recipient: Pubkey,
+    payment_shares: Vec<PaymentShare>,
     boost_seconds: u128,
     start_time_seconds: i64,
     boost_action_payment_info: Pubkey,
@@ -32,7 +33,7 @@ pub fn handler(ctx: Context<UpdateStakeBoosterCtx>, ix: UpdateStakeBoosterIx) ->
 
     stake_booster.payment_amount = ix.payment_amount;
     stake_booster.payment_mint = ix.payment_mint;
-    stake_booster.payment_recipient = ix.payment_recipient;
+    stake_booster.payment_shares = ix.payment_shares;
     stake_booster.boost_seconds = ix.boost_seconds;
     stake_booster.start_time_seconds = ix.start_time_seconds;
     stake_booster.boost_action_payment_info = ix.boost_action_payment_info;
