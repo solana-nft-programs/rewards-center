@@ -39,6 +39,11 @@ export type CardinalRewardsCenter = {
           isSigner: false;
         },
         {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
           name: "payer";
           isMut: true;
           isSigner: true;
@@ -449,41 +454,6 @@ export type CardinalRewardsCenter = {
           isSigner: false;
         },
         {
-          name: "payerTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "paymentRecipientTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "paymentManager";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeCollectorTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "cardinalPaymentManager";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
@@ -662,26 +632,6 @@ export type CardinalRewardsCenter = {
           isSigner: false;
         },
         {
-          name: "paymentManager";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeCollectorTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "paymentRecipientTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "payerTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "payer";
           isMut: true;
           isSigner: true;
@@ -690,11 +640,6 @@ export type CardinalRewardsCenter = {
           name: "claimer";
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: "cardinalPaymentManager";
-          isMut: false;
-          isSigner: false;
         },
         {
           name: "tokenProgram";
@@ -966,16 +911,6 @@ export type CardinalRewardsCenter = {
           isSigner: false;
         },
         {
-          name: "authorityTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rewardManager";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "user";
           isMut: true;
           isSigner: true;
@@ -989,6 +924,83 @@ export type CardinalRewardsCenter = {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initPaymentInfo";
+      accounts: [
+        {
+          name: "paymentInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "InitPaymentInfoIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "updatePaymentInfo";
+      accounts: [
+        {
+          name: "paymentInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdatePaymentInfoIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "closePaymentInfo";
+      accounts: [
+        {
+          name: "paymentInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         }
       ];
       args: [];
@@ -1011,6 +1023,42 @@ export type CardinalRewardsCenter = {
           {
             name: "mint";
             type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "paymentInfo";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "identifier";
+            type: "string";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           }
         ];
       };
@@ -1085,18 +1133,16 @@ export type CardinalRewardsCenter = {
             type: "u128";
           },
           {
-            name: "maxSupply";
-            type: {
-              option: "u64";
-            };
-          },
-          {
             name: "defaultMultiplier";
             type: "u64";
           },
           {
             name: "multiplierDecimals";
             type: "u8";
+          },
+          {
+            name: "claimRewardsPaymentInfo";
+            type: "publicKey";
           },
           {
             name: "maxRewardSecondsReceived";
@@ -1137,24 +1183,16 @@ export type CardinalRewardsCenter = {
             type: "u128";
           },
           {
-            name: "paymentMint";
-            type: "publicKey";
-          },
-          {
-            name: "paymentAmount";
-            type: "u64";
-          },
-          {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
-            name: "paymentRecipient";
-            type: "publicKey";
-          },
-          {
             name: "requiresAuthorization";
             type: "bool";
+          },
+          {
+            name: "paymentInfo";
+            type: "publicKey";
+          },
+          {
+            name: "claimActionPaymentInfo";
+            type: "publicKey";
           },
           {
             name: "name";
@@ -1165,26 +1203,6 @@ export type CardinalRewardsCenter = {
             type: {
               option: "u128";
             };
-          }
-        ];
-      };
-    },
-    {
-      name: "receiptEntry";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "bump";
-            type: "u8";
-          },
-          {
-            name: "stakeEntry";
-            type: "publicKey";
-          },
-          {
-            name: "usedStakeSeconds";
-            type: "u128";
           }
         ];
       };
@@ -1235,19 +1253,7 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentAmount";
-            type: "u64";
-          },
-          {
-            name: "paymentMint";
-            type: "publicKey";
-          },
-          {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
-            name: "paymentRecipient";
+            name: "paymentInfo";
             type: "publicKey";
           },
           {
@@ -1257,6 +1263,10 @@ export type CardinalRewardsCenter = {
           {
             name: "startTimeSeconds";
             type: "i64";
+          },
+          {
+            name: "boostActionPaymentInfo";
+            type: "publicKey";
           }
         ];
       };
@@ -1355,34 +1365,12 @@ export type CardinalRewardsCenter = {
             };
           },
           {
-            name: "stakePaymentAmount";
-            type: {
-              option: "u64";
-            };
+            name: "stakePaymentInfo";
+            type: "publicKey";
           },
           {
-            name: "unstakePaymentAmount";
-            type: {
-              option: "u64";
-            };
-          },
-          {
-            name: "paymentMint";
-            type: {
-              option: "publicKey";
-            };
-          },
-          {
-            name: "paymentManager";
-            type: {
-              option: "publicKey";
-            };
-          },
-          {
-            name: "paymentRecipient";
-            type: {
-              option: "publicKey";
-            };
+            name: "unstakePaymentInfo";
+            type: "publicKey";
           },
           {
             name: "requiresAuthorization";
@@ -1409,6 +1397,86 @@ export type CardinalRewardsCenter = {
     }
   ];
   types: [
+    {
+      name: "InitPaymentInfoIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "identifier";
+            type: "string";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "PaymentShare";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "address";
+            type: "publicKey";
+          },
+          {
+            name: "basisPoints";
+            type: "u16";
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdatePaymentInfoIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "identifier";
+            type: "string";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
+          }
+        ];
+      };
+    },
     {
       name: "InitRewardDistributorIx";
       type: {
@@ -1437,12 +1505,6 @@ export type CardinalRewardsCenter = {
             };
           },
           {
-            name: "maxSupply";
-            type: {
-              option: "u64";
-            };
-          },
-          {
             name: "defaultMultiplier";
             type: {
               option: "u64";
@@ -1459,6 +1521,10 @@ export type CardinalRewardsCenter = {
             type: {
               option: "u128";
             };
+          },
+          {
+            name: "claimRewardsPaymentInfo";
+            type: "publicKey";
           }
         ];
       };
@@ -1489,6 +1555,10 @@ export type CardinalRewardsCenter = {
             type: {
               option: "u128";
             };
+          },
+          {
+            name: "claimRewardsPaymentInfo";
+            type: "publicKey";
           }
         ];
       };
@@ -1547,6 +1617,14 @@ export type CardinalRewardsCenter = {
             type: "bool";
           },
           {
+            name: "paymentInfo";
+            type: "publicKey";
+          },
+          {
+            name: "claimActionPaymentInfo";
+            type: "publicKey";
+          },
+          {
             name: "maxClaimedReceipts";
             type: {
               option: "u128";
@@ -1593,6 +1671,14 @@ export type CardinalRewardsCenter = {
             type: "bool";
           },
           {
+            name: "paymentInfo";
+            type: "publicKey";
+          },
+          {
+            name: "claimActionPaymentInfo";
+            type: "publicKey";
+          },
+          {
             name: "maxClaimedReceipts";
             type: {
               option: "u128";
@@ -1627,19 +1713,7 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentAmount";
-            type: "u64";
-          },
-          {
-            name: "paymentMint";
-            type: "publicKey";
-          },
-          {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
-            name: "paymentRecipient";
+            name: "paymentInfo";
             type: "publicKey";
           },
           {
@@ -1649,6 +1723,10 @@ export type CardinalRewardsCenter = {
           {
             name: "startTimeSeconds";
             type: "i64";
+          },
+          {
+            name: "boostActionPaymentInfo";
+            type: "publicKey";
           }
         ];
       };
@@ -1659,19 +1737,7 @@ export type CardinalRewardsCenter = {
         kind: "struct";
         fields: [
           {
-            name: "paymentAmount";
-            type: "u64";
-          },
-          {
-            name: "paymentMint";
-            type: "publicKey";
-          },
-          {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
-            name: "paymentRecipient";
+            name: "paymentInfo";
             type: "publicKey";
           },
           {
@@ -1681,6 +1747,10 @@ export type CardinalRewardsCenter = {
           {
             name: "startTimeSeconds";
             type: "i64";
+          },
+          {
+            name: "boostActionPaymentInfo";
+            type: "publicKey";
           }
         ];
       };
@@ -1745,34 +1815,12 @@ export type CardinalRewardsCenter = {
             };
           },
           {
-            name: "stakePaymentAmount";
-            type: {
-              option: "u64";
-            };
+            name: "stakePaymentInfo";
+            type: "publicKey";
           },
           {
-            name: "unstakePaymentAmount";
-            type: {
-              option: "u64";
-            };
-          },
-          {
-            name: "paymentMint";
-            type: {
-              option: "publicKey";
-            };
-          },
-          {
-            name: "paymentManager";
-            type: {
-              option: "publicKey";
-            };
-          },
-          {
-            name: "paymentRecipient";
-            type: {
-              option: "publicKey";
-            };
+            name: "unstakePaymentInfo";
+            type: "publicKey";
           },
           {
             name: "identifier";
@@ -1829,34 +1877,35 @@ export type CardinalRewardsCenter = {
             };
           },
           {
-            name: "stakePaymentAmount";
-            type: {
-              option: "u64";
-            };
+            name: "stakePaymentInfo";
+            type: "publicKey";
           },
           {
-            name: "unstakePaymentAmount";
-            type: {
-              option: "u64";
-            };
+            name: "unstakePaymentInfo";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "Action";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "Stake";
           },
           {
-            name: "paymentMint";
-            type: {
-              option: "publicKey";
-            };
+            name: "Unstake";
           },
           {
-            name: "paymentManager";
-            type: {
-              option: "publicKey";
-            };
+            name: "ClaimRewards";
           },
           {
-            name: "paymentRecipient";
-            type: {
-              option: "publicKey";
-            };
+            name: "ClaimRewardReceipt";
+          },
+          {
+            name: "BoostStakeEntry";
           }
         ];
       };
@@ -1934,6 +1983,31 @@ export type CardinalRewardsCenter = {
       msg: "Invalid payment mint";
     },
     {
+      code: 6031;
+      name: "InvalidPaymentShares";
+      msg: "Invalid payment shares";
+    },
+    {
+      code: 6032;
+      name: "InvalidPaymentCollector";
+      msg: "Invalid payment collector";
+    },
+    {
+      code: 6033;
+      name: "InvalidPaymentTokenAccount";
+      msg: "Invalid payment token account";
+    },
+    {
+      code: 6034;
+      name: "InvalidPayerTokenAccount";
+      msg: "Invalid payer token account";
+    },
+    {
+      code: 6035;
+      name: "InvalidTransferProgram";
+      msg: "Invalid transfer program";
+    },
+    {
       code: 6040;
       name: "CooldownSecondRemaining";
       msg: "Token still has some cooldown seconds remaining";
@@ -2005,41 +2079,31 @@ export type CardinalRewardsCenter = {
     },
     {
       code: 6075;
-      name: "InvalidPaymentTokenAccount";
-      msg: "Invalid payment token account";
-    },
-    {
-      code: 6076;
-      name: "InvalidPaymentCollector";
-      msg: "Invalid payment collector";
-    },
-    {
-      code: 6077;
       name: "InvalidRewardReceipt";
       msg: "Invalid reward receipt";
     },
     {
-      code: 6078;
+      code: 6076;
       name: "InvalidReceiptEntry";
       msg: "Invalid receipt entry";
     },
     {
-      code: 6079;
+      code: 6077;
       name: "InsufficientAvailableStakeSeconds";
       msg: "Insufficient available stake seconds to use";
     },
     {
-      code: 6080;
+      code: 6078;
       name: "InvalidReceiptManager";
       msg: "Invalid receipt manager";
     },
     {
-      code: 6081;
+      code: 6079;
       name: "RewardReceiptIsNotAllowed";
       msg: "Reward receipt is not allowed";
     },
     {
-      code: 6082;
+      code: 6080;
       name: "RewardReceiptAlreadyClaimed";
       msg: "Reward receipt already claimed";
     },
@@ -2150,6 +2214,11 @@ export const IDL: CardinalRewardsCenter = {
           name: "stakePool",
           isMut: true,
           isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
         },
         {
           name: "payer",
@@ -2562,41 +2631,6 @@ export const IDL: CardinalRewardsCenter = {
           isSigner: false,
         },
         {
-          name: "payerTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "paymentRecipientTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "paymentManager",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeCollectorTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "cardinalPaymentManager",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "systemProgram",
           isMut: false,
           isSigner: false,
@@ -2775,26 +2809,6 @@ export const IDL: CardinalRewardsCenter = {
           isSigner: false,
         },
         {
-          name: "paymentManager",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeCollectorTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "paymentRecipientTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "payerTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "payer",
           isMut: true,
           isSigner: true,
@@ -2803,11 +2817,6 @@ export const IDL: CardinalRewardsCenter = {
           name: "claimer",
           isMut: true,
           isSigner: true,
-        },
-        {
-          name: "cardinalPaymentManager",
-          isMut: false,
-          isSigner: false,
         },
         {
           name: "tokenProgram",
@@ -3079,16 +3088,6 @@ export const IDL: CardinalRewardsCenter = {
           isSigner: false,
         },
         {
-          name: "authorityTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rewardManager",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "user",
           isMut: true,
           isSigner: true,
@@ -3102,6 +3101,83 @@ export const IDL: CardinalRewardsCenter = {
           name: "systemProgram",
           isMut: false,
           isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initPaymentInfo",
+      accounts: [
+        {
+          name: "paymentInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "InitPaymentInfoIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "updatePaymentInfo",
+      accounts: [
+        {
+          name: "paymentInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdatePaymentInfoIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "closePaymentInfo",
+      accounts: [
+        {
+          name: "paymentInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
       ],
       args: [],
@@ -3124,6 +3200,42 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "mint",
             type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "paymentInfo",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "identifier",
+            type: "string",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
         ],
       },
@@ -3198,18 +3310,16 @@ export const IDL: CardinalRewardsCenter = {
             type: "u128",
           },
           {
-            name: "maxSupply",
-            type: {
-              option: "u64",
-            },
-          },
-          {
             name: "defaultMultiplier",
             type: "u64",
           },
           {
             name: "multiplierDecimals",
             type: "u8",
+          },
+          {
+            name: "claimRewardsPaymentInfo",
+            type: "publicKey",
           },
           {
             name: "maxRewardSecondsReceived",
@@ -3250,24 +3360,16 @@ export const IDL: CardinalRewardsCenter = {
             type: "u128",
           },
           {
-            name: "paymentMint",
-            type: "publicKey",
-          },
-          {
-            name: "paymentAmount",
-            type: "u64",
-          },
-          {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
-            name: "paymentRecipient",
-            type: "publicKey",
-          },
-          {
             name: "requiresAuthorization",
             type: "bool",
+          },
+          {
+            name: "paymentInfo",
+            type: "publicKey",
+          },
+          {
+            name: "claimActionPaymentInfo",
+            type: "publicKey",
           },
           {
             name: "name",
@@ -3278,26 +3380,6 @@ export const IDL: CardinalRewardsCenter = {
             type: {
               option: "u128",
             },
-          },
-        ],
-      },
-    },
-    {
-      name: "receiptEntry",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "bump",
-            type: "u8",
-          },
-          {
-            name: "stakeEntry",
-            type: "publicKey",
-          },
-          {
-            name: "usedStakeSeconds",
-            type: "u128",
           },
         ],
       },
@@ -3348,19 +3430,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentAmount",
-            type: "u64",
-          },
-          {
-            name: "paymentMint",
-            type: "publicKey",
-          },
-          {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
-            name: "paymentRecipient",
+            name: "paymentInfo",
             type: "publicKey",
           },
           {
@@ -3370,6 +3440,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "startTimeSeconds",
             type: "i64",
+          },
+          {
+            name: "boostActionPaymentInfo",
+            type: "publicKey",
           },
         ],
       },
@@ -3468,34 +3542,12 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
-            name: "stakePaymentAmount",
-            type: {
-              option: "u64",
-            },
+            name: "stakePaymentInfo",
+            type: "publicKey",
           },
           {
-            name: "unstakePaymentAmount",
-            type: {
-              option: "u64",
-            },
-          },
-          {
-            name: "paymentMint",
-            type: {
-              option: "publicKey",
-            },
-          },
-          {
-            name: "paymentManager",
-            type: {
-              option: "publicKey",
-            },
-          },
-          {
-            name: "paymentRecipient",
-            type: {
-              option: "publicKey",
-            },
+            name: "unstakePaymentInfo",
+            type: "publicKey",
           },
           {
             name: "requiresAuthorization",
@@ -3522,6 +3574,86 @@ export const IDL: CardinalRewardsCenter = {
     },
   ],
   types: [
+    {
+      name: "InitPaymentInfoIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "identifier",
+            type: "string",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "PaymentShare",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "address",
+            type: "publicKey",
+          },
+          {
+            name: "basisPoints",
+            type: "u16",
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdatePaymentInfoIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "identifier",
+            type: "string",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
+          },
+        ],
+      },
+    },
     {
       name: "InitRewardDistributorIx",
       type: {
@@ -3550,12 +3682,6 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
-            name: "maxSupply",
-            type: {
-              option: "u64",
-            },
-          },
-          {
             name: "defaultMultiplier",
             type: {
               option: "u64",
@@ -3572,6 +3698,10 @@ export const IDL: CardinalRewardsCenter = {
             type: {
               option: "u128",
             },
+          },
+          {
+            name: "claimRewardsPaymentInfo",
+            type: "publicKey",
           },
         ],
       },
@@ -3602,6 +3732,10 @@ export const IDL: CardinalRewardsCenter = {
             type: {
               option: "u128",
             },
+          },
+          {
+            name: "claimRewardsPaymentInfo",
+            type: "publicKey",
           },
         ],
       },
@@ -3660,6 +3794,14 @@ export const IDL: CardinalRewardsCenter = {
             type: "bool",
           },
           {
+            name: "paymentInfo",
+            type: "publicKey",
+          },
+          {
+            name: "claimActionPaymentInfo",
+            type: "publicKey",
+          },
+          {
             name: "maxClaimedReceipts",
             type: {
               option: "u128",
@@ -3706,6 +3848,14 @@ export const IDL: CardinalRewardsCenter = {
             type: "bool",
           },
           {
+            name: "paymentInfo",
+            type: "publicKey",
+          },
+          {
+            name: "claimActionPaymentInfo",
+            type: "publicKey",
+          },
+          {
             name: "maxClaimedReceipts",
             type: {
               option: "u128",
@@ -3740,19 +3890,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentAmount",
-            type: "u64",
-          },
-          {
-            name: "paymentMint",
-            type: "publicKey",
-          },
-          {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
-            name: "paymentRecipient",
+            name: "paymentInfo",
             type: "publicKey",
           },
           {
@@ -3762,6 +3900,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "startTimeSeconds",
             type: "i64",
+          },
+          {
+            name: "boostActionPaymentInfo",
+            type: "publicKey",
           },
         ],
       },
@@ -3772,19 +3914,7 @@ export const IDL: CardinalRewardsCenter = {
         kind: "struct",
         fields: [
           {
-            name: "paymentAmount",
-            type: "u64",
-          },
-          {
-            name: "paymentMint",
-            type: "publicKey",
-          },
-          {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
-            name: "paymentRecipient",
+            name: "paymentInfo",
             type: "publicKey",
           },
           {
@@ -3794,6 +3924,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "startTimeSeconds",
             type: "i64",
+          },
+          {
+            name: "boostActionPaymentInfo",
+            type: "publicKey",
           },
         ],
       },
@@ -3858,34 +3992,12 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
-            name: "stakePaymentAmount",
-            type: {
-              option: "u64",
-            },
+            name: "stakePaymentInfo",
+            type: "publicKey",
           },
           {
-            name: "unstakePaymentAmount",
-            type: {
-              option: "u64",
-            },
-          },
-          {
-            name: "paymentMint",
-            type: {
-              option: "publicKey",
-            },
-          },
-          {
-            name: "paymentManager",
-            type: {
-              option: "publicKey",
-            },
-          },
-          {
-            name: "paymentRecipient",
-            type: {
-              option: "publicKey",
-            },
+            name: "unstakePaymentInfo",
+            type: "publicKey",
           },
           {
             name: "identifier",
@@ -3942,34 +4054,35 @@ export const IDL: CardinalRewardsCenter = {
             },
           },
           {
-            name: "stakePaymentAmount",
-            type: {
-              option: "u64",
-            },
+            name: "stakePaymentInfo",
+            type: "publicKey",
           },
           {
-            name: "unstakePaymentAmount",
-            type: {
-              option: "u64",
-            },
+            name: "unstakePaymentInfo",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "Action",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "Stake",
           },
           {
-            name: "paymentMint",
-            type: {
-              option: "publicKey",
-            },
+            name: "Unstake",
           },
           {
-            name: "paymentManager",
-            type: {
-              option: "publicKey",
-            },
+            name: "ClaimRewards",
           },
           {
-            name: "paymentRecipient",
-            type: {
-              option: "publicKey",
-            },
+            name: "ClaimRewardReceipt",
+          },
+          {
+            name: "BoostStakeEntry",
           },
         ],
       },
@@ -4047,6 +4160,31 @@ export const IDL: CardinalRewardsCenter = {
       msg: "Invalid payment mint",
     },
     {
+      code: 6031,
+      name: "InvalidPaymentShares",
+      msg: "Invalid payment shares",
+    },
+    {
+      code: 6032,
+      name: "InvalidPaymentCollector",
+      msg: "Invalid payment collector",
+    },
+    {
+      code: 6033,
+      name: "InvalidPaymentTokenAccount",
+      msg: "Invalid payment token account",
+    },
+    {
+      code: 6034,
+      name: "InvalidPayerTokenAccount",
+      msg: "Invalid payer token account",
+    },
+    {
+      code: 6035,
+      name: "InvalidTransferProgram",
+      msg: "Invalid transfer program",
+    },
+    {
       code: 6040,
       name: "CooldownSecondRemaining",
       msg: "Token still has some cooldown seconds remaining",
@@ -4118,41 +4256,31 @@ export const IDL: CardinalRewardsCenter = {
     },
     {
       code: 6075,
-      name: "InvalidPaymentTokenAccount",
-      msg: "Invalid payment token account",
-    },
-    {
-      code: 6076,
-      name: "InvalidPaymentCollector",
-      msg: "Invalid payment collector",
-    },
-    {
-      code: 6077,
       name: "InvalidRewardReceipt",
       msg: "Invalid reward receipt",
     },
     {
-      code: 6078,
+      code: 6076,
       name: "InvalidReceiptEntry",
       msg: "Invalid receipt entry",
     },
     {
-      code: 6079,
+      code: 6077,
       name: "InsufficientAvailableStakeSeconds",
       msg: "Insufficient available stake seconds to use",
     },
     {
-      code: 6080,
+      code: 6078,
       name: "InvalidReceiptManager",
       msg: "Invalid receipt manager",
     },
     {
-      code: 6081,
+      code: 6079,
       name: "RewardReceiptIsNotAllowed",
       msg: "Reward receipt is not allowed",
     },
     {
-      code: 6082,
+      code: 6080,
       name: "RewardReceiptAlreadyClaimed",
       msg: "Reward receipt already claimed",
     },

@@ -30,9 +30,6 @@ pub struct UpdateReceiptManagerCtx<'info> {
 
 pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
-
-    assert_payment_info(receipt_manager.stake_pool, Action::ClaimRewardReceipt, receipt_manager.claim_action_payment_info)?;
-
     if let Some(max_claimed_receipts) = ix.max_claimed_receipts {
         if receipt_manager.claimed_receipts_counter > max_claimed_receipts {
             return Err(error!(ErrorCode::InvalidMaxClaimedReceipts));
@@ -47,5 +44,6 @@ pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx
     receipt_manager.claim_action_payment_info = ix.claim_action_payment_info;
     receipt_manager.max_claimed_receipts = ix.max_claimed_receipts;
 
+    assert_payment_info(receipt_manager.stake_pool, Action::ClaimRewardReceipt, receipt_manager.claim_action_payment_info)?;
     Ok(())
 }

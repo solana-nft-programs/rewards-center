@@ -11,12 +11,10 @@ import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type InitStakeBoosterIx = {
   stakePool: web3.PublicKey
   identifier: beet.bignum
-  paymentAmount: beet.bignum
-  paymentMint: web3.PublicKey
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentInfo: web3.PublicKey
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
+  boostActionPaymentInfo: web3.PublicKey
 }
 
 /**
@@ -28,12 +26,10 @@ export const initStakeBoosterIxBeet =
     [
       ['stakePool', beetSolana.publicKey],
       ['identifier', beet.u64],
-      ['paymentAmount', beet.u64],
-      ['paymentMint', beetSolana.publicKey],
-      ['paymentManager', beetSolana.publicKey],
-      ['paymentRecipient', beetSolana.publicKey],
+      ['paymentInfo', beetSolana.publicKey],
       ['boostSeconds', beet.u128],
       ['startTimeSeconds', beet.i64],
+      ['boostActionPaymentInfo', beetSolana.publicKey],
     ],
     'InitStakeBoosterIx'
   )

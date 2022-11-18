@@ -24,9 +24,9 @@ export type RewardDistributorArgs = {
   rewardAmount: beet.bignum
   rewardDurationSeconds: beet.bignum
   rewardsIssued: beet.bignum
-  maxSupply: beet.COption<beet.bignum>
   defaultMultiplier: beet.bignum
   multiplierDecimals: number
+  claimRewardsPaymentInfo: web3.PublicKey
   maxRewardSecondsReceived: beet.COption<beet.bignum>
 }
 
@@ -51,9 +51,9 @@ export class RewardDistributor implements RewardDistributorArgs {
     readonly rewardAmount: beet.bignum,
     readonly rewardDurationSeconds: beet.bignum,
     readonly rewardsIssued: beet.bignum,
-    readonly maxSupply: beet.COption<beet.bignum>,
     readonly defaultMultiplier: beet.bignum,
     readonly multiplierDecimals: number,
+    readonly claimRewardsPaymentInfo: web3.PublicKey,
     readonly maxRewardSecondsReceived: beet.COption<beet.bignum>
   ) {}
 
@@ -71,9 +71,9 @@ export class RewardDistributor implements RewardDistributorArgs {
       args.rewardAmount,
       args.rewardDurationSeconds,
       args.rewardsIssued,
-      args.maxSupply,
       args.defaultMultiplier,
       args.multiplierDecimals,
+      args.claimRewardsPaymentInfo,
       args.maxRewardSecondsReceived
     )
   }
@@ -228,7 +228,6 @@ export class RewardDistributor implements RewardDistributorArgs {
         }
         return x
       })(),
-      maxSupply: this.maxSupply,
       defaultMultiplier: (() => {
         const x = <{ toNumber: () => number }>this.defaultMultiplier
         if (typeof x.toNumber === 'function') {
@@ -241,6 +240,7 @@ export class RewardDistributor implements RewardDistributorArgs {
         return x
       })(),
       multiplierDecimals: this.multiplierDecimals,
+      claimRewardsPaymentInfo: this.claimRewardsPaymentInfo.toBase58(),
       maxRewardSecondsReceived: this.maxRewardSecondsReceived,
     }
   }
@@ -267,9 +267,9 @@ export const rewardDistributorBeet = new beet.FixableBeetStruct<
     ['rewardAmount', beet.u64],
     ['rewardDurationSeconds', beet.u128],
     ['rewardsIssued', beet.u128],
-    ['maxSupply', beet.coption(beet.u64)],
     ['defaultMultiplier', beet.u64],
     ['multiplierDecimals', beet.u8],
+    ['claimRewardsPaymentInfo', beetSolana.publicKey],
     ['maxRewardSecondsReceived', beet.coption(beet.u128)],
   ],
   RewardDistributor.fromArgs,

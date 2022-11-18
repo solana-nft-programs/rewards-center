@@ -7,75 +7,78 @@
 
 import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
-import { UpdatePoolIx, updatePoolIxBeet } from '../types/UpdatePoolIx'
+import {
+  UpdatePaymentInfoIx,
+  updatePaymentInfoIxBeet,
+} from '../types/UpdatePaymentInfoIx'
 
 /**
  * @category Instructions
- * @category UpdatePool
+ * @category UpdatePaymentInfo
  * @category generated
  */
-export type UpdatePoolInstructionArgs = {
-  ix: UpdatePoolIx
+export type UpdatePaymentInfoInstructionArgs = {
+  ix: UpdatePaymentInfoIx
 }
 /**
  * @category Instructions
- * @category UpdatePool
+ * @category UpdatePaymentInfo
  * @category generated
  */
-export const updatePoolStruct = new beet.FixableBeetArgsStruct<
-  UpdatePoolInstructionArgs & {
+export const updatePaymentInfoStruct = new beet.FixableBeetArgsStruct<
+  UpdatePaymentInfoInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */
   }
 >(
   [
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['ix', updatePoolIxBeet],
+    ['ix', updatePaymentInfoIxBeet],
   ],
-  'UpdatePoolInstructionArgs'
+  'UpdatePaymentInfoInstructionArgs'
 )
 /**
- * Accounts required by the _updatePool_ instruction
+ * Accounts required by the _updatePaymentInfo_ instruction
  *
- * @property [_writable_] stakePool
+ * @property [_writable_] paymentInfo
  * @property [**signer**] authority
  * @property [_writable_, **signer**] payer
  * @category Instructions
- * @category UpdatePool
+ * @category UpdatePaymentInfo
  * @category generated
  */
-export type UpdatePoolInstructionAccounts = {
-  stakePool: web3.PublicKey
+export type UpdatePaymentInfoInstructionAccounts = {
+  paymentInfo: web3.PublicKey
   authority: web3.PublicKey
   payer: web3.PublicKey
   systemProgram?: web3.PublicKey
 }
 
-export const updatePoolInstructionDiscriminator = [
-  239, 214, 170, 78, 36, 35, 30, 34,
+export const updatePaymentInfoInstructionDiscriminator = [
+  124, 28, 198, 31, 188, 204, 187, 216,
 ]
 
 /**
- * Creates a _UpdatePool_ instruction.
+ * Creates a _UpdatePaymentInfo_ instruction.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @param args to provide as instruction data to the program
  *
  * @category Instructions
- * @category UpdatePool
+ * @category UpdatePaymentInfo
  * @category generated
  */
-export function createUpdatePoolInstruction(
-  accounts: UpdatePoolInstructionAccounts,
-  args: UpdatePoolInstructionArgs,
+export function createUpdatePaymentInfoInstruction(
+  accounts: UpdatePaymentInfoInstructionAccounts,
+  args: UpdatePaymentInfoInstructionArgs,
   programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
-  const [data] = updatePoolStruct.serialize({
-    instructionDiscriminator: updatePoolInstructionDiscriminator,
+  const [data] = updatePaymentInfoStruct.serialize({
+    instructionDiscriminator: updatePaymentInfoInstructionDiscriminator,
     ...args,
   })
   const keys: web3.AccountMeta[] = [
     {
-      pubkey: accounts.stakePool,
+      pubkey: accounts.paymentInfo,
       isWritable: true,
       isSigner: false,
     },

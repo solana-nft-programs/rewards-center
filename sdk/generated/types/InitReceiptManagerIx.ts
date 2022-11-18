@@ -18,6 +18,8 @@ export type InitReceiptManagerIx = {
   paymentManager: web3.PublicKey
   paymentRecipient: web3.PublicKey
   requiresAuthorization: boolean
+  paymentInfo: web3.PublicKey
+  claimActionPaymentInfo: web3.PublicKey
   maxClaimedReceipts: beet.COption<beet.bignum>
 }
 
@@ -37,6 +39,8 @@ export const initReceiptManagerIxBeet =
       ['paymentManager', beetSolana.publicKey],
       ['paymentRecipient', beetSolana.publicKey],
       ['requiresAuthorization', beet.bool],
+      ['paymentInfo', beetSolana.publicKey],
+      ['claimActionPaymentInfo', beetSolana.publicKey],
       ['maxClaimedReceipts', beet.coption(beet.u128)],
     ],
     'InitReceiptManagerIx'

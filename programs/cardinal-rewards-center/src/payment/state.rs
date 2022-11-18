@@ -38,6 +38,7 @@ pub enum Action {
     Unstake,
     ClaimRewards,
     ClaimRewardReceipt,
+    BoostStakeEntry,
 }
 
 lazy_static! {
@@ -46,6 +47,7 @@ lazy_static! {
         (Action::Unstake as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
         (Action::ClaimRewards as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
         (Action::ClaimRewardReceipt as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
+        (Action::BoostStakeEntry as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
     ]);
     static ref OVERRIDES: HashMap<(String, u8), String> = HashMap::from([]);
 }
@@ -63,15 +65,15 @@ pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pub
 }
 
 pub fn handle_payment<'info>(payment_info: Pubkey, remaining_accounts: &mut Iter<AccountInfo<'info>>) -> Result<()> {
-    handle_payment_amount(payment_info, remaining_accounts, None)
-}
-
-pub fn handle_payment_amount<'info>(payment_info: Pubkey, remaining_accounts: &mut Iter<AccountInfo<'info>>, amount: Option<u64>) -> Result<()> {
     // check payment info
     let payment_info_account_info = next_account_info(remaining_accounts)?;
     assert_eq!(payment_info, payment_info_account_info.key());
     let payment_info_account = Account::<PaymentInfo>::try_from(payment_info_account_info)?;
+    let payment_amount = payment_info_account.payment_amount;
+    handle_payment_amount(payment_info_account, remaining_accounts, Some(payment_amount))
+}
 
+pub fn handle_payment_amount<'info>(payment_info_account: Account<PaymentInfo>, remaining_accounts: &mut Iter<AccountInfo<'info>>, amount: Option<u64>) -> Result<()> {
     let payer = next_account_info(remaining_accounts)?;
 
     // check amount

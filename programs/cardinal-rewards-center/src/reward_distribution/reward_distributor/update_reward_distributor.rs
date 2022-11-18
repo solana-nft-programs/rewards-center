@@ -1,6 +1,7 @@
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::reward_distribution::RewardDistributor;
-use crate::{assert_payment_info, Action};
+use crate::Action;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]

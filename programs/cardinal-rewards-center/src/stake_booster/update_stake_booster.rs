@@ -1,17 +1,16 @@
 use super::StakeBooster;
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
-use crate::stake_booster::assert_stake_booster_payment_info;
+use crate::Action;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdateStakeBoosterIx {
-    payment_amount: u64,
-    payment_mint: Pubkey,
-    payment_manager: Pubkey,
-    payment_recipient: Pubkey,
+    payment_info: Pubkey,
     boost_seconds: u128,
     start_time_seconds: i64,
+    boost_action_payment_info: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -26,13 +25,12 @@ pub struct UpdateStakeBoosterCtx<'info> {
 
 pub fn handler(ctx: Context<UpdateStakeBoosterCtx>, ix: UpdateStakeBoosterIx) -> Result<()> {
     let stake_booster = &mut ctx.accounts.stake_booster;
-    assert_stake_booster_payment_info(&ix.payment_mint, ix.payment_amount, &ix.payment_manager)?;
-    stake_booster.payment_amount = ix.payment_amount;
-    stake_booster.payment_mint = ix.payment_mint;
+    assert_payment_info(stake_booster.stake_pool, Action::BoostStakeEntry, ix.boost_action_payment_info)?;
+
+    stake_booster.payment_info = ix.payment_info;
     stake_booster.boost_seconds = ix.boost_seconds;
-    stake_booster.payment_manager = ix.payment_manager;
-    stake_booster.payment_recipient = ix.payment_recipient;
     stake_booster.start_time_seconds = ix.start_time_seconds;
+    stake_booster.boost_action_payment_info = ix.boost_action_payment_info;
 
     Ok(())
 }

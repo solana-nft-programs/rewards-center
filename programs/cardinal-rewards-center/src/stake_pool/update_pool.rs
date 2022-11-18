@@ -1,5 +1,7 @@
+use crate::assert_payment_info;
 use crate::utils::resize_account;
-use crate::{assert_payment_info, Action, StakePool};
+use crate::Action;
+use crate::StakePool;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]

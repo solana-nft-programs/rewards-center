@@ -17,14 +17,6 @@ pub struct ReceiptManager {
     pub max_claimed_receipts: Option<u128>,
 }
 
-pub const RECEIPT_ENTRY_SIZE: usize = 8 + std::mem::size_of::<ReceiptEntry>() + 64;
-#[account]
-pub struct ReceiptEntry {
-    pub bump: u8,
-    pub stake_entry: Pubkey,
-    pub used_stake_seconds: u128,
-}
-
 pub const REWARD_RECEIPT_SEED: &str = "reward-receipt";
 pub const REWARD_RECEIPT_SIZE: usize = 8 + std::mem::size_of::<RewardReceipt>() + 64;
 #[account]

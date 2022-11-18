@@ -22,11 +22,8 @@ export type StakePoolArgs = {
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
   endDate: beet.COption<beet.bignum>
-  stakePaymentAmount: beet.COption<beet.bignum>
-  unstakePaymentAmount: beet.COption<beet.bignum>
-  paymentMint: beet.COption<web3.PublicKey>
-  paymentManager: beet.COption<web3.PublicKey>
-  paymentRecipient: beet.COption<web3.PublicKey>
+  stakePaymentInfo: web3.PublicKey
+  unstakePaymentInfo: web3.PublicKey
   requiresAuthorization: boolean
   allowedCreators: web3.PublicKey[]
   allowedCollections: web3.PublicKey[]
@@ -50,11 +47,8 @@ export class StakePool implements StakePoolArgs {
     readonly cooldownSeconds: beet.COption<number>,
     readonly minStakeSeconds: beet.COption<number>,
     readonly endDate: beet.COption<beet.bignum>,
-    readonly stakePaymentAmount: beet.COption<beet.bignum>,
-    readonly unstakePaymentAmount: beet.COption<beet.bignum>,
-    readonly paymentMint: beet.COption<web3.PublicKey>,
-    readonly paymentManager: beet.COption<web3.PublicKey>,
-    readonly paymentRecipient: beet.COption<web3.PublicKey>,
+    readonly stakePaymentInfo: web3.PublicKey,
+    readonly unstakePaymentInfo: web3.PublicKey,
     readonly requiresAuthorization: boolean,
     readonly allowedCreators: web3.PublicKey[],
     readonly allowedCollections: web3.PublicKey[],
@@ -73,11 +67,8 @@ export class StakePool implements StakePoolArgs {
       args.cooldownSeconds,
       args.minStakeSeconds,
       args.endDate,
-      args.stakePaymentAmount,
-      args.unstakePaymentAmount,
-      args.paymentMint,
-      args.paymentManager,
-      args.paymentRecipient,
+      args.stakePaymentInfo,
+      args.unstakePaymentInfo,
       args.requiresAuthorization,
       args.allowedCreators,
       args.allowedCollections,
@@ -193,11 +184,8 @@ export class StakePool implements StakePoolArgs {
       cooldownSeconds: this.cooldownSeconds,
       minStakeSeconds: this.minStakeSeconds,
       endDate: this.endDate,
-      stakePaymentAmount: this.stakePaymentAmount,
-      unstakePaymentAmount: this.unstakePaymentAmount,
-      paymentMint: this.paymentMint,
-      paymentManager: this.paymentManager,
-      paymentRecipient: this.paymentRecipient,
+      stakePaymentInfo: this.stakePaymentInfo.toBase58(),
+      unstakePaymentInfo: this.unstakePaymentInfo.toBase58(),
       requiresAuthorization: this.requiresAuthorization,
       allowedCreators: this.allowedCreators,
       allowedCollections: this.allowedCollections,
@@ -225,11 +213,8 @@ export const stakePoolBeet = new beet.FixableBeetStruct<
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],
     ['endDate', beet.coption(beet.i64)],
-    ['stakePaymentAmount', beet.coption(beet.u64)],
-    ['unstakePaymentAmount', beet.coption(beet.u64)],
-    ['paymentMint', beet.coption(beetSolana.publicKey)],
-    ['paymentManager', beet.coption(beetSolana.publicKey)],
-    ['paymentRecipient', beet.coption(beetSolana.publicKey)],
+    ['stakePaymentInfo', beetSolana.publicKey],
+    ['unstakePaymentInfo', beetSolana.publicKey],
     ['requiresAuthorization', beet.bool],
     ['allowedCreators', beet.array(beetSolana.publicKey)],
     ['allowedCollections', beet.array(beetSolana.publicKey)],

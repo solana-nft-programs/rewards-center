@@ -43,8 +43,6 @@ pub struct InitReceiptManagerCtx<'info> {
 pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
 
-    assert_payment_info(receipt_manager.stake_pool, Action::ClaimRewardReceipt, receipt_manager.claim_action_payment_info)?;
-
     receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
     receipt_manager.name = ix.name;
     receipt_manager.stake_pool = ctx.accounts.stake_pool.key();
@@ -57,5 +55,6 @@ pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) ->
     receipt_manager.claim_action_payment_info = ix.claim_action_payment_info;
     receipt_manager.max_claimed_receipts = ix.max_claimed_receipts;
 
+    assert_payment_info(receipt_manager.stake_pool, Action::ClaimRewardReceipt, receipt_manager.claim_action_payment_info)?;
     Ok(())
 }

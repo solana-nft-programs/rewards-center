@@ -5,16 +5,14 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
+import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type UpdateStakeBoosterIx = {
-  paymentAmount: beet.bignum
-  paymentMint: web3.PublicKey
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentInfo: web3.PublicKey
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
+  boostActionPaymentInfo: web3.PublicKey
 }
 
 /**
@@ -24,12 +22,10 @@ export type UpdateStakeBoosterIx = {
 export const updateStakeBoosterIxBeet =
   new beet.BeetArgsStruct<UpdateStakeBoosterIx>(
     [
-      ['paymentAmount', beet.u64],
-      ['paymentMint', beetSolana.publicKey],
-      ['paymentManager', beetSolana.publicKey],
-      ['paymentRecipient', beetSolana.publicKey],
+      ['paymentInfo', beetSolana.publicKey],
       ['boostSeconds', beet.u128],
       ['startTimeSeconds', beet.i64],
+      ['boostActionPaymentInfo', beetSolana.publicKey],
     ],
     'UpdateStakeBoosterIx'
   )

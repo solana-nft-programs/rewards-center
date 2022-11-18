@@ -21,11 +21,9 @@ export type ReceiptManagerArgs = {
   requiredStakeSeconds: beet.bignum
   stakeSecondsToUse: beet.bignum
   claimedReceiptsCounter: beet.bignum
-  paymentMint: web3.PublicKey
-  paymentAmount: beet.bignum
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
   requiresAuthorization: boolean
+  paymentInfo: web3.PublicKey
+  claimActionPaymentInfo: web3.PublicKey
   name: string
   maxClaimedReceipts: beet.COption<beet.bignum>
 }
@@ -48,11 +46,9 @@ export class ReceiptManager implements ReceiptManagerArgs {
     readonly requiredStakeSeconds: beet.bignum,
     readonly stakeSecondsToUse: beet.bignum,
     readonly claimedReceiptsCounter: beet.bignum,
-    readonly paymentMint: web3.PublicKey,
-    readonly paymentAmount: beet.bignum,
-    readonly paymentManager: web3.PublicKey,
-    readonly paymentRecipient: web3.PublicKey,
     readonly requiresAuthorization: boolean,
+    readonly paymentInfo: web3.PublicKey,
+    readonly claimActionPaymentInfo: web3.PublicKey,
     readonly name: string,
     readonly maxClaimedReceipts: beet.COption<beet.bignum>
   ) {}
@@ -68,11 +64,9 @@ export class ReceiptManager implements ReceiptManagerArgs {
       args.requiredStakeSeconds,
       args.stakeSecondsToUse,
       args.claimedReceiptsCounter,
-      args.paymentMint,
-      args.paymentAmount,
-      args.paymentManager,
-      args.paymentRecipient,
       args.requiresAuthorization,
+      args.paymentInfo,
+      args.claimActionPaymentInfo,
       args.name,
       args.maxClaimedReceipts
     )
@@ -215,21 +209,9 @@ export class ReceiptManager implements ReceiptManagerArgs {
         }
         return x
       })(),
-      paymentMint: this.paymentMint.toBase58(),
-      paymentAmount: (() => {
-        const x = <{ toNumber: () => number }>this.paymentAmount
-        if (typeof x.toNumber === 'function') {
-          try {
-            return x.toNumber()
-          } catch (_) {
-            return x
-          }
-        }
-        return x
-      })(),
-      paymentManager: this.paymentManager.toBase58(),
-      paymentRecipient: this.paymentRecipient.toBase58(),
       requiresAuthorization: this.requiresAuthorization,
+      paymentInfo: this.paymentInfo.toBase58(),
+      claimActionPaymentInfo: this.claimActionPaymentInfo.toBase58(),
       name: this.name,
       maxClaimedReceipts: this.maxClaimedReceipts,
     }
@@ -254,11 +236,9 @@ export const receiptManagerBeet = new beet.FixableBeetStruct<
     ['requiredStakeSeconds', beet.u128],
     ['stakeSecondsToUse', beet.u128],
     ['claimedReceiptsCounter', beet.u128],
-    ['paymentMint', beetSolana.publicKey],
-    ['paymentAmount', beet.u64],
-    ['paymentManager', beetSolana.publicKey],
-    ['paymentRecipient', beetSolana.publicKey],
     ['requiresAuthorization', beet.bool],
+    ['paymentInfo', beetSolana.publicKey],
+    ['claimActionPaymentInfo', beetSolana.publicKey],
     ['name', beet.utf8String],
     ['maxClaimedReceipts', beet.coption(beet.u128)],
   ],
