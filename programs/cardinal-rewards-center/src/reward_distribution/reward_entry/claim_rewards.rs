@@ -105,7 +105,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
 
         // handle payment
         let remaining_accounts = &mut ctx.remaining_accounts.iter();
-        assert_payment_info(&stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
+        assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
         handle_payment(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
     }
 

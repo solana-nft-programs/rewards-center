@@ -57,8 +57,8 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
         identifier: identifier.clone(),
     };
 
-    assert_payment_info(&ctx.accounts.stake_pool.key(), Action::Stake, ix.stake_payment_info)?;
-    assert_payment_info(&ctx.accounts.stake_pool.key(), Action::Unstake, ix.unstake_payment_info)?;
+    assert_payment_info(ctx.accounts.stake_pool.key(), Action::Stake, ix.stake_payment_info)?;
+    assert_payment_info(ctx.accounts.stake_pool.key(), Action::Unstake, ix.unstake_payment_info)?;
 
     let stake_pool = &mut ctx.accounts.stake_pool;
     let new_space = new_stake_pool.try_to_vec()?.len() + 8;

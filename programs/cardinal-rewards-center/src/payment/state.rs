@@ -50,7 +50,7 @@ lazy_static! {
     static ref OVERRIDES: HashMap<(String, u8), String> = HashMap::from([]);
 }
 
-pub fn assert_payment_info(stake_pool: &Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
+pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let action_id = action as u8;
     let mut expected_payment_info = DEFAULT_ACTIONS.get(&action_id).expect("Invalid action");
     if OVERRIDES.contains_key(&(stake_pool.key().to_string(), action_id)) {

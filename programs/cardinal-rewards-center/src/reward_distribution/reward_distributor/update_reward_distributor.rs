@@ -31,6 +31,6 @@ pub fn handler(ctx: Context<UpdateRewardDistributorCtx>, ix: UpdateRewardDistrib
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
     reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
 
-    assert_payment_info(&reward_distributor.stake_pool, Action::ClaimRewards, ix.claim_rewards_payment_info)?;
+    assert_payment_info(reward_distributor.stake_pool, Action::ClaimRewards, ix.claim_rewards_payment_info)?;
     Ok(())
 }

@@ -22,7 +22,7 @@ use solana_program::program::invoke_signed;
 pub struct StakeEditionCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
-    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
+    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump = stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
@@ -95,7 +95,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     )?;
 
     // handle payment
-    assert_payment_info(&stake_pool.key(), Action::Stake, stake_pool.stake_payment_info)?;
+    assert_payment_info(stake_pool.key(), Action::Stake, stake_pool.stake_payment_info)?;
     handle_payment(stake_pool.stake_payment_info, remaining_accounts)?;
 
     // update stake entry

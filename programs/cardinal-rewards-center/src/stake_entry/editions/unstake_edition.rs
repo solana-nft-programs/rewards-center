@@ -101,7 +101,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    assert_payment_info(&stake_pool.key(), Action::Unstake, stake_pool.unstake_payment_info)?;
+    assert_payment_info(stake_pool.key(), Action::Unstake, stake_pool.unstake_payment_info)?;
     handle_payment(stake_pool.stake_payment_info, remaining_accounts)?;
 
     increment_total_stake_seconds(stake_entry)?;

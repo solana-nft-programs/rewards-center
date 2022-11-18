@@ -31,8 +31,8 @@ pub struct UpdatePoolCtx<'info> {
 pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
 
-    assert_payment_info(&stake_pool.key(), Action::Stake, ix.stake_payment_info)?;
-    assert_payment_info(&stake_pool.key(), Action::Unstake, ix.unstake_payment_info)?;
+    assert_payment_info(stake_pool.key(), Action::Stake, ix.stake_payment_info)?;
+    assert_payment_info(stake_pool.key(), Action::Unstake, ix.unstake_payment_info)?;
 
     let new_stake_pool = StakePool {
         bump: stake_pool.bump,

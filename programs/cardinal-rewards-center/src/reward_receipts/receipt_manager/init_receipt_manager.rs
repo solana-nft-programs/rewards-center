@@ -1,7 +1,8 @@
-use crate::reward_receipts::assert_receipt_manager_payment_info;
+use crate::assert_payment_info;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RECEIPT_MANAGER_SEED;
 use crate::reward_receipts::RECEIPT_MANAGER_SIZE;
+use crate::Action;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 
@@ -16,6 +17,8 @@ pub struct InitReceiptManagerIx {
     pub payment_manager: Pubkey,
     pub payment_recipient: Pubkey,
     pub requires_authorization: bool,
+    pub payment_info: Pubkey,
+    pub claim_action_payment_info: Pubkey,
     pub max_claimed_receipts: Option<u128>,
 }
 
@@ -40,6 +43,8 @@ pub struct InitReceiptManagerCtx<'info> {
 pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
 
+    assert_payment_info(receipt_manager.stake_pool, Action::ClaimRewardReceipt, receipt_manager.claim_action_payment_info)?;
+
     receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
     receipt_manager.name = ix.name;
     receipt_manager.stake_pool = ctx.accounts.stake_pool.key();
@@ -47,11 +52,9 @@ pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) ->
     receipt_manager.required_stake_seconds = ix.required_stake_seconds;
     receipt_manager.stake_seconds_to_use = ix.stake_seconds_to_use;
     receipt_manager.claimed_receipts_counter = 0;
-    receipt_manager.payment_mint = ix.payment_mint;
-    receipt_manager.payment_amount = ix.payment_amount;
-    receipt_manager.payment_manager = ix.payment_manager;
-    receipt_manager.payment_recipient = ix.payment_recipient;
     receipt_manager.requires_authorization = ix.requires_authorization;
+    receipt_manager.payment_info = ix.payment_info;
+    receipt_manager.claim_action_payment_info = ix.claim_action_payment_info;
     receipt_manager.max_claimed_receipts = ix.max_claimed_receipts;
 
     Ok(())
