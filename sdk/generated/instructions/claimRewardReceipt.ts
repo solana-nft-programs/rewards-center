@@ -5,7 +5,6 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as splToken from '@solana/spl-token'
 import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
 
@@ -38,8 +37,6 @@ export type ClaimRewardReceiptInstructionAccounts = {
   stakeEntry: web3.PublicKey
   payer: web3.PublicKey
   claimer: web3.PublicKey
-  tokenProgram?: web3.PublicKey
-  systemProgram?: web3.PublicKey
 }
 
 export const claimRewardReceiptInstructionDiscriminator = [
@@ -86,16 +83,6 @@ export function createClaimRewardReceiptInstruction(
       pubkey: accounts.claimer,
       isWritable: true,
       isSigner: true,
-    },
-    {
-      pubkey: accounts.tokenProgram ?? splToken.TOKEN_PROGRAM_ID,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
-      isWritable: false,
-      isSigner: false,
     },
   ]
 

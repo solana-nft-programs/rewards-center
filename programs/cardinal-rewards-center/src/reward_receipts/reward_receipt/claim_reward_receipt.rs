@@ -7,7 +7,6 @@ use crate::reward_receipts::RewardReceipt;
 use crate::Action;
 use crate::StakeEntry;
 use anchor_lang::prelude::*;
-use anchor_spl::token::Token;
 
 #[derive(Accounts)]
 pub struct ClaimRewardReceiptCtx<'info> {
@@ -17,14 +16,10 @@ pub struct ClaimRewardReceiptCtx<'info> {
     receipt_manager: Box<Account<'info, ReceiptManager>>,
     #[account(mut, constraint = stake_entry.pool == receipt_manager.stake_pool @ ErrorCode::InvalidStakeEntry)]
     stake_entry: Box<Account<'info, StakeEntry>>,
-
     #[account(mut)]
     payer: Signer<'info>,
     #[account(mut, constraint = stake_entry.last_staker == claimer.key() @ ErrorCode::InvalidClaimer)]
     claimer: Signer<'info>,
-
-    token_program: Program<'info, Token>,
-    system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {

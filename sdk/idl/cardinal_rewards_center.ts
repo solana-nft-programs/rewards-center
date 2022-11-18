@@ -452,11 +452,6 @@ export type CardinalRewardsCenter = {
           name: "stakeMint";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -640,16 +635,6 @@ export type CardinalRewardsCenter = {
           name: "claimer";
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [];
@@ -1195,8 +1180,12 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "claimActionPaymentInfo";
@@ -1269,8 +1258,12 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "boostSeconds";
@@ -1621,8 +1614,12 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "requiresAuthorization";
@@ -1667,8 +1664,12 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "requiresAuthorization";
@@ -1721,8 +1722,12 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "boostSeconds";
@@ -1757,8 +1762,12 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "paymentRecipient";
-            type: "publicKey";
+            name: "paymentShares";
+            type: {
+              vec: {
+                defined: "PaymentShare";
+              };
+            };
           },
           {
             name: "boostSeconds";
@@ -2650,11 +2659,6 @@ export const IDL: CardinalRewardsCenter = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -2837,16 +2841,6 @@ export const IDL: CardinalRewardsCenter = {
           name: "claimer",
           isMut: true,
           isSigner: true,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [],
@@ -3392,8 +3386,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "claimActionPaymentInfo",
@@ -3466,8 +3464,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "boostSeconds",
@@ -3818,8 +3820,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "requiresAuthorization",
@@ -3864,8 +3870,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "requiresAuthorization",
@@ -3918,8 +3928,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "boostSeconds",
@@ -3954,8 +3968,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "paymentRecipient",
-            type: "publicKey",
+            name: "paymentShares",
+            type: {
+              vec: {
+                defined: "PaymentShare",
+              },
+            },
           },
           {
             name: "boostSeconds",

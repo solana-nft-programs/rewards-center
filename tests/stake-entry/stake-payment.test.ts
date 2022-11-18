@@ -7,7 +7,13 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
-import { findStakeEntryId, findStakePoolId, stake, unstake } from "../../sdk";
+import {
+  DEFAULT_PAYMENT_INFO,
+  findStakeEntryId,
+  findStakePoolId,
+  stake,
+  unstake,
+} from "../../sdk";
 import {
   createInitPoolInstruction,
   StakeEntry,
@@ -27,7 +33,6 @@ const STARTING_AMOUNT = 100;
 const STAKE_PAYMENT_AMOUNT = 10;
 let mintId: PublicKey;
 let paymentMintId: PublicKey;
-let paymentRecipientId: PublicKey;
 
 beforeAll(async () => {
   provider = await getProvider();
@@ -49,9 +54,7 @@ beforeAll(async () => {
     provider.wallet,
     [mintKeypair]
   );
-
   paymentMintId = NATIVE_MINT;
-  paymentRecipientId = Keypair.generate().publicKey;
 });
 
 test("Init pool", async () => {
@@ -73,9 +76,9 @@ test("Init pool", async () => {
           resetOnUnstake: false,
           cooldownSeconds: null,
           minStakeSeconds: null,
+          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
           endDate: null,
-          stakePaymentInfo: null,
-          unstakePaymentInfo: null,
         },
       }
     )

@@ -25,7 +25,7 @@ export type InitStakeBoosterInstructionArgs = {
  * @category InitStakeBooster
  * @category generated
  */
-export const initStakeBoosterStruct = new beet.BeetArgsStruct<
+export const initStakeBoosterStruct = new beet.FixableBeetArgsStruct<
   InitStakeBoosterInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */
   }

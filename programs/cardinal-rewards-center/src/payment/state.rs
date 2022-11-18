@@ -4,12 +4,10 @@ use anchor_lang::Result;
 use anchor_spl::token;
 use anchor_spl::token::TokenAccount;
 use anchor_spl::token::Transfer;
-use lazy_static::lazy_static;
 use solana_program::program::invoke;
 use solana_program::system_instruction::transfer;
 use solana_program::system_program;
 use std::cmp::Eq;
-use std::collections::HashMap;
 use std::slice::Iter;
 
 pub const BASIS_POINTS_DIVISOR: u64 = 10_000;
@@ -41,24 +39,15 @@ pub enum Action {
     BoostStakeEntry,
 }
 
-lazy_static! {
-    static ref DEFAULT_ACTIONS: HashMap<u8, String> = HashMap::from([
-        (Action::Stake as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
-        (Action::Unstake as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
-        (Action::ClaimRewards as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
-        (Action::ClaimRewardReceipt as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
-        (Action::BoostStakeEntry as u8, "FQJ2czigCYygS8v8trLU7TBAi7NjRN1h1C2vLAh2GYDi".to_string()),
-    ]);
-    static ref OVERRIDES: HashMap<(String, u8), String> = HashMap::from([]);
-}
-
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let action_id = action as u8;
-    let mut expected_payment_info = DEFAULT_ACTIONS.get(&action_id).expect("Invalid action");
-    if OVERRIDES.contains_key(&(stake_pool.key().to_string(), action_id)) {
-        expected_payment_info = OVERRIDES.get(&(stake_pool.key().to_string(), action_id)).expect("Invalid override")
-    }
-    if expected_payment_info.to_string() != payment_info.to_string() {
+    let default_allowed_payment_infos = match action_id {
+        _ => ["3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string()].to_vec(), // cardinal-test
+    };
+    let allowed_payment_infos = match &(stake_pool.key().to_string(), action_id) {
+        _ => default_allowed_payment_infos,
+    };
+    if !allowed_payment_infos.contains(&payment_info.to_string()) {
         return Err(error!(ErrorCode::InvalidPaymentManager));
     }
     Ok(())
@@ -69,6 +58,10 @@ pub fn handle_payment_info<'info>(payment_info: Pubkey, remaining_accounts: &mut
     let payment_info_account_info = next_account_info(remaining_accounts)?;
     assert_eq!(payment_info, payment_info_account_info.key());
     let payment_info_account = Account::<PaymentInfo>::try_from(payment_info_account_info)?;
+    // check amount
+    if payment_info_account.payment_amount == 0 {
+        return Ok(());
+    }
     handle_payment(
         payment_info_account.payment_amount,
         payment_info_account.payment_mint,
@@ -78,14 +71,7 @@ pub fn handle_payment_info<'info>(payment_info: Pubkey, remaining_accounts: &mut
 }
 
 pub fn handle_payment<'info>(payment_amount: u64, payment_mint: Pubkey, payment_shares: &Vec<PaymentShare>, remaining_accounts: &mut Iter<AccountInfo<'info>>) -> Result<()> {
-    // check amount
-    if payment_amount == 0 {
-        return Ok(());
-    }
-
     let payer = next_account_info(remaining_accounts)?;
-
-    // token or system program
     let transfer_program: &AccountInfo = if payment_mint == Pubkey::default() {
         let transfer_program = next_account_info(remaining_accounts)?;
         if !system_program::check_id(&transfer_program.key()) {

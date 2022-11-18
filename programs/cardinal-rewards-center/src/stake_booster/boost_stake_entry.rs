@@ -24,7 +24,6 @@ pub struct BoostStakeEntryCtx<'info> {
     stake_entry: Box<Account<'info, StakeEntry>>,
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakePool)]
     stake_mint: Box<Account<'info, Mint>>,
-    system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Result<()> {

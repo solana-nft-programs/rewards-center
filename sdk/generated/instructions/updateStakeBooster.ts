@@ -25,7 +25,7 @@ export type UpdateStakeBoosterInstructionArgs = {
  * @category UpdateStakeBooster
  * @category generated
  */
-export const updateStakeBoosterStruct = new beet.BeetArgsStruct<
+export const updateStakeBoosterStruct = new beet.FixableBeetArgsStruct<
   UpdateStakeBoosterInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */
   }

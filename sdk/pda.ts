@@ -135,3 +135,14 @@ export const findRewardReceiptId = (
     PROGRAM_ID
   )[0];
 };
+
+export const PAYMENT_INFO_SEED = "payment-info";
+export const findPaymentInfoId = (identifier: string): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(PAYMENT_INFO_SEED),
+      utils.bytes.utf8.encode(identifier),
+    ],
+    PROGRAM_ID
+  )[0];
+};

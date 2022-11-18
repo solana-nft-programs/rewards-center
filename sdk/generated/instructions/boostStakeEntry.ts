@@ -52,7 +52,6 @@ export type BoostStakeEntryInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
   stakeMint: web3.PublicKey
-  systemProgram?: web3.PublicKey
 }
 
 export const boostStakeEntryInstructionDiscriminator = [
@@ -96,11 +95,6 @@ export function createBoostStakeEntryInstruction(
     },
     {
       pubkey: accounts.stakeMint,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
       isWritable: false,
       isSigner: false,
     },

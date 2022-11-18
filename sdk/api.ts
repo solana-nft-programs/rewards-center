@@ -1,12 +1,8 @@
-import { PAYMENT_MANAGER_ADDRESS } from "@cardinal/payment-manager";
-import { getPaymentManager } from "@cardinal/payment-manager/dist/cjs/accounts";
+import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
 import type * as beet from "@metaplex-foundation/beet";
 import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
-import {
-  createAssociatedTokenAccountInstruction,
-  getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
@@ -25,6 +21,11 @@ import {
   createUpdateTotalStakeSecondsInstruction,
 } from "./generated";
 import {
+  withRemainingAccounts,
+  withRemainingAccountsForPayment,
+  withRemainingAccountsForPaymentInfo,
+} from "./payment";
+import {
   findRewardEntryId,
   findRewardReceiptId,
   findStakeBoosterId,
@@ -32,10 +33,6 @@ import {
   findStakePoolId,
   findUserEscrowId,
 } from "./pda";
-import {
-  withRemainingAccounts,
-  withRemainingAccountsForPaymentInfo,
-} from "./utils";
 
 /**
  * Stake all mints and also initialize entries if not already initialized
@@ -214,6 +211,14 @@ export const unstake = async (
             rewardMint,
             rewardDistributorId
           );
+          const userRewardMintTokenAccount =
+            await withFindOrInitAssociatedTokenAccount(
+              tx,
+              connection,
+              rewardMint,
+              wallet.publicKey,
+              wallet.publicKey
+            );
           if (!rewardEntry) {
             tx.add(
               createInitRewardEntryInstruction({
@@ -245,7 +250,7 @@ export const unstake = async (
                 stakeEntry: stakeEntryId,
                 stakePool: stakePoolId,
                 rewardMint: rewardMint,
-                userRewardMintTokenAccount: rewardDistributorId,
+                userRewardMintTokenAccount: userRewardMintTokenAccount,
                 rewardDistributorTokenAccount: rewardDistributorTokenAccount,
                 user: wallet.publicKey,
               }),
@@ -357,10 +362,14 @@ export const claimRewards = async (
             rewardMint,
             rewardDistributorId
           );
-          const userRewardMintTokenAccount = getAssociatedTokenAddressSync(
-            rewardMint,
-            wallet.publicKey
-          );
+          const userRewardMintTokenAccount =
+            await withFindOrInitAssociatedTokenAccount(
+              tx,
+              connection,
+              rewardMint,
+              wallet.publicKey,
+              wallet.publicKey
+            );
           if (!rewardEntry) {
             tx.add(
               createInitRewardEntryInstruction({
@@ -392,7 +401,7 @@ export const claimRewards = async (
                 stakeEntry: stakeEntryId,
                 stakePool: stakePoolId,
                 rewardMint: rewardMint,
-                userRewardMintTokenAccount: rewardDistributorId,
+                userRewardMintTokenAccount: userRewardMintTokenAccount,
                 rewardDistributorTokenAccount: rewardDistributorTokenAccount,
                 user: wallet.publicKey,
               }),
@@ -464,62 +473,31 @@ export const claimRewardReceipt = async (
       })
     );
   }
-  const paymentManagerData = await getPaymentManager(
+  const remainingAccountsForPayment = await withRemainingAccountsForPayment(
     connection,
-    receiptManagerData.parsed.paymentManager
-  );
-  const payerTokenAccount = getAssociatedTokenAddressSync(
+    tx,
+    wallet.publicKey,
     receiptManagerData.parsed.paymentMint,
-    wallet.publicKey
-  );
-  const paymentRecipientTokenAccount = getAssociatedTokenAddressSync(
-    receiptManagerData.parsed.paymentMint,
-    receiptManagerData.parsed.paymentRecipient
-  );
-  const feeCollectorTokenAccount = getAssociatedTokenAddressSync(
-    receiptManagerData.parsed.paymentMint,
-    paymentManagerData.parsed.feeCollector
+    receiptManagerData.parsed.paymentShares.map((p) => p.address)
   );
 
-  const [targetTokenAccountData, feeCollectorTokenAccountData] =
-    await connection.getMultipleAccountsInfo([
-      paymentRecipientTokenAccount,
-      feeCollectorTokenAccount,
-    ]);
-  if (!targetTokenAccountData) {
-    tx.add(
-      createAssociatedTokenAccountInstruction(
-        wallet.publicKey,
-        paymentRecipientTokenAccount,
-        receiptManagerData.parsed.paymentRecipient,
-        receiptManagerData.parsed.paymentMint
-      )
-    );
-  }
-  if (!feeCollectorTokenAccountData) {
-    tx.add(
-      createAssociatedTokenAccountInstruction(
-        wallet.publicKey,
-        feeCollectorTokenAccount,
-        paymentManagerData.parsed.feeCollector,
-        receiptManagerData.parsed.paymentMint
-      )
-    );
-  }
-
+  const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(
+    connection,
+    tx,
+    wallet.publicKey,
+    receiptManagerData.parsed.claimActionPaymentInfo
+  );
   tx.add(
-    createClaimRewardReceiptInstruction({
-      rewardReceipt: rewardReceiptId,
-      receiptManager: receiptManagerId,
-      stakeEntry: stakeEntryId,
-      paymentManager: receiptManagerData.parsed.paymentManager,
-      feeCollectorTokenAccount: feeCollectorTokenAccount,
-      paymentRecipientTokenAccount: paymentRecipientTokenAccount,
-      payerTokenAccount: payerTokenAccount,
-      payer: wallet.publicKey,
-      claimer: wallet.publicKey,
-      cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
-    })
+    withRemainingAccounts(
+      createClaimRewardReceiptInstruction({
+        rewardReceipt: rewardReceiptId,
+        receiptManager: receiptManagerId,
+        stakeEntry: stakeEntryId,
+        payer: wallet.publicKey,
+        claimer: wallet.publicKey,
+      }),
+      [...remainingAccountsForPayment, ...remainingAccountsForAction]
+    )
   );
   return tx;
 };
@@ -560,11 +538,8 @@ export const boost = async (
   const accountDataById = await fetchAccountDataById(connection, [
     stakeBoosterId,
   ]);
-  const receiptManagerData = accountDataById[stakeBoosterId.toString()];
-  if (
-    !receiptManagerData?.parsed ||
-    receiptManagerData.type !== "stakeBooster"
-  ) {
+  const stakeBoosterData = accountDataById[stakeBoosterId.toString()];
+  if (!stakeBoosterData?.parsed || stakeBoosterData.type !== "stakeBooster") {
     throw "Stake booster not found";
   }
 
@@ -575,67 +550,37 @@ export const boost = async (
       updater: wallet.publicKey,
     })
   );
-  const paymentManagerData = await getPaymentManager(
+
+  const remainingAccountsForPayment = await withRemainingAccountsForPayment(
     connection,
-    receiptManagerData.parsed.paymentManager
-  );
-  const payerTokenAccount = getAssociatedTokenAddressSync(
-    receiptManagerData.parsed.paymentMint,
-    wallet.publicKey
-  );
-  const paymentRecipientTokenAccount = getAssociatedTokenAddressSync(
-    receiptManagerData.parsed.paymentMint,
-    receiptManagerData.parsed.paymentRecipient
-  );
-  const feeCollectorTokenAccount = getAssociatedTokenAddressSync(
-    receiptManagerData.parsed.paymentMint,
-    paymentManagerData.parsed.feeCollector
+    tx,
+    wallet.publicKey,
+    stakeBoosterData.parsed.paymentMint,
+    stakeBoosterData.parsed.paymentShares.map((p) => p.address)
   );
 
-  const [targetTokenAccountData, feeCollectorTokenAccountData] =
-    await connection.getMultipleAccountsInfo([
-      paymentRecipientTokenAccount,
-      feeCollectorTokenAccount,
-    ]);
-  if (!targetTokenAccountData) {
-    tx.add(
-      createAssociatedTokenAccountInstruction(
-        wallet.publicKey,
-        paymentRecipientTokenAccount,
-        receiptManagerData.parsed.paymentRecipient,
-        receiptManagerData.parsed.paymentMint
-      )
-    );
-  }
-  if (!feeCollectorTokenAccountData) {
-    tx.add(
-      createAssociatedTokenAccountInstruction(
-        wallet.publicKey,
-        feeCollectorTokenAccount,
-        paymentManagerData.parsed.feeCollector,
-        receiptManagerData.parsed.paymentMint
-      )
-    );
-  }
+  const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(
+    connection,
+    tx,
+    wallet.publicKey,
+    stakeBoosterData.parsed.boostActionPaymentInfo
+  );
   tx.add(
-    createBoostStakeEntryInstruction(
-      {
-        stakePool: stakePoolId,
-        stakeBooster: stakeBoosterId,
-        stakeEntry: stakeEntryId,
-        stakeMint: mintInfo.mintId,
-        paymentManager: receiptManagerData.parsed.paymentManager,
-        feeCollectorTokenAccount: feeCollectorTokenAccount,
-        paymentRecipientTokenAccount: paymentRecipientTokenAccount,
-        payerTokenAccount: payerTokenAccount,
-        payer: wallet.publicKey,
-        cardinalPaymentManager: PAYMENT_MANAGER_ADDRESS,
-      },
-      {
-        ix: {
-          secondsToBoost,
+    withRemainingAccounts(
+      createBoostStakeEntryInstruction(
+        {
+          stakePool: stakePoolId,
+          stakeBooster: stakeBoosterId,
+          stakeEntry: stakeEntryId,
+          stakeMint: mintInfo.mintId,
         },
-      }
+        {
+          ix: {
+            secondsToBoost,
+          },
+        }
+      ),
+      [...remainingAccountsForPayment, ...remainingAccountsForAction]
     )
   );
   return tx;

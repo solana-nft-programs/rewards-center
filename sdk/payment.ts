@@ -34,13 +34,30 @@ export const withRemainingAccountsForPaymentInfo = async (
 
   // add payer
   if (Number(paymentInfoData.paymentAmount) === 0) return remainingAccounts;
-  remainingAccounts.push({
-    pubkey: payer,
-    isSigner: true,
-    isWritable: true,
-  });
+  return withRemainingAccountsForPayment(
+    connection,
+    transaction,
+    payer,
+    paymentInfoData.paymentMint,
+    paymentInfoData.paymentShares.map((p) => p.address)
+  );
+};
 
-  const paymentMint = paymentInfoData.paymentMint;
+export const withRemainingAccountsForPayment = async (
+  connection: Connection,
+  transaction: Transaction,
+  payer: PublicKey,
+  paymentMint: PublicKey,
+  paymentTargets: PublicKey[]
+): Promise<AccountMeta[]> => {
+  const remainingAccounts = [
+    {
+      pubkey: payer,
+      isSigner: true,
+      isWritable: true,
+    },
+  ];
+
   if (paymentMint === PublicKey.default) {
     remainingAccounts.push({
       pubkey: SystemProgram.programId,
@@ -48,8 +65,8 @@ export const withRemainingAccountsForPaymentInfo = async (
       isWritable: false,
     });
     remainingAccounts.push(
-      ...paymentInfoData.paymentShares.map((p) => ({
-        pubkey: p.address,
+      ...paymentTargets.map((a) => ({
+        pubkey: a,
         isSigner: false,
         isWritable: true,
       }))
@@ -65,8 +82,8 @@ export const withRemainingAccountsForPaymentInfo = async (
       isSigner: false,
       isWritable: false,
     });
-    const ataIds = paymentInfoData.paymentShares.map((p) =>
-      getAssociatedTokenAddressSync(paymentMint, p.address)
+    const ataIds = paymentTargets.map((a) =>
+      getAssociatedTokenAddressSync(paymentMint, a)
     );
     const tokenAccountInfos = await connection.getMultipleAccountsInfo(ataIds);
     for (let i = 0; i < tokenAccountInfos.length; i++) {
@@ -75,7 +92,7 @@ export const withRemainingAccountsForPaymentInfo = async (
           createAssociatedTokenAccountInstruction(
             payer,
             ataIds[i]!,
-            paymentInfoData.paymentShares[i]!.address,
+            paymentTargets[i]!,
             paymentMint
           )
         );

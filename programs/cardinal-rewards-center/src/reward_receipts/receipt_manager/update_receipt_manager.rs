@@ -1,7 +1,8 @@
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::reward_receipts::ReceiptManager;
 use crate::Action;
-use crate::{assert_payment_info, PaymentShare};
+use crate::PaymentShare;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]

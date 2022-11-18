@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
+import { PaymentShare, paymentShareBeet } from '../types/PaymentShare'
 
 /**
  * Arguments used to create {@link ReceiptManager}
@@ -24,7 +25,7 @@ export type ReceiptManagerArgs = {
   requiresAuthorization: boolean
   paymentAmount: beet.bignum
   paymentMint: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentShares: PaymentShare[]
   claimActionPaymentInfo: web3.PublicKey
   name: string
   maxClaimedReceipts: beet.COption<beet.bignum>
@@ -51,7 +52,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
     readonly requiresAuthorization: boolean,
     readonly paymentAmount: beet.bignum,
     readonly paymentMint: web3.PublicKey,
-    readonly paymentRecipient: web3.PublicKey,
+    readonly paymentShares: PaymentShare[],
     readonly claimActionPaymentInfo: web3.PublicKey,
     readonly name: string,
     readonly maxClaimedReceipts: beet.COption<beet.bignum>
@@ -71,7 +72,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
       args.requiresAuthorization,
       args.paymentAmount,
       args.paymentMint,
-      args.paymentRecipient,
+      args.paymentShares,
       args.claimActionPaymentInfo,
       args.name,
       args.maxClaimedReceipts
@@ -228,7 +229,7 @@ export class ReceiptManager implements ReceiptManagerArgs {
         return x
       })(),
       paymentMint: this.paymentMint.toBase58(),
-      paymentRecipient: this.paymentRecipient.toBase58(),
+      paymentShares: this.paymentShares,
       claimActionPaymentInfo: this.claimActionPaymentInfo.toBase58(),
       name: this.name,
       maxClaimedReceipts: this.maxClaimedReceipts,
@@ -257,7 +258,7 @@ export const receiptManagerBeet = new beet.FixableBeetStruct<
     ['requiresAuthorization', beet.bool],
     ['paymentAmount', beet.u64],
     ['paymentMint', beetSolana.publicKey],
-    ['paymentRecipient', beetSolana.publicKey],
+    ['paymentShares', beet.array(paymentShareBeet)],
     ['claimActionPaymentInfo', beetSolana.publicKey],
     ['name', beet.utf8String],
     ['maxClaimedReceipts', beet.coption(beet.u128)],

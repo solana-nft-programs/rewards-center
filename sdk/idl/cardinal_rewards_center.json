@@ -452,11 +452,6 @@
           "name": "stakeMint",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
         }
       ],
       "args": [
@@ -640,16 +635,6 @@
           "name": "claimer",
           "isMut": true,
           "isSigner": true
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
         }
       ],
       "args": []
@@ -1195,8 +1180,12 @@
             "type": "publicKey"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "claimActionPaymentInfo",
@@ -1269,8 +1258,12 @@
             "type": "publicKey"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "boostSeconds",
@@ -1621,8 +1614,12 @@
             "type": "u64"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "requiresAuthorization",
@@ -1667,8 +1664,12 @@
             "type": "u64"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "requiresAuthorization",
@@ -1721,8 +1722,12 @@
             "type": "publicKey"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "boostSeconds",
@@ -1757,8 +1762,12 @@
             "type": "publicKey"
           },
           {
-            "name": "paymentRecipient",
-            "type": "publicKey"
+            "name": "paymentShares",
+            "type": {
+              "vec": {
+                "defined": "PaymentShare"
+              }
+            }
           },
           {
             "name": "boostSeconds",
