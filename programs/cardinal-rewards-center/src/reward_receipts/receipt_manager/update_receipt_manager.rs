@@ -11,10 +11,8 @@ pub struct UpdateReceiptManagerIx {
     pub stake_seconds_to_use: u128,
     pub payment_mint: Pubkey,
     pub payment_amount: u64,
-    pub payment_manager: Pubkey,
     pub payment_recipient: Pubkey,
     pub requires_authorization: bool,
-    pub payment_info: Pubkey,
     pub claim_action_payment_info: Pubkey,
     pub max_claimed_receipts: Option<u128>,
 }
@@ -40,7 +38,9 @@ pub fn handler(ctx: Context<UpdateReceiptManagerCtx>, ix: UpdateReceiptManagerIx
     receipt_manager.required_stake_seconds = ix.required_stake_seconds;
     receipt_manager.stake_seconds_to_use = ix.stake_seconds_to_use;
     receipt_manager.requires_authorization = ix.requires_authorization;
-    receipt_manager.payment_info = ix.payment_info;
+    receipt_manager.payment_amount = ix.payment_amount;
+    receipt_manager.payment_mint = ix.payment_mint;
+    receipt_manager.payment_recipient = ix.payment_recipient;
     receipt_manager.claim_action_payment_info = ix.claim_action_payment_info;
     receipt_manager.max_claimed_receipts = ix.max_claimed_receipts;
 

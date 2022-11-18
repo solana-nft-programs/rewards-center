@@ -18,7 +18,9 @@ export type StakeBoosterArgs = {
   bump: number
   stakePool: web3.PublicKey
   identifier: beet.bignum
-  paymentInfo: web3.PublicKey
+  paymentAmount: beet.bignum
+  paymentMint: web3.PublicKey
+  paymentRecipient: web3.PublicKey
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
   boostActionPaymentInfo: web3.PublicKey
@@ -37,7 +39,9 @@ export class StakeBooster implements StakeBoosterArgs {
     readonly bump: number,
     readonly stakePool: web3.PublicKey,
     readonly identifier: beet.bignum,
-    readonly paymentInfo: web3.PublicKey,
+    readonly paymentAmount: beet.bignum,
+    readonly paymentMint: web3.PublicKey,
+    readonly paymentRecipient: web3.PublicKey,
     readonly boostSeconds: beet.bignum,
     readonly startTimeSeconds: beet.bignum,
     readonly boostActionPaymentInfo: web3.PublicKey
@@ -51,7 +55,9 @@ export class StakeBooster implements StakeBoosterArgs {
       args.bump,
       args.stakePool,
       args.identifier,
-      args.paymentInfo,
+      args.paymentAmount,
+      args.paymentMint,
+      args.paymentRecipient,
       args.boostSeconds,
       args.startTimeSeconds,
       args.boostActionPaymentInfo
@@ -170,7 +176,19 @@ export class StakeBooster implements StakeBoosterArgs {
         }
         return x
       })(),
-      paymentInfo: this.paymentInfo.toBase58(),
+      paymentAmount: (() => {
+        const x = <{ toNumber: () => number }>this.paymentAmount
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber()
+          } catch (_) {
+            return x
+          }
+        }
+        return x
+      })(),
+      paymentMint: this.paymentMint.toBase58(),
+      paymentRecipient: this.paymentRecipient.toBase58(),
       boostSeconds: (() => {
         const x = <{ toNumber: () => number }>this.boostSeconds
         if (typeof x.toNumber === 'function') {
@@ -213,7 +231,9 @@ export const stakeBoosterBeet = new beet.BeetStruct<
     ['bump', beet.u8],
     ['stakePool', beetSolana.publicKey],
     ['identifier', beet.u64],
-    ['paymentInfo', beetSolana.publicKey],
+    ['paymentAmount', beet.u64],
+    ['paymentMint', beetSolana.publicKey],
+    ['paymentRecipient', beetSolana.publicKey],
     ['boostSeconds', beet.u128],
     ['startTimeSeconds', beet.i64],
     ['boostActionPaymentInfo', beetSolana.publicKey],

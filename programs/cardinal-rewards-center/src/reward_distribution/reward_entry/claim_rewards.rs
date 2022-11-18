@@ -1,6 +1,6 @@
 use crate::assert_payment_info;
 use crate::errors::ErrorCode;
-use crate::handle_payment;
+use crate::handle_payment_info;
 use crate::reward_distribution::RewardDistributor;
 use crate::reward_distribution::RewardEntry;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
@@ -106,7 +106,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         // handle payment
         let remaining_accounts = &mut ctx.remaining_accounts.iter();
         assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
-        handle_payment(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
+        handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
     }
 
     Ok(())

@@ -1187,7 +1187,15 @@ export type CardinalRewardsCenter = {
             type: "bool";
           },
           {
-            name: "paymentInfo";
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
             type: "publicKey";
           },
           {
@@ -1253,7 +1261,15 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentInfo";
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
             type: "publicKey";
           },
           {
@@ -1605,20 +1621,12 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
             name: "paymentRecipient";
             type: "publicKey";
           },
           {
             name: "requiresAuthorization";
             type: "bool";
-          },
-          {
-            name: "paymentInfo";
-            type: "publicKey";
           },
           {
             name: "claimActionPaymentInfo";
@@ -1659,20 +1667,12 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentManager";
-            type: "publicKey";
-          },
-          {
             name: "paymentRecipient";
             type: "publicKey";
           },
           {
             name: "requiresAuthorization";
             type: "bool";
-          },
-          {
-            name: "paymentInfo";
-            type: "publicKey";
           },
           {
             name: "claimActionPaymentInfo";
@@ -1713,7 +1713,15 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "paymentInfo";
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
             type: "publicKey";
           },
           {
@@ -1738,6 +1746,18 @@ export type CardinalRewardsCenter = {
         fields: [
           {
             name: "paymentInfo";
+            type: "publicKey";
+          },
+          {
+            name: "paymentAmount";
+            type: "u64";
+          },
+          {
+            name: "paymentMint";
+            type: "publicKey";
+          },
+          {
+            name: "paymentRecipient";
             type: "publicKey";
           },
           {
@@ -1989,8 +2009,8 @@ export type CardinalRewardsCenter = {
     },
     {
       code: 6032;
-      name: "InvalidPaymentCollector";
-      msg: "Invalid payment collector";
+      name: "InvalidPaymentShare";
+      msg: "Invalid payment share";
     },
     {
       code: 6033;
@@ -3364,7 +3384,15 @@ export const IDL: CardinalRewardsCenter = {
             type: "bool",
           },
           {
-            name: "paymentInfo",
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
             type: "publicKey",
           },
           {
@@ -3430,7 +3458,15 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentInfo",
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
             type: "publicKey",
           },
           {
@@ -3782,20 +3818,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
             name: "paymentRecipient",
             type: "publicKey",
           },
           {
             name: "requiresAuthorization",
             type: "bool",
-          },
-          {
-            name: "paymentInfo",
-            type: "publicKey",
           },
           {
             name: "claimActionPaymentInfo",
@@ -3836,20 +3864,12 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentManager",
-            type: "publicKey",
-          },
-          {
             name: "paymentRecipient",
             type: "publicKey",
           },
           {
             name: "requiresAuthorization",
             type: "bool",
-          },
-          {
-            name: "paymentInfo",
-            type: "publicKey",
           },
           {
             name: "claimActionPaymentInfo",
@@ -3890,7 +3910,15 @@ export const IDL: CardinalRewardsCenter = {
             type: "u64",
           },
           {
-            name: "paymentInfo",
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
             type: "publicKey",
           },
           {
@@ -3915,6 +3943,18 @@ export const IDL: CardinalRewardsCenter = {
         fields: [
           {
             name: "paymentInfo",
+            type: "publicKey",
+          },
+          {
+            name: "paymentAmount",
+            type: "u64",
+          },
+          {
+            name: "paymentMint",
+            type: "publicKey",
+          },
+          {
+            name: "paymentRecipient",
             type: "publicKey",
           },
           {
@@ -4166,8 +4206,8 @@ export const IDL: CardinalRewardsCenter = {
     },
     {
       code: 6032,
-      name: "InvalidPaymentCollector",
-      msg: "Invalid payment collector",
+      name: "InvalidPaymentShare",
+      msg: "Invalid payment share",
     },
     {
       code: 6033,

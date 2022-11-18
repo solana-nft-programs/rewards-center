@@ -64,25 +64,29 @@ pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pub
     Ok(())
 }
 
-pub fn handle_payment<'info>(payment_info: Pubkey, remaining_accounts: &mut Iter<AccountInfo<'info>>) -> Result<()> {
+pub fn handle_payment_info<'info>(payment_info: Pubkey, remaining_accounts: &mut Iter<AccountInfo<'info>>) -> Result<()> {
     // check payment info
     let payment_info_account_info = next_account_info(remaining_accounts)?;
     assert_eq!(payment_info, payment_info_account_info.key());
     let payment_info_account = Account::<PaymentInfo>::try_from(payment_info_account_info)?;
-    let payment_amount = payment_info_account.payment_amount;
-    handle_payment_amount(payment_info_account, remaining_accounts, Some(payment_amount))
+    handle_payment(
+        payment_info_account.payment_amount,
+        payment_info_account.payment_mint,
+        &payment_info_account.payment_shares,
+        remaining_accounts,
+    )
 }
 
-pub fn handle_payment_amount<'info>(payment_info_account: Account<PaymentInfo>, remaining_accounts: &mut Iter<AccountInfo<'info>>, amount: Option<u64>) -> Result<()> {
-    let payer = next_account_info(remaining_accounts)?;
-
+pub fn handle_payment<'info>(payment_amount: u64, payment_mint: Pubkey, payment_shares: &Vec<PaymentShare>, remaining_accounts: &mut Iter<AccountInfo<'info>>) -> Result<()> {
     // check amount
-    if payment_info_account.payment_amount == 0 {
+    if payment_amount == 0 {
         return Ok(());
     }
 
+    let payer = next_account_info(remaining_accounts)?;
+
     // token or system program
-    let transfer_program: &AccountInfo = if payment_info_account.payment_mint == Pubkey::default() {
+    let transfer_program: &AccountInfo = if payment_mint == Pubkey::default() {
         let transfer_program = next_account_info(remaining_accounts)?;
         if !system_program::check_id(&transfer_program.key()) {
             return Err(error!(ErrorCode::InvalidTransferProgram));
@@ -98,17 +102,16 @@ pub fn handle_payment_amount<'info>(payment_info_account: Account<PaymentInfo>, 
 
     // payer token account if needed
     let mut payer_token_account: Option<Account<TokenAccount>> = None;
-    if payment_info_account.payment_mint != Pubkey::default() {
+    if payment_mint != Pubkey::default() {
         let payer_token_account_info = next_account_info(remaining_accounts)?;
         let payer_token_account_data = Account::<TokenAccount>::try_from(payer_token_account_info)?;
-        if payer_token_account_data.owner != payer.key() || payer_token_account_data.mint != payment_info_account.payment_mint.key() {
+        if payer_token_account_data.owner != payer.key() || payer_token_account_data.mint != payment_mint.key() {
             return Err(error!(ErrorCode::InvalidPayerTokenAccount));
         }
         payer_token_account = Some(payer_token_account_data);
     }
 
-    let payment_amount = amount.unwrap_or(payment_info_account.payment_amount);
-    let collectors = &payment_info_account.payment_shares;
+    let collectors = &payment_shares;
     let share_amounts: Vec<u64> = collectors
         .clone()
         .into_iter()
@@ -118,11 +121,11 @@ pub fn handle_payment_amount<'info>(payment_info_account: Account<PaymentInfo>, 
 
     // remainder is distributed to first collectors
     let mut remainder = payment_amount.checked_sub(share_amounts_sum.checked_div(BASIS_POINTS_DIVISOR).expect("Div error")).expect("Sub error");
-    for collector in collectors {
-        if collector.basis_points != 0 {
+    for payment_share in payment_shares {
+        if payment_share.basis_points != 0 {
             let remainder_amount = u64::from(remainder > 0);
-            let collector_amount = payment_amount
-                .checked_mul(u64::try_from(collector.basis_points).expect("Could not cast u8 to u64"))
+            let payment_share_amount = payment_amount
+                .checked_mul(u64::try_from(payment_share.basis_points).expect("Could not cast u8 to u64"))
                 .unwrap()
                 .checked_div(BASIS_POINTS_DIVISOR)
                 .expect("Div error")
@@ -130,32 +133,32 @@ pub fn handle_payment_amount<'info>(payment_info_account: Account<PaymentInfo>, 
                 .expect("Add error");
             remainder = remainder.checked_sub(remainder_amount).expect("Sub error");
 
-            let collector_account_info = next_account_info(remaining_accounts)?;
-            if payment_info_account.payment_mint == Pubkey::default() {
+            let payment_share_account_info = next_account_info(remaining_accounts)?;
+            if payment_mint == Pubkey::default() {
                 // native sol
-                if collector_account_info.key() != collector.address {
-                    return Err(error!(ErrorCode::InvalidPaymentCollector));
+                if payment_share_account_info.key() != payment_share.address {
+                    return Err(error!(ErrorCode::InvalidPaymentShare));
                 }
-                if collector_amount > 0 {
+                if payment_share_amount > 0 {
                     invoke(
-                        &transfer(&payer.key(), &collector_account_info.key(), collector_amount),
-                        &[payer.to_account_info(), collector_account_info.to_account_info(), transfer_program.to_account_info()],
+                        &transfer(&payer.key(), &payment_share_account_info.key(), payment_share_amount),
+                        &[payer.to_account_info(), payment_share_account_info.to_account_info(), transfer_program.to_account_info()],
                     )?;
                 }
             } else {
                 // any spl token
-                let collector_token_account = Account::<TokenAccount>::try_from(collector_account_info)?;
-                if collector_token_account.owner != collector.address || collector_token_account.mint != payment_info_account.payment_mint.key() {
+                let payment_share_token_account = Account::<TokenAccount>::try_from(payment_share_account_info)?;
+                if payment_share_token_account.owner != payment_share.address || payment_share_token_account.mint != payment_mint.key() {
                     return Err(error!(ErrorCode::InvalidTokenAccount));
                 }
-                if collector_amount > 0 {
+                if payment_share_amount > 0 {
                     let cpi_accounts = Transfer {
                         from: payer_token_account.clone().expect("Invalid payer token account").to_account_info(),
-                        to: collector_account_info.to_account_info(),
+                        to: payment_share_account_info.to_account_info(),
                         authority: payer.to_account_info(),
                     };
                     let cpi_context = CpiContext::new(transfer_program.to_account_info(), cpi_accounts);
-                    token::transfer(cpi_context, collector_amount)?;
+                    token::transfer(cpi_context, payment_share_amount)?;
                 }
             }
         }

@@ -366,26 +366,26 @@ createErrorFromNameLookup.set(
 )
 
 /**
- * InvalidPaymentCollector: 'Invalid payment collector'
+ * InvalidPaymentShare: 'Invalid payment share'
  *
  * @category Errors
  * @category generated
  */
-export class InvalidPaymentCollectorError extends Error {
+export class InvalidPaymentShareError extends Error {
   readonly code: number = 0x1790
-  readonly name: string = 'InvalidPaymentCollector'
+  readonly name: string = 'InvalidPaymentShare'
   constructor() {
-    super('Invalid payment collector')
+    super('Invalid payment share')
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, InvalidPaymentCollectorError)
+      Error.captureStackTrace(this, InvalidPaymentShareError)
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1790, () => new InvalidPaymentCollectorError())
+createErrorFromCodeLookup.set(0x1790, () => new InvalidPaymentShareError())
 createErrorFromNameLookup.set(
-  'InvalidPaymentCollector',
-  () => new InvalidPaymentCollectorError()
+  'InvalidPaymentShare',
+  () => new InvalidPaymentShareError()
 )
 
 /**

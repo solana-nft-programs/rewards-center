@@ -2,9 +2,9 @@ use super::StakeBooster;
 use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::handle_payment;
-use crate::handle_payment_amount;
+use crate::handle_payment_info;
 use crate::Action;
-use crate::PaymentInfo;
+use crate::PaymentShare;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
@@ -47,20 +47,25 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         return Err(error!(ErrorCode::CannotBoostMoreThanCurrentTime));
     }
 
-    let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    let payment_info_account_info = next_account_info(remaining_accounts)?;
-    assert_eq!(ctx.accounts.stake_booster.payment_info, payment_info_account_info.key());
-    let payment_info_account = Account::<PaymentInfo>::try_from(payment_info_account_info)?;
-
-    let payment_amount = ix
+    let boost_payment_amount = ix
         .seconds_to_boost
-        .checked_mul(payment_info_account.payment_amount)
+        .checked_mul(ctx.accounts.stake_booster.payment_amount)
         .expect("Multiplication error")
         .checked_div(u64::try_from(ctx.accounts.stake_booster.boost_seconds).expect("Number conversion error"))
         .expect("Division error");
 
+    let remaining_accounts = &mut ctx.remaining_accounts.iter();
     // handle payment
-    handle_payment_amount(payment_info_account, remaining_accounts, Some(payment_amount))?;
+    handle_payment(
+        boost_payment_amount,
+        ctx.accounts.stake_booster.payment_mint,
+        &[PaymentShare {
+            address: ctx.accounts.stake_booster.payment_recipient,
+            basis_points: 10000,
+        }]
+        .to_vec(),
+        remaining_accounts,
+    )?;
 
     // handle action payment
     assert_payment_info(
@@ -68,6 +73,6 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         Action::BoostStakeEntry,
         ctx.accounts.stake_booster.boost_action_payment_info,
     )?;
-    handle_payment(ctx.accounts.stake_booster.boost_action_payment_info, remaining_accounts)?;
+    handle_payment_info(ctx.accounts.stake_booster.boost_action_payment_info, remaining_accounts)?;
     Ok(())
 }

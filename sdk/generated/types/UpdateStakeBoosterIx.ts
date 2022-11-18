@@ -10,6 +10,9 @@ import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type UpdateStakeBoosterIx = {
   paymentInfo: web3.PublicKey
+  paymentAmount: beet.bignum
+  paymentMint: web3.PublicKey
+  paymentRecipient: web3.PublicKey
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
   boostActionPaymentInfo: web3.PublicKey
@@ -23,6 +26,9 @@ export const updateStakeBoosterIxBeet =
   new beet.BeetArgsStruct<UpdateStakeBoosterIx>(
     [
       ['paymentInfo', beetSolana.publicKey],
+      ['paymentAmount', beet.u64],
+      ['paymentMint', beetSolana.publicKey],
+      ['paymentRecipient', beetSolana.publicKey],
       ['boostSeconds', beet.u128],
       ['startTimeSeconds', beet.i64],
       ['boostActionPaymentInfo', beetSolana.publicKey],

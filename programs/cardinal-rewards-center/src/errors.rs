@@ -39,8 +39,8 @@ pub enum ErrorCode {
     InvalidPaymentMint = 30,
     #[msg("Invalid payment shares")]
     InvalidPaymentShares,
-    #[msg("Invalid payment collector")]
-    InvalidPaymentCollector,
+    #[msg("Invalid payment share")]
+    InvalidPaymentShare,
     #[msg("Invalid payment token account")]
     InvalidPaymentTokenAccount,
     #[msg("Invalid payer token account")]

@@ -13,7 +13,6 @@ import { BN } from "bn.js";
 import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import { fetchAccountDataById } from "./accounts";
-import { REWARD_MANAGER_ID } from "./constants";
 import {
   createBoostStakeEntryInstruction,
   createClaimRewardReceiptInstruction,
@@ -33,7 +32,10 @@ import {
   findStakePoolId,
   findUserEscrowId,
 } from "./pda";
-import { withRemainingAccountsForPayment } from "./utils";
+import {
+  withRemainingAccounts,
+  withRemainingAccountsForPaymentInfo,
+} from "./utils";
 
 /**
  * Stake all mints and also initialize entries if not already initialized
@@ -118,27 +120,18 @@ export const stake = async (
     const remainingAccounts = [];
     if (
       stakePoolData?.type === "stakePool" &&
-      stakePoolData.parsed.paymentManager &&
-      stakePoolData.parsed.paymentMint &&
-      stakePoolData.parsed.paymentRecipient &&
-      Number(stakePoolData.parsed.stakePaymentAmount) > 0
+      stakePoolData.parsed.stakePaymentInfo
     ) {
-      const remainingAccountsForPayment = await withRemainingAccountsForPayment(
-        connection,
-        tx,
-        {
-          paymentManager: stakePoolData.parsed.paymentManager,
-          paymentMint: stakePoolData.parsed.paymentMint,
-          payer: wallet.publicKey,
-          target: stakePoolData.parsed.paymentRecipient,
-        }
-      );
+      const remainingAccountsForPayment =
+        await withRemainingAccountsForPaymentInfo(
+          connection,
+          tx,
+          wallet.publicKey,
+          stakePoolData.parsed.stakePaymentInfo
+        );
       remainingAccounts.push(...remainingAccountsForPayment);
     }
-    tx.add({
-      ...stakeIx,
-      keys: [...stakeIx.keys, ...remainingAccounts],
-    });
+    tx.add(withRemainingAccounts(stakeIx, remainingAccounts));
     txs.push(tx);
   }
   return txs;
@@ -221,10 +214,6 @@ export const unstake = async (
             rewardMint,
             rewardDistributorId
           );
-          const userRewardMintTokenAccount = getAssociatedTokenAddressSync(
-            rewardMint,
-            wallet.publicKey
-          );
           if (!rewardEntry) {
             tx.add(
               createInitRewardEntryInstruction({
@@ -238,19 +227,30 @@ export const unstake = async (
               })
             );
           }
+          const remainingAccountsForPayment =
+            await withRemainingAccountsForPaymentInfo(
+              connection,
+              tx,
+              wallet.publicKey,
+              rewardDistributorData.parsed.claimRewardsPaymentInfo
+            );
           tx.add(
-            createClaimRewardsInstruction({
-              rewardEntry: findRewardEntryId(rewardDistributorId, stakeEntryId),
-              rewardDistributor: rewardDistributorId,
-              stakeEntry: stakeEntryId,
-              stakePool: stakePoolId,
-              rewardMint: rewardMint,
-              userRewardMintTokenAccount: rewardDistributorId,
-              rewardDistributorTokenAccount: rewardDistributorTokenAccount,
-              authorityTokenAccount: userRewardMintTokenAccount,
-              rewardManager: REWARD_MANAGER_ID,
-              user: wallet.publicKey,
-            })
+            withRemainingAccounts(
+              createClaimRewardsInstruction({
+                rewardEntry: findRewardEntryId(
+                  rewardDistributorId,
+                  stakeEntryId
+                ),
+                rewardDistributor: rewardDistributorId,
+                stakeEntry: stakeEntryId,
+                stakePool: stakePoolId,
+                rewardMint: rewardMint,
+                userRewardMintTokenAccount: rewardDistributorId,
+                rewardDistributorTokenAccount: rewardDistributorTokenAccount,
+                user: wallet.publicKey,
+              }),
+              remainingAccountsForPayment
+            )
           );
         }
       }
@@ -269,27 +269,18 @@ export const unstake = async (
     const remainingAccounts = [];
     if (
       stakePoolData?.type === "stakePool" &&
-      stakePoolData.parsed.paymentManager &&
-      stakePoolData.parsed.paymentMint &&
-      stakePoolData.parsed.paymentRecipient &&
-      Number(stakePoolData.parsed.unstakePaymentAmount) > 0
+      stakePoolData.parsed.unstakePaymentInfo
     ) {
-      const remainingAccountsForPayment = await withRemainingAccountsForPayment(
-        connection,
-        tx,
-        {
-          paymentManager: stakePoolData.parsed.paymentManager,
-          paymentMint: stakePoolData.parsed.paymentMint,
-          payer: wallet.publicKey,
-          target: stakePoolData.parsed.paymentRecipient,
-        }
-      );
+      const remainingAccountsForPayment =
+        await withRemainingAccountsForPaymentInfo(
+          connection,
+          tx,
+          wallet.publicKey,
+          stakePoolData.parsed.unstakePaymentInfo
+        );
       remainingAccounts.push(...remainingAccountsForPayment);
     }
-    tx.add({
-      ...unstakeIx,
-      keys: [...unstakeIx.keys, ...remainingAccounts],
-    });
+    tx.add(withRemainingAccounts(unstakeIx, remainingAccounts));
     txs.push(tx);
   }
   return txs;
@@ -383,19 +374,30 @@ export const claimRewards = async (
               })
             );
           }
+          const remainingAccountsForPayment =
+            await withRemainingAccountsForPaymentInfo(
+              connection,
+              tx,
+              wallet.publicKey,
+              rewardDistributorData.parsed.claimRewardsPaymentInfo
+            );
           tx.add(
-            createClaimRewardsInstruction({
-              rewardEntry: findRewardEntryId(rewardDistributorId, stakeEntryId),
-              rewardDistributor: rewardDistributorId,
-              stakeEntry: stakeEntryId,
-              stakePool: stakePoolId,
-              rewardMint: rewardMint,
-              userRewardMintTokenAccount: rewardDistributorId,
-              rewardDistributorTokenAccount: rewardDistributorTokenAccount,
-              authorityTokenAccount: userRewardMintTokenAccount,
-              rewardManager: REWARD_MANAGER_ID,
-              user: wallet.publicKey,
-            })
+            withRemainingAccounts(
+              createClaimRewardsInstruction({
+                rewardEntry: findRewardEntryId(
+                  rewardDistributorId,
+                  stakeEntryId
+                ),
+                rewardDistributor: rewardDistributorId,
+                stakeEntry: stakeEntryId,
+                stakePool: stakePoolId,
+                rewardMint: rewardMint,
+                userRewardMintTokenAccount: rewardDistributorId,
+                rewardDistributorTokenAccount: rewardDistributorTokenAccount,
+                user: wallet.publicKey,
+              }),
+              remainingAccountsForPayment
+            )
           );
         }
       }

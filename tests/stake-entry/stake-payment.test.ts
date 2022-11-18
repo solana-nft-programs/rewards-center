@@ -7,13 +7,7 @@ import {
 } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
-import {
-  findStakeEntryId,
-  findStakePoolId,
-  stake,
-  STAKE_POOL_PAYMENT_MANAGER_ID,
-  unstake,
-} from "../../sdk";
+import { findStakeEntryId, findStakePoolId, stake, unstake } from "../../sdk";
 import {
   createInitPoolInstruction,
   StakeEntry,
@@ -80,11 +74,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentAmount: STAKE_PAYMENT_AMOUNT,
-          unstakePaymentAmount: null,
-          paymentMint: paymentMintId,
-          paymentManager: STAKE_POOL_PAYMENT_MANAGER_ID,
-          paymentRecipient: paymentRecipientId,
+          stakePaymentInfo: null,
+          unstakePaymentInfo: null,
         },
       }
     )

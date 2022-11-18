@@ -14,10 +14,8 @@ export type UpdateReceiptManagerIx = {
   stakeSecondsToUse: beet.bignum
   paymentMint: web3.PublicKey
   paymentAmount: beet.bignum
-  paymentManager: web3.PublicKey
   paymentRecipient: web3.PublicKey
   requiresAuthorization: boolean
-  paymentInfo: web3.PublicKey
   claimActionPaymentInfo: web3.PublicKey
   maxClaimedReceipts: beet.COption<beet.bignum>
 }
@@ -34,10 +32,8 @@ export const updateReceiptManagerIxBeet =
       ['stakeSecondsToUse', beet.u128],
       ['paymentMint', beetSolana.publicKey],
       ['paymentAmount', beet.u64],
-      ['paymentManager', beetSolana.publicKey],
       ['paymentRecipient', beetSolana.publicKey],
       ['requiresAuthorization', beet.bool],
-      ['paymentInfo', beetSolana.publicKey],
       ['claimActionPaymentInfo', beetSolana.publicKey],
       ['maxClaimedReceipts', beet.coption(beet.u128)],
     ],

@@ -1187,7 +1187,15 @@
             "type": "bool"
           },
           {
-            "name": "paymentInfo",
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "paymentMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
@@ -1253,7 +1261,15 @@
             "type": "u64"
           },
           {
-            "name": "paymentInfo",
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "paymentMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
@@ -1605,20 +1621,12 @@
             "type": "u64"
           },
           {
-            "name": "paymentManager",
-            "type": "publicKey"
-          },
-          {
             "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
             "name": "requiresAuthorization",
             "type": "bool"
-          },
-          {
-            "name": "paymentInfo",
-            "type": "publicKey"
           },
           {
             "name": "claimActionPaymentInfo",
@@ -1659,20 +1667,12 @@
             "type": "u64"
           },
           {
-            "name": "paymentManager",
-            "type": "publicKey"
-          },
-          {
             "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
             "name": "requiresAuthorization",
             "type": "bool"
-          },
-          {
-            "name": "paymentInfo",
-            "type": "publicKey"
           },
           {
             "name": "claimActionPaymentInfo",
@@ -1713,7 +1713,15 @@
             "type": "u64"
           },
           {
-            "name": "paymentInfo",
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "paymentMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
@@ -1738,6 +1746,18 @@
         "fields": [
           {
             "name": "paymentInfo",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "paymentMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "paymentRecipient",
             "type": "publicKey"
           },
           {
@@ -1989,8 +2009,8 @@
     },
     {
       "code": 6032,
-      "name": "InvalidPaymentCollector",
-      "msg": "Invalid payment collector"
+      "name": "InvalidPaymentShare",
+      "msg": "Invalid payment share"
     },
     {
       "code": 6033,

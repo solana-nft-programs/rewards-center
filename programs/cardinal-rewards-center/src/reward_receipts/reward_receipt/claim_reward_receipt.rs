@@ -1,9 +1,11 @@
 use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::handle_payment;
+use crate::handle_payment_info;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RewardReceipt;
 use crate::Action;
+use crate::PaymentShare;
 use crate::StakeEntry;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Token;
@@ -59,7 +61,16 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    handle_payment(ctx.accounts.receipt_manager.payment_info, remaining_accounts)?;
+    handle_payment(
+        ctx.accounts.receipt_manager.payment_amount,
+        ctx.accounts.receipt_manager.payment_mint,
+        &[PaymentShare {
+            address: ctx.accounts.receipt_manager.payment_recipient,
+            basis_points: 10000,
+        }]
+        .to_vec(),
+        remaining_accounts,
+    )?;
 
     // handle action payment
     assert_payment_info(
@@ -67,7 +78,7 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
         Action::ClaimRewardReceipt,
         ctx.accounts.receipt_manager.claim_action_payment_info,
     )?;
-    handle_payment(ctx.accounts.receipt_manager.claim_action_payment_info, remaining_accounts)?;
+    handle_payment_info(ctx.accounts.receipt_manager.claim_action_payment_info, remaining_accounts)?;
 
     Ok(())
 }
