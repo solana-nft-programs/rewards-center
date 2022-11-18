@@ -343,6 +343,124 @@ createErrorFromNameLookup.set(
 )
 
 /**
+ * InvalidPaymentShares: 'Invalid payment shares'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPaymentSharesError extends Error {
+  readonly code: number = 0x178f
+  readonly name: string = 'InvalidPaymentShares'
+  constructor() {
+    super('Invalid payment shares')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentSharesError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x178f, () => new InvalidPaymentSharesError())
+createErrorFromNameLookup.set(
+  'InvalidPaymentShares',
+  () => new InvalidPaymentSharesError()
+)
+
+/**
+ * InvalidPaymentShare: 'Invalid payment share'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPaymentShareError extends Error {
+  readonly code: number = 0x1790
+  readonly name: string = 'InvalidPaymentShare'
+  constructor() {
+    super('Invalid payment share')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentShareError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1790, () => new InvalidPaymentShareError())
+createErrorFromNameLookup.set(
+  'InvalidPaymentShare',
+  () => new InvalidPaymentShareError()
+)
+
+/**
+ * InvalidPaymentTokenAccount: 'Invalid payment token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPaymentTokenAccountError extends Error {
+  readonly code: number = 0x1791
+  readonly name: string = 'InvalidPaymentTokenAccount'
+  constructor() {
+    super('Invalid payment token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPaymentTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x1791,
+  () => new InvalidPaymentTokenAccountError()
+)
+createErrorFromNameLookup.set(
+  'InvalidPaymentTokenAccount',
+  () => new InvalidPaymentTokenAccountError()
+)
+
+/**
+ * InvalidPayerTokenAccount: 'Invalid payer token account'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidPayerTokenAccountError extends Error {
+  readonly code: number = 0x1792
+  readonly name: string = 'InvalidPayerTokenAccount'
+  constructor() {
+    super('Invalid payer token account')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidPayerTokenAccountError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1792, () => new InvalidPayerTokenAccountError())
+createErrorFromNameLookup.set(
+  'InvalidPayerTokenAccount',
+  () => new InvalidPayerTokenAccountError()
+)
+
+/**
+ * InvalidTransferProgram: 'Invalid transfer program'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class InvalidTransferProgramError extends Error {
+  readonly code: number = 0x1793
+  readonly name: string = 'InvalidTransferProgram'
+  constructor() {
+    super('Invalid transfer program')
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, InvalidTransferProgramError)
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1793, () => new InvalidTransferProgramError())
+createErrorFromNameLookup.set(
+  'InvalidTransferProgram',
+  () => new InvalidTransferProgramError()
+)
+
+/**
  * CooldownSecondRemaining: 'Token still has some cooldown seconds remaining'
  *
  * @category Errors
@@ -686,62 +804,13 @@ createErrorFromNameLookup.set(
 )
 
 /**
- * InvalidPaymentTokenAccount: 'Invalid payment token account'
- *
- * @category Errors
- * @category generated
- */
-export class InvalidPaymentTokenAccountError extends Error {
-  readonly code: number = 0x17bb
-  readonly name: string = 'InvalidPaymentTokenAccount'
-  constructor() {
-    super('Invalid payment token account')
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, InvalidPaymentTokenAccountError)
-    }
-  }
-}
-
-createErrorFromCodeLookup.set(
-  0x17bb,
-  () => new InvalidPaymentTokenAccountError()
-)
-createErrorFromNameLookup.set(
-  'InvalidPaymentTokenAccount',
-  () => new InvalidPaymentTokenAccountError()
-)
-
-/**
- * InvalidPaymentCollector: 'Invalid payment collector'
- *
- * @category Errors
- * @category generated
- */
-export class InvalidPaymentCollectorError extends Error {
-  readonly code: number = 0x17bc
-  readonly name: string = 'InvalidPaymentCollector'
-  constructor() {
-    super('Invalid payment collector')
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, InvalidPaymentCollectorError)
-    }
-  }
-}
-
-createErrorFromCodeLookup.set(0x17bc, () => new InvalidPaymentCollectorError())
-createErrorFromNameLookup.set(
-  'InvalidPaymentCollector',
-  () => new InvalidPaymentCollectorError()
-)
-
-/**
  * InvalidRewardReceipt: 'Invalid reward receipt'
  *
  * @category Errors
  * @category generated
  */
 export class InvalidRewardReceiptError extends Error {
-  readonly code: number = 0x17bd
+  readonly code: number = 0x17bb
   readonly name: string = 'InvalidRewardReceipt'
   constructor() {
     super('Invalid reward receipt')
@@ -751,7 +820,7 @@ export class InvalidRewardReceiptError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x17bd, () => new InvalidRewardReceiptError())
+createErrorFromCodeLookup.set(0x17bb, () => new InvalidRewardReceiptError())
 createErrorFromNameLookup.set(
   'InvalidRewardReceipt',
   () => new InvalidRewardReceiptError()
@@ -764,7 +833,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidReceiptEntryError extends Error {
-  readonly code: number = 0x17be
+  readonly code: number = 0x17bc
   readonly name: string = 'InvalidReceiptEntry'
   constructor() {
     super('Invalid receipt entry')
@@ -774,7 +843,7 @@ export class InvalidReceiptEntryError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x17be, () => new InvalidReceiptEntryError())
+createErrorFromCodeLookup.set(0x17bc, () => new InvalidReceiptEntryError())
 createErrorFromNameLookup.set(
   'InvalidReceiptEntry',
   () => new InvalidReceiptEntryError()
@@ -787,7 +856,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InsufficientAvailableStakeSecondsError extends Error {
-  readonly code: number = 0x17bf
+  readonly code: number = 0x17bd
   readonly name: string = 'InsufficientAvailableStakeSeconds'
   constructor() {
     super('Insufficient available stake seconds to use')
@@ -798,7 +867,7 @@ export class InsufficientAvailableStakeSecondsError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x17bf,
+  0x17bd,
   () => new InsufficientAvailableStakeSecondsError()
 )
 createErrorFromNameLookup.set(
@@ -813,7 +882,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class InvalidReceiptManagerError extends Error {
-  readonly code: number = 0x17c0
+  readonly code: number = 0x17be
   readonly name: string = 'InvalidReceiptManager'
   constructor() {
     super('Invalid receipt manager')
@@ -823,7 +892,7 @@ export class InvalidReceiptManagerError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x17c0, () => new InvalidReceiptManagerError())
+createErrorFromCodeLookup.set(0x17be, () => new InvalidReceiptManagerError())
 createErrorFromNameLookup.set(
   'InvalidReceiptManager',
   () => new InvalidReceiptManagerError()
@@ -836,7 +905,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RewardReceiptIsNotAllowedError extends Error {
-  readonly code: number = 0x17c1
+  readonly code: number = 0x17bf
   readonly name: string = 'RewardReceiptIsNotAllowed'
   constructor() {
     super('Reward receipt is not allowed')
@@ -847,7 +916,7 @@ export class RewardReceiptIsNotAllowedError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x17c1,
+  0x17bf,
   () => new RewardReceiptIsNotAllowedError()
 )
 createErrorFromNameLookup.set(
@@ -862,7 +931,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RewardReceiptAlreadyClaimedError extends Error {
-  readonly code: number = 0x17c2
+  readonly code: number = 0x17c0
   readonly name: string = 'RewardReceiptAlreadyClaimed'
   constructor() {
     super('Reward receipt already claimed')
@@ -873,7 +942,7 @@ export class RewardReceiptAlreadyClaimedError extends Error {
 }
 
 createErrorFromCodeLookup.set(
-  0x17c2,
+  0x17c0,
   () => new RewardReceiptAlreadyClaimedError()
 )
 createErrorFromNameLookup.set(

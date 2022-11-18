@@ -10,11 +10,11 @@ import { Keypair, Transaction } from "@solana/web3.js";
 
 import {
   claimRewardReceipt,
+  DEFAULT_PAYMENT_INFO,
   findReceiptManagerId,
   findRewardReceiptId,
   findStakeEntryId,
   findStakePoolId,
-  RECEIPT_MANAGER_PAYMENT_MANAGER_ID,
   stake,
 } from "../../sdk";
 import {
@@ -61,7 +61,7 @@ beforeAll(async () => {
       STARTING_AMOUNT
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
 
   paymentMintId = NATIVE_MINT;
@@ -88,11 +88,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentAmount: null,
-          unstakePaymentAmount: null,
-          paymentMint: null,
-          paymentManager: null,
-          paymentRecipient: null,
+          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -128,10 +125,10 @@ test("Create receipt manager", async () => {
           stakeSecondsToUse: STAKE_SECONDS_TO_USE,
           paymentMint: paymentMintId,
           paymentAmount: PAYMENT_AMOUNT,
-          paymentManager: RECEIPT_MANAGER_PAYMENT_MANAGER_ID,
-          paymentRecipient: paymentRecipientId,
+          paymentShares: [{ address: paymentRecipientId, basisPoints: 10000 }],
           requiresAuthorization: false,
           maxClaimedReceipts: null,
+          claimActionPaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )

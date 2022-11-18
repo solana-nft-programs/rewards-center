@@ -1,14 +1,13 @@
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
-use crate::reward_distribution::claim_rewards_manager;
+use crate::handle_payment_info;
 use crate::reward_distribution::RewardDistributor;
 use crate::reward_distribution::RewardEntry;
-use crate::reward_distribution::CLAIM_REWARDS_LAMPORTS;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
+use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::program::invoke;
-use anchor_lang::solana_program::system_instruction::transfer;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
@@ -34,12 +33,6 @@ pub struct ClaimRewardsCtx<'info> {
 
     #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == reward_distributor.key() @ ErrorCode::InvalidTokenAccount)]
     reward_distributor_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == user.key() @ ErrorCode::InvalidTokenAccount)]
-    authority_token_account: Box<Account<'info, TokenAccount>>,
-
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut, constraint = claim_rewards_manager(&reward_manager.key()))]
-    reward_manager: UncheckedAccount<'info>,
 
     #[account(mut, constraint = user.key() == stake_entry.last_staker || user.key() == reward_distributor.authority @ ErrorCode::InvalidAuthority)]
     user: Signer<'info>,
@@ -59,7 +52,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
     let reward_duration_seconds = reward_distributor.reward_duration_seconds;
 
     let reward_seconds_received = reward_entry.reward_seconds_received;
-    if reward_seconds_received <= stake_entry.total_stake_seconds && (reward_distributor.max_supply.is_none() || reward_distributor.rewards_issued < reward_distributor.max_supply.unwrap() as u128) {
+    if reward_seconds_received <= stake_entry.total_stake_seconds {
         let mut reward_seconds = stake_entry.total_stake_seconds;
         if let Some(max_reward_seconds) = reward_distributor.max_reward_seconds_received {
             reward_seconds = min(reward_seconds, max_reward_seconds)
@@ -75,11 +68,6 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
             .unwrap()
             .checked_div((10_u128).checked_pow(reward_distributor.multiplier_decimals as u32).unwrap())
             .unwrap();
-
-        // if this will go over max supply give rewards up to max supply
-        if reward_distributor.max_supply.is_some() && reward_distributor.rewards_issued.checked_add(reward_amount_to_receive).unwrap() >= reward_distributor.max_supply.unwrap() as u128 {
-            reward_amount_to_receive = (reward_distributor.max_supply.unwrap() as u128).checked_sub(reward_distributor.rewards_issued).unwrap();
-        }
 
         // mint to the user
         if reward_amount_to_receive > ctx.accounts.reward_distributor_token_account.amount as u128 {
@@ -115,14 +103,10 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         reward_distributor.rewards_issued = reward_distributor.rewards_issued.checked_add(reward_amount_to_receive).unwrap();
         reward_entry.reward_seconds_received = reward_entry.reward_seconds_received.checked_add(reward_time_to_receive).unwrap();
 
-        invoke(
-            &transfer(&ctx.accounts.user.to_account_info().key(), &ctx.accounts.reward_manager.key(), CLAIM_REWARDS_LAMPORTS),
-            &[
-                ctx.accounts.user.to_account_info(),
-                ctx.accounts.reward_manager.to_account_info(),
-                ctx.accounts.system_program.to_account_info(),
-            ],
-        )?;
+        // handle payment
+        let remaining_accounts = &mut ctx.remaining_accounts.iter();
+        assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
+        handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
     }
 
     Ok(())

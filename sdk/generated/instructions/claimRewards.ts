@@ -30,8 +30,6 @@ export const claimRewardsStruct = new beet.BeetArgsStruct<{
  * @property [_writable_] rewardMint
  * @property [_writable_] userRewardMintTokenAccount
  * @property [_writable_] rewardDistributorTokenAccount
- * @property [_writable_] authorityTokenAccount
- * @property [_writable_] rewardManager
  * @property [_writable_, **signer**] user
  * @category Instructions
  * @category ClaimRewards
@@ -45,8 +43,6 @@ export type ClaimRewardsInstructionAccounts = {
   rewardMint: web3.PublicKey
   userRewardMintTokenAccount: web3.PublicKey
   rewardDistributorTokenAccount: web3.PublicKey
-  authorityTokenAccount: web3.PublicKey
-  rewardManager: web3.PublicKey
   user: web3.PublicKey
   tokenProgram?: web3.PublicKey
   systemProgram?: web3.PublicKey
@@ -104,16 +100,6 @@ export function createClaimRewardsInstruction(
     },
     {
       pubkey: accounts.rewardDistributorTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.authorityTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.rewardManager,
       isWritable: true,
       isSigner: false,
     },

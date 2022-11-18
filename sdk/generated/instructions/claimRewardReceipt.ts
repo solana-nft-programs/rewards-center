@@ -5,7 +5,6 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as splToken from '@solana/spl-token'
 import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
 
@@ -26,13 +25,8 @@ export const claimRewardReceiptStruct = new beet.BeetArgsStruct<{
  * @property [_writable_] rewardReceipt
  * @property [_writable_] receiptManager
  * @property [_writable_] stakeEntry
- * @property [_writable_] paymentManager
- * @property [_writable_] feeCollectorTokenAccount
- * @property [_writable_] paymentRecipientTokenAccount
- * @property [_writable_] payerTokenAccount
  * @property [_writable_, **signer**] payer
  * @property [_writable_, **signer**] claimer
- * @property [] cardinalPaymentManager
  * @category Instructions
  * @category ClaimRewardReceipt
  * @category generated
@@ -41,15 +35,8 @@ export type ClaimRewardReceiptInstructionAccounts = {
   rewardReceipt: web3.PublicKey
   receiptManager: web3.PublicKey
   stakeEntry: web3.PublicKey
-  paymentManager: web3.PublicKey
-  feeCollectorTokenAccount: web3.PublicKey
-  paymentRecipientTokenAccount: web3.PublicKey
-  payerTokenAccount: web3.PublicKey
   payer: web3.PublicKey
   claimer: web3.PublicKey
-  cardinalPaymentManager: web3.PublicKey
-  tokenProgram?: web3.PublicKey
-  systemProgram?: web3.PublicKey
 }
 
 export const claimRewardReceiptInstructionDiscriminator = [
@@ -88,26 +75,6 @@ export function createClaimRewardReceiptInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.paymentManager,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.feeCollectorTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.paymentRecipientTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.payerTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
       pubkey: accounts.payer,
       isWritable: true,
       isSigner: true,
@@ -116,21 +83,6 @@ export function createClaimRewardReceiptInstruction(
       pubkey: accounts.claimer,
       isWritable: true,
       isSigner: true,
-    },
-    {
-      pubkey: accounts.cardinalPaymentManager,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.tokenProgram ?? splToken.TOKEN_PROGRAM_ID,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
-      isWritable: false,
-      isSigner: false,
     },
   ]
 

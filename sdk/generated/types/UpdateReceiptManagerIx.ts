@@ -8,15 +8,16 @@
 import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
+import { PaymentShare, paymentShareBeet } from './PaymentShare'
 export type UpdateReceiptManagerIx = {
   authority: web3.PublicKey
   requiredStakeSeconds: beet.bignum
   stakeSecondsToUse: beet.bignum
   paymentMint: web3.PublicKey
   paymentAmount: beet.bignum
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentShares: PaymentShare[]
   requiresAuthorization: boolean
+  claimActionPaymentInfo: web3.PublicKey
   maxClaimedReceipts: beet.COption<beet.bignum>
 }
 
@@ -32,9 +33,9 @@ export const updateReceiptManagerIxBeet =
       ['stakeSecondsToUse', beet.u128],
       ['paymentMint', beetSolana.publicKey],
       ['paymentAmount', beet.u64],
-      ['paymentManager', beetSolana.publicKey],
-      ['paymentRecipient', beetSolana.publicKey],
+      ['paymentShares', beet.array(paymentShareBeet)],
       ['requiresAuthorization', beet.bool],
+      ['claimActionPaymentInfo', beetSolana.publicKey],
       ['maxClaimedReceipts', beet.coption(beet.u128)],
     ],
     'UpdateReceiptManagerIx'

@@ -3,8 +3,8 @@ use anchor_lang::prelude::*;
 
 pub const USER_ESCROW_PREFIX: &str = "escrow";
 #[inline]
-pub fn escrow_seeds(pool: &Pubkey, user: &Pubkey, expected_key: &Pubkey) -> Result<Vec<Vec<u8>>> {
-    let mut seeds = vec![USER_ESCROW_PREFIX.as_bytes().as_ref().to_vec(), pool.as_ref().to_vec(), user.as_ref().to_vec()];
+pub fn escrow_seeds(user: &Pubkey, expected_key: &Pubkey) -> Result<Vec<Vec<u8>>> {
+    let mut seeds = vec![USER_ESCROW_PREFIX.as_bytes().as_ref().to_vec(), user.as_ref().to_vec()];
     let (key, bump) = Pubkey::find_program_address(&seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>(), &crate::id());
     if key != *expected_key {
         return Err(error!(ErrorCode::InvalidEscrow));

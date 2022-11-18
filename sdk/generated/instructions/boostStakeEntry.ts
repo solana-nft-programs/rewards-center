@@ -5,7 +5,6 @@
  * See: https://github.com/metaplex-foundation/solita
  */
 
-import * as splToken from '@solana/spl-token'
 import * as beet from '@metaplex-foundation/beet'
 import * as web3 from '@solana/web3.js'
 import {
@@ -44,12 +43,6 @@ export const boostStakeEntryStruct = new beet.BeetArgsStruct<
  * @property [_writable_] stakePool
  * @property [_writable_] stakeEntry
  * @property [] stakeMint
- * @property [_writable_] payerTokenAccount
- * @property [_writable_] paymentRecipientTokenAccount
- * @property [_writable_, **signer**] payer
- * @property [_writable_] paymentManager
- * @property [_writable_] feeCollectorTokenAccount
- * @property [] cardinalPaymentManager
  * @category Instructions
  * @category BoostStakeEntry
  * @category generated
@@ -59,14 +52,6 @@ export type BoostStakeEntryInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
   stakeMint: web3.PublicKey
-  payerTokenAccount: web3.PublicKey
-  paymentRecipientTokenAccount: web3.PublicKey
-  payer: web3.PublicKey
-  paymentManager: web3.PublicKey
-  feeCollectorTokenAccount: web3.PublicKey
-  cardinalPaymentManager: web3.PublicKey
-  tokenProgram?: web3.PublicKey
-  systemProgram?: web3.PublicKey
 }
 
 export const boostStakeEntryInstructionDiscriminator = [
@@ -110,46 +95,6 @@ export function createBoostStakeEntryInstruction(
     },
     {
       pubkey: accounts.stakeMint,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.payerTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.paymentRecipientTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.payer,
-      isWritable: true,
-      isSigner: true,
-    },
-    {
-      pubkey: accounts.paymentManager,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.feeCollectorTokenAccount,
-      isWritable: true,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.cardinalPaymentManager,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.tokenProgram ?? splToken.TOKEN_PROGRAM_ID,
-      isWritable: false,
-      isSigner: false,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
       isWritable: false,
       isSigner: false,
     },

@@ -25,7 +25,7 @@ import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 export async function newAccountWithLamports(
   connection: Connection,
-  lamports = LAMPORTS_PER_SOL,
+  lamports = LAMPORTS_PER_SOL * 10,
   keypair = Keypair.generate()
 ): Promise<Keypair> {
   const account = keypair;
@@ -46,20 +46,19 @@ export async function executeTransaction(
   connection: Connection,
   tx: Transaction,
   wallet: Wallet,
-  signers?: Signer[],
-  silent?: boolean
+  config?: { signers?: Signer[]; silent?: boolean }
 ): Promise<string> {
   tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   tx.feePayer = wallet.publicKey;
   await wallet.signTransaction(tx);
-  if (signers) {
-    tx.partialSign(...signers);
+  if (config?.signers) {
+    tx.partialSign(...(config?.signers ?? []));
   }
   try {
     const txid = await sendAndConfirmRawTransaction(connection, tx.serialize());
     return txid;
   } catch (e) {
-    if (!silent) {
+    if (!config?.silent) {
       handleError(e);
     }
     throw e;
@@ -70,15 +69,15 @@ export async function executeTransactions(
   connection: Connection,
   txs: Transaction[],
   wallet: Wallet,
-  signers?: Signer[]
+  config?: { signers?: Signer[]; silent?: boolean }
 ): Promise<string[]> {
   const latestBlockhash = (await connection.getLatestBlockhash()).blockhash;
   const signedTxs = await wallet.signAllTransactions(
     txs.map((tx) => {
       tx.recentBlockhash = latestBlockhash;
       tx.feePayer = wallet.publicKey;
-      if (signers) {
-        tx.partialSign(...signers);
+      if (config?.signers) {
+        tx.partialSign(...(config?.signers ?? []));
       }
       return tx;
     })
@@ -92,7 +91,9 @@ export async function executeTransactions(
         );
         return txid;
       } catch (e) {
-        handleError(e);
+        if (!config?.silent) {
+          handleError(e);
+        }
         throw e;
       }
     })
@@ -108,7 +109,7 @@ export type CardinalProvider = {
 
 export async function getProvider(): Promise<CardinalProvider> {
   const connection = getConnection();
-  const keypair = await newAccountWithLamports(connection, LAMPORTS_PER_SOL);
+  const keypair = await newAccountWithLamports(connection);
   const wallet = new Wallet(keypair);
   return {
     connection,
@@ -156,7 +157,7 @@ export const handleError = (e: any) => {
   const message = (e as SendTransactionError).message ?? "";
   const logs = (e as SendTransactionError).logs;
   if (logs) {
-    console.log(logs);
+    console.log(logs, message);
   } else {
     console.log(e, message);
   }

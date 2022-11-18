@@ -1,7 +1,9 @@
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::escrow_seeds;
-use crate::handle_stake_pool_payment;
+use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
+use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
@@ -52,7 +54,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
+    let escrow_seeds = escrow_seeds(&user, &user_escrow)?;
 
     //// FEATURE: Minimum stake seconds
     if stake_pool.min_stake_seconds.is_some()
@@ -99,18 +101,8 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    if let (Some(payment_mint), Some(payment_amount), Some(payment_manager), Some(payment_recipient)) =
-        (stake_pool.payment_mint, stake_pool.unstake_payment_amount, stake_pool.payment_manager, stake_pool.payment_recipient)
-    {
-        handle_stake_pool_payment(
-            payment_mint,
-            payment_amount,
-            payment_manager,
-            payment_recipient,
-            &ctx.accounts.token_program.to_account_info(),
-            remaining_accounts,
-        )?;
-    }
+    assert_payment_info(stake_pool.key(), Action::Unstake, stake_pool.unstake_payment_info)?;
+    handle_payment_info(stake_pool.stake_payment_info, remaining_accounts)?;
 
     increment_total_stake_seconds(stake_entry)?;
     stake_entry.last_staker = Pubkey::default();

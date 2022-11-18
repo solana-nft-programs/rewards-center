@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
+import { PaymentShare, paymentShareBeet } from '../types/PaymentShare'
 
 /**
  * Arguments used to create {@link StakeBooster}
@@ -20,10 +21,10 @@ export type StakeBoosterArgs = {
   identifier: beet.bignum
   paymentAmount: beet.bignum
   paymentMint: web3.PublicKey
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentShares: PaymentShare[]
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
+  boostActionPaymentInfo: web3.PublicKey
 }
 
 export const stakeBoosterDiscriminator = [133, 242, 13, 224, 46, 151, 169, 50]
@@ -41,10 +42,10 @@ export class StakeBooster implements StakeBoosterArgs {
     readonly identifier: beet.bignum,
     readonly paymentAmount: beet.bignum,
     readonly paymentMint: web3.PublicKey,
-    readonly paymentManager: web3.PublicKey,
-    readonly paymentRecipient: web3.PublicKey,
+    readonly paymentShares: PaymentShare[],
     readonly boostSeconds: beet.bignum,
-    readonly startTimeSeconds: beet.bignum
+    readonly startTimeSeconds: beet.bignum,
+    readonly boostActionPaymentInfo: web3.PublicKey
   ) {}
 
   /**
@@ -57,10 +58,10 @@ export class StakeBooster implements StakeBoosterArgs {
       args.identifier,
       args.paymentAmount,
       args.paymentMint,
-      args.paymentManager,
-      args.paymentRecipient,
+      args.paymentShares,
       args.boostSeconds,
-      args.startTimeSeconds
+      args.startTimeSeconds,
+      args.boostActionPaymentInfo
     )
   }
 
@@ -127,34 +128,36 @@ export class StakeBooster implements StakeBoosterArgs {
 
   /**
    * Returns the byteSize of a {@link Buffer} holding the serialized data of
-   * {@link StakeBooster}
+   * {@link StakeBooster} for the provided args.
+   *
+   * @param args need to be provided since the byte size for this account
+   * depends on them
    */
-  static get byteSize() {
-    return stakeBoosterBeet.byteSize
+  static byteSize(args: StakeBoosterArgs) {
+    const instance = StakeBooster.fromArgs(args)
+    return stakeBoosterBeet.toFixedFromValue({
+      accountDiscriminator: stakeBoosterDiscriminator,
+      ...instance,
+    }).byteSize
   }
 
   /**
    * Fetches the minimum balance needed to exempt an account holding
    * {@link StakeBooster} data from rent
    *
+   * @param args need to be provided since the byte size for this account
+   * depends on them
    * @param connection used to retrieve the rent exemption information
    */
   static async getMinimumBalanceForRentExemption(
+    args: StakeBoosterArgs,
     connection: web3.Connection,
     commitment?: web3.Commitment
   ): Promise<number> {
     return connection.getMinimumBalanceForRentExemption(
-      StakeBooster.byteSize,
+      StakeBooster.byteSize(args),
       commitment
     )
-  }
-
-  /**
-   * Determines if the provided {@link Buffer} has the correct byte size to
-   * hold {@link StakeBooster} data.
-   */
-  static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === StakeBooster.byteSize
   }
 
   /**
@@ -188,8 +191,7 @@ export class StakeBooster implements StakeBoosterArgs {
         return x
       })(),
       paymentMint: this.paymentMint.toBase58(),
-      paymentManager: this.paymentManager.toBase58(),
-      paymentRecipient: this.paymentRecipient.toBase58(),
+      paymentShares: this.paymentShares,
       boostSeconds: (() => {
         const x = <{ toNumber: () => number }>this.boostSeconds
         if (typeof x.toNumber === 'function') {
@@ -212,6 +214,7 @@ export class StakeBooster implements StakeBoosterArgs {
         }
         return x
       })(),
+      boostActionPaymentInfo: this.boostActionPaymentInfo.toBase58(),
     }
   }
 }
@@ -220,7 +223,7 @@ export class StakeBooster implements StakeBoosterArgs {
  * @category Accounts
  * @category generated
  */
-export const stakeBoosterBeet = new beet.BeetStruct<
+export const stakeBoosterBeet = new beet.FixableBeetStruct<
   StakeBooster,
   StakeBoosterArgs & {
     accountDiscriminator: number[] /* size: 8 */
@@ -233,10 +236,10 @@ export const stakeBoosterBeet = new beet.BeetStruct<
     ['identifier', beet.u64],
     ['paymentAmount', beet.u64],
     ['paymentMint', beetSolana.publicKey],
-    ['paymentManager', beetSolana.publicKey],
-    ['paymentRecipient', beetSolana.publicKey],
+    ['paymentShares', beet.array(paymentShareBeet)],
     ['boostSeconds', beet.u128],
     ['startTimeSeconds', beet.i64],
+    ['boostActionPaymentInfo', beetSolana.publicKey],
   ],
   StakeBooster.fromArgs,
   'StakeBooster'

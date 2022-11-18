@@ -9,12 +9,13 @@ import type { PublicKey } from "@solana/web3.js";
 import { Keypair, Transaction } from "@solana/web3.js";
 
 import {
+  BASIS_POINTS_DIVISOR,
   boost,
+  DEFAULT_PAYMENT_INFO,
   findStakeBoosterId,
   findStakeEntryId,
   findStakePoolId,
   stake,
-  STAKE_BOOSTER_PAYMENT_MANAGER_ID,
 } from "../../sdk";
 import {
   createInitPoolInstruction,
@@ -58,7 +59,7 @@ beforeAll(async () => {
       STARTING_AMOUNT
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
 
   paymentMintId = NATIVE_MINT;
@@ -85,11 +86,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentAmount: null,
-          unstakePaymentAmount: null,
-          paymentMint: null,
-          paymentManager: null,
-          paymentRecipient: null,
+          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -121,10 +119,12 @@ test("Create stake booster", async () => {
           stakePool: stakePoolId,
           paymentAmount: PAYMENT_AMOUNT,
           paymentMint: paymentMintId,
-          paymentManager: STAKE_BOOSTER_PAYMENT_MANAGER_ID,
-          paymentRecipient: paymentRecipientId,
+          paymentShares: [
+            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+          ],
           boostSeconds: 1,
           startTimeSeconds: Date.now() / 1000 - 1000,
+          boostActionPaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -281,8 +281,7 @@ test("Boost too far", async () => {
         10000
       ),
       provider.wallet,
-      [],
-      true
+      { silent: true }
     )
   ).rejects.toThrow();
 });

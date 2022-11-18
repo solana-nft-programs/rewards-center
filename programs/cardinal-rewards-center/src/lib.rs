@@ -10,6 +10,8 @@ pub mod stake_booster;
 pub use stake_booster::*;
 pub mod reward_receipts;
 pub use reward_receipts::*;
+pub mod payment;
+pub use payment::*;
 
 pub mod errors;
 pub mod utils;
@@ -126,5 +128,16 @@ pub mod cardinal_rewards_center {
     }
     pub fn claim_rewards(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         reward_distribution::reward_entry::claim_rewards::handler(ctx)
+    }
+
+    //// payment ////
+    pub fn init_payment_info(ctx: Context<InitPaymentInfoCtx>, ix: InitPaymentInfoIx) -> Result<()> {
+        payment::init_payment_info::handler(ctx, ix)
+    }
+    pub fn update_payment_info(ctx: Context<UpdatePaymentInfoCtx>, ix: UpdatePaymentInfoIx) -> Result<()> {
+        payment::update_payment_info::handler(ctx, ix)
+    }
+    pub fn close_payment_info(ctx: Context<ClosePaymentInfoCtx>) -> Result<()> {
+        payment::close_payment_info::handler(ctx)
     }
 }

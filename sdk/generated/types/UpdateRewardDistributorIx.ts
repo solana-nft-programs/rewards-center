@@ -6,12 +6,15 @@
  */
 
 import * as beet from '@metaplex-foundation/beet'
+import * as web3 from '@solana/web3.js'
+import * as beetSolana from '@metaplex-foundation/beet-solana'
 export type UpdateRewardDistributorIx = {
   defaultMultiplier: beet.bignum
   multiplierDecimals: number
   rewardAmount: beet.bignum
   rewardDurationSeconds: beet.bignum
   maxRewardSecondsReceived: beet.COption<beet.bignum>
+  claimRewardsPaymentInfo: web3.PublicKey
 }
 
 /**
@@ -26,6 +29,7 @@ export const updateRewardDistributorIxBeet =
       ['rewardAmount', beet.u64],
       ['rewardDurationSeconds', beet.u128],
       ['maxRewardSecondsReceived', beet.coption(beet.u128)],
+      ['claimRewardsPaymentInfo', beetSolana.publicKey],
     ],
     'UpdateRewardDistributorIx'
   )

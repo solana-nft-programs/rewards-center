@@ -8,15 +8,16 @@
 import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
+import { PaymentShare, paymentShareBeet } from './PaymentShare'
 export type InitStakeBoosterIx = {
   stakePool: web3.PublicKey
   identifier: beet.bignum
   paymentAmount: beet.bignum
   paymentMint: web3.PublicKey
-  paymentManager: web3.PublicKey
-  paymentRecipient: web3.PublicKey
+  paymentShares: PaymentShare[]
   boostSeconds: beet.bignum
   startTimeSeconds: beet.bignum
+  boostActionPaymentInfo: web3.PublicKey
 }
 
 /**
@@ -24,16 +25,16 @@ export type InitStakeBoosterIx = {
  * @category generated
  */
 export const initStakeBoosterIxBeet =
-  new beet.BeetArgsStruct<InitStakeBoosterIx>(
+  new beet.FixableBeetArgsStruct<InitStakeBoosterIx>(
     [
       ['stakePool', beetSolana.publicKey],
       ['identifier', beet.u64],
       ['paymentAmount', beet.u64],
       ['paymentMint', beetSolana.publicKey],
-      ['paymentManager', beetSolana.publicKey],
-      ['paymentRecipient', beetSolana.publicKey],
+      ['paymentShares', beet.array(paymentShareBeet)],
       ['boostSeconds', beet.u128],
       ['startTimeSeconds', beet.i64],
+      ['boostActionPaymentInfo', beetSolana.publicKey],
     ],
     'InitStakeBoosterIx'
   )

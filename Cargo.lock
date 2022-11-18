@@ -402,26 +402,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
-name = "cardinal-payment-manager"
-version = "2.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de8b517f3416c38f1ede84faf4ab5016123d4608dce113e3249b64264dc11b78"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "mpl-token-metadata",
- "solana-program",
- "spl-associated-token-account",
- "spl-token",
-]
-
-[[package]]
 name = "cardinal-rewards-center"
 version = "0.1.3"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
- "cardinal-payment-manager",
  "mpl-token-metadata",
  "proptest",
  "solana-program",

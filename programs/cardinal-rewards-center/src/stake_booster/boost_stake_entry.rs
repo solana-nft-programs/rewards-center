@@ -1,14 +1,13 @@
 use super::StakeBooster;
+use crate::assert_payment_info;
 use crate::errors::ErrorCode;
-use crate::stake_booster::assert_stake_booster_payment_info;
+use crate::handle_payment;
+use crate::handle_payment_info;
+use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
-use anchor_spl::token::Token;
-use anchor_spl::token::TokenAccount;
-use cardinal_payment_manager::program::CardinalPaymentManager;
-use cardinal_payment_manager::state::PaymentManager;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct BoostStakeEntryIx {
@@ -25,30 +24,6 @@ pub struct BoostStakeEntryCtx<'info> {
     stake_entry: Box<Account<'info, StakeEntry>>,
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakePool)]
     stake_mint: Box<Account<'info, Mint>>,
-
-    #[account(mut, constraint =
-        payer_token_account.owner == payer.key()
-        && payer_token_account.mint == stake_booster.payment_mint
-        @ ErrorCode::InvalidBoostPayerTokenAccount
-    )]
-    payer_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut, constraint =
-        payment_recipient_token_account.owner == stake_booster.payment_recipient
-        && payer_token_account.mint == stake_booster.payment_mint
-        @ ErrorCode::InvalidBoostPaymentRecipientTokenAccount
-    )]
-    payment_recipient_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
-    payer: Signer<'info>,
-
-    #[account(mut, constraint = payment_manager.key() == stake_booster.payment_manager @ ErrorCode::InvalidPaymentManager)]
-    payment_manager: Box<Account<'info, PaymentManager>>,
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mut)]
-    fee_collector_token_account: UncheckedAccount<'info>,
-    cardinal_payment_manager: Program<'info, CardinalPaymentManager>,
-    token_program: Program<'info, Token>,
-    system_program: Program<'info, System>,
 }
 
 pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Result<()> {
@@ -70,29 +45,28 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         return Err(error!(ErrorCode::CannotBoostMoreThanCurrentTime));
     }
 
-    let payment_amount = ix
+    let boost_payment_amount = ix
         .seconds_to_boost
         .checked_mul(ctx.accounts.stake_booster.payment_amount)
         .expect("Multiplication error")
         .checked_div(u64::try_from(ctx.accounts.stake_booster.boost_seconds).expect("Number conversion error"))
         .expect("Division error");
 
+    let remaining_accounts = &mut ctx.remaining_accounts.iter();
     // handle payment
-    assert_stake_booster_payment_info(
-        &ctx.accounts.stake_booster.payment_mint,
-        ctx.accounts.stake_booster.payment_amount,
-        &ctx.accounts.stake_booster.payment_manager,
+    handle_payment(
+        boost_payment_amount,
+        ctx.accounts.stake_booster.payment_mint,
+        &ctx.accounts.stake_booster.payment_shares,
+        remaining_accounts,
     )?;
-    let cpi_accounts = cardinal_payment_manager::cpi::accounts::HandlePaymentCtx {
-        payment_manager: ctx.accounts.payment_manager.to_account_info(),
-        payer_token_account: ctx.accounts.payer_token_account.to_account_info(),
-        fee_collector_token_account: ctx.accounts.fee_collector_token_account.to_account_info(),
-        payment_token_account: ctx.accounts.payment_recipient_token_account.to_account_info(),
-        payer: ctx.accounts.payer.to_account_info(),
-        token_program: ctx.accounts.token_program.to_account_info(),
-    };
-    let cpi_ctx = CpiContext::new(ctx.accounts.cardinal_payment_manager.to_account_info(), cpi_accounts);
-    cardinal_payment_manager::cpi::manage_payment(cpi_ctx, payment_amount)?;
 
+    // handle action payment
+    assert_payment_info(
+        ctx.accounts.stake_booster.stake_pool.key(),
+        Action::BoostStakeEntry,
+        ctx.accounts.stake_booster.boost_action_payment_info,
+    )?;
+    handle_payment_info(ctx.accounts.stake_booster.boost_action_payment_info, remaining_accounts)?;
     Ok(())
 }

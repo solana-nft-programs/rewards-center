@@ -37,6 +37,7 @@ export const updatePoolStruct = new beet.FixableBeetArgsStruct<
  * Accounts required by the _updatePool_ instruction
  *
  * @property [_writable_] stakePool
+ * @property [**signer**] authority
  * @property [_writable_, **signer**] payer
  * @category Instructions
  * @category UpdatePool
@@ -44,6 +45,7 @@ export const updatePoolStruct = new beet.FixableBeetArgsStruct<
  */
 export type UpdatePoolInstructionAccounts = {
   stakePool: web3.PublicKey
+  authority: web3.PublicKey
   payer: web3.PublicKey
   systemProgram?: web3.PublicKey
 }
@@ -76,6 +78,11 @@ export function createUpdatePoolInstruction(
       pubkey: accounts.stakePool,
       isWritable: true,
       isSigner: false,
+    },
+    {
+      pubkey: accounts.authority,
+      isWritable: false,
+      isSigner: true,
     },
     {
       pubkey: accounts.payer,

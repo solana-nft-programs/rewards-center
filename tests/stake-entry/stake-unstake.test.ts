@@ -1,15 +1,16 @@
 import { beforeAll, expect, test } from "@jest/globals";
-import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
-import { findStakeEntryId, findStakePoolId, findUserEscrowId } from "../../sdk";
 import {
-  createInitEntryInstruction,
+  DEFAULT_PAYMENT_INFO,
+  findStakeEntryId,
+  findStakePoolId,
+  stake,
+  unstake,
+} from "../../sdk";
+import {
   createInitPoolInstruction,
-  createStakeEditionInstruction,
-  createUnstakeEditionInstruction,
   StakeEntry,
   StakePool,
 } from "../../sdk/generated";
@@ -17,6 +18,7 @@ import type { CardinalProvider } from "../utils";
 import {
   createMasterEditionTx,
   executeTransaction,
+  executeTransactions,
   getProvider,
 } from "../utils";
 
@@ -35,7 +37,7 @@ beforeAll(async () => {
       provider.wallet.publicKey
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
 });
 
@@ -59,11 +61,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentAmount: null,
-          unstakePaymentAmount: null,
-          paymentMint: null,
-          paymentManager: null,
-          paymentRecipient: null,
+          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -77,63 +76,21 @@ test("Init pool", async () => {
   expect(pool.requiresAuthorization).toBe(false);
 });
 
-test("Init entry", async () => {
-  const tx = new Transaction();
-  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
-  const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
-  tx.add(
-    createInitEntryInstruction(
-      {
-        stakeEntry: stakeEntryId,
-        stakePool: stakePoolId,
-        stakeMint: mintId,
-        stakeMintMetadata: metadataId,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        user: provider.wallet.publicKey,
-      }
-    )
-  );
-  await executeTransaction(provider.connection, tx, provider.wallet);
-  const entry = await StakeEntry.fromAccountAddress(
-    provider.connection,
-    stakeEntryId
-  );
-  expect(entry.stakeMint.toString()).toBe(mintId.toString());
-});
-
 test("Stake", async () => {
-  const tx = new Transaction();
-  const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
-  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+  await executeTransactions(
+    provider.connection,
+    await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
+      { mintId },
+    ]),
+    provider.wallet
+  );
+
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
-  const userEscrowId = findUserEscrowId(stakePoolId, provider.wallet.publicKey);
   const userAtaId = getAssociatedTokenAddressSync(
     mintId,
     provider.wallet.publicKey
   );
-  tx.add(
-    createStakeEditionInstruction(
-      {
-        stakeEntry: stakeEntryId,
-        stakePool: stakePoolId,
-        stakeMint: mintId,
-        stakeMintEdition: editionId,
-        stakeMintMetadata: metadataId,
-        user: provider.wallet.publicKey,
-        userEscrow: userEscrowId,
-        userStakeMintTokenAccount: userAtaId,
-        tokenMetadataProgram: tokenMetadata.PROGRAM_ID,
-      },
-      {
-        amount: 1,
-      }
-    )
-  );
-  await executeTransaction(provider.connection, tx, provider.wallet);
   const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId
@@ -158,30 +115,35 @@ test("Stake", async () => {
   expect(activeStakeEntries.length).toBe(1);
 });
 
+test("Stake again fail", async () => {
+  await expect(
+    executeTransactions(
+      provider.connection,
+      await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
+        { mintId },
+      ]),
+      provider.wallet,
+      { silent: true }
+    )
+  ).rejects.toThrow();
+});
+
 test("Unstake", async () => {
   await new Promise((r) => setTimeout(r, 2000));
-  const tx = new Transaction();
-  const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+  await executeTransactions(
+    provider.connection,
+    await unstake(provider.connection, provider.wallet, stakePoolIdentifier, [
+      { mintId },
+    ]),
+    provider.wallet
+  );
+
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
-  const userEscrowId = findUserEscrowId(stakePoolId, provider.wallet.publicKey);
   const userAtaId = getAssociatedTokenAddressSync(
     mintId,
     provider.wallet.publicKey
   );
-  tx.add(
-    createUnstakeEditionInstruction({
-      stakeEntry: stakeEntryId,
-      stakePool: stakePoolId,
-      stakeMint: mintId,
-      stakeMintEdition: editionId,
-      user: provider.wallet.publicKey,
-      userEscrow: userEscrowId,
-      userStakeMintTokenAccount: userAtaId,
-      tokenMetadataProgram: tokenMetadata.PROGRAM_ID,
-    })
-  );
-  await executeTransaction(provider.connection, tx, provider.wallet);
   const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId

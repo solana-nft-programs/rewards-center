@@ -17,11 +17,8 @@ export type InitPoolIx = {
   cooldownSeconds: beet.COption<number>
   minStakeSeconds: beet.COption<number>
   endDate: beet.COption<beet.bignum>
-  stakePaymentAmount: beet.COption<beet.bignum>
-  unstakePaymentAmount: beet.COption<beet.bignum>
-  paymentMint: beet.COption<web3.PublicKey>
-  paymentManager: beet.COption<web3.PublicKey>
-  paymentRecipient: beet.COption<web3.PublicKey>
+  stakePaymentInfo: web3.PublicKey
+  unstakePaymentInfo: web3.PublicKey
   identifier: string
 }
 
@@ -39,11 +36,8 @@ export const initPoolIxBeet = new beet.FixableBeetArgsStruct<InitPoolIx>(
     ['cooldownSeconds', beet.coption(beet.u32)],
     ['minStakeSeconds', beet.coption(beet.u32)],
     ['endDate', beet.coption(beet.i64)],
-    ['stakePaymentAmount', beet.coption(beet.u64)],
-    ['unstakePaymentAmount', beet.coption(beet.u64)],
-    ['paymentMint', beet.coption(beetSolana.publicKey)],
-    ['paymentManager', beet.coption(beetSolana.publicKey)],
-    ['paymentRecipient', beet.coption(beetSolana.publicKey)],
+    ['stakePaymentInfo', beetSolana.publicKey],
+    ['unstakePaymentInfo', beetSolana.publicKey],
     ['identifier', beet.utf8String],
   ],
   'InitPoolIx'

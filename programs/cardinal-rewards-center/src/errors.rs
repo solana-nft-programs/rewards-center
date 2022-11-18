@@ -37,6 +37,16 @@ pub enum ErrorCode {
     // payment errors
     #[msg("Invalid payment mint")]
     InvalidPaymentMint = 30,
+    #[msg("Invalid payment shares")]
+    InvalidPaymentShares,
+    #[msg("Invalid payment share")]
+    InvalidPaymentShare,
+    #[msg("Invalid payment token account")]
+    InvalidPaymentTokenAccount,
+    #[msg("Invalid payer token account")]
+    InvalidPayerTokenAccount,
+    #[msg("Invalid transfer program")]
+    InvalidTransferProgram,
 
     // cooldown errors
     #[msg("Token still has some cooldown seconds remaining")]
@@ -73,10 +83,6 @@ pub enum ErrorCode {
     InvalidPayerTokenAcount,
     #[msg("Invalid max claimed receipts")]
     InvalidMaxClaimedReceipts,
-    #[msg("Invalid payment token account")]
-    InvalidPaymentTokenAccount,
-    #[msg("Invalid payment collector")]
-    InvalidPaymentCollector,
     #[msg("Invalid reward receipt")]
     InvalidRewardReceipt,
     #[msg("Invalid receipt entry")]

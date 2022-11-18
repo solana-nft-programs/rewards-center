@@ -1,9 +1,11 @@
+use crate::assert_payment_info;
 use crate::authorization::mint_is_allowed;
 use crate::errors::ErrorCode;
 use crate::escrow_seeds;
-use crate::handle_stake_pool_payment;
+use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
 use crate::stake_seed;
+use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
 use crate::STAKE_ENTRY_PREFIX;
@@ -20,7 +22,7 @@ use solana_program::program::invoke_signed;
 pub struct StakeEditionCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
-    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump=stake_entry.bump)]
+    #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump = stake_entry.bump)]
     stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
@@ -56,7 +58,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
+    let escrow_seeds = escrow_seeds(&user, &user_escrow)?;
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
@@ -93,18 +95,8 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     )?;
 
     // handle payment
-    if let (Some(payment_mint), Some(payment_amount), Some(payment_manager), Some(payment_recipient)) =
-        (stake_pool.payment_mint, stake_pool.stake_payment_amount, stake_pool.payment_manager, stake_pool.payment_recipient)
-    {
-        handle_stake_pool_payment(
-            payment_mint,
-            payment_amount,
-            payment_manager,
-            payment_recipient,
-            &ctx.accounts.token_program.to_account_info(),
-            remaining_accounts,
-        )?;
-    }
+    assert_payment_info(stake_pool.key(), Action::Stake, stake_pool.stake_payment_info)?;
+    handle_payment_info(stake_pool.stake_payment_info, remaining_accounts)?;
 
     // update stake entry
     if stake_entry.amount != 0 {

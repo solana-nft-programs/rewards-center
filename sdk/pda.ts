@@ -47,16 +47,9 @@ export const findStakeAuthorizationRecordId = (
 };
 
 export const USER_ESCROW_SEED = "escrow";
-export const findUserEscrowId = (
-  stakePoolId: PublicKey,
-  user: PublicKey
-): PublicKey => {
+export const findUserEscrowId = (user: PublicKey): PublicKey => {
   return PublicKey.findProgramAddressSync(
-    [
-      utils.bytes.utf8.encode(USER_ESCROW_SEED),
-      stakePoolId.toBuffer(),
-      user.toBuffer(),
-    ],
+    [utils.bytes.utf8.encode(USER_ESCROW_SEED), user.toBuffer()],
     PROGRAM_ID
   )[0];
 };
@@ -131,6 +124,17 @@ export const findRewardReceiptId = (
       utils.bytes.utf8.encode(REWARD_RECEIPT_SEED),
       receiptManagerId.toBuffer(),
       stakeEntryId.toBuffer(),
+    ],
+    PROGRAM_ID
+  )[0];
+};
+
+export const PAYMENT_INFO_SEED = "payment-info";
+export const findPaymentInfoId = (identifier: string): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(PAYMENT_INFO_SEED),
+      utils.bytes.utf8.encode(identifier),
     ],
     PROGRAM_ID
   )[0];
