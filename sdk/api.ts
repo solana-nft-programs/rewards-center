@@ -94,7 +94,7 @@ export const stake = async (
       );
     }
 
-    const userEscrowId = findUserEscrowId(stakePoolId, wallet.publicKey);
+    const userEscrowId = findUserEscrowId(wallet.publicKey);
     const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
     const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
     const stakeIx = createStakeEditionInstruction(
@@ -180,7 +180,7 @@ export const unstake = async (
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, rewardEntryIds } of mints) {
     const tx = new Transaction();
-    const userEscrowId = findUserEscrowId(stakePoolId, wallet.publicKey);
+    const userEscrowId = findUserEscrowId(wallet.publicKey);
     const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
     const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
 

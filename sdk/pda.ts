@@ -47,16 +47,9 @@ export const findStakeAuthorizationRecordId = (
 };
 
 export const USER_ESCROW_SEED = "escrow";
-export const findUserEscrowId = (
-  stakePoolId: PublicKey,
-  user: PublicKey
-): PublicKey => {
+export const findUserEscrowId = (user: PublicKey): PublicKey => {
   return PublicKey.findProgramAddressSync(
-    [
-      utils.bytes.utf8.encode(USER_ESCROW_SEED),
-      stakePoolId.toBuffer(),
-      user.toBuffer(),
-    ],
+    [utils.bytes.utf8.encode(USER_ESCROW_SEED), user.toBuffer()],
     PROGRAM_ID
   )[0];
 };

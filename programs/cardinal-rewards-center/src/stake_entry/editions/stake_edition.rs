@@ -58,7 +58,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
-    let escrow_seeds = escrow_seeds(&stake_pool.key(), &user, &user_escrow)?;
+    let escrow_seeds = escrow_seeds(&user, &user_escrow)?;
 
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
         return Err(error!(ErrorCode::StakePoolHasEnded));
