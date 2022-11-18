@@ -16,7 +16,7 @@
     "email": "team@cardinal.so"
   },
   "homepage": "https://cardinal.so",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix",
     "*.{js,json,jsx,html,css,md}": "prettier --write"
