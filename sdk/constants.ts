@@ -9,7 +9,7 @@ export const REWARD_MANAGER_ID = new PublicKey(
 );
 
 export const STAKE_POOL_PAYMENT_MANAGER_ID = new PublicKey(
-  "CuEDMUqgkGTVcAaqEDHuVR848XN38MPsD11JrkxcGD6a"
+  "AisDuhvwv5zHWUZ8GUMT854cRE8vGC15omZPTG7YRcUn"
 );
 
 export const RECEIPT_MANAGER_PAYMENT_MANAGER_ID = new PublicKey(

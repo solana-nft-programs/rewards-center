@@ -422,6 +422,7 @@ dependencies = [
  "anchor-lang",
  "anchor-spl",
  "cardinal-payment-manager",
+ "lazy_static",
  "mpl-token-metadata",
  "proptest",
  "solana-program",

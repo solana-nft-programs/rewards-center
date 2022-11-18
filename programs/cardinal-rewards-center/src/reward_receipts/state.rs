@@ -22,7 +22,6 @@ pub struct ReceiptManager {
     pub max_claimed_receipts: Option<u128>,
 }
 
-pub const RECEIPT_ENTRY_SEED: &str = "receipt-entry";
 pub const RECEIPT_ENTRY_SIZE: usize = 8 + std::mem::size_of::<ReceiptEntry>() + 64;
 #[account]
 pub struct ReceiptEntry {

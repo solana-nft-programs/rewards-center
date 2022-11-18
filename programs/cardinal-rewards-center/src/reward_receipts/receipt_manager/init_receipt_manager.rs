@@ -39,7 +39,6 @@ pub struct InitReceiptManagerCtx<'info> {
 
 pub fn handler(ctx: Context<InitReceiptManagerCtx>, ix: InitReceiptManagerIx) -> Result<()> {
     let receipt_manager = &mut ctx.accounts.receipt_manager;
-    assert_receipt_manager_payment_info(&ix.payment_mint, ix.payment_amount, &ix.payment_manager)?;
 
     receipt_manager.bump = *ctx.bumps.get("receipt_manager").unwrap();
     receipt_manager.name = ix.name;
