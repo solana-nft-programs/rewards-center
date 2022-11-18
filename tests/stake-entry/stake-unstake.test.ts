@@ -37,7 +37,7 @@ beforeAll(async () => {
       provider.wallet.publicKey
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
 });
 
@@ -74,24 +74,6 @@ test("Init pool", async () => {
   );
   expect(pool.authority.toString()).toBe(provider.wallet.publicKey.toString());
   expect(pool.requiresAuthorization).toBe(false);
-});
-
-test("Init entry", async () => {
-  const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
-
-  await executeTransactions(
-    provider.connection,
-    await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
-      { mintId },
-    ]),
-    provider.wallet
-  );
-  const entry = await StakeEntry.fromAccountAddress(
-    provider.connection,
-    stakeEntryId
-  );
-  expect(entry.stakeMint.toString()).toBe(mintId.toString());
 });
 
 test("Stake", async () => {
@@ -131,6 +113,19 @@ test("Stake", async () => {
     .addFilter("lastStaker", provider.wallet.publicKey)
     .run(provider.connection);
   expect(activeStakeEntries.length).toBe(1);
+});
+
+test("Stake again fail", async () => {
+  await expect(
+    executeTransactions(
+      provider.connection,
+      await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
+        { mintId },
+      ]),
+      provider.wallet,
+      { silent: true }
+    )
+  ).rejects.toThrow();
 });
 
 test("Unstake", async () => {

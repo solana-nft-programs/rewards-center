@@ -1464,10 +1464,6 @@
             "type": "publicKey"
           },
           {
-            "name": "identifier",
-            "type": "string"
-          },
-          {
             "name": "paymentAmount",
             "type": "u64"
           },
@@ -1749,10 +1745,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "paymentInfo",
-            "type": "publicKey"
-          },
           {
             "name": "paymentAmount",
             "type": "u64"

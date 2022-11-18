@@ -5,9 +5,10 @@ import type { PublicKey } from "@solana/web3.js";
 import { Keypair, Transaction } from "@solana/web3.js";
 
 import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_PAYMENT_INFO,
   findStakeBoosterId,
   findStakePoolId,
-  STAKE_BOOSTER_PAYMENT_MANAGER_ID,
 } from "../../sdk";
 import {
   createInitPoolInstruction,
@@ -17,41 +18,27 @@ import {
   StakePool,
 } from "../../sdk/generated";
 import type { CardinalProvider } from "../utils";
-import {
-  createMasterEditionTx,
-  executeTransaction,
-  getProvider,
-} from "../utils";
+import { executeTransaction, getProvider } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
-const STARTING_AMOUNT = 100;
 const PAYMENT_AMOUNT = 10;
-let mintId: PublicKey;
 let paymentMintId: PublicKey;
 let paymentRecipientId: PublicKey;
 
 beforeAll(async () => {
   provider = await getProvider();
-  const mintKeypair = Keypair.generate();
-  mintId = mintKeypair.publicKey;
-  const mintTx = await createMasterEditionTx(
-    provider.connection,
-    mintKeypair.publicKey,
-    provider.wallet.publicKey
-  );
+
   await executeTransaction(
     provider.connection,
     await withWrapSol(
-      new Transaction().add(...mintTx.instructions),
+      new Transaction(),
       provider.connection,
       provider.wallet,
-      STARTING_AMOUNT
+      PAYMENT_AMOUNT
     ),
-    provider.wallet,
-    [mintKeypair]
+    provider.wallet
   );
-
   paymentMintId = NATIVE_MINT;
   paymentRecipientId = Keypair.generate().publicKey;
 });
@@ -76,11 +63,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentAmount: null,
-          unstakePaymentAmount: null,
-          paymentMint: null,
-          paymentManager: null,
-          paymentRecipient: null,
+          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -112,10 +96,12 @@ test("Create stake booster", async () => {
           stakePool: stakePoolId,
           paymentAmount: PAYMENT_AMOUNT,
           paymentMint: paymentMintId,
-          paymentManager: STAKE_BOOSTER_PAYMENT_MANAGER_ID,
-          paymentRecipient: paymentRecipientId,
+          paymentShares: [
+            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+          ],
           boostSeconds: 2,
           startTimeSeconds: 0,
+          boostActionPaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )
@@ -145,10 +131,12 @@ test("Update stake booster", async () => {
         ix: {
           paymentAmount: PAYMENT_AMOUNT,
           paymentMint: paymentMintId,
-          paymentManager: STAKE_BOOSTER_PAYMENT_MANAGER_ID,
-          paymentRecipient: paymentRecipientId,
+          paymentShares: [
+            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+          ],
           boostSeconds: 4,
           startTimeSeconds: 4,
+          boostActionPaymentInfo: DEFAULT_PAYMENT_INFO,
         },
       }
     )

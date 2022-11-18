@@ -72,6 +72,9 @@ export const stake = async (
     ...mints.map((m) => m.stakeEntryId),
   ]);
   const stakePoolData = accountDataById[stakePoolId.toString()];
+  if (!stakePoolData?.parsed || stakePoolData.type !== "stakePool") {
+    throw "Stake pool not found";
+  }
 
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, amount } of mints) {
@@ -95,7 +98,11 @@ export const stake = async (
     }
 
     const userEscrowId = findUserEscrowId(wallet.publicKey);
-    const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
+    const userAtaId = getAssociatedTokenAddressSync(
+      mintId,
+      wallet.publicKey,
+      true
+    );
     const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
     const stakeIx = createStakeEditionInstruction(
       {
@@ -113,22 +120,17 @@ export const stake = async (
         amount: amount ?? 1,
       }
     );
-
-    const remainingAccounts = [];
-    if (
-      stakePoolData?.type === "stakePool" &&
-      stakePoolData.parsed.stakePaymentInfo
-    ) {
-      const remainingAccountsForPayment =
+    tx.add(
+      withRemainingAccounts(
+        stakeIx,
         await withRemainingAccountsForPaymentInfo(
           connection,
           tx,
           wallet.publicKey,
           stakePoolData.parsed.stakePaymentInfo
-        );
-      remainingAccounts.push(...remainingAccountsForPayment);
-    }
-    tx.add(withRemainingAccounts(stakeIx, remainingAccounts));
+        )
+      )
+    );
     txs.push(tx);
   }
   return txs;

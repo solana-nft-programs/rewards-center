@@ -9,7 +9,6 @@ use super::PaymentShare;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdatePaymentInfoIx {
     authority: Pubkey,
-    identifier: String,
     payment_amount: u64,
     payment_mint: Pubkey,
     payment_shares: Vec<PaymentShare>,

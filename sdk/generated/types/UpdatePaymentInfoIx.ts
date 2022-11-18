@@ -11,7 +11,6 @@ import * as beetSolana from '@metaplex-foundation/beet-solana'
 import { PaymentShare, paymentShareBeet } from './PaymentShare'
 export type UpdatePaymentInfoIx = {
   authority: web3.PublicKey
-  identifier: string
   paymentAmount: beet.bignum
   paymentMint: web3.PublicKey
   paymentShares: PaymentShare[]
@@ -25,7 +24,6 @@ export const updatePaymentInfoIxBeet =
   new beet.FixableBeetArgsStruct<UpdatePaymentInfoIx>(
     [
       ['authority', beetSolana.publicKey],
-      ['identifier', beet.utf8String],
       ['paymentAmount', beet.u64],
       ['paymentMint', beetSolana.publicKey],
       ['paymentShares', beet.array(paymentShareBeet)],

@@ -39,7 +39,7 @@ beforeAll(async () => {
       provider.wallet.publicKey
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
 });
 

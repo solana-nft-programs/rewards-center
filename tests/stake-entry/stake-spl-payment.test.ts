@@ -5,17 +5,23 @@ import {
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
 } from "@solana/spl-token";
-import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  Transaction,
+} from "@solana/web3.js";
 
 import {
-  DEFAULT_PAYMENT_INFO,
   findStakeEntryId,
   findStakePoolId,
   stake,
   unstake,
+  WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
 import {
   createInitPoolInstruction,
+  PaymentInfo,
   StakeEntry,
   StakePool,
 } from "../../sdk/generated";
@@ -29,8 +35,7 @@ import {
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
-const STARTING_AMOUNT = 100;
-const STAKE_PAYMENT_AMOUNT = 10;
+const STARTING_AMOUNT = LAMPORTS_PER_SOL * 2;
 let mintId: PublicKey;
 let paymentMintId: PublicKey;
 
@@ -52,7 +57,7 @@ beforeAll(async () => {
       STARTING_AMOUNT
     ),
     provider.wallet,
-    [mintKeypair]
+    { signers: [mintKeypair] }
   );
   paymentMintId = NATIVE_MINT;
 });
@@ -76,8 +81,8 @@ test("Init pool", async () => {
           resetOnUnstake: false,
           cooldownSeconds: null,
           minStakeSeconds: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
+          unstakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
           endDate: null,
         },
       }
@@ -97,9 +102,6 @@ test("Stake", async () => {
     provider.connection,
     getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
   );
-  const amountBefore = Number(userPaymentAta.amount);
-  expect(amountBefore).toBe(STARTING_AMOUNT);
-
   await executeTransactions(
     provider.connection,
     await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
@@ -114,6 +116,7 @@ test("Stake", async () => {
     mintId,
     provider.wallet.publicKey
   );
+
   const entry = await StakeEntry.fromAccountAddress(
     provider.connection,
     stakeEntryId
@@ -137,16 +140,25 @@ test("Stake", async () => {
     .run(provider.connection);
   expect(activeStakeEntries.length).toBe(1);
 
+  const paymentInfo = await PaymentInfo.fromAccountAddress(
+    provider.connection,
+    WRAPPED_SOL_PAYMENT_INFO
+  );
   const userPaymentAtaAfter = await getAccount(
     provider.connection,
     getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
   );
-  expect(Number(userPaymentAtaAfter.amount)).toBe(
-    STARTING_AMOUNT - STAKE_PAYMENT_AMOUNT
-  );
+  expect(
+    Number(userPaymentAta.amount) - Number(userPaymentAtaAfter.amount)
+  ).toBe(Number(paymentInfo.paymentAmount));
 });
 
 test("Unstake", async () => {
+  const userPaymentAta = await getAccount(
+    provider.connection,
+    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  );
+
   await new Promise((r) => setTimeout(r, 2000));
   await executeTransactions(
     provider.connection,
@@ -183,4 +195,16 @@ test("Unstake", async () => {
     .addFilter("lastStaker", provider.wallet.publicKey)
     .run(provider.connection);
   expect(activeStakeEntries.length).toBe(0);
+
+  const paymentInfo = await PaymentInfo.fromAccountAddress(
+    provider.connection,
+    WRAPPED_SOL_PAYMENT_INFO
+  );
+  const userPaymentAtaAfter = await getAccount(
+    provider.connection,
+    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  );
+  expect(
+    Number(userPaymentAta.amount) - Number(userPaymentAtaAfter.amount)
+  ).toBe(Number(paymentInfo.paymentAmount));
 });

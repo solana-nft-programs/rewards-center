@@ -42,7 +42,8 @@ pub enum Action {
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let action_id = action as u8;
     let default_allowed_payment_infos = match action_id {
-        _ => ["3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string()].to_vec(), // cardinal-test
+        // cardinal-test (native), // cardinal-test-wsol
+        _ => ["3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string(), "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string()].to_vec(),
     };
     let allowed_payment_infos = match &(stake_pool.key().to_string(), action_id) {
         _ => default_allowed_payment_infos,

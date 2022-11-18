@@ -8,7 +8,6 @@ use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdateStakeBoosterIx {
-    payment_info: Pubkey,
     payment_amount: u64,
     payment_mint: Pubkey,
     payment_shares: Vec<PaymentShare>,

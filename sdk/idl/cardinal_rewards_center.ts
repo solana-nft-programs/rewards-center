@@ -1464,10 +1464,6 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "identifier";
-            type: "string";
-          },
-          {
             name: "paymentAmount";
             type: "u64";
           },
@@ -1749,10 +1745,6 @@ export type CardinalRewardsCenter = {
       type: {
         kind: "struct";
         fields: [
-          {
-            name: "paymentInfo";
-            type: "publicKey";
-          },
           {
             name: "paymentAmount";
             type: "u64";
@@ -3670,10 +3662,6 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "identifier",
-            type: "string",
-          },
-          {
             name: "paymentAmount",
             type: "u64",
           },
@@ -3955,10 +3943,6 @@ export const IDL: CardinalRewardsCenter = {
       type: {
         kind: "struct",
         fields: [
-          {
-            name: "paymentInfo",
-            type: "publicKey",
-          },
           {
             name: "paymentAmount",
             type: "u64",

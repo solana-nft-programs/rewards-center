@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-pub const STAKE_POOL_DEFAULT_SIZE: usize = 8 + 1 + 32 + 8 + 1 + 24;
+pub const STAKE_POOL_DEFAULT_SIZE: usize = 8 + 1 + 32 + 8 + 1 + 32 + 32 + 1 + 24;
 pub const STAKE_POOL_PREFIX: &str = "stake-pool";
 #[account]
 pub struct StakePool {

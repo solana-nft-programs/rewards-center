@@ -13,6 +13,8 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { PaymentInfo } from "./generated";
 
+export const BASIS_POINTS_DIVISOR = 10_000;
+
 export const withRemainingAccountsForPaymentInfo = async (
   connection: Connection,
   transaction: Transaction,
@@ -23,7 +25,6 @@ export const withRemainingAccountsForPaymentInfo = async (
     connection,
     paymentInfo
   );
-
   const remainingAccounts: AccountMeta[] = [
     {
       pubkey: paymentInfo,
@@ -34,13 +35,17 @@ export const withRemainingAccountsForPaymentInfo = async (
 
   // add payer
   if (Number(paymentInfoData.paymentAmount) === 0) return remainingAccounts;
-  return withRemainingAccountsForPayment(
-    connection,
-    transaction,
-    payer,
-    paymentInfoData.paymentMint,
-    paymentInfoData.paymentShares.map((p) => p.address)
+
+  remainingAccounts.push(
+    ...(await withRemainingAccountsForPayment(
+      connection,
+      transaction,
+      payer,
+      paymentInfoData.paymentMint,
+      paymentInfoData.paymentShares.map((p) => p.address)
+    ))
   );
+  return remainingAccounts;
 };
 
 export const withRemainingAccountsForPayment = async (
@@ -58,7 +63,7 @@ export const withRemainingAccountsForPayment = async (
     },
   ];
 
-  if (paymentMint === PublicKey.default) {
+  if (paymentMint.equals(PublicKey.default)) {
     remainingAccounts.push({
       pubkey: SystemProgram.programId,
       isSigner: false,
@@ -80,7 +85,7 @@ export const withRemainingAccountsForPayment = async (
     remainingAccounts.push({
       pubkey: getAssociatedTokenAddressSync(paymentMint, payer),
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     });
     const ataIds = paymentTargets.map((a) =>
       getAssociatedTokenAddressSync(paymentMint, a)
