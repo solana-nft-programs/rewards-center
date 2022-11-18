@@ -11,3 +11,7 @@ export const DEFAULT_PAYMENT_INFO = new PublicKey(
 export const WRAPPED_SOL_PAYMENT_INFO = new PublicKey(
   "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt"
 );
+
+export const DUST_PAYMENT_INFO = new PublicKey(
+  "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt"
+);
