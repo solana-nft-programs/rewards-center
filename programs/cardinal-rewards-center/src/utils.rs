@@ -26,5 +26,6 @@ pub fn resize_account<'info>(account_info: &AccountInfo<'info>, new_space: usize
         }
         Ordering::Equal => {}
     }
+    account_info.realloc(new_space, false)?;
     Ok(())
 }
