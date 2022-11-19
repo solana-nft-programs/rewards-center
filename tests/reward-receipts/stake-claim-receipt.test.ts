@@ -188,7 +188,7 @@ test("Stake", async () => {
 });
 
 test("Claim receipt", async () => {
-  await new Promise((r) => setTimeout(r, 2000));
+  await new Promise((r) => setTimeout(r, 4000));
   const receiptManagerId = findReceiptManagerId(
     findStakePoolId(stakePoolIdentifier),
     RECEIPT_MANAGER_IDENTIFIER
