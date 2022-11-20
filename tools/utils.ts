@@ -6,7 +6,11 @@ import type {
   Signer,
   Transaction,
 } from "@solana/web3.js";
-import { Keypair, sendAndConfirmRawTransaction } from "@solana/web3.js";
+import {
+  Keypair,
+  PublicKey,
+  sendAndConfirmRawTransaction,
+} from "@solana/web3.js";
 
 export const keypairFrom = (s: string, n?: string): Keypair => {
   try {
@@ -66,6 +70,15 @@ export async function executeTransaction(
     throw e;
   }
 }
+
+export const publicKeyFrom = (s: string, n?: string): PublicKey => {
+  try {
+    return new PublicKey(s);
+  } catch (e) {
+    process.stdout.write(`${n ?? "publicKey"} is not valid publicKey`);
+    process.exit(1);
+  }
+};
 
 export async function executeTransactions(
   connection: Connection,
