@@ -13,7 +13,6 @@ pub struct InitRewardDistributorIx {
     reward_amount: u64,
     reward_duration_seconds: u128,
     identifier: u64,
-    kind: u8,
     supply: Option<u64>,
     default_multiplier: Option<u64>,
     multiplier_decimals: Option<u8>,

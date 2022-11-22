@@ -12,7 +12,6 @@ export type InitRewardDistributorIx = {
   rewardAmount: beet.bignum
   rewardDurationSeconds: beet.bignum
   identifier: beet.bignum
-  kind: number
   supply: beet.COption<beet.bignum>
   defaultMultiplier: beet.COption<beet.bignum>
   multiplierDecimals: beet.COption<number>
@@ -30,7 +29,6 @@ export const initRewardDistributorIxBeet =
       ['rewardAmount', beet.u64],
       ['rewardDurationSeconds', beet.u128],
       ['identifier', beet.u64],
-      ['kind', beet.u8],
       ['supply', beet.coption(beet.u64)],
       ['defaultMultiplier', beet.coption(beet.u64)],
       ['multiplierDecimals', beet.coption(beet.u8)],

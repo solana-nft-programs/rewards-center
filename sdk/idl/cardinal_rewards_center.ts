@@ -1,5 +1,5 @@
 export type CardinalRewardsCenter = {
-  version: "0.2.0";
+  version: "0.2.3";
   name: "cardinal_rewards_center";
   instructions: [
     {
@@ -1500,10 +1500,6 @@ export type CardinalRewardsCenter = {
             type: "u64";
           },
           {
-            name: "kind";
-            type: "u8";
-          },
-          {
             name: "supply";
             type: {
               option: "u64";
@@ -2197,7 +2193,7 @@ export type CardinalRewardsCenter = {
 };
 
 export const IDL: CardinalRewardsCenter = {
-  version: "0.2.0",
+  version: "0.2.3",
   name: "cardinal_rewards_center",
   instructions: [
     {
@@ -3696,10 +3692,6 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "identifier",
             type: "u64",
-          },
-          {
-            name: "kind",
-            type: "u8",
           },
           {
             name: "supply",
