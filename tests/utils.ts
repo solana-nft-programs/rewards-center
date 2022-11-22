@@ -206,7 +206,11 @@ export const createMintTx = async (
   connection: Connection,
   mintId: PublicKey,
   authority: PublicKey,
-  { target = authority, amount = 1 }: { target?: PublicKey; amount?: number }
+  {
+    target = authority,
+    amount = 1,
+    decimals = 0,
+  }: { target?: PublicKey; amount?: number; decimals?: number }
 ) => {
   const ata = getAssociatedTokenAddressSync(mintId, target);
   return new Transaction().add(
@@ -217,7 +221,7 @@ export const createMintTx = async (
       lamports: await getMinimumBalanceForRentExemptMint(connection),
       programId: TOKEN_PROGRAM_ID,
     }),
-    createInitializeMint2Instruction(mintId, 0, authority, authority),
+    createInitializeMint2Instruction(mintId, decimals, authority, authority),
     createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
     createMintToInstruction(mintId, ata, authority, amount)
   );

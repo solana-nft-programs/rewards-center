@@ -29,7 +29,13 @@ pub struct CloseRewardDistributorCtx<'info> {
 
 pub fn handler(ctx: Context<CloseRewardDistributorCtx>) -> Result<()> {
     let reward_distributor = &mut ctx.accounts.reward_distributor;
-    let reward_distributor_seed = &[REWARD_DISTRIBUTOR_SEED.as_bytes(), reward_distributor.stake_pool.as_ref(), &[reward_distributor.bump]];
+    let identifier_seed = reward_distributor.identifier.to_le_bytes();
+    let reward_distributor_seed = &[
+        REWARD_DISTRIBUTOR_SEED.as_bytes(),
+        reward_distributor.stake_pool.as_ref(),
+        identifier_seed.as_ref(),
+        &[reward_distributor.bump],
+    ];
     let reward_distributor_signer = &[&reward_distributor_seed[..]];
 
     let cpi_accounts = token::Transfer {

@@ -45,7 +45,8 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
     let reward_distributor = &mut ctx.accounts.reward_distributor;
     let stake_pool = reward_distributor.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
-    let reward_distributor_seed = &[REWARD_DISTRIBUTOR_SEED.as_bytes(), stake_pool.as_ref(), &[reward_distributor.bump]];
+    let identifier_seed = reward_distributor.identifier.to_le_bytes();
+    let reward_distributor_seed = &[REWARD_DISTRIBUTOR_SEED.as_bytes(), stake_pool.as_ref(), identifier_seed.as_ref(), &[reward_distributor.bump]];
     let reward_distributor_signer = &[&reward_distributor_seed[..]];
 
     let reward_amount = reward_distributor.reward_amount;

@@ -20,9 +20,11 @@ pub struct ReclaimFundsCtx<'info> {
 }
 
 pub fn handler(ctx: Context<ReclaimFundsCtx>, amount: u64) -> Result<()> {
+    let identifier_seed = ctx.accounts.reward_distributor.identifier.to_le_bytes();
     let reward_distributor_seed = &[
         REWARD_DISTRIBUTOR_SEED.as_bytes(),
         ctx.accounts.reward_distributor.stake_pool.as_ref(),
+        identifier_seed.as_ref(),
         &[ctx.accounts.reward_distributor.bump],
     ];
     let reward_distributor_signer = &[&reward_distributor_seed[..]];
