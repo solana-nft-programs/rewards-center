@@ -211,7 +211,8 @@ export const unstake = async (
           const rewardEntry = accountDataById[rewardEntryId?.toString()];
           const rewardDistributorTokenAccount = getAssociatedTokenAddressSync(
             rewardMint,
-            rewardDistributorId
+            rewardDistributorId,
+            true
           );
           const userRewardMintTokenAccount =
             await withFindOrInitAssociatedTokenAccount(
@@ -362,7 +363,8 @@ export const claimRewards = async (
           const rewardEntry = accountDataById[rewardEntryId?.toString()];
           const rewardDistributorTokenAccount = getAssociatedTokenAddressSync(
             rewardMint,
-            rewardDistributorId
+            rewardDistributorId,
+            true
           );
           const userRewardMintTokenAccount =
             await withFindOrInitAssociatedTokenAccount(

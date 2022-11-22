@@ -83,12 +83,12 @@ export const withRemainingAccountsForPayment = async (
       isWritable: false,
     });
     remainingAccounts.push({
-      pubkey: getAssociatedTokenAddressSync(paymentMint, payer),
+      pubkey: getAssociatedTokenAddressSync(paymentMint, payer, true),
       isSigner: false,
       isWritable: true,
     });
     const ataIds = paymentTargets.map((a) =>
-      getAssociatedTokenAddressSync(paymentMint, a)
+      getAssociatedTokenAddressSync(paymentMint, a, true)
     );
     const tokenAccountInfos = await connection.getMultipleAccountsInfo(ataIds);
     for (let i = 0; i < tokenAccountInfos.length; i++) {
