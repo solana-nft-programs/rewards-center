@@ -21,8 +21,7 @@ import {
   stakePoolDiscriminator,
 } from "./generated";
 
-export type AccountData = AccountInfo<Buffer> &
-  (
+export type AccountData = AccountInfo<Buffer> & { pubkey: PublicKey } & (
     | {
         type: "rewardDistributor";
         parsed: RewardDistributor;

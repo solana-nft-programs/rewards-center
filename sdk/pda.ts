@@ -7,14 +7,15 @@ export const STAKE_ENTRY_SEED = "stake-entry";
 export const findStakeEntryId = (
   stakePoolId: PublicKey,
   mintId: PublicKey,
-  user?: PublicKey
+  user?: PublicKey,
+  isFungible?: boolean
 ): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [
       utils.bytes.utf8.encode(STAKE_ENTRY_SEED),
       stakePoolId.toBuffer(),
       mintId.toBuffer(),
-      user ? user.toBuffer() : PublicKey.default.toBuffer(),
+      user && isFungible ? user.toBuffer() : PublicKey.default.toBuffer(),
     ],
     PROGRAM_ID
   )[0];
