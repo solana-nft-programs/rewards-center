@@ -42,6 +42,11 @@ pub enum Action {
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let action_id = action as u8;
     let default_allowed_payment_infos = match action_id {
+        a if a == Action::ClaimRewards as u8 => [
+            "CUeHFsFqfbLfBGSbuNbaAi4wK6V835PoRg1CqCLo8tpM".to_string(), // claim-rewards-0
+            "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string(), // cardinal-test-wsol
+        ]
+        .to_vec(),
         _ => [
             "3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string(), // cardinal-test (native)
             "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string(), // cardinal-test-wsol

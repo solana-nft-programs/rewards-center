@@ -1,7 +1,7 @@
 import { beforeAll, expect, test } from "@jest/globals";
 import { Transaction } from "@solana/web3.js";
 
-import { DEFAULT_PAYMENT_INFO, findStakePoolId } from "../../sdk";
+import { SOL_PAYMENT_INFO, findStakePoolId } from "../../sdk";
 import {
   createInitPoolInstruction,
   createUpdatePoolInstruction,
@@ -36,8 +36,8 @@ test("Init", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )
@@ -71,8 +71,8 @@ test("Update", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )

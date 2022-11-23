@@ -3,7 +3,7 @@ import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
 import {
-  DEFAULT_PAYMENT_INFO,
+  SOL_PAYMENT_INFO,
   findStakeEntryId,
   findStakePoolId,
   stake,
@@ -61,8 +61,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )

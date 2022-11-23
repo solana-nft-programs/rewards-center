@@ -10,11 +10,11 @@ import { Keypair, Transaction } from "@solana/web3.js";
 
 import {
   claimRewardReceipt,
-  DEFAULT_PAYMENT_INFO,
   findReceiptManagerId,
   findRewardReceiptId,
   findStakeEntryId,
   findStakePoolId,
+  SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
 import {
@@ -88,8 +88,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )
@@ -128,7 +128,7 @@ test("Create receipt manager", async () => {
           paymentShares: [{ address: paymentRecipientId, basisPoints: 10000 }],
           requiresAuthorization: false,
           maxClaimedReceipts: null,
-          claimActionPaymentInfo: DEFAULT_PAYMENT_INFO,
+          claimActionPaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )

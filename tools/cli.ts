@@ -1,8 +1,12 @@
 #!/usr/bin/env node
+/* eslint-disable import/first */
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
 import { connectionFor } from "@cardinal/common";
 import { Wallet } from "@project-serum/anchor";
 import type { Cluster, Connection } from "@solana/web3.js";
-import * as dotenv from "dotenv";
 import * as readline from "readline";
 import type { ArgumentsCamelCase, CommandModule } from "yargs";
 import yargs from "yargs";
@@ -11,8 +15,6 @@ import { hideBin } from "yargs/helpers";
 import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
 import { keypairFrom } from "./utils";
-
-dotenv.config();
 
 export type ProviderParams = {
   cluster: string;
@@ -32,11 +34,14 @@ const commandBuilder = <T>(command: {
       cluster,
       wallet,
     }: ArgumentsCamelCase<ProviderParams>) => {
-      const c = connectionFor((process.env.CLUSTER || cluster) as Cluster);
+      const clusterString = process.env.CLUSTER || cluster;
+      const c = connectionFor(clusterString as Cluster);
       const w = new Wallet(keypairFrom(process.env.WALLET || wallet, "wallet"));
       const a = command.getArgs(c, w);
       console.log(command.description);
-      console.log(`[cluster=${cluster}] [wallet=${w.publicKey.toString()}]`);
+      console.log(
+        `[cluster=${clusterString}] [wallet=${w.publicKey.toString()}]`
+      );
       console.log(`\n(modify args in ${command.commandName}.ts)`);
       console.log(a);
       await question("\nExecute... [enter]");

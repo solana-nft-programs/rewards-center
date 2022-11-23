@@ -1,19 +1,16 @@
-import {
-  withFindOrInitAssociatedTokenAccount,
-  withWrapSol,
-} from "@cardinal/common";
+import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import {
   createTransferInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
-  NATIVE_MINT,
 } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 import { Keypair, LAMPORTS_PER_SOL, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
+  CLAIM_REWARDS_PAYMENT_INFO,
   claimRewards,
   findRewardDistributorId,
   findRewardEntryId,
@@ -21,7 +18,6 @@ import {
   findStakePoolId,
   SOL_PAYMENT_INFO,
   stake,
-  WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
 import {
   createInitPoolInstruction,
@@ -48,9 +44,7 @@ const REWARD_AMOUNT = 2;
 let mintId: PublicKey;
 let rewardMintId: PublicKey;
 
-const STARTING_PAYMENT_AMOUNT = LAMPORTS_PER_SOL;
-const PAYMENT_AMOUNT = LAMPORTS_PER_SOL;
-let paymentMintId: PublicKey;
+const PAYMENT_AMOUNT = 0.002 * LAMPORTS_PER_SOL;
 
 beforeAll(async () => {
   provider = await getProvider();
@@ -72,19 +66,10 @@ beforeAll(async () => {
   );
   await executeTransaction(
     provider.connection,
-    await withWrapSol(
-      new Transaction().add(
-        ...mintTx.instructions,
-        ...rewardMintTx.instructions
-      ),
-      provider.connection,
-      provider.wallet,
-      STARTING_PAYMENT_AMOUNT
-    ),
+    new Transaction().add(...mintTx.instructions, ...rewardMintTx.instructions),
     provider.wallet,
     { signers: [mintKeypair, rewardMintKeypair] }
   );
-  paymentMintId = NATIVE_MINT;
 });
 
 test("Init pool", async () => {
@@ -144,7 +129,7 @@ test("Init reward distributor", async () => {
           defaultMultiplier: 1,
           multiplierDecimals: 0,
           maxRewardSecondsReceived: null,
-          claimRewardsPaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
+          claimRewardsPaymentInfo: CLAIM_REWARDS_PAYMENT_INFO,
         },
       }
     )
@@ -237,13 +222,6 @@ test("Claim rewards", async () => {
     findStakePoolId(stakePoolIdentifier)
   );
 
-  // payment ata
-  const userPaymentAtaBefore = await getAccount(
-    provider.connection,
-    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
-  );
-  expect(Number(userPaymentAtaBefore.amount)).toBe(STARTING_PAYMENT_AMOUNT);
-
   // reward ata
   const userRewardAtaBefore = await getAccount(
     provider.connection,
@@ -252,6 +230,10 @@ test("Claim rewards", async () => {
   const amountBefore = Number(userRewardAtaBefore.amount);
   expect(amountBefore).toBe(0);
 
+  // balance before
+  const balanceBefore = await provider.connection.getBalance(
+    provider.wallet.publicKey
+  );
   await executeTransactions(
     provider.connection,
     await claimRewards(
@@ -325,11 +307,8 @@ test("Claim rewards", async () => {
   expect(rewardDistributorAfter).toBe(REWARD_SUPPLY - amountAfter);
 
   // check payment payment ata
-  const userPaymentAtaAfter = await getAccount(
-    provider.connection,
-    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  const balanceAfter = await provider.connection.getBalance(
+    provider.wallet.publicKey
   );
-  expect(Number(userPaymentAtaAfter.amount)).toBe(
-    STARTING_PAYMENT_AMOUNT - PAYMENT_AMOUNT
-  );
+  expect(balanceBefore - PAYMENT_AMOUNT).toBeGreaterThan(balanceAfter);
 });

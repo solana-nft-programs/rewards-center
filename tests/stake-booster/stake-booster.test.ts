@@ -11,10 +11,10 @@ import { Keypair, Transaction } from "@solana/web3.js";
 import {
   BASIS_POINTS_DIVISOR,
   boost,
-  DEFAULT_PAYMENT_INFO,
   findStakeBoosterId,
   findStakeEntryId,
   findStakePoolId,
+  SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
 import {
@@ -86,8 +86,8 @@ test("Init pool", async () => {
           cooldownSeconds: null,
           minStakeSeconds: null,
           endDate: null,
-          stakePaymentInfo: DEFAULT_PAYMENT_INFO,
-          unstakePaymentInfo: DEFAULT_PAYMENT_INFO,
+          stakePaymentInfo: SOL_PAYMENT_INFO,
+          unstakePaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )
@@ -124,7 +124,7 @@ test("Create stake booster", async () => {
           ],
           boostSeconds: 1,
           startTimeSeconds: Date.now() / 1000 - 1000,
-          boostActionPaymentInfo: DEFAULT_PAYMENT_INFO,
+          boostActionPaymentInfo: SOL_PAYMENT_INFO,
         },
       }
     )

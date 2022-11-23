@@ -1,6 +1,6 @@
 import type { Wallet } from "@project-serum/anchor";
 import type { Connection } from "@solana/web3.js";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
 
 import type { InitPaymentInfoIx } from "../../sdk";
 import { createInitPaymentInfoInstruction, findPaymentInfoId } from "../../sdk";
@@ -9,10 +9,10 @@ import { executeTransaction } from "../utils";
 export const commandName = "createPaymentInfo";
 export const description = "Create a payment info object";
 export const getArgs = (_connection: Connection, wallet: Wallet) => ({
-  identifier: "1-dust",
+  identifier: "claim-rewards-0",
   authority: wallet.publicKey,
-  paymentAmount: 1 * 10 ** 9,
-  paymentMint: new PublicKey("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ"),
+  paymentAmount: 0.002 * LAMPORTS_PER_SOL,
+  paymentMint: PublicKey.default,
   paymentShares: [{ address: wallet.publicKey, basisPoints: 10000 }],
 });
 
