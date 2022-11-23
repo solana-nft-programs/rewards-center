@@ -11,9 +11,9 @@ import { findStakeEntryId } from "./pda";
  */
 export const findStakeEntryIdFromMint = async (
   connection: Connection,
-  user: PublicKey,
   stakePoolId: PublicKey,
   stakeMintId: PublicKey,
+  user: PublicKey,
   isFungible?: boolean
 ): Promise<PublicKey> => {
   if (isFungible === undefined) {
