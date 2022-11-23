@@ -1,13 +1,18 @@
 import { getBatchedMultipleAccounts } from "@cardinal/common";
 import type { AccountInfo, Connection, PublicKey } from "@solana/web3.js";
 
-import type { RewardEntry } from "./generated";
 import {
   PROGRAM_ID,
   ReceiptManager,
   receiptManagerDiscriminator,
   RewardDistributor,
   rewardDistributorDiscriminator,
+  RewardEntry,
+  rewardEntryDiscriminator,
+  RewardReceipt,
+  rewardReceiptDiscriminator,
+  StakeAuthorizationRecord,
+  stakeAuthorizationRecordDiscriminator,
   StakeBooster,
   stakeBoosterDiscriminator,
   StakeEntry,
@@ -26,7 +31,9 @@ export type AccountData = AccountInfo<Buffer> &
     | { type: "stakePool"; parsed: StakePool }
     | { type: "stakeEntry"; parsed: StakeEntry }
     | { type: "receiptManager"; parsed: ReceiptManager }
+    | { type: "rewardReceipt"; parsed: RewardReceipt }
     | { type: "stakeBooster"; parsed: StakeBooster }
+    | { type: "stakeAuthorizationRecord"; parsed: StakeAuthorizationRecord }
     | { type: "unknown"; parsed: null }
   );
 
@@ -92,7 +99,21 @@ export const deserializeAccountInfos = (
           //
         }
         return acc;
-
+      // rewardEntry
+      case [PROGRAM_ID.toString(), rewardEntryDiscriminator.join(",")].join(
+        ":"
+      ):
+        try {
+          acc[accountIds[i]!.toString()] = {
+            ...baseData,
+            ...accountInfo,
+            type: "rewardEntry",
+            parsed: RewardEntry.deserialize(accountInfo.data)[0],
+          };
+        } catch (e) {
+          //
+        }
+        return acc;
       // receiptManager
       case [PROGRAM_ID.toString(), receiptManagerDiscriminator.join(",")].join(
         ":"
@@ -108,6 +129,21 @@ export const deserializeAccountInfos = (
           //
         }
         return acc;
+      // rewardReceipt
+      case [PROGRAM_ID.toString(), rewardReceiptDiscriminator.join(",")].join(
+        ":"
+      ):
+        try {
+          acc[accountIds[i]!.toString()] = {
+            ...baseData,
+            ...accountInfo,
+            type: "rewardReceipt",
+            parsed: RewardReceipt.deserialize(accountInfo.data)[0],
+          };
+        } catch (e) {
+          //
+        }
+        return acc;
       // stakeBooster
       case [PROGRAM_ID.toString(), stakeBoosterDiscriminator.join(",")].join(
         ":"
@@ -118,6 +154,22 @@ export const deserializeAccountInfos = (
             ...accountInfo,
             type: "stakeBooster",
             parsed: StakeBooster.deserialize(accountInfo.data)[0],
+          };
+        } catch (e) {
+          //
+        }
+        return acc;
+      // stakeAuthorizationRecord
+      case [
+        PROGRAM_ID.toString(),
+        stakeAuthorizationRecordDiscriminator.join(","),
+      ].join(":"):
+        try {
+          acc[accountIds[i]!.toString()] = {
+            ...baseData,
+            ...accountInfo,
+            type: "stakeAuthorizationRecord",
+            parsed: StakeAuthorizationRecord.deserialize(accountInfo.data)[0],
           };
         } catch (e) {
           //
