@@ -16,7 +16,7 @@ async function main() {
   for (let i = 0; i < configs.length; i++) {
     const config = configs[i];
     console.error(`\n[${config.programName}] => ${config.outDir}`);
-    const idlPath = path.join(idlDir, `${config.programName}.json`);
+    const idlPath = path.join(idlDir, `${config.programName}_idl.json`);
     const idl = require(idlPath);
     if (idl.metadata?.address == null) {
       idl.metadata = { ...idl.metadata, address: config.programId };

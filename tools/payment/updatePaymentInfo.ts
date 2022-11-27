@@ -1,6 +1,6 @@
 import type { Wallet } from "@project-serum/anchor";
 import type { Connection } from "@solana/web3.js";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
 
 import type { UpdatePaymentInfoIx } from "../../sdk";
 import {
@@ -18,12 +18,21 @@ export type Args = {
 };
 
 export const getArgs = (_connection: Connection, wallet: Wallet) => ({
-  identifier: "1-dust",
+  identifier: "claim-rewards-y00ts",
   ix: {
     authority: wallet.publicKey,
-    paymentAmount: 1 * 10 ** 9,
-    paymentMint: new PublicKey("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ"),
-    paymentShares: [{ address: wallet.publicKey, basisPoints: 10000 }],
+    paymentAmount: 0.002 * LAMPORTS_PER_SOL,
+    paymentMint: PublicKey.default,
+    paymentShares: [
+      {
+        address: new PublicKey("cteamyte8zjZTeexp3qTzvpb24TKRSL3HFad9SzNaNJ"),
+        basisPoints: 5000,
+      },
+      {
+        address: new PublicKey("AxFuniPo7RaDgPH6Gizf4GZmLQFc4M5ipckeeZfkrPNn"),
+        basisPoints: 5000,
+      },
+    ],
   },
 });
 
