@@ -14,6 +14,7 @@ import { hideBin } from "yargs/helpers";
 
 import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
+import * as getStakePool from "./stake-pool/getStakePool";
 import { keypairFrom } from "./utils";
 
 export type ProviderParams = {
@@ -43,7 +44,7 @@ const commandBuilder = <T>(command: {
         `[cluster=${clusterString}] [wallet=${w.publicKey.toString()}]`
       );
       console.log(`\n(modify args in ${command.commandName}.ts)`);
-      console.log(a);
+      console.log(JSON.stringify(a, null, 2));
       await question("\nExecute... [enter]");
       await command.handler(c, w, a);
     },
@@ -75,6 +76,7 @@ void yargs(hideBin(process.argv))
   })
   .command(commandBuilder(createPaymentInfo))
   .command(commandBuilder(updatePaymentInfo))
+  .command(commandBuilder(getStakePool))
   .strict()
   .demandCommand()
   .alias({ h: "help" }).argv;
