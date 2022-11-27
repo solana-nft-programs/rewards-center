@@ -19,7 +19,7 @@ export const getArgs = (_connection: Connection, wallet: Wallet) => ({
       basisPoints: 5000,
     },
     {
-      address: new PublicKey("AxFuniPo7RaDgPH6Gizf4GZmLQFc4M5ipckeeZfkrPNn"),
+      address: new PublicKey("yootn8Kf22CQczC732psp7qEqxwPGSDQCFZHkzoXp25"),
       basisPoints: 5000,
     },
   ],
