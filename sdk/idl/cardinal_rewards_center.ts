@@ -121,34 +121,6 @@ export type CardinalRewardsCenter = {
       ];
     },
     {
-      name: "reasssignStakeEntry";
-      accounts: [
-        {
-          name: "stakePool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "stakeEntry";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lastStaker";
-          isMut: true;
-          isSigner: true;
-        }
-      ];
-      args: [
-        {
-          name: "ix";
-          type: {
-            defined: "ReassignStakeEntryIx";
-          };
-        }
-      ];
-    },
-    {
       name: "updateTotalStakeSeconds";
       accounts: [
         {
@@ -1773,18 +1745,6 @@ export type CardinalRewardsCenter = {
       };
     },
     {
-      name: "ReassignStakeEntryIx";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "target";
-            type: "publicKey";
-          }
-        ];
-      };
-    },
-    {
       name: "InitPoolIx";
       type: {
         kind: "struct";
@@ -2311,34 +2271,6 @@ export const IDL: CardinalRewardsCenter = {
         {
           name: "user",
           type: "publicKey",
-        },
-      ],
-    },
-    {
-      name: "reasssignStakeEntry",
-      accounts: [
-        {
-          name: "stakePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "stakeEntry",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lastStaker",
-          isMut: true,
-          isSigner: true,
-        },
-      ],
-      args: [
-        {
-          name: "ix",
-          type: {
-            defined: "ReassignStakeEntryIx",
-          },
         },
       ],
     },
@@ -3961,18 +3893,6 @@ export const IDL: CardinalRewardsCenter = {
           },
           {
             name: "boostActionPaymentInfo",
-            type: "publicKey",
-          },
-        ],
-      },
-    },
-    {
-      name: "ReassignStakeEntryIx",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "target",
             type: "publicKey",
           },
         ],

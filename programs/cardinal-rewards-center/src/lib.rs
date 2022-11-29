@@ -39,9 +39,6 @@ pub mod cardinal_rewards_center {
     pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
         stake_entry::init_entry::handler(ctx, user)
     }
-    pub fn reasssign_stake_entry(ctx: Context<ReassignStakeEntryCtx>, ix: ReassignStakeEntryIx) -> Result<()> {
-        stake_entry::reassign_stake_entry::handler(ctx, ix)
-    }
     pub fn update_total_stake_seconds(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
         stake_entry::update_total_stake_seconds::handler(ctx)
     }
