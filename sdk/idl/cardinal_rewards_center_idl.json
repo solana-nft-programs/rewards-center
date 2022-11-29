@@ -121,34 +121,6 @@
       ]
     },
     {
-      "name": "reasssignStakeEntry",
-      "accounts": [
-        {
-          "name": "stakePool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "stakeEntry",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "lastStaker",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": [
-        {
-          "name": "ix",
-          "type": {
-            "defined": "ReassignStakeEntryIx"
-          }
-        }
-      ]
-    },
-    {
       "name": "updateTotalStakeSeconds",
       "accounts": [
         {
@@ -1767,18 +1739,6 @@
           },
           {
             "name": "boostActionPaymentInfo",
-            "type": "publicKey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "ReassignStakeEntryIx",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "target",
             "type": "publicKey"
           }
         ]
