@@ -1,6 +1,6 @@
 import { getBatchedMultipleAccounts } from "@cardinal/common";
 import type { Idl } from "@project-serum/anchor";
-import { BorshAccountsCoder } from "@project-serum/anchor";
+import { BorshAccountsCoder, utils } from "@project-serum/anchor";
 import type {
   AllAccountsMap,
   IdlTypes,
@@ -10,6 +10,7 @@ import type {
   AccountInfo,
   Connection,
   GetAccountInfoConfig,
+  GetProgramAccountsConfig,
   PublicKey,
 } from "@solana/web3.js";
 
@@ -25,6 +26,19 @@ import type {
 } from "./constants";
 import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
 import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
+
+export type IdlAccountInfo<IDL extends Idl = CardinalRewardsCenter> = {
+  [T in keyof AllAccountsMap<IDL>]: AccountInfo<Buffer> & {
+    type: T;
+    parsed: TypeDef<AllAccountsMap<IDL>[T], IdlTypes<IDL>>;
+  };
+};
+
+export type IdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
+  [T in keyof AllAccountsMap<IDL>]: {
+    pubkey: PublicKey;
+  } & IdlAccountInfo<IDL>[T];
+};
 
 export const fetchIdlAccount = async <
   T extends keyof AllAccountsMap<IDL>,
@@ -70,194 +84,163 @@ export const fetchIdlAccountNullable = async <
   };
 };
 
+export const decodeIdlAccount = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  accountType: T,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    type: accountType,
+    parsed,
+  };
+};
+
+export const tryDecodeIdlAccount = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  accountType: T,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  try {
+    return decodeIdlAccount<T, IDL>(accountInfo, accountType, idl);
+  } catch (e) {
+    return {
+      ...accountInfo,
+      type: "unknown",
+      parsed: null,
+    };
+  }
+};
+
+export const decodeIdlAccountUnknown = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer> | null,
+  idl: Idl = REWARDS_CENTER_IDL
+): IdlAccountInfo<IDL>[T] => {
+  if (!accountInfo) throw "No account found";
+  // get idl accounts
+  const idlAccounts = idl["accounts"];
+  if (!idlAccounts) throw "No account definitions found in IDL";
+  // find matching account name
+  const accountTypes = idlAccounts.map((a) => a.name);
+  const accountType = accountTypes?.find((accountType) =>
+    BorshAccountsCoder.accountDiscriminator(accountType).compare(
+      accountInfo.data.subarray(0, 8)
+    )
+  );
+  if (!accountType) throw "No account discriminator match found";
+
+  // decode
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    type: accountType as T,
+    parsed,
+  };
+};
+
+export const tryDecodeIdlAccountUnknown = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  if (!accountInfo) return null;
+  try {
+    return decodeIdlAccountUnknown<T, IDL>(accountInfo, idl);
+  } catch (e) {
+    return {
+      ...accountInfo,
+      type: "unknown",
+      parsed: null,
+    };
+  }
+};
+
+export const getProgramIdlAccounts = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  accountType: T,
+  config?: GetProgramAccountsConfig,
+  programId: PublicKey = REWARDS_CENTER_ADDRESS,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const accountInfos = await connection.getProgramAccounts(programId, {
+    filters: [
+      {
+        memcmp: {
+          offset: 0,
+          bytes: utils.bytes.bs58.encode(
+            BorshAccountsCoder.accountDiscriminator(accountType)
+          ),
+        },
+      },
+      ...(config?.filters ?? []),
+    ],
+  });
+  return accountInfos.map((accountInfo) => ({
+    pubkey: accountInfo.pubkey,
+    ...tryDecodeIdlAccount<T, IDL>(accountInfo.account, accountType, idl),
+  }));
+};
+
 export type AccountData = AccountInfo<Buffer> & { pubkey: PublicKey } & (
     | {
         type: "rewardDistributor";
-        parsed: RewardDistributor["parsed"];
+        parsed: RewardDistributor;
       }
-    | { type: "rewardEntry"; parsed: RewardEntry["parsed"] }
-    | { type: "stakePool"; parsed: StakePool["parsed"] }
-    | { type: "stakeEntry"; parsed: StakeEntry["parsed"] }
-    | { type: "receiptManager"; parsed: ReceiptManager["parsed"] }
-    | { type: "rewardReceipt"; parsed: RewardReceipt["parsed"] }
-    | { type: "stakeBooster"; parsed: StakeBooster["parsed"] }
-    | {
-        type: "stakeAuthorizationRecord";
-        parsed: StakeAuthorizationRecord["parsed"];
-      }
+    | { type: "rewardEntry"; parsed: RewardEntry }
+    | { type: "stakePool"; parsed: StakePool }
+    | { type: "stakeEntry"; parsed: StakeEntry }
+    | { type: "receiptManager"; parsed: ReceiptManager }
+    | { type: "rewardReceipt"; parsed: RewardReceipt }
+    | { type: "stakeBooster"; parsed: StakeBooster }
+    | { type: "stakeAuthorizationRecord"; parsed: StakeAuthorizationRecord }
     | { type: "unknown"; parsed: null }
   );
 
 export type AccountDataById = {
-  [accountId: string]: AccountData;
+  [accountId: string]: ReturnType<>;
 };
 
 export const deserializeAccountInfos = (
-  accountIds: (PublicKey | null)[],
+  accountIds: PublicKey[],
   accountInfos: (AccountInfo<Buffer> | null)[]
 ): AccountDataById => {
   return accountInfos.reduce((acc, accountInfo, i) => {
     if (!accountInfo?.data) return acc;
+
     const ownerString = accountInfo.owner.toString();
     const baseData = {
       timestamp: Date.now(),
       pubkey: accountIds[i]!,
     };
-    const discriminator = accountInfo.data
-      .subarray(0, 8)
-      .map((b) => b.valueOf())
-      .join(",");
-    const coder = new BorshAccountsCoder(REWARDS_CENTER_IDL);
-    switch ([ownerString, discriminator].join(":")) {
+    switch (ownerString) {
       // stakePool
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("stakePool"),
-      ].join(":"):
-        try {
-          const type = "stakePool";
-          const parsed: StakePool = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // rewardDistributor
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("rewardDistributor"),
-      ].join(":"):
-        try {
-          const type = "rewardDistributor";
-          const parsed: RewardDistributor = coder.decode(
-            type,
-            accountInfo.data
-          );
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeEntry
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("stakeEntry"),
-      ].join(":"):
-        try {
-          const type = "stakeEntry";
-          const parsed: StakeEntry = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // rewardEntry
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("rewardEntry"),
-      ].join(":"):
-        try {
-          const type = "rewardEntry";
-          const parsed: RewardEntry = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // receiptManager
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("receiptManager"),
-      ].join(":"):
-        try {
-          const type = "receiptManager";
-          const parsed: ReceiptManager = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // rewardReceipt
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("rewardReceipt"),
-      ].join(":"):
-        try {
-          const type = "rewardReceipt";
-          const parsed: RewardReceipt = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeBooster
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("stakeBooster"),
-      ].join(":"):
-        try {
-          const type = "stakeBooster";
-          const parsed: StakeBooster = coder.decode(type, accountInfo.data);
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeAuthorizationRecord
-      case [
-        REWARDS_CENTER_ADDRESS.toString(),
-        BorshAccountsCoder.accountDiscriminator("stakeAuthorizationRecord"),
-      ].join(":"):
-        try {
-          const type = "stakeAuthorizationRecord";
-          const parsed: StakeAuthorizationRecord = coder.decode(
-            type,
-            accountInfo.data
-          );
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type,
-            parsed: parsed.parsed,
-          };
-        } catch (e) {
-          //
-        }
+      case REWARDS_CENTER_ADDRESS.toString():
+        const account = tryDecodeIdlAccountUnknown(accountInfo);
+        acc[accountIds[i]!.toString()] = {
+          ...baseData,
+          ...account,
+        };
         return acc;
       // fallback
       default:
