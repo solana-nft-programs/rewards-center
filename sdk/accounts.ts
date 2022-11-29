@@ -176,10 +176,11 @@ export const decodeIdlAccountUnknown = <
   if (!idlAccounts) throw "No account definitions found in IDL";
   // find matching account name
   const accountTypes = idlAccounts.map((a) => a.name);
-  const accountType = accountTypes?.find((accountType) =>
-    BorshAccountsCoder.accountDiscriminator(accountType).compare(
-      accountInfo.data.subarray(0, 8)
-    )
+  const accountType = accountTypes?.find(
+    (accountType) =>
+      BorshAccountsCoder.accountDiscriminator(accountType).compare(
+        accountInfo.data.subarray(0, 8)
+      ) === 0
   );
   if (!accountType) throw "No account discriminator match found";
 

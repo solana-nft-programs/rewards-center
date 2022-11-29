@@ -8,7 +8,7 @@ import { Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
-import { fetchAccountDataById } from "./accounts";
+import { fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
@@ -57,8 +57,7 @@ export const stake = async (
       amount,
     };
   });
-
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     stakePoolId,
     ...mints.map((m) => m.stakeEntryId),
   ]);
@@ -158,7 +157,7 @@ export const unstake = async (
     };
   });
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     stakePoolId,
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
@@ -321,7 +320,7 @@ export const claimRewards = async (
     };
   });
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
   ]);
@@ -440,7 +439,7 @@ export const claimRewardReceipt = async (
   );
   const rewardReceiptId = findRewardReceiptId(receiptManagerId, stakeEntryId);
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     receiptManagerId,
     rewardReceiptId,
   ]);
@@ -540,7 +539,7 @@ export const boost = async (
     stakeBoosterIdentifer ? new BN(stakeBoosterIdentifer) : undefined
   );
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     stakeBoosterId,
   ]);
   const stakeBoosterData = accountDataById[stakeBoosterId.toString()];

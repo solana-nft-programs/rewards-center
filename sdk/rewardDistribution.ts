@@ -2,7 +2,7 @@ import { BN } from "@project-serum/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 
-import { fetchAccountDataById } from "./accounts";
+import { fetchIdlAccountDataById } from "./accounts";
 import type { RewardDistributor, RewardEntry, StakeEntry } from "./constants";
 import { findRewardEntryId } from "./pda";
 import { findStakeEntryIdFromMint } from "./utils";
@@ -53,7 +53,7 @@ export const getPendingRewardsForPool = async (
     findRewardEntryId(rewardDistributor.pubkey, stakeEntryId)
   );
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     ...stakeEntryIds,
     ...rewardEntryIds,
   ]);
