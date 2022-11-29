@@ -1,38 +1,90 @@
 import { getBatchedMultipleAccounts } from "@cardinal/common";
-import type { AccountInfo, Connection, PublicKey } from "@solana/web3.js";
+import type { Idl } from "@project-serum/anchor";
+import { BorshAccountsCoder } from "@project-serum/anchor";
+import type {
+  AllAccountsMap,
+  IdlTypes,
+  TypeDef,
+} from "@project-serum/anchor/dist/cjs/program/namespace/types";
+import type {
+  AccountInfo,
+  Connection,
+  GetAccountInfoConfig,
+  PublicKey,
+} from "@solana/web3.js";
 
-import {
-  PROGRAM_ID,
+import type {
   ReceiptManager,
-  receiptManagerDiscriminator,
   RewardDistributor,
-  rewardDistributorDiscriminator,
   RewardEntry,
-  rewardEntryDiscriminator,
   RewardReceipt,
-  rewardReceiptDiscriminator,
   StakeAuthorizationRecord,
-  stakeAuthorizationRecordDiscriminator,
   StakeBooster,
-  stakeBoosterDiscriminator,
   StakeEntry,
-  stakeEntryDiscriminator,
   StakePool,
-  stakePoolDiscriminator,
-} from "./generated";
+} from "./constants";
+import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
+import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
+
+export const fetchIdlAccount = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  pubkey: PublicKey,
+  accountType: T,
+  config?: GetAccountInfoConfig
+) => {
+  const account = await fetchIdlAccountNullable<T, IDL>(
+    connection,
+    pubkey,
+    accountType,
+    config
+  );
+  if (!account) throw "Account info not found";
+  return account;
+};
+
+export const fetchIdlAccountNullable = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  pubkey: PublicKey,
+  accountType: T,
+  config?: GetAccountInfoConfig,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const accountInfo = await connection.getAccountInfo(pubkey, config);
+  if (!accountInfo) return null;
+
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    pubkey,
+    parsed,
+    type: accountType,
+  };
+};
 
 export type AccountData = AccountInfo<Buffer> & { pubkey: PublicKey } & (
     | {
         type: "rewardDistributor";
-        parsed: RewardDistributor;
+        parsed: RewardDistributor["parsed"];
       }
-    | { type: "rewardEntry"; parsed: RewardEntry }
-    | { type: "stakePool"; parsed: StakePool }
-    | { type: "stakeEntry"; parsed: StakeEntry }
-    | { type: "receiptManager"; parsed: ReceiptManager }
-    | { type: "rewardReceipt"; parsed: RewardReceipt }
-    | { type: "stakeBooster"; parsed: StakeBooster }
-    | { type: "stakeAuthorizationRecord"; parsed: StakeAuthorizationRecord }
+    | { type: "rewardEntry"; parsed: RewardEntry["parsed"] }
+    | { type: "stakePool"; parsed: StakePool["parsed"] }
+    | { type: "stakeEntry"; parsed: StakeEntry["parsed"] }
+    | { type: "receiptManager"; parsed: ReceiptManager["parsed"] }
+    | { type: "rewardReceipt"; parsed: RewardReceipt["parsed"] }
+    | { type: "stakeBooster"; parsed: StakeBooster["parsed"] }
+    | {
+        type: "stakeAuthorizationRecord";
+        parsed: StakeAuthorizationRecord["parsed"];
+      }
     | { type: "unknown"; parsed: null }
   );
 
@@ -55,15 +107,21 @@ export const deserializeAccountInfos = (
       .subarray(0, 8)
       .map((b) => b.valueOf())
       .join(",");
+    const coder = new BorshAccountsCoder(REWARDS_CENTER_IDL);
     switch ([ownerString, discriminator].join(":")) {
       // stakePool
-      case [PROGRAM_ID.toString(), stakePoolDiscriminator.join(",")].join(":"):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("stakePool"),
+      ].join(":"):
         try {
+          const type = "stakePool";
+          const parsed: StakePool = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "stakePool",
-            parsed: StakePool.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
@@ -71,88 +129,110 @@ export const deserializeAccountInfos = (
         return acc;
       // rewardDistributor
       case [
-        PROGRAM_ID.toString(),
-        rewardDistributorDiscriminator.join(","),
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("rewardDistributor"),
       ].join(":"):
         try {
+          const type = "rewardDistributor";
+          const parsed: RewardDistributor = coder.decode(
+            type,
+            accountInfo.data
+          );
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "rewardDistributor",
-            parsed: RewardDistributor.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
         }
         return acc;
       // stakeEntry
-      case [PROGRAM_ID.toString(), stakeEntryDiscriminator.join(",")].join(":"):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("stakeEntry"),
+      ].join(":"):
         try {
+          const type = "stakeEntry";
+          const parsed: StakeEntry = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "stakeEntry",
-            parsed: StakeEntry.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
         }
         return acc;
       // rewardEntry
-      case [PROGRAM_ID.toString(), rewardEntryDiscriminator.join(",")].join(
-        ":"
-      ):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("rewardEntry"),
+      ].join(":"):
         try {
+          const type = "rewardEntry";
+          const parsed: RewardEntry = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "rewardEntry",
-            parsed: RewardEntry.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
         }
         return acc;
       // receiptManager
-      case [PROGRAM_ID.toString(), receiptManagerDiscriminator.join(",")].join(
-        ":"
-      ):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("receiptManager"),
+      ].join(":"):
         try {
+          const type = "receiptManager";
+          const parsed: ReceiptManager = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "receiptManager",
-            parsed: ReceiptManager.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
         }
         return acc;
       // rewardReceipt
-      case [PROGRAM_ID.toString(), rewardReceiptDiscriminator.join(",")].join(
-        ":"
-      ):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("rewardReceipt"),
+      ].join(":"):
         try {
+          const type = "rewardReceipt";
+          const parsed: RewardReceipt = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "rewardReceipt",
-            parsed: RewardReceipt.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
         }
         return acc;
       // stakeBooster
-      case [PROGRAM_ID.toString(), stakeBoosterDiscriminator.join(",")].join(
-        ":"
-      ):
+      case [
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("stakeBooster"),
+      ].join(":"):
         try {
+          const type = "stakeBooster";
+          const parsed: StakeBooster = coder.decode(type, accountInfo.data);
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "stakeBooster",
-            parsed: StakeBooster.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //
@@ -160,15 +240,20 @@ export const deserializeAccountInfos = (
         return acc;
       // stakeAuthorizationRecord
       case [
-        PROGRAM_ID.toString(),
-        stakeAuthorizationRecordDiscriminator.join(","),
+        REWARDS_CENTER_ADDRESS.toString(),
+        BorshAccountsCoder.accountDiscriminator("stakeAuthorizationRecord"),
       ].join(":"):
         try {
+          const type = "stakeAuthorizationRecord";
+          const parsed: StakeAuthorizationRecord = coder.decode(
+            type,
+            accountInfo.data
+          );
           acc[accountIds[i]!.toString()] = {
             ...baseData,
             ...accountInfo,
-            type: "stakeAuthorizationRecord",
-            parsed: StakeAuthorizationRecord.deserialize(accountInfo.data)[0],
+            type,
+            parsed: parsed.parsed,
           };
         } catch (e) {
           //

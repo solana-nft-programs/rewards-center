@@ -1,12 +1,12 @@
 import { beforeAll, expect, test } from "@jest/globals";
-import { Transaction } from "@solana/web3.js";
+import { SystemProgram, Transaction } from "@solana/web3.js";
 
-import { findStakePoolId, SOL_PAYMENT_INFO } from "../../sdk";
 import {
-  createInitPoolInstruction,
-  createUpdatePoolInstruction,
-  StakePool,
-} from "../../sdk/generated";
+  fetchIdlAccount,
+  findStakePoolId,
+  rewardsCenterProgram,
+  SOL_PAYMENT_INFO,
+} from "../../sdk";
 import type { CardinalProvider } from "../utils";
 import { executeTransaction, getProvider } from "../utils";
 
@@ -16,72 +16,75 @@ beforeAll(async () => {
   provider = await getProvider();
 });
 
-test("Init", async () => {
+test("Init pool", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  tx.add(
-    createInitPoolInstruction(
-      {
-        stakePool: stakePoolId,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          identifier: stakePoolIdentifier,
-          allowedCollections: [],
-          allowedCreators: [],
-          requiresAuthorization: false,
-          authority: provider.wallet.publicKey,
-          resetOnUnstake: false,
-          cooldownSeconds: null,
-          minStakeSeconds: null,
-          endDate: null,
-          stakePaymentInfo: SOL_PAYMENT_INFO,
-          unstakePaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .initPool({
+      identifier: stakePoolIdentifier,
+      allowedCollections: [],
+      allowedCreators: [],
+      requiresAuthorization: false,
+      authority: provider.wallet.publicKey,
+      resetOnUnstake: false,
+      cooldownSeconds: null,
+      minStakeSeconds: null,
+      endDate: null,
+      stakePaymentInfo: SOL_PAYMENT_INFO,
+      unstakePaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakePool: stakePoolId,
+      payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await StakePool.fromAccountAddress(
+  const pool = await fetchIdlAccount(
     provider.connection,
-    stakePoolId
+    stakePoolId,
+    "stakePool"
   );
-  expect(pool.authority.toString()).toBe(provider.wallet.publicKey.toString());
-  expect(pool.requiresAuthorization).toBe(false);
+  expect(pool.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
+  );
+  expect(pool.parsed.requiresAuthorization).toBe(false);
 });
 
 test("Update", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  tx.add(
-    createUpdatePoolInstruction(
-      {
-        stakePool: stakePoolId,
-        authority: provider.wallet.publicKey,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          allowedCollections: [],
-          allowedCreators: [],
-          requiresAuthorization: true,
-          authority: provider.wallet.publicKey,
-          resetOnUnstake: false,
-          cooldownSeconds: null,
-          minStakeSeconds: null,
-          endDate: null,
-          stakePaymentInfo: SOL_PAYMENT_INFO,
-          unstakePaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .updatePool({
+      allowedCollections: [],
+      allowedCreators: [],
+      requiresAuthorization: true,
+      authority: provider.wallet.publicKey,
+      resetOnUnstake: false,
+      cooldownSeconds: null,
+      minStakeSeconds: null,
+      endDate: null,
+      stakePaymentInfo: SOL_PAYMENT_INFO,
+      unstakePaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
+      payer: provider.wallet.publicKey,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await StakePool.fromAccountAddress(
+  const pool = await fetchIdlAccount(
     provider.connection,
-    stakePoolId
+    stakePoolId,
+    "stakePool"
   );
-  expect(pool.authority.toString()).toBe(provider.wallet.publicKey.toString());
-  expect(pool.requiresAuthorization).toBe(true);
+  expect(pool.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
+  );
+  expect(pool.parsed.requiresAuthorization).toBe(true);
 });
