@@ -172,6 +172,9 @@ test("Init reward distributor", async () => {
   );
   expect(rewardDistributor.parsed.multiplierDecimals).toBe(0);
   expect(Number(rewardDistributor.parsed.defaultMultiplier)).toBe(1);
+  expect(rewardDistributor.parsed.claimRewardsPaymentInfo.toString()).toBe(
+    CLAIM_REWARDS_PAYMENT_INFO.toString()
+  );
 
   // reward account check
   const rewardDistributorAta = await getAccount(
