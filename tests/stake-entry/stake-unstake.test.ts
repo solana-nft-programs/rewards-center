@@ -3,9 +3,9 @@ import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 
 import {
-  SOL_PAYMENT_INFO,
   findStakeEntryId,
   findStakePoolId,
+  SOL_PAYMENT_INFO,
   stake,
   unstake,
 } from "../../sdk";

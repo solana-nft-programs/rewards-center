@@ -1,7 +1,7 @@
 import { beforeAll, expect, test } from "@jest/globals";
 import { Transaction } from "@solana/web3.js";
 
-import { SOL_PAYMENT_INFO, findStakePoolId } from "../../sdk";
+import { findStakePoolId, SOL_PAYMENT_INFO } from "../../sdk";
 import {
   createInitPoolInstruction,
   createUpdatePoolInstruction,
