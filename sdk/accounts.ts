@@ -14,32 +14,44 @@ import type {
   PublicKey,
 } from "@solana/web3.js";
 
-import type {
-  ReceiptManager,
-  RewardDistributor,
-  RewardEntry,
-  RewardReceipt,
-  StakeAuthorizationRecord,
-  StakeBooster,
-  StakeEntry,
-  StakePool,
-} from "./constants";
 import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
 import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
 
-export type IdlAccountInfo<IDL extends Idl = CardinalRewardsCenter> = {
-  [T in keyof AllAccountsMap<IDL>]: AccountInfo<Buffer> & {
+export type ParsedIdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
+  [T in keyof AllAccountsMap<IDL>]: {
     type: T;
     parsed: TypeDef<AllAccountsMap<IDL>[T], IdlTypes<IDL>>;
   };
 };
 
-export type IdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
-  [T in keyof AllAccountsMap<IDL>]: {
-    pubkey: PublicKey;
-  } & IdlAccountInfo<IDL>[T];
-};
+export type IdlAccountInfo<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = AccountInfo<Buffer> &
+  (
+    | ParsedIdlAccount<IDL>[T]
+    | {
+        type: "unknown";
+        parsed: null;
+      }
+  );
 
+export type IdlAccountData<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = {
+  pubkey: PublicKey;
+  timestamp: number;
+} & IdlAccountInfo<T, IDL>;
+
+/**
+ * Fetch an account with idl types
+ * @param connection
+ * @param pubkey
+ * @param accountType
+ * @param config
+ * @returns
+ */
 export const fetchIdlAccount = async <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
@@ -59,6 +71,15 @@ export const fetchIdlAccount = async <
   return account;
 };
 
+/**
+ * Fetch a possibly null account with idl types of a specific type
+ * @param connection
+ * @param pubkey
+ * @param accountType
+ * @param config
+ * @param idl
+ * @returns
+ */
 export const fetchIdlAccountNullable = async <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
@@ -84,6 +105,13 @@ export const fetchIdlAccountNullable = async <
   };
 };
 
+/**
+ * Decode an account with idl types of a specific type
+ * @param accountInfo
+ * @param accountType
+ * @param idl
+ * @returns
+ */
 export const decodeIdlAccount = <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
@@ -103,6 +131,13 @@ export const decodeIdlAccount = <
   };
 };
 
+/**
+ * Try to decode an account with idl types of specific type
+ * @param accountInfo
+ * @param accountType
+ * @param idl
+ * @returns
+ */
 export const tryDecodeIdlAccount = <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
@@ -122,13 +157,19 @@ export const tryDecodeIdlAccount = <
   }
 };
 
+/**
+ * Decode an idl account of unknown type
+ * @param accountInfo
+ * @param idl
+ * @returns
+ */
 export const decodeIdlAccountUnknown = <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
 >(
   accountInfo: AccountInfo<Buffer> | null,
   idl: Idl = REWARDS_CENTER_IDL
-): IdlAccountInfo<IDL>[T] => {
+): AccountInfo<Buffer> & ParsedIdlAccount<IDL>[T] => {
   if (!accountInfo) throw "No account found";
   // get idl accounts
   const idlAccounts = idl["accounts"];
@@ -154,14 +195,19 @@ export const decodeIdlAccountUnknown = <
   };
 };
 
+/**
+ * Try to decode an account with idl types of unknown type
+ * @param accountInfo
+ * @param idl
+ * @returns
+ */
 export const tryDecodeIdlAccountUnknown = <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
 >(
   accountInfo: AccountInfo<Buffer>,
   idl: Idl = REWARDS_CENTER_IDL
-) => {
-  if (!accountInfo) return null;
+): IdlAccountInfo<T, IDL> => {
   try {
     return decodeIdlAccountUnknown<T, IDL>(accountInfo, idl);
   } catch (e) {
@@ -173,6 +219,15 @@ export const tryDecodeIdlAccountUnknown = <
   }
 };
 
+/**
+ * Get program accounts of a specific idl type
+ * @param connection
+ * @param accountType
+ * @param config
+ * @param programId
+ * @param idl
+ * @returns
+ */
 export const getProgramIdlAccounts = async <
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
@@ -202,32 +257,29 @@ export const getProgramIdlAccounts = async <
   }));
 };
 
-export type AccountData = AccountInfo<Buffer> & { pubkey: PublicKey } & (
-    | {
-        type: "rewardDistributor";
-        parsed: RewardDistributor;
-      }
-    | { type: "rewardEntry"; parsed: RewardEntry }
-    | { type: "stakePool"; parsed: StakePool }
-    | { type: "stakeEntry"; parsed: StakeEntry }
-    | { type: "receiptManager"; parsed: ReceiptManager }
-    | { type: "rewardReceipt"; parsed: RewardReceipt }
-    | { type: "stakeBooster"; parsed: StakeBooster }
-    | { type: "stakeAuthorizationRecord"; parsed: StakeAuthorizationRecord }
-    | { type: "unknown"; parsed: null }
-  );
-
-export type AccountDataById = {
-  [accountId: string]: ReturnType<>;
+export type IdlAccountDataById<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = {
+  [accountId: string]: IdlAccountData<T, IDL>;
 };
 
-export const deserializeAccountInfos = (
+/**
+ * Decode account infos with corresponding ids
+ * @param accountIds
+ * @param accountInfos
+ * @returns
+ */
+export const decodeAccountInfos = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
   accountIds: PublicKey[],
   accountInfos: (AccountInfo<Buffer> | null)[]
-): AccountDataById => {
+): IdlAccountDataById<T, IDL> => {
   return accountInfos.reduce((acc, accountInfo, i) => {
     if (!accountInfo?.data) return acc;
-
+    const accoutIdString = accountIds[i]?.toString() ?? "";
     const ownerString = accountInfo.owner.toString();
     const baseData = {
       timestamp: Date.now(),
@@ -235,16 +287,16 @@ export const deserializeAccountInfos = (
     };
     switch (ownerString) {
       // stakePool
-      case REWARDS_CENTER_ADDRESS.toString():
-        const account = tryDecodeIdlAccountUnknown(accountInfo);
-        acc[accountIds[i]!.toString()] = {
+      case REWARDS_CENTER_ADDRESS.toString(): {
+        acc[accoutIdString] = {
           ...baseData,
-          ...account,
+          ...tryDecodeIdlAccountUnknown<T, IDL>(accountInfo),
         };
         return acc;
+      }
       // fallback
       default:
-        acc[accountIds[i]!.toString()] = {
+        acc[accoutIdString] = {
           ...baseData,
           ...accountInfo,
           type: "unknown",
@@ -252,17 +304,26 @@ export const deserializeAccountInfos = (
         };
         return acc;
     }
-  }, {} as AccountDataById);
+  }, {} as IdlAccountDataById<T, IDL>);
 };
 
-export const fetchAccountDataById = async (
+/**
+ * Batch fetch a map of accounts and their corresponding ids
+ * @param connection
+ * @param ids
+ * @returns
+ */
+export const fetchIdlAccountDataById = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
   connection: Connection,
   ids: (PublicKey | null)[]
-): Promise<AccountDataById> => {
+): Promise<IdlAccountDataById<T, IDL>> => {
   const filteredIds = ids.filter((id): id is PublicKey => id !== null);
   const accountInfos = await getBatchedMultipleAccounts(
     connection,
     filteredIds
   );
-  return deserializeAccountInfos(filteredIds, accountInfos);
+  return decodeAccountInfos(filteredIds, accountInfos);
 };
