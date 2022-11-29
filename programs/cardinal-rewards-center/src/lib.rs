@@ -42,6 +42,9 @@ pub mod cardinal_rewards_center {
     pub fn update_total_stake_seconds(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
         stake_entry::update_total_stake_seconds::handler(ctx)
     }
+    pub fn reset_stake_entry(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
+        stake_entry::reset_stake_entry::handler(ctx)
+    }
     pub fn close_stake_entry(ctx: Context<CloseStakeEntryCtx>) -> Result<()> {
         stake_entry::close_stake_entry::handler(ctx)
     }

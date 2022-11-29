@@ -41,9 +41,3 @@ If you are developing using Cardinal rewards-center contracts and libraries, fee
 For issues please, file a GitHub issue.
 
 > https://discord.gg/cardinallabs
-
-## License
-
-Cardinal Protocol is licensed under the GNU Affero General Public License v3.0.
-
-In short, this means that any changes to this code must be made open source and available under the AGPL-v3.0 license, even if only used privately.
