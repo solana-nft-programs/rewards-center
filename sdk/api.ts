@@ -12,7 +12,6 @@ import { fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
-  withRemainingAccounts,
   withRemainingAccountsForPayment,
   withRemainingAccountsForPaymentInfo,
 } from "./payment";
@@ -104,10 +103,7 @@ export const stake = async (
         userStakeMintTokenAccount: userAtaId,
         tokenMetadataProgram: tokenMetadata.PROGRAM_ID,
       })
-      .instruction();
-    tx.add(
-      withRemainingAccounts(
-        stakeIx,
+      .remainingAccounts(
         await withRemainingAccountsForPaymentInfo(
           connection,
           tx,
@@ -115,7 +111,8 @@ export const stake = async (
           stakePoolData.parsed.stakePaymentInfo
         )
       )
-    );
+      .instruction();
+    tx.add(stakeIx);
     txs.push(tx);
   }
   return txs;

@@ -97,6 +97,9 @@ test("Init pool", async () => {
     provider.wallet.publicKey.toString()
   );
   expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    SOL_PAYMENT_INFO.toString()
+  );
 });
 
 test("Create stake booster", async () => {

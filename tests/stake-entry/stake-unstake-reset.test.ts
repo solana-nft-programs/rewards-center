@@ -80,6 +80,9 @@ test("Init pool", async () => {
   );
   expect(pool.parsed.requiresAuthorization).toBe(false);
   expect(pool.parsed.resetOnUnstake).toBe(true);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    SOL_PAYMENT_INFO.toString()
+  );
 });
 
 test("Init entry", async () => {

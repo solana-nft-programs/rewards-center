@@ -18,7 +18,6 @@ import {
   findStakeEntryId,
   findStakePoolId,
   rewardsCenterProgram,
-  SOL_PAYMENT_INFO,
   stake,
   unstake,
   WRAPPED_SOL_PAYMENT_INFO,
@@ -75,8 +74,8 @@ test("Init pool", async () => {
       cooldownSeconds: null,
       minStakeSeconds: null,
       endDate: null,
-      stakePaymentInfo: SOL_PAYMENT_INFO,
-      unstakePaymentInfo: SOL_PAYMENT_INFO,
+      stakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
+      unstakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
     })
     .accounts({
       stakePool: stakePoolId,
@@ -95,6 +94,9 @@ test("Init pool", async () => {
     provider.wallet.publicKey.toString()
   );
   expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    WRAPPED_SOL_PAYMENT_INFO.toString()
+  );
 });
 
 test("Stake", async () => {

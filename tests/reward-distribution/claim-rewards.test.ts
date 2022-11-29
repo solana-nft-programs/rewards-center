@@ -27,8 +27,8 @@ import {
   findStakeEntryId,
   findStakePoolId,
   rewardsCenterProgram,
-  SOL_PAYMENT_INFO,
   stake,
+  WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
 import type { CardinalProvider } from "../utils";
 import {
@@ -101,8 +101,8 @@ test("Init pool", async () => {
       cooldownSeconds: null,
       minStakeSeconds: null,
       endDate: null,
-      stakePaymentInfo: SOL_PAYMENT_INFO,
-      unstakePaymentInfo: SOL_PAYMENT_INFO,
+      stakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
+      unstakePaymentInfo: WRAPPED_SOL_PAYMENT_INFO,
     })
     .accounts({
       stakePool: stakePoolId,
@@ -121,6 +121,14 @@ test("Init pool", async () => {
     provider.wallet.publicKey.toString()
   );
   expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    WRAPPED_SOL_PAYMENT_INFO.toString()
+  );
+  const userPaymentAtaBefore = await getAccount(
+    provider.connection,
+    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  );
+  expect(Number(userPaymentAtaBefore.amount)).toBe(STARTING_PAYMENT_AMOUNT);
 });
 
 test("Init reward distributor", async () => {
@@ -196,6 +204,14 @@ test("Init reward distributor", async () => {
 
 test("Stake", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
+
+  // check payment ata before
+  const userPaymentAtaBefore = await getAccount(
+    provider.connection,
+    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  );
+  expect(Number(userPaymentAtaBefore.amount)).toBe(STARTING_PAYMENT_AMOUNT);
+
   await executeTransactions(
     provider.connection,
     await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
@@ -238,6 +254,15 @@ test("Stake", async () => {
     },
   ]);
   expect(activeStakeEntries.length).toBe(1);
+
+  // check payment ata after
+  const userPaymentAtaAfter = await getAccount(
+    provider.connection,
+    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
+  );
+  expect(Number(userPaymentAtaAfter.amount)).toBe(
+    STARTING_PAYMENT_AMOUNT - PAYMENT_AMOUNT
+  );
 });
 
 test("Claim rewards", async () => {
@@ -246,13 +271,6 @@ test("Claim rewards", async () => {
   const rewardDistributorId = findRewardDistributorId(
     findStakePoolId(stakePoolIdentifier)
   );
-
-  // payment ata
-  const userPaymentAtaBefore = await getAccount(
-    provider.connection,
-    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
-  );
-  expect(Number(userPaymentAtaBefore.amount)).toBe(STARTING_PAYMENT_AMOUNT);
 
   // reward ata
   const userRewardAtaBefore = await getAccount(
@@ -344,13 +362,4 @@ test("Claim rewards", async () => {
   );
   const rewardDistributorAfter = Number(rewardDistributorAtaAfter.amount);
   expect(rewardDistributorAfter).toBe(REWARD_SUPPLY - amountAfter);
-
-  // check payment payment ata
-  const userPaymentAtaAfter = await getAccount(
-    provider.connection,
-    getAssociatedTokenAddressSync(paymentMintId, provider.wallet.publicKey)
-  );
-  expect(Number(userPaymentAtaAfter.amount)).toBe(
-    STARTING_PAYMENT_AMOUNT - PAYMENT_AMOUNT
-  );
 });
