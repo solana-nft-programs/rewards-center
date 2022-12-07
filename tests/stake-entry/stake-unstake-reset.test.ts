@@ -16,7 +16,7 @@ import {
   stake,
   unstake,
 } from "../../sdk";
-import { findMintEditionId } from "../../sdk/utils";
+import { findMintMetadataId } from "../../sdk/utils";
 import type { CardinalProvider } from "../utils";
 import {
   createMasterEditionTx,
@@ -88,7 +88,7 @@ test("Init pool", async () => {
 test("Init entry", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
-  const metadataId = findMintEditionId(mintId);
+  const metadataId = findMintMetadataId(mintId);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   const ix = await program.methods
@@ -99,6 +99,7 @@ test("Init entry", async () => {
       stakeMint: mintId,
       stakeMintMetadata: metadataId,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);
