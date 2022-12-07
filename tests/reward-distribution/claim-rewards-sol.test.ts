@@ -15,8 +15,8 @@ import {
 import { BN } from "bn.js";
 
 import {
-  CLAIM_REWARDS_PAYMENT_INFO,
   claimRewards,
+  DEFAULT_PAYMENT_INFO,
   fetchIdlAccount,
   findRewardDistributorId,
   findRewardEntryId,
@@ -43,7 +43,7 @@ const REWARD_AMOUNT = 2;
 let mintId: PublicKey;
 let rewardMintId: PublicKey;
 
-const PAYMENT_AMOUNT = 0.002 * LAMPORTS_PER_SOL;
+const PAYMENT_AMOUNT = 0.005 * LAMPORTS_PER_SOL;
 
 beforeAll(async () => {
   provider = await getProvider();
@@ -125,7 +125,7 @@ test("Init reward distributor", async () => {
       defaultMultiplier: new BN(1),
       multiplierDecimals: 0,
       maxRewardSecondsReceived: null,
-      claimRewardsPaymentInfo: CLAIM_REWARDS_PAYMENT_INFO,
+      claimRewardsPaymentInfo: DEFAULT_PAYMENT_INFO,
     })
     .accounts({
       rewardDistributor: rewardDistributorId,
@@ -173,7 +173,7 @@ test("Init reward distributor", async () => {
   expect(rewardDistributor.parsed.multiplierDecimals).toBe(0);
   expect(Number(rewardDistributor.parsed.defaultMultiplier)).toBe(1);
   expect(rewardDistributor.parsed.claimRewardsPaymentInfo.toString()).toBe(
-    CLAIM_REWARDS_PAYMENT_INFO.toString()
+    DEFAULT_PAYMENT_INFO.toString()
   );
 
   // reward account check
@@ -250,6 +250,15 @@ test("Claim rewards", async () => {
   const balanceBefore = await provider.connection.getBalance(
     provider.wallet.publicKey
   );
+
+  await claimRewards(
+    provider.connection,
+    provider.wallet,
+    stakePoolIdentifier,
+    [{ mintId }],
+    [rewardDistributorId]
+  );
+
   await executeTransactions(
     provider.connection,
     await claimRewards(

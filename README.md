@@ -26,7 +26,7 @@ Cardinal rewards center is a modular smart contract for staking tokens and distr
 
 Program addresses are the same on devnet, testnet, and mainnet-beta.
 
-- RewardsCenter: [`rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U`](https://explorer.solana.com/address/rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U)
+- RewardsCenter: [`crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd`](https://explorer.solana.com/address/crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd)
 
 ## State map
 

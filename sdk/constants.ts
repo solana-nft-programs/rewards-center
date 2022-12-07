@@ -15,19 +15,19 @@ import { IDL } from "./idl/cardinal_rewards_center";
 export const REWARDS_CENTER_IDL = IDL;
 
 export const REWARDS_CENTER_ADDRESS = new PublicKey(
-  "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
-);
-
-export const SOL_PAYMENT_INFO = new PublicKey(
-  "3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm"
+  "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
 );
 
 export const WRAPPED_SOL_PAYMENT_INFO = new PublicKey(
-  "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt"
+  "382KXQfzC26jbFmLZBmKoZ6eRz53iwGfxXwoGyyyH8po"
 );
 
-export const DUST_PAYMENT_INFO = new PublicKey(
-  "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt"
+export const SOL_PAYMENT_INFO = new PublicKey(
+  "HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU"
+);
+
+export const DEFAULT_PAYMENT_INFO = new PublicKey(
+  "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL"
 );
 
 export type IDLAccountInfo<IDL extends Idl = CardinalRewardsCenter> = {
@@ -42,10 +42,6 @@ export type IDLAccount<IDL extends Idl = CardinalRewardsCenter> = {
     pubkey: PublicKey;
   } & IDLAccountInfo<IDL>[T];
 };
-
-export const CLAIM_REWARDS_PAYMENT_INFO = new PublicKey(
-  "CUeHFsFqfbLfBGSbuNbaAi4wK6V835PoRg1CqCLo8tpM"
-);
 
 export type RewardDistributor = IDLAccount["rewardDistributor"];
 export type RewardEntry = IDLAccount["rewardEntry"];

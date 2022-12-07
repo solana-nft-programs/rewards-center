@@ -43,7 +43,9 @@ pub enum Action {
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let default_allowed_payment_infos = match action {
         _ => [
-            "7cKQgnFTzLtdNWgMuQVQG4LjWShsGsgXx284VBr5eRsM".to_string(), // cardinal-default 0.005
+            "382KXQfzC26jbFmLZBmKoZ6eRz53iwGfxXwoGyyyH8po".to_string(), // cardinal-test-wsol
+            "HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU".to_string(), // cardinal-test (native)
+            "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL".to_string(),  // cardinal-default 0.005
         ]
         .to_vec(),
     };
@@ -51,7 +53,7 @@ pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pub
         _ => default_allowed_payment_infos,
     };
     if !allowed_payment_infos.contains(&payment_info.to_string()) {
-        return Err(error!(ErrorCode::InvalidPaymentManager));
+        return Err(error!(ErrorCode::InvalidPaymentInfo));
     }
     Ok(())
 }

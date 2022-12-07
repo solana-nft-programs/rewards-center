@@ -3,13 +3,13 @@ cluster = "localnet"
 wallet = "./tests/test-key.json"
 
 [programs.mainnet]
-cardinal_rewards_center = "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
+cardinal_rewards_center = "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
 
 [programs.devnet]
-cardinal_rewards_center = "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
+cardinal_rewards_center = "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
 
 [programs.testnet]
-cardinal_rewards_center = "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
+cardinal_rewards_center = "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
 
 [programs.localnet]
-cardinal_rewards_center = "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
+cardinal_rewards_center = "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"

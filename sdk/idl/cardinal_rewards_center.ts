@@ -1,5 +1,5 @@
 export type CardinalRewardsCenter = {
-  version: "2.0.0";
+  version: "2.1.0";
   name: "cardinal_rewards_center";
   instructions: [
     {
@@ -2042,8 +2042,8 @@ export type CardinalRewardsCenter = {
     },
     {
       code: 6064;
-      name: "InvalidPaymentManager";
-      msg: "Invalid payment manager";
+      name: "InvalidPaymentInfo";
+      msg: "Invalid payment info";
     },
     {
       code: 6065;
@@ -2174,7 +2174,7 @@ export type CardinalRewardsCenter = {
 };
 
 export const IDL: CardinalRewardsCenter = {
-  version: "2.0.0",
+  version: "2.1.0",
   name: "cardinal_rewards_center",
   instructions: [
     {
@@ -4217,8 +4217,8 @@ export const IDL: CardinalRewardsCenter = {
     },
     {
       code: 6064,
-      name: "InvalidPaymentManager",
-      msg: "Invalid payment manager",
+      name: "InvalidPaymentInfo",
+      msg: "Invalid payment info",
     },
     {
       code: 6065,

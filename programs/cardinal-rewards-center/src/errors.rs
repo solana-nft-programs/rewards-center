@@ -67,8 +67,8 @@ pub enum ErrorCode {
     InvalidBoostPayerTokenAccount,
     #[msg("Invalid boost payment recipient token account")]
     InvalidBoostPaymentRecipientTokenAccount,
-    #[msg("Invalid payment manager")]
-    InvalidPaymentManager,
+    #[msg("Invalid payment info")]
+    InvalidPaymentInfo,
     #[msg("Cannot boost a fungible token stake entry")]
     CannotBoostFungibleToken,
 
