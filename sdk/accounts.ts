@@ -91,7 +91,11 @@ export const fetchIdlAccountNullable = async <
   idl: Idl = REWARDS_CENTER_IDL
 ) => {
   const accountInfo = await connection.getAccountInfo(pubkey, config);
-  if (!accountInfo) return null;
+  if (
+    !accountInfo ||
+    accountInfo.owner.toString() !== REWARDS_CENTER_ADDRESS.toString()
+  )
+    return null;
 
   const parsed: TypeDef<
     AllAccountsMap<IDL>[T],

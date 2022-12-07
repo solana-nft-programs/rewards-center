@@ -1,9 +1,8 @@
-import type { Wallet } from "@project-serum/anchor";
+import type { BN, Wallet } from "@project-serum/anchor";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, Transaction } from "@solana/web3.js";
 
-import type { InitPaymentInfoIx } from "../../sdk";
-import { createInitPaymentInfoInstruction, findPaymentInfoId } from "../../sdk";
+import { findPaymentInfoId, rewardsCenterProgram } from "../../sdk";
 import { executeTransaction } from "../utils";
 
 export const commandName = "createPaymentInfo";
@@ -25,6 +24,14 @@ export const getArgs = (_connection: Connection, wallet: Wallet) => ({
   ],
 });
 
+export type InitPaymentInfoIx = {
+  authority: PublicKey;
+  identifier: string;
+  paymentAmount: BN;
+  paymentMint: PublicKey;
+  paymentShares: PublicKey[];
+};
+
 export const handler = async (
   connection: Connection,
   wallet: Wallet,
@@ -32,11 +39,13 @@ export const handler = async (
 ) => {
   const transaction = new Transaction();
   const paymentInfoId = findPaymentInfoId(args.identifier);
+  const program = rewardsCenterProgram(connection, wallet);
+
   transaction.add(
-    createInitPaymentInfoInstruction(
-      { paymentInfo: paymentInfoId, payer: wallet.publicKey },
-      { ix: args }
-    )
+    await program.methods
+      .initPaymentInfo(args)
+      .accounts({ paymentInfo: paymentInfoId, payer: wallet.publicKey })
+      .instruction()
   );
   await new Promise((r) => setTimeout(r, 200));
   await executeTransaction(connection, transaction, wallet);

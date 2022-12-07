@@ -6,7 +6,6 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import {
   fetchIdlAccount,
@@ -17,6 +16,7 @@ import {
   stake,
   unstake,
 } from "../../sdk";
+import { findMintEditionId } from "../../sdk/utils";
 import type { CardinalProvider } from "../utils";
 import {
   createMasterEditionTx,
@@ -88,7 +88,7 @@ test("Init pool", async () => {
 test("Init entry", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
-  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+  const metadataId = findMintEditionId(mintId);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   const ix = await program.methods

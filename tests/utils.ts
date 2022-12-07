@@ -21,7 +21,8 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
+
+import { findMintEditionId, findMintMetadataId } from "../sdk/utils";
 
 export async function newAccountWithLamports(
   connection: Connection,
@@ -234,8 +235,8 @@ export const createMasterEditionTx = async (
   target = authority
 ) => {
   const ata = getAssociatedTokenAddressSync(mintId, target);
-  const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
-  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+  const editionId = findMintEditionId(mintId);
+  const metadataId = findMintMetadataId(mintId);
 
   return new Transaction().add(
     SystemProgram.createAccount({

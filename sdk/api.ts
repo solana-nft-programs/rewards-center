@@ -1,12 +1,13 @@
 import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
 import type * as beet from "@metaplex-foundation/beet";
-import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
-import { Transaction } from "@solana/web3.js";
+import { SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import { fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
@@ -23,6 +24,11 @@ import {
   findStakePoolId,
   findUserEscrowId,
 } from "./pda";
+import {
+  findMintEditionId,
+  findMintMetadataId,
+  METADATA_PROGRAM_ID,
+} from "./utils";
 
 /**
  * Stake all mints and also initialize entries if not already initialized
@@ -68,7 +74,7 @@ export const stake = async (
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, amount } of mints) {
     const tx = new Transaction();
-    const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+    const metadataId = findMintMetadataId(mintId);
     if (!accountDataById[stakeEntryId.toString()]) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.initEntry(wallet.publicKey)
@@ -78,6 +84,7 @@ export const stake = async (
           stakeMint: mintId,
           stakeMintMetadata: metadataId,
           payer: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
         })
         .instruction();
       tx.add(ix);
@@ -89,19 +96,21 @@ export const stake = async (
       wallet.publicKey,
       true
     );
-    const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+    const editionId = findMintEditionId(mintId);
     const stakeIx = await rewardsCenterProgram(connection, wallet)
       .methods.stakeEdition(new BN(amount ?? 1))
       .accounts({
-        stakeEntry: stakeEntryId,
         stakePool: stakePoolId,
+        stakeEntry: stakeEntryId,
         stakeMint: mintId,
         stakeMintEdition: editionId,
         stakeMintMetadata: metadataId,
         user: wallet.publicKey,
         userEscrow: userEscrowId,
         userStakeMintTokenAccount: userAtaId,
-        tokenMetadataProgram: tokenMetadata.PROGRAM_ID,
+        tokenMetadataProgram: METADATA_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
       })
       .remainingAccounts(
         await withRemainingAccountsForPaymentInfo(
@@ -166,7 +175,7 @@ export const unstake = async (
     const tx = new Transaction();
     const userEscrowId = findUserEscrowId(wallet.publicKey);
     const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
-    const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+    const editionId = findMintEditionId(mintId);
 
     if (
       rewardEntryIds &&
@@ -271,7 +280,7 @@ export const unstake = async (
         user: wallet.publicKey,
         userEscrow: userEscrowId,
         userStakeMintTokenAccount: userAtaId,
-        tokenMetadataProgram: tokenMetadata.PROGRAM_ID,
+        tokenMetadataProgram: METADATA_PROGRAM_ID,
       })
       .remainingAccounts(remainingAccounts)
       .instruction();
