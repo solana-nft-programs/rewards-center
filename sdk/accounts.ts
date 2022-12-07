@@ -1,182 +1,307 @@
 import { getBatchedMultipleAccounts } from "@cardinal/common";
-import type { AccountInfo, Connection, PublicKey } from "@solana/web3.js";
+import type { Idl } from "@project-serum/anchor";
+import { BorshAccountsCoder, utils } from "@project-serum/anchor";
+import type {
+  AllAccountsMap,
+  IdlTypes,
+  TypeDef,
+} from "@project-serum/anchor/dist/cjs/program/namespace/types";
+import type {
+  AccountInfo,
+  Connection,
+  GetAccountInfoConfig,
+  GetProgramAccountsConfig,
+  PublicKey,
+} from "@solana/web3.js";
 
-import {
-  PROGRAM_ID,
-  ReceiptManager,
-  receiptManagerDiscriminator,
-  RewardDistributor,
-  rewardDistributorDiscriminator,
-  RewardEntry,
-  rewardEntryDiscriminator,
-  RewardReceipt,
-  rewardReceiptDiscriminator,
-  StakeAuthorizationRecord,
-  stakeAuthorizationRecordDiscriminator,
-  StakeBooster,
-  stakeBoosterDiscriminator,
-  StakeEntry,
-  stakeEntryDiscriminator,
-  StakePool,
-  stakePoolDiscriminator,
-} from "./generated";
+import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
+import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
 
-export type AccountData = AccountInfo<Buffer> & { pubkey: PublicKey } & (
-    | {
-        type: "rewardDistributor";
-        parsed: RewardDistributor;
-      }
-    | { type: "rewardEntry"; parsed: RewardEntry }
-    | { type: "stakePool"; parsed: StakePool }
-    | { type: "stakeEntry"; parsed: StakeEntry }
-    | { type: "receiptManager"; parsed: ReceiptManager }
-    | { type: "rewardReceipt"; parsed: RewardReceipt }
-    | { type: "stakeBooster"; parsed: StakeBooster }
-    | { type: "stakeAuthorizationRecord"; parsed: StakeAuthorizationRecord }
-    | { type: "unknown"; parsed: null }
-  );
-
-export type AccountDataById = {
-  [accountId: string]: AccountData;
+export type ParsedIdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
+  [T in keyof AllAccountsMap<IDL>]: {
+    type: T;
+    parsed: TypeDef<AllAccountsMap<IDL>[T], IdlTypes<IDL>>;
+  };
 };
 
-export const deserializeAccountInfos = (
-  accountIds: (PublicKey | null)[],
+export type IdlAccountInfo<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = AccountInfo<Buffer> &
+  (
+    | ParsedIdlAccount<IDL>[T]
+    | {
+        type: "unknown";
+        parsed: null;
+      }
+  );
+
+export type IdlAccountData<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = {
+  pubkey: PublicKey;
+  timestamp: number;
+} & IdlAccountInfo<T, IDL>;
+
+/**
+ * Fetch an account with idl types
+ * @param connection
+ * @param pubkey
+ * @param accountType
+ * @param config
+ * @returns
+ */
+export const fetchIdlAccount = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  pubkey: PublicKey,
+  accountType: T,
+  config?: GetAccountInfoConfig
+) => {
+  const account = await fetchIdlAccountNullable<T, IDL>(
+    connection,
+    pubkey,
+    accountType,
+    config
+  );
+  if (!account) throw "Account info not found";
+  return account;
+};
+
+/**
+ * Fetch a possibly null account with idl types of a specific type
+ * @param connection
+ * @param pubkey
+ * @param accountType
+ * @param config
+ * @param idl
+ * @returns
+ */
+export const fetchIdlAccountNullable = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  pubkey: PublicKey,
+  accountType: T,
+  config?: GetAccountInfoConfig,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const accountInfo = await connection.getAccountInfo(pubkey, config);
+  if (
+    !accountInfo ||
+    accountInfo.owner.toString() !== REWARDS_CENTER_ADDRESS.toString()
+  )
+    return null;
+
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    pubkey,
+    parsed,
+    type: accountType,
+  };
+};
+
+/**
+ * Decode an account with idl types of a specific type
+ * @param accountInfo
+ * @param accountType
+ * @param idl
+ * @returns
+ */
+export const decodeIdlAccount = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  accountType: T,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    type: accountType,
+    parsed,
+  };
+};
+
+/**
+ * Try to decode an account with idl types of specific type
+ * @param accountInfo
+ * @param accountType
+ * @param idl
+ * @returns
+ */
+export const tryDecodeIdlAccount = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  accountType: T,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  try {
+    return decodeIdlAccount<T, IDL>(accountInfo, accountType, idl);
+  } catch (e) {
+    return {
+      ...accountInfo,
+      type: "unknown",
+      parsed: null,
+    };
+  }
+};
+
+/**
+ * Decode an idl account of unknown type
+ * @param accountInfo
+ * @param idl
+ * @returns
+ */
+export const decodeIdlAccountUnknown = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer> | null,
+  idl: Idl = REWARDS_CENTER_IDL
+): AccountInfo<Buffer> & ParsedIdlAccount<IDL>[T] => {
+  if (!accountInfo) throw "No account found";
+  // get idl accounts
+  const idlAccounts = idl["accounts"];
+  if (!idlAccounts) throw "No account definitions found in IDL";
+  // find matching account name
+  const accountTypes = idlAccounts.map((a) => a.name);
+  const accountType = accountTypes?.find(
+    (accountType) =>
+      BorshAccountsCoder.accountDiscriminator(accountType).compare(
+        accountInfo.data.subarray(0, 8)
+      ) === 0
+  );
+  if (!accountType) throw "No account discriminator match found";
+
+  // decode
+  const parsed: TypeDef<
+    AllAccountsMap<IDL>[T],
+    IdlTypes<IDL>
+  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
+  return {
+    ...accountInfo,
+    type: accountType as T,
+    parsed,
+  };
+};
+
+/**
+ * Try to decode an account with idl types of unknown type
+ * @param accountInfo
+ * @param idl
+ * @returns
+ */
+export const tryDecodeIdlAccountUnknown = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountInfo: AccountInfo<Buffer>,
+  idl: Idl = REWARDS_CENTER_IDL
+): IdlAccountInfo<T, IDL> => {
+  try {
+    return decodeIdlAccountUnknown<T, IDL>(accountInfo, idl);
+  } catch (e) {
+    return {
+      ...accountInfo,
+      type: "unknown",
+      parsed: null,
+    };
+  }
+};
+
+/**
+ * Get program accounts of a specific idl type
+ * @param connection
+ * @param accountType
+ * @param config
+ * @param programId
+ * @param idl
+ * @returns
+ */
+export const getProgramIdlAccounts = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  connection: Connection,
+  accountType: T,
+  config?: GetProgramAccountsConfig,
+  programId: PublicKey = REWARDS_CENTER_ADDRESS,
+  idl: Idl = REWARDS_CENTER_IDL
+) => {
+  const accountInfos = await connection.getProgramAccounts(programId, {
+    filters: [
+      {
+        memcmp: {
+          offset: 0,
+          bytes: utils.bytes.bs58.encode(
+            BorshAccountsCoder.accountDiscriminator(accountType)
+          ),
+        },
+      },
+      ...(config?.filters ?? []),
+    ],
+  });
+  return accountInfos.map((accountInfo) => ({
+    pubkey: accountInfo.pubkey,
+    ...tryDecodeIdlAccount<T, IDL>(accountInfo.account, accountType, idl),
+  }));
+};
+
+export type IdlAccountDataById<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = {
+  [accountId: string]: IdlAccountData<T, IDL>;
+};
+
+/**
+ * Decode account infos with corresponding ids
+ * @param accountIds
+ * @param accountInfos
+ * @returns
+ */
+export const decodeAccountInfos = <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
+  accountIds: PublicKey[],
   accountInfos: (AccountInfo<Buffer> | null)[]
-): AccountDataById => {
+): IdlAccountDataById<T, IDL> => {
   return accountInfos.reduce((acc, accountInfo, i) => {
     if (!accountInfo?.data) return acc;
+    const accoutIdString = accountIds[i]?.toString() ?? "";
     const ownerString = accountInfo.owner.toString();
     const baseData = {
       timestamp: Date.now(),
       pubkey: accountIds[i]!,
     };
-    const discriminator = accountInfo.data
-      .subarray(0, 8)
-      .map((b) => b.valueOf())
-      .join(",");
-    switch ([ownerString, discriminator].join(":")) {
+    switch (ownerString) {
       // stakePool
-      case [PROGRAM_ID.toString(), stakePoolDiscriminator.join(",")].join(":"):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "stakePool",
-            parsed: StakePool.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
+      case REWARDS_CENTER_ADDRESS.toString(): {
+        acc[accoutIdString] = {
+          ...baseData,
+          ...tryDecodeIdlAccountUnknown<T, IDL>(accountInfo),
+        };
         return acc;
-      // rewardDistributor
-      case [
-        PROGRAM_ID.toString(),
-        rewardDistributorDiscriminator.join(","),
-      ].join(":"):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "rewardDistributor",
-            parsed: RewardDistributor.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeEntry
-      case [PROGRAM_ID.toString(), stakeEntryDiscriminator.join(",")].join(":"):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "stakeEntry",
-            parsed: StakeEntry.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // rewardEntry
-      case [PROGRAM_ID.toString(), rewardEntryDiscriminator.join(",")].join(
-        ":"
-      ):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "rewardEntry",
-            parsed: RewardEntry.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // receiptManager
-      case [PROGRAM_ID.toString(), receiptManagerDiscriminator.join(",")].join(
-        ":"
-      ):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "receiptManager",
-            parsed: ReceiptManager.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // rewardReceipt
-      case [PROGRAM_ID.toString(), rewardReceiptDiscriminator.join(",")].join(
-        ":"
-      ):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "rewardReceipt",
-            parsed: RewardReceipt.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeBooster
-      case [PROGRAM_ID.toString(), stakeBoosterDiscriminator.join(",")].join(
-        ":"
-      ):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "stakeBooster",
-            parsed: StakeBooster.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
-      // stakeAuthorizationRecord
-      case [
-        PROGRAM_ID.toString(),
-        stakeAuthorizationRecordDiscriminator.join(","),
-      ].join(":"):
-        try {
-          acc[accountIds[i]!.toString()] = {
-            ...baseData,
-            ...accountInfo,
-            type: "stakeAuthorizationRecord",
-            parsed: StakeAuthorizationRecord.deserialize(accountInfo.data)[0],
-          };
-        } catch (e) {
-          //
-        }
-        return acc;
+      }
       // fallback
       default:
-        acc[accountIds[i]!.toString()] = {
+        acc[accoutIdString] = {
           ...baseData,
           ...accountInfo,
           type: "unknown",
@@ -184,17 +309,26 @@ export const deserializeAccountInfos = (
         };
         return acc;
     }
-  }, {} as AccountDataById);
+  }, {} as IdlAccountDataById<T, IDL>);
 };
 
-export const fetchAccountDataById = async (
+/**
+ * Batch fetch a map of accounts and their corresponding ids
+ * @param connection
+ * @param ids
+ * @returns
+ */
+export const fetchIdlAccountDataById = async <
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+>(
   connection: Connection,
   ids: (PublicKey | null)[]
-): Promise<AccountDataById> => {
+): Promise<IdlAccountDataById<T, IDL>> => {
   const filteredIds = ids.filter((id): id is PublicKey => id !== null);
   const accountInfos = await getBatchedMultipleAccounts(
     connection,
     filteredIds
   );
-  return deserializeAccountInfos(filteredIds, accountInfos);
+  return decodeAccountInfos(filteredIds, accountInfos);
 };

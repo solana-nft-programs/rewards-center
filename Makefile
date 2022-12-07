@@ -8,8 +8,8 @@ install:
 	yarn install
 
 build:
-	anchor build && cargo +nightly fmt
-	yarn idl:generate && yarn sdk:generate && yarn lint && yarn build
+	anchor build
+	yarn idl:generate && yarn lint && yarn build
 
 start:
 	solana-test-validator --url https://api.mainnet-beta.solana.com \

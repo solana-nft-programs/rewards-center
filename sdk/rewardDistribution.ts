@@ -1,10 +1,9 @@
-import type { AccountData } from "@cardinal/common";
 import { BN } from "@project-serum/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 
-import { fetchAccountDataById } from "./accounts";
-import type { RewardDistributor, RewardEntry, StakeEntry } from "./generated";
+import { fetchIdlAccountDataById } from "./accounts";
+import type { RewardDistributor, RewardEntry, StakeEntry } from "./constants";
 import { findRewardEntryId } from "./pda";
 import { findStakeEntryIdFromMint } from "./utils";
 
@@ -20,7 +19,7 @@ export const getPendingRewardsForPool = async (
   connection: Connection,
   wallet: PublicKey,
   mintIds: PublicKey[],
-  rewardDistributor: AccountData<RewardDistributor>,
+  rewardDistributor: RewardDistributor,
   UTCNow: number
 ): Promise<{
   rewardMap: {
@@ -54,7 +53,7 @@ export const getPendingRewardsForPool = async (
     findRewardEntryId(rewardDistributor.pubkey, stakeEntryId)
   );
 
-  const accountDataById = await fetchAccountDataById(connection, [
+  const accountDataById = await fetchIdlAccountDataById(connection, [
     ...stakeEntryIds,
     ...rewardEntryIds,
   ]);
@@ -68,7 +67,7 @@ export const getPendingRewardsForPool = async (
       }
       return acc;
     },
-    [[], []] as [AccountData<StakeEntry>[], AccountData<RewardEntry>[]]
+    [[], []] as [StakeEntry[], RewardEntry[]]
   );
   return getRewardMap(
     stakeEntries,
@@ -89,9 +88,9 @@ export const getPendingRewardsForPool = async (
  * @returns
  */
 export const getRewardMap = (
-  stakeEntries: AccountData<StakeEntry>[],
-  rewardEntries: AccountData<RewardEntry>[],
-  rewardDistributor: AccountData<RewardDistributor>,
+  stakeEntries: StakeEntry[],
+  rewardEntries: RewardEntry[],
+  rewardDistributor: RewardDistributor,
   remainingRewardAmount: BN,
   UTCNow: number
 ): {
@@ -147,9 +146,9 @@ export const getRewardMap = (
  * @returns
  */
 export const calculatePendingRewards = (
-  rewardDistributor: AccountData<RewardDistributor>,
-  stakeEntry: AccountData<StakeEntry>,
-  rewardEntry: AccountData<RewardEntry> | undefined,
+  rewardDistributor: RewardDistributor,
+  stakeEntry: StakeEntry,
+  rewardEntry: RewardEntry | undefined,
   remainingRewardAmount: BN,
   UTCNow: number
 ): [BN, BN] => {

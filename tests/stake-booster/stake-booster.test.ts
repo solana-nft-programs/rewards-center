@@ -6,24 +6,20 @@ import {
   NATIVE_MINT,
 } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
-import { Keypair, Transaction } from "@solana/web3.js";
+import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
+import { BN } from "bn.js";
 
 import {
   BASIS_POINTS_DIVISOR,
   boost,
+  fetchIdlAccount,
   findStakeBoosterId,
   findStakeEntryId,
   findStakePoolId,
+  rewardsCenterProgram,
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
-import {
-  createInitPoolInstruction,
-  createInitStakeBoosterInstruction,
-  StakeBooster,
-  StakeEntry,
-  StakePool,
-} from "../../sdk/generated";
 import type { CardinalProvider } from "../utils";
 import {
   createMasterEditionTx,
@@ -67,80 +63,89 @@ beforeAll(async () => {
 });
 
 test("Init pool", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  tx.add(
-    createInitPoolInstruction(
-      {
-        stakePool: stakePoolId,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          identifier: stakePoolIdentifier,
-          allowedCollections: [],
-          allowedCreators: [],
-          requiresAuthorization: false,
-          authority: provider.wallet.publicKey,
-          resetOnUnstake: false,
-          cooldownSeconds: null,
-          minStakeSeconds: null,
-          endDate: null,
-          stakePaymentInfo: SOL_PAYMENT_INFO,
-          unstakePaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .initPool({
+      identifier: stakePoolIdentifier,
+      allowedCollections: [],
+      allowedCreators: [],
+      requiresAuthorization: false,
+      authority: provider.wallet.publicKey,
+      resetOnUnstake: false,
+      cooldownSeconds: null,
+      minStakeSeconds: null,
+      endDate: null,
+      stakePaymentInfo: SOL_PAYMENT_INFO,
+      unstakePaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakePool: stakePoolId,
+      payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await StakePool.fromAccountAddress(
+  const pool = await fetchIdlAccount(
     provider.connection,
-    stakePoolId
+    stakePoolId,
+    "stakePool"
   );
-  expect(pool.authority.toString()).toBe(provider.wallet.publicKey.toString());
-  expect(pool.requiresAuthorization).toBe(false);
+  expect(pool.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
+  );
+  expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    SOL_PAYMENT_INFO.toString()
+  );
 });
 
 test("Create stake booster", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeBoosterId = findStakeBoosterId(stakePoolId);
-  tx.add(
-    createInitStakeBoosterInstruction(
-      {
-        stakeBooster: stakeBoosterId,
-        stakePool: stakePoolId,
-        authority: provider.wallet.publicKey,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          identifier: 0,
-          stakePool: stakePoolId,
-          paymentAmount: PAYMENT_AMOUNT,
-          paymentMint: paymentMintId,
-          paymentShares: [
-            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
-          ],
-          boostSeconds: 1,
-          startTimeSeconds: Date.now() / 1000 - 1000,
-          boostActionPaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .initStakeBooster({
+      identifier: new BN(0),
+      stakePool: stakePoolId,
+      paymentAmount: new BN(PAYMENT_AMOUNT),
+      paymentMint: paymentMintId,
+      paymentShares: [
+        { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+      ],
+      boostSeconds: new BN(1),
+      startTimeSeconds: new BN(Date.now() / 1000 - 1000),
+      boostActionPaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakeBooster: stakeBoosterId,
+      stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
+      payer: provider.wallet.publicKey,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const stakeBooster = await StakeBooster.fromAccountAddress(
+  const stakeBooster = await fetchIdlAccount(
     provider.connection,
-    stakeBoosterId
+    stakeBoosterId,
+    "stakeBooster"
   );
-  expect(stakeBooster.paymentMint.toString()).toBe(paymentMintId.toString());
-  expect(Number(stakeBooster.boostSeconds)).toBe(1);
-  expect(stakeBooster.paymentAmount.toString()).toBe(PAYMENT_AMOUNT.toString());
+  expect(stakeBooster.parsed.paymentMint.toString()).toBe(
+    paymentMintId.toString()
+  );
+  expect(Number(stakeBooster.parsed.boostSeconds)).toBe(1);
+  expect(stakeBooster.parsed.paymentAmount.toString()).toBe(
+    PAYMENT_AMOUNT.toString()
+  );
 });
 
 test("Stake", async () => {
   // miss 3 seconds
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   await new Promise((r) => setTimeout(r, 3000));
   await executeTransactions(
     provider.connection,
@@ -156,49 +161,57 @@ test("Stake", async () => {
     mintId,
     provider.wallet.publicKey
   );
-  const entry = await StakeEntry.fromAccountAddress(
+  const entry = await fetchIdlAccount(
     provider.connection,
-    stakeEntryId
+    stakeEntryId,
+    "stakeEntry"
   );
-  expect(entry.stakeMint.toString()).toBe(mintId.toString());
-  expect(entry.lastStaker.toString()).toBe(
+  expect(entry.parsed.stakeMint.toString()).toBe(mintId.toString());
+  expect(entry.parsed.lastStaker.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(parseInt(entry.lastStakedAt.toString())).toBeGreaterThan(
+  expect(parseInt(entry.parsed.lastStakedAt.toString())).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
-  expect(parseInt(entry.lastUpdatedAt.toString())).toBeGreaterThan(
+  expect(parseInt(entry.parsed.lastUpdatedAt.toString())).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
 
   const userAta = await getAccount(provider.connection, userAtaId);
   expect(userAta.isFrozen).toBe(true);
   expect(parseInt(userAta.amount.toString())).toBe(1);
-  const activeStakeEntries = await StakeEntry.gpaBuilder()
-    .addFilter("lastStaker", provider.wallet.publicKey)
-    .run(provider.connection);
+  const activeStakeEntries = await program.account.stakeEntry.all([
+    {
+      memcmp: {
+        offset: 82,
+        bytes: provider.wallet.publicKey.toString(),
+      },
+    },
+  ]);
   expect(activeStakeEntries.length).toBe(1);
 });
 
 test("Boost", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   await new Promise((r) => setTimeout(r, 1000));
 
   // check stake entry before
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
-  const entryBefore = await StakeEntry.fromAccountAddress(
+  const entryBefore = await fetchIdlAccount(
     provider.connection,
-    stakeEntryId
+    stakeEntryId,
+    "stakeEntry"
   );
-  expect(entryBefore.stakeMint.toString()).toBe(mintId.toString());
-  expect(entryBefore.lastStaker.toString()).toBe(
+  expect(entryBefore.parsed.stakeMint.toString()).toBe(mintId.toString());
+  expect(entryBefore.parsed.lastStaker.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(parseInt(entryBefore.totalStakeSeconds.toString())).toBe(0);
-  expect(parseInt(entryBefore.lastStakedAt.toString())).toBeGreaterThan(
+  expect(parseInt(entryBefore.parsed.totalStakeSeconds.toString())).toBe(0);
+  expect(parseInt(entryBefore.parsed.lastStakedAt.toString())).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
-  expect(parseInt(entryBefore.lastUpdatedAt.toString())).toBeGreaterThan(
+  expect(parseInt(entryBefore.parsed.lastUpdatedAt.toString())).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
 
@@ -225,21 +238,22 @@ test("Boost", async () => {
   );
 
   // check stake entry
-  const entryAfter = await StakeEntry.fromAccountAddress(
+  const entryAfter = await fetchIdlAccount(
     provider.connection,
-    stakeEntryId
+    stakeEntryId,
+    "stakeEntry"
   );
-  expect(Number(entryAfter.totalStakeSeconds)).toBeGreaterThanOrEqual(
+  expect(Number(entryAfter.parsed.totalStakeSeconds)).toBeGreaterThanOrEqual(
     STAKE_SECONDS_TO_BOOST
   );
-  expect(entryAfter.stakeMint.toString()).toBe(mintId.toString());
-  expect(entryAfter.lastStaker.toString()).toBe(
+  expect(entryAfter.parsed.stakeMint.toString()).toBe(mintId.toString());
+  expect(entryAfter.parsed.lastStaker.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(Number(entryAfter.lastStakedAt)).toBeGreaterThan(
+  expect(Number(entryAfter.parsed.lastStakedAt)).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
-  expect(Number(entryAfter.lastUpdatedAt)).toBeGreaterThan(
+  expect(Number(entryAfter.parsed.lastUpdatedAt)).toBeGreaterThan(
     Date.now() / 1000 - 60
   );
 
@@ -251,9 +265,14 @@ test("Boost", async () => {
   const userAta = await getAccount(provider.connection, userAtaId);
   expect(userAta.isFrozen).toBe(true);
   expect(Number(userAta.amount)).toBe(1);
-  const activeStakeEntries = await StakeEntry.gpaBuilder()
-    .addFilter("lastStaker", provider.wallet.publicKey)
-    .run(provider.connection);
+  const activeStakeEntries = await program.account.stakeEntry.all([
+    {
+      memcmp: {
+        offset: 82,
+        bytes: provider.wallet.publicKey.toString(),
+      },
+    },
+  ]);
   expect(activeStakeEntries.length).toBe(1);
 
   // check payment

@@ -1,7 +1,7 @@
 import { BN, utils } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
-import { PROGRAM_ID } from "./generated";
+import { REWARDS_CENTER_ADDRESS } from "./constants";
 
 export const STAKE_ENTRY_SEED = "stake-entry";
 export const findStakeEntryId = (
@@ -17,7 +17,7 @@ export const findStakeEntryId = (
       mintId.toBuffer(),
       user && isFungible ? user.toBuffer() : PublicKey.default.toBuffer(),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -28,7 +28,7 @@ export const findStakePoolId = (identifier: string): PublicKey => {
       utils.bytes.utf8.encode(STAKE_POOL_SEED),
       utils.bytes.utf8.encode(identifier),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -43,7 +43,7 @@ export const findStakeAuthorizationRecordId = (
       stakePoolId.toBuffer(),
       mintId.toBuffer(),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -51,7 +51,7 @@ export const USER_ESCROW_SEED = "escrow";
 export const findUserEscrowId = (user: PublicKey): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [utils.bytes.utf8.encode(USER_ESCROW_SEED), user.toBuffer()],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -66,7 +66,7 @@ export const findStakeBoosterId = (
       stakePoolId.toBuffer(),
       (identifier ?? new BN(0)).toArrayLike(Buffer, "le", 8),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -81,7 +81,7 @@ export const findRewardDistributorId = (
       stakePoolId.toBuffer(),
       (identifier ?? new BN(0)).toArrayLike(Buffer, "le", 8),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -96,7 +96,7 @@ export const findRewardEntryId = (
       rewardDistributorId.toBuffer(),
       stakeEntryId.toBuffer(),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -111,7 +111,7 @@ export const findReceiptManagerId = (
       stakePoolId.toBuffer(),
       utils.bytes.utf8.encode(identifier),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -126,7 +126,7 @@ export const findRewardReceiptId = (
       receiptManagerId.toBuffer(),
       stakeEntryId.toBuffer(),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };
 
@@ -137,6 +137,6 @@ export const findPaymentInfoId = (identifier: string): PublicKey => {
       utils.bytes.utf8.encode(PAYMENT_INFO_SEED),
       utils.bytes.utf8.encode(identifier),
     ],
-    PROGRAM_ID
+    REWARDS_CENTER_ADDRESS
   )[0];
 };

@@ -2,21 +2,17 @@ import { withWrapSol } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { NATIVE_MINT } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
-import { Keypair, Transaction } from "@solana/web3.js";
+import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
+import { BN } from "bn.js";
 
 import {
   BASIS_POINTS_DIVISOR,
+  fetchIdlAccount,
   findStakeBoosterId,
   findStakePoolId,
+  rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
-import {
-  createInitPoolInstruction,
-  createInitStakeBoosterInstruction,
-  createUpdateStakeBoosterInstruction,
-  StakeBooster,
-  StakePool,
-} from "../../sdk/generated";
 import type { CardinalProvider } from "../utils";
 import { executeTransaction, getProvider } from "../utils";
 
@@ -44,110 +40,118 @@ beforeAll(async () => {
 });
 
 test("Init pool", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  tx.add(
-    createInitPoolInstruction(
-      {
-        stakePool: stakePoolId,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          identifier: stakePoolIdentifier,
-          allowedCollections: [],
-          allowedCreators: [],
-          requiresAuthorization: false,
-          authority: provider.wallet.publicKey,
-          resetOnUnstake: false,
-          cooldownSeconds: null,
-          minStakeSeconds: null,
-          endDate: null,
-          stakePaymentInfo: SOL_PAYMENT_INFO,
-          unstakePaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .initPool({
+      identifier: stakePoolIdentifier,
+      allowedCollections: [],
+      allowedCreators: [],
+      requiresAuthorization: false,
+      authority: provider.wallet.publicKey,
+      resetOnUnstake: false,
+      cooldownSeconds: null,
+      minStakeSeconds: null,
+      endDate: null,
+      stakePaymentInfo: SOL_PAYMENT_INFO,
+      unstakePaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakePool: stakePoolId,
+      payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const pool = await StakePool.fromAccountAddress(
+  const pool = await fetchIdlAccount(
     provider.connection,
-    stakePoolId
+    stakePoolId,
+    "stakePool"
   );
-  expect(pool.authority.toString()).toBe(provider.wallet.publicKey.toString());
-  expect(pool.requiresAuthorization).toBe(false);
+  expect(pool.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
+  );
+  expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.stakePaymentInfo.toString()).toBe(
+    SOL_PAYMENT_INFO.toString()
+  );
 });
 
 test("Create stake booster", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeBoosterId = findStakeBoosterId(stakePoolId);
-  tx.add(
-    createInitStakeBoosterInstruction(
-      {
-        stakeBooster: stakeBoosterId,
-        stakePool: stakePoolId,
-        authority: provider.wallet.publicKey,
-        payer: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          identifier: 0,
-          stakePool: stakePoolId,
-          paymentAmount: PAYMENT_AMOUNT,
-          paymentMint: paymentMintId,
-          paymentShares: [
-            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
-          ],
-          boostSeconds: 2,
-          startTimeSeconds: 0,
-          boostActionPaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+  const ix = await program.methods
+    .initStakeBooster({
+      identifier: new BN(0),
+      stakePool: stakePoolId,
+      paymentAmount: new BN(PAYMENT_AMOUNT),
+      paymentMint: paymentMintId,
+      paymentShares: [
+        { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+      ],
+      boostSeconds: new BN(2),
+      startTimeSeconds: new BN(0),
+      boostActionPaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakeBooster: stakeBoosterId,
+      stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
+      payer: provider.wallet.publicKey,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const stakeBooster = await StakeBooster.fromAccountAddress(
+  const stakeBooster = await fetchIdlAccount(
     provider.connection,
-    stakeBoosterId
+    stakeBoosterId,
+    "stakeBooster"
   );
-  expect(stakeBooster.paymentMint.toString()).toBe(paymentMintId.toString());
-  expect(Number(stakeBooster.boostSeconds)).toBe(2);
-  expect(Number(stakeBooster.paymentAmount)).toBe(PAYMENT_AMOUNT);
+  expect(stakeBooster.parsed.paymentMint.toString()).toBe(
+    paymentMintId.toString()
+  );
+  expect(Number(stakeBooster.parsed.boostSeconds)).toBe(2);
+  expect(Number(stakeBooster.parsed.paymentAmount)).toBe(PAYMENT_AMOUNT);
 });
 
 test("Update stake booster", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeBoosterId = findStakeBoosterId(stakePoolId);
-  tx.add(
-    createUpdateStakeBoosterInstruction(
-      {
-        stakeBooster: stakeBoosterId,
-        stakePool: stakePoolId,
-        authority: provider.wallet.publicKey,
-      },
-      {
-        ix: {
-          paymentAmount: PAYMENT_AMOUNT,
-          paymentMint: paymentMintId,
-          paymentShares: [
-            { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
-          ],
-          boostSeconds: 4,
-          startTimeSeconds: 4,
-          boostActionPaymentInfo: SOL_PAYMENT_INFO,
-        },
-      }
-    )
-  );
+
+  const ix = await program.methods
+    .updateStakeBooster({
+      paymentAmount: new BN(PAYMENT_AMOUNT),
+      paymentMint: paymentMintId,
+      paymentShares: [
+        { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
+      ],
+      boostSeconds: new BN(4),
+      startTimeSeconds: new BN(4),
+      boostActionPaymentInfo: SOL_PAYMENT_INFO,
+    })
+    .accounts({
+      stakeBooster: stakeBoosterId,
+      stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
+    })
+    .instruction();
+  tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const stakeBooster = await StakeBooster.fromAccountAddress(
+  const stakeBooster = await fetchIdlAccount(
     provider.connection,
-    stakeBoosterId
+    stakeBoosterId,
+    "stakeBooster"
   );
-  expect(stakeBooster.paymentMint.toString()).toBe(paymentMintId.toString());
-  expect(Number(stakeBooster.boostSeconds)).toBe(4);
-  expect(Number(stakeBooster.startTimeSeconds)).toBe(4);
-  expect(Number(stakeBooster.paymentAmount)).toBe(PAYMENT_AMOUNT);
+  expect(stakeBooster.parsed.paymentMint.toString()).toBe(
+    paymentMintId.toString()
+  );
+  expect(Number(stakeBooster.parsed.boostSeconds)).toBe(4);
+  expect(Number(stakeBooster.parsed.startTimeSeconds)).toBe(4);
+  expect(Number(stakeBooster.parsed.paymentAmount)).toBe(PAYMENT_AMOUNT);
 });

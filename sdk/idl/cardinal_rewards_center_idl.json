@@ -2170,8 +2170,5 @@
       "name": "InvalidAuthorityTokenAccount",
       "msg": "Invalid authority token account"
     }
-  ],
-  "metadata": {
-    "address": "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
-  }
+  ]
 }

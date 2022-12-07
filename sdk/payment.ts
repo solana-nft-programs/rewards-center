@@ -11,7 +11,8 @@ import type {
 } from "@solana/web3.js";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 
-import { PaymentInfo } from "./generated";
+import { fetchIdlAccount } from "./accounts";
+import type { PaymentShare } from "./constants";
 
 export const BASIS_POINTS_DIVISOR = 10_000;
 
@@ -21,9 +22,10 @@ export const withRemainingAccountsForPaymentInfo = async (
   payer: PublicKey,
   paymentInfo: PublicKey
 ): Promise<AccountMeta[]> => {
-  const paymentInfoData = await PaymentInfo.fromAccountAddress(
+  const paymentInfoData = await fetchIdlAccount(
     connection,
-    paymentInfo
+    paymentInfo,
+    "paymentInfo"
   );
   const remainingAccounts: AccountMeta[] = [
     {
@@ -34,15 +36,18 @@ export const withRemainingAccountsForPaymentInfo = async (
   ];
 
   // add payer
-  if (Number(paymentInfoData.paymentAmount) === 0) return remainingAccounts;
+  if (Number(paymentInfoData.parsed.paymentAmount) === 0)
+    return remainingAccounts;
 
   remainingAccounts.push(
     ...(await withRemainingAccountsForPayment(
       connection,
       transaction,
       payer,
-      paymentInfoData.paymentMint,
-      paymentInfoData.paymentShares.map((p) => p.address)
+      paymentInfoData.parsed.paymentMint,
+      (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
+        (p) => p.address
+      )
     ))
   );
   return remainingAccounts;
