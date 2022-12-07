@@ -42,27 +42,12 @@ pub enum Action {
 
 pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pubkey) -> Result<()> {
     let default_allowed_payment_infos = match action {
-        Action::ClaimRewards => [
-            "CUeHFsFqfbLfBGSbuNbaAi4wK6V835PoRg1CqCLo8tpM".to_string(), // claim-rewards-0
-            "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string(), // cardinal-test-wsol
-        ]
-        .to_vec(),
         _ => [
-            "3dxFgrZt9DLn1J5ZB1bDwjeDvbESzNxA11KggRcywKbm".to_string(), // cardinal-test (native)
-            "AmJdpbtEzFBVWhznaEQM3V4fNZBa8FWj36Lu2BtnaDYt".to_string(), // cardinal-test-wsol
-            "HB8ApbkwKNXUTpYxgAXKG5GsRV9uPD7Drsj9rCw4M6a7".to_string(), // 1-dust
+            "7cKQgnFTzLtdNWgMuQVQG4LjWShsGsgXx284VBr5eRsM".to_string(), // cardinal-default 0.005
         ]
         .to_vec(),
     };
     let allowed_payment_infos = match (stake_pool.key().to_string().as_str(), action) {
-        // y00ts
-        ("6GWB85u6uPmhWLsP2kww7pPrn3tdu6itjTgqvLGhD5oM", Action::ClaimRewards) => ["8qPuPHyxaRPf6qazsb6iqBBe4Dm4AM88MoQnf5cRU9A3".to_string()].to_vec(), // claim-rewards-y00ts
-        ("6GWB85u6uPmhWLsP2kww7pPrn3tdu6itjTgqvLGhD5oM", Action::Stake) => ["2w2XUCTzhpdGz5DmAV4C6UWKX8dUcofLRKB3LLHFs6ep".to_string()].to_vec(),        // stake-y00ts
-        ("6GWB85u6uPmhWLsP2kww7pPrn3tdu6itjTgqvLGhD5oM", Action::Unstake) => ["67z45vkcgMQnyfKULurbvazyxJT5oLDtQ3PbZSu9Bt3X".to_string()].to_vec(),      // unstake-y00ts
-        // degods
-        ("D7UVbgKZHetCzqMErp6nA9TmGMkDAMrLj7a2Hcx8p5Lx", Action::ClaimRewards) => ["5QvTr4GhT9zpWDfdtX3p4jFLfp9WKFxZEmj1JKww1KCD".to_string()].to_vec(), // claim-rewards-degods
-        ("D7UVbgKZHetCzqMErp6nA9TmGMkDAMrLj7a2Hcx8p5Lx", Action::Stake) => ["6xfYPm79w4sBurpMS6qvX5avqww4q5gXVdRvrivDLrt1".to_string()].to_vec(),        // stake-degods
-        ("D7UVbgKZHetCzqMErp6nA9TmGMkDAMrLj7a2Hcx8p5Lx", Action::Unstake) => ["DSzrtPLkJYKHyuE8HeZiaKNvnEGk7UrcoDUauwqAnwek".to_string()].to_vec(),      // unstake-degods
         _ => default_allowed_payment_infos,
     };
     if !allowed_payment_infos.contains(&payment_info.to_string()) {

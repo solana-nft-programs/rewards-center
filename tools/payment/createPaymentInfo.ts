@@ -1,4 +1,5 @@
-import type { BN, Wallet } from "@project-serum/anchor";
+import type { Wallet } from "@project-serum/anchor";
+import { BN } from "@project-serum/anchor";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, Transaction } from "@solana/web3.js";
 
@@ -8,18 +9,14 @@ import { executeTransaction } from "../utils";
 export const commandName = "createPaymentInfo";
 export const description = "Create a payment info object";
 export const getArgs = (_connection: Connection, wallet: Wallet) => ({
-  identifier: "unstake-y00ts",
+  identifier: "cardinal-default",
   authority: wallet.publicKey,
-  paymentAmount: 3 * 10 ** 9,
-  paymentMint: new PublicKey("DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ"),
+  paymentAmount: 5 * 10 ** 7,
+  paymentMint: PublicKey.default,
   paymentShares: [
     {
       address: new PublicKey("cteamyte8zjZTeexp3qTzvpb24TKRSL3HFad9SzNaNJ"),
-      basisPoints: 5000,
-    },
-    {
-      address: new PublicKey("yootn8Kf22CQczC732psp7qEqxwPGSDQCFZHkzoXp25"),
-      basisPoints: 5000,
+      basisPoints: 10000,
     },
   ],
 });
@@ -27,9 +24,9 @@ export const getArgs = (_connection: Connection, wallet: Wallet) => ({
 export type InitPaymentInfoIx = {
   authority: PublicKey;
   identifier: string;
-  paymentAmount: BN;
+  paymentAmount: number;
   paymentMint: PublicKey;
-  paymentShares: PublicKey[];
+  paymentShares: { address: PublicKey; basisPoints: number }[];
 };
 
 export const handler = async (
@@ -43,7 +40,13 @@ export const handler = async (
 
   transaction.add(
     await program.methods
-      .initPaymentInfo(args)
+      .initPaymentInfo({
+        authority: args.authority,
+        identifier: args.identifier,
+        paymentAmount: new BN(args.paymentAmount),
+        paymentMint: args.paymentMint,
+        paymentShares: args.paymentShares,
+      })
       .accounts({ paymentInfo: paymentInfoId, payer: wallet.publicKey })
       .instruction()
   );

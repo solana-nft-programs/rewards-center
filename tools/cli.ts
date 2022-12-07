@@ -1,12 +1,7 @@
-#!/usr/bin/env node
-/* eslint-disable import/first */
-import * as dotenv from "dotenv";
-
-dotenv.config();
-
 import { connectionFor } from "@cardinal/common";
 import { Wallet } from "@project-serum/anchor";
 import type { Cluster, Connection } from "@solana/web3.js";
+import * as dotenv from "dotenv";
 import * as readline from "readline";
 import type { ArgumentsCamelCase, CommandModule } from "yargs";
 import yargs from "yargs";
@@ -16,6 +11,8 @@ import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
 import * as getStakePool from "./stake-pool/getStakePool";
 import { keypairFrom } from "./utils";
+
+dotenv.config();
 
 export type ProviderParams = {
   cluster: string;
