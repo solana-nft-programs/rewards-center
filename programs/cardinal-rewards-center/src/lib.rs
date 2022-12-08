@@ -55,6 +55,13 @@ pub mod cardinal_rewards_center {
     pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
         stake_entry::editions::unstake_edition::handler(ctx)
     }
+    //// stake_entry::ccs ////
+    pub fn stake_ccs<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCCSCtx<'info>>, amount: u64) -> Result<()> {
+        stake_entry::ccs::stake_ccs::handler(ctx, amount)
+    }
+    pub fn unstake_ccs<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCCSCtx<'info>>) -> Result<()> {
+        stake_entry::ccs::unstake_ccs::handler(ctx)
+    }
 
     //// authorization ////
     pub fn authorize_mint(ctx: Context<AuthorizeMintCtx>, mint: Pubkey) -> Result<()> {
