@@ -25,6 +25,7 @@ pub struct UnstakeCCSCtx<'info> {
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
     stake_mint_manager: UncheckedAccount<'info>,
 
     // user

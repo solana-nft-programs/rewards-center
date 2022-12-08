@@ -325,7 +325,7 @@
         },
         {
           "name": "stakeMintManager",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -391,7 +391,7 @@
         },
         {
           "name": "stakeMintManager",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {

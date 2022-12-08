@@ -325,7 +325,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "stakeMintManager";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -391,7 +391,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "stakeMintManager";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2627,7 +2627,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "stakeMintManager",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -2693,7 +2693,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "stakeMintManager",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

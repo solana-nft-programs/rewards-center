@@ -27,6 +27,7 @@ pub struct StakeCCSCtx<'info> {
     /// CHECK: Checked in handler
     stake_mint_metadata: UncheckedAccount<'info>,
     /// CHECK: Checked in handler
+    #[account(mut)]
     stake_mint_manager: UncheckedAccount<'info>,
     /// CHECK: Checked in handler
     stake_mint_manager_ruleset: UncheckedAccount<'info>,
