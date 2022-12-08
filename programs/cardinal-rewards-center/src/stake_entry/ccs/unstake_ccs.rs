@@ -8,15 +8,15 @@ use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
-use anchor_spl::token::Revoke;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
-use anchor_spl::token::{self};
-use mpl_token_metadata::instruction::thaw_delegated_account;
+use cardinal_creator_standard::instructions::remove_in_use_by;
+use cardinal_creator_standard::instructions::revoke;
+use solana_program::program::invoke;
 use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
-pub struct UnstakeEditionCtx<'info> {
+pub struct UnstakeCCSCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut)]
@@ -25,7 +25,8 @@ pub struct UnstakeEditionCtx<'info> {
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
-    stake_mint_edition: UncheckedAccount<'info>,
+    #[account(mut)]
+    stake_mint_manager: UncheckedAccount<'info>,
 
     // user
     #[account(mut, constraint = user.key() == stake_entry.last_staker @ ErrorCode::InvalidLastStaker)]
@@ -42,13 +43,13 @@ pub struct UnstakeEditionCtx<'info> {
     user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(address = mpl_token_metadata::id())]
-    token_metadata_program: UncheckedAccount<'info>,
+    #[account(address = cardinal_creator_standard::id())]
+    creator_standard_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
     system_program: Program<'info, System>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCCSCtx<'info>>) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
 
@@ -74,30 +75,29 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         }
     }
 
+    // remove in_use_by
     invoke_signed(
-        &thaw_delegated_account(
-            ctx.accounts.token_metadata_program.key(),
-            user_escrow,
-            ctx.accounts.user_stake_mint_token_account.key(),
-            ctx.accounts.stake_mint_edition.key(),
-            ctx.accounts.stake_mint.key(),
-        ),
-        &[
-            ctx.accounts.user_escrow.to_account_info(),
-            ctx.accounts.user_stake_mint_token_account.to_account_info(),
-            ctx.accounts.stake_mint_edition.to_account_info(),
-            ctx.accounts.stake_mint.to_account_info(),
-        ],
+        &remove_in_use_by(ctx.accounts.creator_standard_program.key(), ctx.accounts.stake_mint_manager.key(), ctx.accounts.user_escrow.key())?,
+        &[ctx.accounts.stake_mint_manager.to_account_info(), ctx.accounts.user_escrow.to_account_info()],
         &[&user_escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
-    let cpi_accounts = Revoke {
-        source: ctx.accounts.user_stake_mint_token_account.to_account_info(),
-        authority: ctx.accounts.user.to_account_info(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-    token::revoke(cpi_context)?;
+    // remove delegate
+    invoke(
+        &revoke(
+            cardinal_creator_standard::id(),
+            ctx.accounts.stake_mint_manager.key(),
+            ctx.accounts.stake_mint.key(),
+            ctx.accounts.user_stake_mint_token_account.key(),
+            ctx.accounts.user.key(),
+        )?,
+        &[
+            ctx.accounts.stake_mint_manager.to_account_info(),
+            ctx.accounts.stake_mint.to_account_info(),
+            ctx.accounts.user_stake_mint_token_account.to_account_info(),
+            ctx.accounts.user.to_account_info(),
+        ],
+    )?;
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();

@@ -402,11 +402,34 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
+name = "cardinal-creator-standard"
+version = "2.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7fcb791920dd3e19680274a0a6782674d14dc327de7a98412037c791d1be8ff"
+dependencies = [
+ "arrayref",
+ "borsh",
+ "bs58 0.3.1",
+ "lazy_format",
+ "mpl-token-metadata",
+ "num-derive",
+ "num-traits",
+ "sha2 0.9.9",
+ "shank 0.0.5",
+ "solana-program",
+ "solana-security-txt",
+ "spl-associated-token-account",
+ "spl-token",
+ "thiserror",
+]
+
+[[package]]
 name = "cardinal-rewards-center"
 version = "2.1.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
+ "cardinal-creator-standard",
  "mpl-token-metadata",
  "proptest",
  "solana-program",
@@ -728,6 +751,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67c21572b4949434e4fc1e1978b99c5f77064153c59d998bf13ecd96fb5ecba7"
 
 [[package]]
+name = "lazy_format"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c20af27ff47d964ba51ed586b8e84695261ff364922ad40bcf5a8080e99954d"
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -841,7 +870,7 @@ dependencies = [
  "mpl-token-vault",
  "num-derive",
  "num-traits",
- "shank",
+ "shank 0.0.11",
  "solana-program",
  "spl-associated-token-account",
  "spl-token",
@@ -1305,11 +1334,32 @@ dependencies = [
 
 [[package]]
 name = "shank"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a9986b297e6f42bcbe41f95ca2a881e7a75bd091549e95ecf495fa8178c0c1b"
+dependencies = [
+ "shank_macro 0.0.5",
+]
+
+[[package]]
+name = "shank"
 version = "0.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b63e565b5e95ad88ab38f312e89444c749360641c509ef2de0093b49f55974a5"
 dependencies = [
- "shank_macro",
+ "shank_macro 0.0.11",
+]
+
+[[package]]
+name = "shank_macro"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5dd835154aa943dfc958f5a208f2e82b7d2a2c52b024229168c211ecc2d2bfd1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "shank_macro_impl 0.0.5",
+ "syn",
 ]
 
 [[package]]
@@ -1320,7 +1370,20 @@ checksum = "63927d22a1e8b74bda98cc6e151fcdf178b7abb0dc6c4f81e0bbf5ffe2fc4ec8"
 dependencies = [
  "proc-macro2",
  "quote",
- "shank_macro_impl",
+ "shank_macro_impl 0.0.11",
+ "syn",
+]
+
+[[package]]
+name = "shank_macro_impl"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d99ad9d5137704e86e2e4a54a121b9c443c37b60ce6638a7723ab700dbd2232a"
+dependencies = [
+ "anyhow",
+ "proc-macro2",
+ "quote",
+ "serde",
  "syn",
 ]
 
@@ -1441,6 +1504,12 @@ dependencies = [
  "rustversion",
  "syn",
 ]
+
+[[package]]
+name = "solana-security-txt"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73e93d99928eeb25c103033a015667a93ac49c243852270c01a3ea1d61341ab8"
 
 [[package]]
 name = "spl-associated-token-account"

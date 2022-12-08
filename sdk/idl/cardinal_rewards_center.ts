@@ -301,6 +301,133 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "stakeCcs";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintMetadata";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintManagerRuleset";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "creatorStandardProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "amount";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "unstakeCcs";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "creatorStandardProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "authorizeMint";
       accounts: [
         {
@@ -2459,6 +2586,133 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "stakeCcs",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintMetadata",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintManagerRuleset",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "creatorStandardProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "unstakeCcs",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "creatorStandardProgram",
           isMut: false,
           isSigner: false,
         },

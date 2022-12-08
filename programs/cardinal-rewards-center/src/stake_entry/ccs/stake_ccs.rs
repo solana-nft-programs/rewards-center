@@ -1,7 +1,6 @@
 use crate::assert_payment_info;
 use crate::authorization::mint_is_allowed;
 use crate::errors::ErrorCode;
-use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
 use crate::stake_seed;
@@ -10,16 +9,14 @@ use crate::StakeEntry;
 use crate::StakePool;
 use crate::STAKE_ENTRY_PREFIX;
 use anchor_lang::prelude::*;
-use anchor_spl::token::Approve;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
-use anchor_spl::token::{self};
-use mpl_token_metadata::instruction::freeze_delegated_account;
-use solana_program::program::invoke_signed;
+use cardinal_creator_standard::instructions::approve_and_set_in_use_by;
+use solana_program::program::invoke;
 
 #[derive(Accounts)]
-pub struct StakeEditionCtx<'info> {
+pub struct StakeCCSCtx<'info> {
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() @ ErrorCode::InvalidStakePool)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, seeds = [STAKE_ENTRY_PREFIX.as_bytes(), stake_entry.pool.as_ref(), stake_entry.stake_mint.as_ref(), stake_seed(stake_mint.supply, user.key()).as_ref()], bump = stake_entry.bump)]
@@ -28,9 +25,12 @@ pub struct StakeEditionCtx<'info> {
     #[account(constraint = stake_entry.stake_mint == stake_mint.key() @ ErrorCode::InvalidStakeEntry)]
     stake_mint: Box<Account<'info, Mint>>,
     /// CHECK: Checked in handler
-    stake_mint_edition: UncheckedAccount<'info>,
-    /// CHECK: Checked in handler
     stake_mint_metadata: UncheckedAccount<'info>,
+    /// CHECK: Checked in handler
+    #[account(mut)]
+    stake_mint_manager: UncheckedAccount<'info>,
+    /// CHECK: Checked in handler
+    stake_mint_manager_ruleset: UncheckedAccount<'info>,
 
     #[account(mut)]
     user: Signer<'info>,
@@ -46,19 +46,15 @@ pub struct StakeEditionCtx<'info> {
     user_stake_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: Address checked
-    #[account(address = mpl_token_metadata::id())]
-    token_metadata_program: UncheckedAccount<'info>,
+    #[account(address = cardinal_creator_standard::id())]
+    creator_standard_program: UncheckedAccount<'info>,
     token_program: Program<'info, Token>,
     system_program: Program<'info, System>,
 }
 
-pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
+pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCCSCtx<'info>>, amount: u64) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
-
-    let user = ctx.accounts.user.key();
-    let user_escrow = ctx.accounts.user_escrow.key();
-    let user_escrow_seeds = escrow_seeds(&user, &user_escrow)?;
 
     //// FEATURE: Ended
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
@@ -69,30 +65,27 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
     mint_is_allowed(stake_pool, &ctx.accounts.stake_mint_metadata, ctx.accounts.stake_mint.key(), remaining_accounts)?;
 
-    let cpi_accounts = Approve {
-        to: ctx.accounts.user_stake_mint_token_account.to_account_info(),
-        delegate: ctx.accounts.user_escrow.to_account_info(),
-        authority: ctx.accounts.user.to_account_info(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-    token::approve(cpi_context, amount)?;
-
-    invoke_signed(
-        &freeze_delegated_account(
-            ctx.accounts.token_metadata_program.key(),
-            user_escrow.key(),
-            ctx.accounts.user_stake_mint_token_account.key(),
-            ctx.accounts.stake_mint_edition.key(),
+    invoke(
+        &approve_and_set_in_use_by(
+            ctx.accounts.creator_standard_program.key(),
+            ctx.accounts.stake_mint_manager.key(),
+            ctx.accounts.stake_mint_manager_ruleset.key(),
             ctx.accounts.stake_mint.key(),
-        ),
+            ctx.accounts.user_stake_mint_token_account.key(),
+            ctx.accounts.user.key(),
+            ctx.accounts.user_escrow.key(),
+            1,
+            ctx.accounts.user_escrow.key(),
+        )?,
         &[
-            ctx.accounts.user_escrow.to_account_info(),
-            ctx.accounts.user_stake_mint_token_account.to_account_info(),
-            ctx.accounts.stake_mint_edition.to_account_info(),
+            ctx.accounts.stake_mint_manager.to_account_info(),
+            ctx.accounts.stake_mint_manager_ruleset.to_account_info(),
             ctx.accounts.stake_mint.to_account_info(),
+            ctx.accounts.user_stake_mint_token_account.to_account_info(),
+            ctx.accounts.user.to_account_info(),
+            ctx.accounts.user_escrow.to_account_info(),
+            ctx.accounts.token_program.to_account_info(),
         ],
-        &[&user_escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
     // handle payment
