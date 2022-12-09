@@ -403,9 +403,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "cardinal-creator-standard"
-version = "2.1.11"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7fcb791920dd3e19680274a0a6782674d14dc327de7a98412037c791d1be8ff"
+checksum = "46d9ee37bb771028487bd9c7874203e98765a2cd63aba88466e5bbb080747978"
 dependencies = [
  "arrayref",
  "borsh",
