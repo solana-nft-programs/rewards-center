@@ -861,13 +861,14 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-metadata"
-version = "1.3.3"
+version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b73a2070e1acf3a42357e7580ae1905795cbee0a77858f8e0c44df885cbc4814"
+checksum = "971c30b15f9c6d8baeec960256560431b500f0329de2ca98b652d005070b6be8"
 dependencies = [
  "arrayref",
  "borsh",
  "mpl-token-vault",
+ "mpl-utils",
  "num-derive",
  "num-traits",
  "shank 0.0.11",
@@ -889,6 +890,18 @@ dependencies = [
  "solana-program",
  "spl-token",
  "thiserror",
+]
+
+[[package]]
+name = "mpl-utils"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "330468b3ea93d306ed5ae5e389b0b64cfbc43fcd29a4eeae74e20f13c979e7a5"
+dependencies = [
+ "arrayref",
+ "borsh",
+ "solana-program",
+ "spl-token",
 ]
 
 [[package]]
