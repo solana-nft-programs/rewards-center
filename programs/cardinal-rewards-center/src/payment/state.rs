@@ -50,6 +50,9 @@ pub fn assert_payment_info(stake_pool: Pubkey, action: Action, payment_info: Pub
         .to_vec(),
     };
     let allowed_payment_infos = match (stake_pool.key().to_string().as_str(), action) {
+        ("ndu643uUkFBt4YbXgHEfstkU25eEe4kDLjTD5uziEKx", Action::Stake) => ["Ad29pAAdYvYTcDzRHtA1req5an2DqFUfY1s5tkUC88Lr".to_string()].to_vec(), // vandals stake/claim cardinal-vandals
+        ("ndu643uUkFBt4YbXgHEfstkU25eEe4kDLjTD5uziEKx", Action::ClaimRewards) => ["Ad29pAAdYvYTcDzRHtA1req5an2DqFUfY1s5tkUC88Lr".to_string()].to_vec(), // vandals stake/claim cardinal-vandals
+        ("ndu643uUkFBt4YbXgHEfstkU25eEe4kDLjTD5uziEKx", Action::Unstake) => ["4LKjUP41DkFy8C4FbZpFBfNtLaSixLEfS5adrFA9Z7CN".to_string()].to_vec(), // vandals unstake cardinal-vandals-2
         _ => default_allowed_payment_infos,
     };
     if !allowed_payment_infos.contains(&payment_info.to_string()) {
