@@ -19,7 +19,7 @@ pub struct CloseRewardDistributorCtx<'info> {
     reward_mint: Box<Account<'info, Mint>>,
     #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == reward_distributor.key() @ ErrorCode::InvalidTokenAccount)]
     reward_distributor_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == signer.key() @ ErrorCode::InvalidTokenAccount)]
+    #[account(mut, constraint = authority_token_account.mint == reward_mint.key() && authority_token_account.owner == signer.key() @ ErrorCode::InvalidTokenAccount)]
     authority_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, constraint = signer.key() == stake_pool.authority @ErrorCode::InvalidAuthority)]
