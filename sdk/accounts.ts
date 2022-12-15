@@ -27,22 +27,31 @@ export type ParsedIdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
 export type IdlAccountInfo<
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
-> = AccountInfo<Buffer> &
-  (
-    | ParsedIdlAccount<IDL>[T]
-    | {
-        type: "unknown";
-        parsed: null;
-      }
-  );
+> = AccountInfo<Buffer> & ParsedIdlAccount<IDL>[T];
 
 export type IdlAccountData<
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
 > = {
   pubkey: PublicKey;
-  timestamp: number;
 } & IdlAccountInfo<T, IDL>;
+
+export type NullableIdlAccountInfo<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> =
+  | IdlAccountInfo<T, IDL>
+  | (AccountInfo<Buffer> & {
+      type: "unknown";
+      parsed: null;
+    });
+
+export type NullableIdlAccountData<
+  T extends keyof AllAccountsMap<IDL>,
+  IDL extends Idl = CardinalRewardsCenter
+> = {
+  pubkey: PublicKey;
+} & NullableIdlAccountInfo<T, IDL>;
 
 /**
  * Fetch an account with idl types
@@ -212,7 +221,7 @@ export const tryDecodeIdlAccountUnknown = <
 >(
   accountInfo: AccountInfo<Buffer>,
   idl: Idl = REWARDS_CENTER_IDL
-): IdlAccountInfo<T, IDL> => {
+): NullableIdlAccountInfo<T, IDL> => {
   try {
     return decodeIdlAccountUnknown<T, IDL>(accountInfo, idl);
   } catch (e) {
@@ -266,7 +275,7 @@ export type IdlAccountDataById<
   T extends keyof AllAccountsMap<IDL>,
   IDL extends Idl = CardinalRewardsCenter
 > = {
-  [accountId: string]: IdlAccountData<T, IDL>;
+  [accountId: string]: NullableIdlAccountData<T, IDL>;
 };
 
 /**
