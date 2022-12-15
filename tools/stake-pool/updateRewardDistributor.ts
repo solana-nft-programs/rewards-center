@@ -1,14 +1,15 @@
+import { connectionFor } from "@cardinal/common";
 import { utils, Wallet } from "@project-serum/anchor";
 import type { Cluster } from "@solana/web3.js";
-import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
+import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { BN } from "bn.js";
 import dotenv from "dotenv";
 
 import {
+  findRewardDistributorId,
   findStakePoolId,
   rewardsCenterProgram,
-  SOL_PAYMENT_INFO,
 } from "../../sdk";
-import { connectionFor } from "../../tests/utils";
 import { executeTransaction } from "../utils";
 
 dotenv.config();
@@ -16,7 +17,7 @@ dotenv.config();
 const wallet = Keypair.fromSecretKey(
   utils.bytes.bs58.decode(process.env.WALLET || "")
 ); // your wallet's secret key
-const stakePoolIdentifier = `test-name`;
+const stakePoolIdentifier = `pool-name-0.5738181258361528`;
 
 const main = async (cluster: Cluster) => {
   const connection = connectionFor(cluster);
@@ -24,24 +25,21 @@ const main = async (cluster: Cluster) => {
   const transaction = new Transaction();
 
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
+  const rewardDistributorId = findRewardDistributorId(stakePoolId);
   const ix = await program.methods
-    .initPool({
-      identifier: stakePoolIdentifier,
-      allowedCollections: [],
-      allowedCreators: [],
-      requiresAuthorization: false,
-      authority: wallet.publicKey,
-      resetOnUnstake: true,
-      cooldownSeconds: null,
-      minStakeSeconds: null,
-      endDate: null,
-      stakePaymentInfo: SOL_PAYMENT_INFO,
-      unstakePaymentInfo: SOL_PAYMENT_INFO,
+    .updateRewardDistributor({
+      defaultMultiplier: new BN(100),
+      multiplierDecimals: 2,
+      rewardAmount: new BN(100000),
+      rewardDurationSeconds: new BN(10),
+      maxRewardSecondsReceived: null,
+      claimRewardsPaymentInfo: new PublicKey(
+        "Ad29pAAdYvYTcDzRHtA1req5an2DqFUfY1s5tkUC88Lr"
+      ),
     })
     .accounts({
-      stakePool: stakePoolId,
-      payer: wallet.publicKey,
-      systemProgram: SystemProgram.programId,
+      rewardDistributor: rewardDistributorId,
+      authority: wallet.publicKey,
     })
     .instruction();
   transaction.add(ix);
@@ -61,10 +59,10 @@ const main = async (cluster: Cluster) => {
   try {
     await program.account.stakePool.fetch(stakePoolId);
     console.log(
-      `Creted pool successfully https://explorer.solana.com/tx/${txid}?cluster=${cluster}.`
+      `Updated pool successfully https://explorer.solana.com/tx/${txid}?cluster=${cluster}.`
     );
   } catch (e) {
-    console.log("Could not create marketplace successfully.");
+    console.log("Could not update marketplace successfully.");
   }
 };
 

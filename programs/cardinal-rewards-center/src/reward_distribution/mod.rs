@@ -4,6 +4,7 @@ pub use state::*;
 pub mod reward_distributor;
 pub use reward_distributor::close_reward_distributor::*;
 pub use reward_distributor::init_reward_distributor::*;
+pub use reward_distributor::reclaim_funds::*;
 pub use reward_distributor::update_reward_distributor::*;
 
 pub mod reward_entry;

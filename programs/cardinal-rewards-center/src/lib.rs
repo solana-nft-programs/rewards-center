@@ -22,6 +22,7 @@ declare_id!("crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd");
 
 #[program]
 pub mod cardinal_rewards_center {
+
     use super::*;
 
     //// stake_pool ////
@@ -121,6 +122,9 @@ pub mod cardinal_rewards_center {
     }
     pub fn close_reward_distributor(ctx: Context<CloseRewardDistributorCtx>) -> Result<()> {
         reward_distribution::reward_distributor::close_reward_distributor::handler(ctx)
+    }
+    pub fn reclaim_funds(ctx: Context<ReclaimFundsCtx>, amount: u64) -> Result<()> {
+        reward_distribution::reward_distributor::reclaim_funds::handler(ctx, amount)
     }
 
     //// reward_distribution::reward_entry ////

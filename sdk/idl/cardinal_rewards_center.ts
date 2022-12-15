@@ -898,6 +898,42 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "reclaimFunds";
+      accounts: [
+        {
+          name: "rewardDistributor";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rewardDistributorTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorityTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "amount";
+          type: "u64";
+        }
+      ];
+    },
+    {
       name: "initRewardEntry";
       accounts: [
         {
@@ -3198,6 +3234,42 @@ export const IDL: CardinalRewardsCenter = {
         },
       ],
       args: [],
+    },
+    {
+      name: "reclaimFunds",
+      accounts: [
+        {
+          name: "rewardDistributor",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rewardDistributorTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorityTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u64",
+        },
+      ],
     },
     {
       name: "initRewardEntry",
