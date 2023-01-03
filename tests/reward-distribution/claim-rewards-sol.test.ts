@@ -6,12 +6,7 @@ import {
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
-import {
-  Keypair,
-  LAMPORTS_PER_SOL,
-  SystemProgram,
-  Transaction,
-} from "@solana/web3.js";
+import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
@@ -42,8 +37,6 @@ const REWARD_SECONDS = 1;
 const REWARD_AMOUNT = 2;
 let mintId: PublicKey;
 let rewardMintId: PublicKey;
-
-const PAYMENT_AMOUNT = 0.005 * LAMPORTS_PER_SOL;
 
 beforeAll(async () => {
   provider = await getProvider();
@@ -346,5 +339,12 @@ test("Claim rewards", async () => {
   const balanceAfter = await provider.connection.getBalance(
     provider.wallet.publicKey
   );
-  expect(balanceBefore - PAYMENT_AMOUNT).toBeGreaterThan(balanceAfter);
+  const defaultPaymentInfo = await fetchIdlAccount(
+    provider.connection,
+    DEFAULT_PAYMENT_INFO,
+    "paymentInfo"
+  );
+  expect(balanceBefore - balanceAfter).toBeGreaterThan(
+    defaultPaymentInfo.parsed.paymentAmount.toNumber()
+  );
 });
