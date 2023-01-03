@@ -1,4 +1,5 @@
 use crate::assert_payment_info;
+use crate::errors::ErrorCode;
 use crate::reward_distribution::RewardDistributor;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::reward_distribution::REWARD_DISTRIBUTOR_SIZE;
@@ -56,6 +57,10 @@ pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributor
     reward_distributor.multiplier_decimals = ix.multiplier_decimals.unwrap_or(0);
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
     reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
+
+    if ctx.accounts.authority.key() != ctx.accounts.stake_pool.authority.key() {
+        return Err(error!(ErrorCode::InvalidAuthority));
+    }
 
     assert_payment_info(ctx.accounts.stake_pool.key(), Action::ClaimRewards, ix.claim_rewards_payment_info)?;
     Ok(())
