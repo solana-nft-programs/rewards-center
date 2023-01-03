@@ -32,6 +32,7 @@ pub struct InitRewardDistributorCtx<'info> {
         bump,
     )]
     reward_distributor: Box<Account<'info, RewardDistributor>>,
+    #[account(constraint = authority.key() != stake_pool.authority.key() @ ErrorCode::InvalidAuthority)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut)]
     reward_mint: Box<Account<'info, Mint>>,
@@ -57,10 +58,6 @@ pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributor
     reward_distributor.multiplier_decimals = ix.multiplier_decimals.unwrap_or(0);
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
     reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
-
-    if ctx.accounts.authority.key() != ctx.accounts.stake_pool.authority.key() {
-        return Err(error!(ErrorCode::InvalidAuthority));
-    }
 
     assert_payment_info(ctx.accounts.stake_pool.key(), Action::ClaimRewards, ix.claim_rewards_payment_info)?;
     Ok(())
