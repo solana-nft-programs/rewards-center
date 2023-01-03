@@ -32,7 +32,7 @@ pub struct InitRewardDistributorCtx<'info> {
         bump,
     )]
     reward_distributor: Box<Account<'info, RewardDistributor>>,
-    #[account(constraint = authority.key() != stake_pool.authority.key() @ ErrorCode::InvalidAuthority)]
+    #[account(constraint = authority.key() == stake_pool.authority.key() @ ErrorCode::InvalidAuthority)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut)]
     reward_mint: Box<Account<'info, Mint>>,
