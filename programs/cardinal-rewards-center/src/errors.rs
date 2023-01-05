@@ -126,6 +126,10 @@ pub enum ErrorCode {
     #[msg("Invalid authority token account")]
     InvalidAuthorityTokenAccount,
 
+    // raffle errors
+    #[msg("Invalid raffle")]
+    InvalidRaffle = 110,
+
     // auction errors
     #[msg("Not highest bid")]
     NotHighestBid = 120,

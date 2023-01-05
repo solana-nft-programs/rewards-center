@@ -51,12 +51,11 @@ pub fn handler(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
         allowed_collections: ix.allowed_collections,
         identifier: stake_pool.identifier.clone(),
     };
-    let new_space = new_stake_pool.try_to_vec()?.len() + 8;
-    stake_pool.set_inner(new_stake_pool);
 
+    stake_pool.set_inner(new_stake_pool);
     resize_account(
         &stake_pool.to_account_info(),
-        new_space,
+        stake_pool.try_to_vec()?.len() + 8,
         &ctx.accounts.payer.to_account_info(),
         &ctx.accounts.system_program.to_account_info(),
     )?;

@@ -10,6 +10,8 @@ pub mod stake_booster;
 pub use stake_booster::*;
 pub mod reward_receipts;
 pub use reward_receipts::*;
+pub mod raffle;
+pub use raffle::*;
 pub mod payment;
 pub use payment::*;
 pub mod auction;

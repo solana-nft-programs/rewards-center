@@ -48,7 +48,6 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     // add to used seconds
     let stake_entry = &mut ctx.accounts.stake_entry;
     stake_entry.used_stake_seconds = stake_entry.used_stake_seconds.checked_add(ctx.accounts.receipt_manager.stake_seconds_to_use).expect("Add error");
-
     if stake_entry.used_stake_seconds > ctx.accounts.stake_entry.total_stake_seconds {
         return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
     }
