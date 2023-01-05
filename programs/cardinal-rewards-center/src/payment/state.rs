@@ -11,6 +11,8 @@ use std::cmp::Eq;
 use std::slice::Iter;
 
 pub const BASIS_POINTS_DIVISOR: u64 = 10_000;
+pub const BASE_ACTION_FEE: u64 = 2_000_000;
+pub const COLLECTOR: &str = "";
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Eq, PartialEq)]
 pub struct PaymentShare {

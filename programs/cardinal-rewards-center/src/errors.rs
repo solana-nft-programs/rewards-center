@@ -11,6 +11,8 @@ pub enum ErrorCode {
     InvalidAuthority,
     #[msg("Mismatched user and escrow")]
     InvalidEscrow,
+    #[msg("Invalid colelctor")]
+    InvalidCollector,
 
     // actions
     #[msg("Invalid user original mint token account")]
@@ -123,4 +125,12 @@ pub enum ErrorCode {
     InvalidRewardDistributorTokenAccount,
     #[msg("Invalid authority token account")]
     InvalidAuthorityTokenAccount,
+
+    // auction errors
+    #[msg("Not highest bid")]
+    NotHighestBid = 120,
+    #[msg("Auction ended")]
+    AuctionEnded,
+    #[msg("Auction is live")]
+    AuctionIsLive,
 }

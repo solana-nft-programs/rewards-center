@@ -12,6 +12,8 @@ pub mod reward_receipts;
 pub use reward_receipts::*;
 pub mod payment;
 pub use payment::*;
+pub mod auction;
+pub use auction::*;
 
 pub mod errors;
 pub mod utils;
