@@ -10,11 +10,47 @@ import type {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
+import BN from "bn.js";
 
 import { fetchIdlAccount } from "./accounts";
 import type { PaymentShare } from "./constants";
 
 export const BASIS_POINTS_DIVISOR = 10_000;
+
+export const ACTION_MAP: {
+  [stakePoolId: string]: {
+    [action: string]: {
+      paymentAmount: BN;
+      paymentMint: PublicKey;
+      paymentShares: PaymentShare[];
+    };
+  };
+} = {};
+
+export const withRemainingAccountsForAction = async (
+  connection: Connection,
+  transaction: Transaction,
+  payer: PublicKey,
+  stakePoolId: PublicKey,
+  action: string
+): Promise<AccountMeta[]> => {
+  const defaultActionFee = ACTION_MAP[stakePoolId.toString()]?.[action] ?? {
+    paymentAmount: new BN(2_000_000),
+    paymentMint: PublicKey.default,
+    paymentShares: [
+      {
+        address: new PublicKey("cteamyte8zjZTeexp3qTzvpb24TKRSL3HFad9SzNaNJ"),
+        basisPoints: BASIS_POINTS_DIVISOR,
+      },
+    ],
+  };
+  return await withRemainingAccountsForPayment(
+    connection,
+    transaction,
+    payer,
+    defaultActionFee
+  );
+};
 
 export const withRemainingAccountsForPaymentInfo = async (
   connection: Connection,
@@ -34,20 +70,12 @@ export const withRemainingAccountsForPaymentInfo = async (
       isWritable: false,
     },
   ];
-
-  // add payer
-  if (Number(paymentInfoData.parsed.paymentAmount) === 0)
-    return remainingAccounts;
-
   remainingAccounts.push(
     ...(await withRemainingAccountsForPayment(
       connection,
       transaction,
       payer,
-      paymentInfoData.parsed.paymentMint,
-      (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
-        (p) => p.address
-      )
+      paymentInfoData.parsed
     ))
   );
   return remainingAccounts;
@@ -57,9 +85,17 @@ export const withRemainingAccountsForPayment = async (
   connection: Connection,
   transaction: Transaction,
   payer: PublicKey,
-  paymentMint: PublicKey,
-  paymentTargets: PublicKey[]
+  config: {
+    paymentAmount: BN;
+    paymentMint: PublicKey;
+    paymentShares: { address: PublicKey }[];
+  }
 ): Promise<AccountMeta[]> => {
+  const { paymentAmount, paymentMint, paymentShares } = config;
+  if (Number(paymentAmount) === 0) {
+    return [];
+  }
+
   const remainingAccounts = [
     {
       pubkey: payer,
@@ -75,8 +111,8 @@ export const withRemainingAccountsForPayment = async (
       isWritable: false,
     });
     remainingAccounts.push(
-      ...paymentTargets.map((a) => ({
-        pubkey: a,
+      ...paymentShares.map(({ address }) => ({
+        pubkey: address,
         isSigner: false,
         isWritable: true,
       }))
@@ -92,8 +128,8 @@ export const withRemainingAccountsForPayment = async (
       isSigner: false,
       isWritable: true,
     });
-    const ataIds = paymentTargets.map((a) =>
-      getAssociatedTokenAddressSync(paymentMint, a, true)
+    const ataIds = paymentShares.map(({ address }) =>
+      getAssociatedTokenAddressSync(paymentMint, address, true)
     );
     const tokenAccountInfos = await connection.getMultipleAccountsInfo(ataIds);
     for (let i = 0; i < tokenAccountInfos.length; i++) {
@@ -102,7 +138,7 @@ export const withRemainingAccountsForPayment = async (
           createAssociatedTokenAccountInstruction(
             payer,
             ataIds[i]!,
-            paymentTargets[i]!,
+            paymentShares[i]!.address,
             paymentMint
           )
         );

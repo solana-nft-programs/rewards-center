@@ -1,4 +1,3 @@
-use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::handle_payment;
 use crate::handle_payment_info;
@@ -62,12 +61,12 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
     )?;
 
     // handle action payment
-    assert_payment_info(
+    handle_payment_info(
         ctx.accounts.receipt_manager.stake_pool,
         Action::ClaimRewardReceipt,
         ctx.accounts.receipt_manager.claim_action_payment_info,
+        remaining_accounts,
     )?;
-    handle_payment_info(ctx.accounts.receipt_manager.claim_action_payment_info, remaining_accounts)?;
 
     Ok(())
 }

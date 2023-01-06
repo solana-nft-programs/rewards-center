@@ -24,7 +24,6 @@ import {
 import BN from "bn.js";
 
 import { fetchIdlAccount, fetchIdlAccountDataById } from "./accounts";
-import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
   withRemainingAccountsForPayment,
@@ -563,10 +562,7 @@ export const claimRewardReceipt = async (
     connection,
     tx,
     wallet.publicKey,
-    receiptManagerData.parsed.paymentMint,
-    (receiptManagerData.parsed.paymentShares as PaymentShare[]).map(
-      (p) => p.address
-    )
+    receiptManagerData.parsed
   );
 
   const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(
@@ -648,10 +644,7 @@ export const boost = async (
     connection,
     tx,
     wallet.publicKey,
-    stakeBoosterData.parsed.paymentMint,
-    (stakeBoosterData.parsed.paymentShares as PaymentShare[]).map(
-      (p) => p.address
-    )
+    stakeBoosterData.parsed
   );
 
   const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(

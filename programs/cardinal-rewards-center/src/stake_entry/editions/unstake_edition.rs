@@ -1,4 +1,3 @@
-use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::escrow_seeds;
 use crate::handle_payment_info;
@@ -101,8 +100,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
-    assert_payment_info(stake_pool.key(), Action::Unstake, stake_pool.unstake_payment_info)?;
-    handle_payment_info(stake_pool.unstake_payment_info, remaining_accounts)?;
+    handle_payment_info(stake_pool.key(), Action::Unstake, stake_pool.unstake_payment_info, remaining_accounts)?;
 
     increment_total_stake_seconds(stake_entry)?;
     stake_entry.last_staker = Pubkey::default();

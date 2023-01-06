@@ -20,7 +20,6 @@ pub struct BidCtx<'info> {
 
     #[account(mut)]
     bidder: Signer<'info>,
-
     system_program: Program<'info, System>,
 }
 
