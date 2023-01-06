@@ -16,7 +16,7 @@ pub struct BidCtx<'info> {
     stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(mut, constraint = highest_bidding_stake_entry.key() == auction.highest_bidding_stake_entry @ ErrorCode::InvalidHighestBiddingStakeEntry)]
-    highest_bidding_stake_entry: UncheckedAccount<'info>,
+    highest_bidding_stake_entry: Box<Account<'info, StakeEntry>>,
 
     #[account(mut)]
     bidder: Signer<'info>,
