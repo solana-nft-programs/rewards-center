@@ -172,9 +172,16 @@ export const findPaymentInfoId = (identifier: string): PublicKey => {
 };
 
 export const AUCTION_SEED = "auction";
-export const findAuctionId = (name: string): PublicKey => {
+export const findAuctionId = (
+  stakePoolId: PublicKey,
+  name: string
+): PublicKey => {
   return PublicKey.findProgramAddressSync(
-    [utils.bytes.utf8.encode(AUCTION_SEED), utils.bytes.utf8.encode(name)],
+    [
+      utils.bytes.utf8.encode(AUCTION_SEED),
+      stakePoolId.toBuffer(),
+      utils.bytes.utf8.encode(name),
+    ],
     REWARDS_CENTER_ADDRESS
   )[0];
 };

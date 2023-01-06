@@ -1392,7 +1392,7 @@
         },
         {
           "name": "highestBiddingStakeEntry",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1441,7 +1441,7 @@
             "type": "u128"
           },
           {
-            "name": "endDate",
+            "name": "endTimestampSeconds",
             "type": "i64"
           },
           {
@@ -1959,7 +1959,7 @@
             "type": "publicKey"
           },
           {
-            "name": "endDate",
+            "name": "endTimestampSeconds",
             "type": "i64"
           }
         ]
@@ -1975,7 +1975,7 @@
             "type": "publicKey"
           },
           {
-            "name": "endDate",
+            "name": "endTimestampSeconds",
             "type": "i64"
           },
           {

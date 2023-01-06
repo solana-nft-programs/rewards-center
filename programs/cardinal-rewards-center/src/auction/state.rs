@@ -9,7 +9,7 @@ pub struct Auction {
     pub authority: Pubkey,
     pub highest_bidding_stake_entry: Pubkey,
     pub highest_bid: u128,
-    pub end_date: i64,
+    pub end_timestamp_seconds: i64,
     pub completed: bool,
     pub name: String,
 }

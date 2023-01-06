@@ -126,6 +126,7 @@ test("Create receipt manager", async () => {
       receiptManager: receiptManagerId,
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);

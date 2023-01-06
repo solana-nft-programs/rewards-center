@@ -1392,7 +1392,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "highestBiddingStakeEntry";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -1441,7 +1441,7 @@ export type CardinalRewardsCenter = {
             type: "u128";
           },
           {
-            name: "endDate";
+            name: "endTimestampSeconds";
             type: "i64";
           },
           {
@@ -1959,7 +1959,7 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "endDate";
+            name: "endTimestampSeconds";
             type: "i64";
           }
         ];
@@ -1975,7 +1975,7 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "endDate";
+            name: "endTimestampSeconds";
             type: "i64";
           },
           {
@@ -4284,7 +4284,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "highestBiddingStakeEntry",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -4333,7 +4333,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "u128",
           },
           {
-            name: "endDate",
+            name: "endTimestampSeconds",
             type: "i64",
           },
           {
@@ -4851,7 +4851,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "endDate",
+            name: "endTimestampSeconds",
             type: "i64",
           },
         ],
@@ -4867,7 +4867,7 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "endDate",
+            name: "endTimestampSeconds",
             type: "i64",
           },
           {

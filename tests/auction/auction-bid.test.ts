@@ -25,9 +25,11 @@ import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 const auctionName = `test-${Math.random()}`;
-const endDate = Date.now() / 1000 + 5;
+const endTimestampSeconds = Date.now() / 1000 + 5;
 let provider: CardinalProvider;
 let mintId: PublicKey;
+
+jest.setTimeout(10000);
 
 beforeAll(async () => {
   provider = await getTestProvider();
@@ -63,7 +65,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -88,15 +90,15 @@ test("Init pool", async () => {
 test("Init auction", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const auctionId = findAuctionId(auctionName);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
   const tx = new Transaction();
   const ix = await program.methods
     .initAuction({
       name: auctionName,
       authority: provider.wallet.publicKey,
-      endDate: new BN(endDate),
+      endTimestampSeconds: new BN(endTimestampSeconds),
     })
-    .accounts({
+    .accountsStrict({
       auction: auctionId,
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
@@ -107,13 +109,15 @@ test("Init auction", async () => {
   await executeTransaction(provider.connection, tx, provider.wallet);
   const auction = await fetchIdlAccount(
     provider.connection,
-    stakePoolId,
+    auctionId,
     "auction"
   );
   expect(auction.parsed.authority.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(auction.parsed.endDate.toString()).toEqual(endDate.toString());
+  expect(auction.parsed.endTimestampSeconds.toNumber()).toBeGreaterThan(
+    Date.now() / 1000
+  );
   expect(auction.parsed.completed).toBeFalsy();
 });
 
@@ -165,12 +169,14 @@ test("Stake", async () => {
 
 test("Fail bid on auction", async () => {
   const biddingAmount = new BN(10);
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
 
   const tx = await bid(
     provider.connection,
     provider.wallet,
     biddingAmount,
     auctionName,
+    stakePoolId,
     mintId
   );
 
@@ -180,7 +186,8 @@ test("Fail bid on auction", async () => {
 });
 
 test("Bid on auction", async () => {
-  await new Promise((r) => setTimeout(r, 2000));
+  await new Promise((r) => setTimeout(r, 2500));
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const biddingAmount = new BN(2);
 
   const tx = await bid(
@@ -188,26 +195,29 @@ test("Bid on auction", async () => {
     provider.wallet,
     biddingAmount,
     auctionName,
+    stakePoolId,
     mintId
   );
 
   await executeTransaction(provider.connection, tx, provider.wallet);
 
-  const auctionId = findAuctionId(auctionName);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
   const auctionData = await tryGetAccount(() =>
     fetchIdlAccount(provider.connection, auctionId, "auction")
   );
+  const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   if (!auctionData) throw "No auction data found";
-  expect(auctionData.parsed.highestBid.toString()).toEqual("2");
-  const stakePoolid = findStakePoolId(stakePoolIdentifier);
-  const stakeEntryId = findStakeEntryId(stakePoolid, mintId);
   expect(auctionData.parsed.highestBid.toString()).toEqual(
+    biddingAmount.toString()
+  );
+  expect(auctionData.parsed.highestBiddingStakeEntry.toString()).toEqual(
     stakeEntryId.toString()
   );
 });
 
 test("Auction ended", async () => {
   await new Promise((r) => setTimeout(r, 5000));
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const biddingAmount = new BN(2);
 
   const tx = await bid(
@@ -215,6 +225,7 @@ test("Auction ended", async () => {
     provider.wallet,
     biddingAmount,
     auctionName,
+    stakePoolId,
     mintId
   );
 

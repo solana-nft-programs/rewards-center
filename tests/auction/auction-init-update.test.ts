@@ -14,7 +14,7 @@ import {
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 const auctionName = `test-${Math.random()}`;
-const endDate = Date.now() / 1000 + 5;
+const endDate = Date.now() + 5;
 let provider: CardinalProvider;
 
 beforeAll(async () => {
@@ -39,7 +39,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -64,15 +64,15 @@ test("Init pool", async () => {
 test("Init auction", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const auctionId = findAuctionId(auctionName);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
   const tx = new Transaction();
   const ix = await program.methods
     .initAuction({
       name: auctionName,
       authority: provider.wallet.publicKey,
-      endDate: new BN(endDate),
+      endTimestampSeconds: new BN(endDate),
     })
-    .accounts({
+    .accountsStrict({
       auction: auctionId,
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
@@ -83,32 +83,35 @@ test("Init auction", async () => {
   await executeTransaction(provider.connection, tx, provider.wallet);
   const auction = await fetchIdlAccount(
     provider.connection,
-    stakePoolId,
+    auctionId,
     "auction"
   );
   expect(auction.parsed.authority.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(auction.parsed.endDate.toString()).toEqual(endDate.toString());
+  expect(auction.parsed.endTimestampSeconds.toNumber()).toBeGreaterThan(
+    Date.now() / 1000
+  );
   expect(auction.parsed.completed).toBeFalsy();
 });
 
 test("Update auction", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const auctionId = findAuctionId(auctionName);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
   const tx = new Transaction();
   const newAuthority = Keypair.generate().publicKey;
   const newEndDate = Date.now() / 1000 + 10;
   const ix = await program.methods
     .updateAuction({
       authority: newAuthority,
-      endDate: new BN(newEndDate),
+      endTimestampSeconds: new BN(newEndDate),
       completed: true,
     })
-    .accounts({
+    .accountsStrict({
       auction: auctionId,
       stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
     })
@@ -117,10 +120,12 @@ test("Update auction", async () => {
   await executeTransaction(provider.connection, tx, provider.wallet);
   const auction = await fetchIdlAccount(
     provider.connection,
-    stakePoolId,
+    auctionId,
     "auction"
   );
   expect(auction.parsed.authority.toString()).toBe(newAuthority.toString());
-  expect(auction.parsed.endDate.toString()).toEqual(newEndDate.toString());
+  expect(auction.parsed.endTimestampSeconds.toNumber()).toBeGreaterThan(
+    Date.now() / 1000
+  );
   expect(auction.parsed.completed).toBeTruthy();
 });

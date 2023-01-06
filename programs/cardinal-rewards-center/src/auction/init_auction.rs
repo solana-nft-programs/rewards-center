@@ -10,7 +10,7 @@ use crate::AUCTION_PREFIX;
 pub struct InitAuctionIx {
     name: String,
     authority: Pubkey,
-    end_date: i64,
+    end_timestamp_seconds: i64,
 }
 
 #[derive(Accounts)]
@@ -38,7 +38,7 @@ pub fn handler(ctx: Context<InitAuctionCtx>, ix: InitAuctionIx) -> Result<()> {
         authority: ix.authority,
         highest_bidding_stake_entry: Pubkey::default(),
         highest_bid: 0,
-        end_date: ix.end_date,
+        end_timestamp_seconds: ix.end_timestamp_seconds,
         completed: false,
         name: ix.name,
     };

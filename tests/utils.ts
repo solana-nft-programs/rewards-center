@@ -1,3 +1,4 @@
+import { findMintEditionId, findMintMetadataId } from "@cardinal/common";
 import {
   createInitMintManagerInstruction,
   DEFAULT_REQUIRED_CREATOR,
@@ -19,8 +20,6 @@ import {
 } from "@solana/spl-token";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
-
-import { findMintEditionId, findMintMetadataId } from "../sdk/utils";
 
 export const createMasterEditionTx = async (
   connection: Connection,

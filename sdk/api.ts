@@ -744,6 +744,7 @@ export const enterRaffle = async (
  * @param wallet
  * @param biddingAmount
  * @param auctionName
+ * @param stakePoolId
  * @param stakedMintId
  * @returns
  */
@@ -752,10 +753,11 @@ export const bid = async (
   wallet: Wallet,
   biddingAmount: BN,
   auctionName: string,
+  stakePoolId: PublicKey,
   stakedMintId: PublicKey
 ) => {
   const program = rewardsCenterProgram(connection, wallet);
-  const auctionId = findAuctionId(auctionName);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
   const auctionData = await tryGetAccount(() =>
     fetchIdlAccount(connection, auctionId, "auction")
   );
