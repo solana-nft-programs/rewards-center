@@ -14,8 +14,8 @@ pub struct BidCtx<'info> {
 
     #[account(mut, constraint = stake_entry.pool == stake_pool.key() && stake_entry.last_staker == bidder.key() @ ErrorCode::InvalidStakeEntry)]
     stake_entry: Box<Account<'info, StakeEntry>>,
-    /// CHECK: Checked in handler
-    // #[account(mut, constraint = highest_bidding_stake_entry.key() == auction.highest_bidding_stake_entry @ ErrorCode::InvalidHighestBiddingStakeEntry)]
+
+    #[account(mut, constraint = highest_bidding_stake_entry.key() == auction.highest_bidding_stake_entry @ ErrorCode::InvalidHighestBiddingStakeEntry)]
     highest_bidding_stake_entry: UncheckedAccount<'info>,
 
     #[account(mut)]
