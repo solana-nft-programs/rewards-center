@@ -1392,7 +1392,7 @@
         },
         {
           "name": "highestBiddingStakeEntry",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -2856,6 +2856,11 @@
       "code": 6102,
       "name": "InvalidAuthorityTokenAccount",
       "msg": "Invalid authority token account"
+    },
+    {
+      "code": 6103,
+      "name": "NoRewardsToClaim",
+      "msg": "No rewards found to claim"
     },
     {
       "code": 6110,

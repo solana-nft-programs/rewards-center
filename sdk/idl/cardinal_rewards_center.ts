@@ -1392,7 +1392,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "highestBiddingStakeEntry";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2858,6 +2858,11 @@ export type CardinalRewardsCenter = {
       msg: "Invalid authority token account";
     },
     {
+      code: 6103;
+      name: "NoRewardsToClaim";
+      msg: "No rewards found to claim";
+    },
+    {
       code: 6110;
       name: "InvalidRaffle";
       msg: "Invalid raffle";
@@ -4284,7 +4289,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "highestBiddingStakeEntry",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -5748,6 +5753,11 @@ export const IDL: CardinalRewardsCenter = {
       code: 6102,
       name: "InvalidAuthorityTokenAccount",
       msg: "Invalid authority token account",
+    },
+    {
+      code: 6103,
+      name: "NoRewardsToClaim",
+      msg: "No rewards found to claim",
     },
     {
       code: 6110,
