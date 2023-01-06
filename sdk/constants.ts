@@ -1,7 +1,7 @@
 import type { IdlAccountData as cIdlAccountData } from "@cardinal/common";
-import { AnchorProvider, Program } from "@project-serum/anchor";
-import type { AllAccountsMap } from "@project-serum/anchor/dist/cjs/program/namespace/types";
-import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
+import { AnchorProvider, Program } from "@coral-xyz/anchor";
+import type { AllAccountsMap } from "@coral-xyz/anchor/dist/cjs/program/namespace/types";
+import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type { ConfirmOptions, Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 

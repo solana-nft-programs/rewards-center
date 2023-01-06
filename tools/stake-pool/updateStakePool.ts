@@ -1,5 +1,5 @@
 import { connectionFor, executeTransaction } from "@cardinal/common";
-import { utils, Wallet } from "@project-serum/anchor";
+import { utils, Wallet } from "@coral-xyz/anchor";
 import type { Cluster } from "@solana/web3.js";
 import {
   Keypair,
