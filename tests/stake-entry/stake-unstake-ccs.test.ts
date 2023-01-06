@@ -147,7 +147,11 @@ test("Stake again fail", async () => {
         { mintId },
       ]),
       provider.wallet,
-      { errorHandler: () => "" }
+      {
+        errorHandler: (e) => {
+          throw e;
+        },
+      }
     )
   ).rejects.toThrow();
 });
