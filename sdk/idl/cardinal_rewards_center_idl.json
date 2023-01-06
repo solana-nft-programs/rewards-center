@@ -1483,6 +1483,10 @@
           {
             "name": "recipient",
             "type": "publicKey"
+          },
+          {
+            "name": "unixSeconds",
+            "type": "i64"
           }
         ]
       }

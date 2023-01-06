@@ -10,10 +10,14 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
-import { SystemProgram, Transaction } from "@solana/web3.js";
+import {
+  SystemProgram,
+  SYSVAR_SLOT_HASHES_PUBKEY,
+  Transaction,
+} from "@solana/web3.js";
 import BN from "bn.js";
 
-import { fetchIdlAccountDataById } from "./accounts";
+import { fetchIdlAccount, fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
@@ -21,6 +25,7 @@ import {
   withRemainingAccountsForPaymentInfo,
 } from "./payment";
 import {
+  findRaffleWinnerId,
   findRewardEntryId,
   findRewardReceiptId,
   findStakeBoosterId,
@@ -690,21 +695,66 @@ export const enterRaffle = async (
       mintId,
       fungible ? wallet.publicKey : undefined
     );
-    const ix = await rewardsCenterProgram(connection, wallet)
-      .methods.enterRaffle({
-        stakeSeconds,
-      })
-      .accounts({
-        raffle: raffleId,
-        stakePool: stakePoolId,
-        stakeEntry: stakeEntryId,
-        lastStaker: wallet.publicKey,
-        payer: wallet.publicKey,
-        systemProgram: SystemProgram.programId,
-      })
-      .instruction();
-    tx.add(ix);
+    tx.add(
+      await rewardsCenterProgram(connection, wallet)
+        .methods.updateTotalStakeSeconds()
+        .accounts({
+          stakeEntry: stakeEntryId,
+          updater: wallet.publicKey,
+        })
+        .instruction()
+    );
+    tx.add(
+      await rewardsCenterProgram(connection, wallet)
+        .methods.enterRaffle({
+          stakeSeconds,
+        })
+        .accounts({
+          raffle: raffleId,
+          stakePool: stakePoolId,
+          stakeEntry: stakeEntryId,
+          lastStaker: wallet.publicKey,
+          payer: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .instruction()
+    );
     txs.push(tx);
   }
   return txs;
+};
+
+/**
+ * Enter a raffle with stake seconds for each mint
+ *
+ * @param connection
+ * @param wallet
+ * @param stakePoolIdentifier
+ * @param mintInfos
+ * @param raffleId
+ * @returns
+ */
+export const executeRaffle = async (
+  connection: Connection,
+  wallet: Wallet,
+  raffleId: PublicKey
+) => {
+  const raffle = await fetchIdlAccount(connection, raffleId, "raffle");
+  const raffleWinnerId = findRaffleWinnerId(
+    raffleId,
+    raffle.parsed.winnerCount
+  );
+  const tx = new Transaction();
+  const ix = await rewardsCenterProgram(connection, wallet)
+    .methods.executeRaffle()
+    .accounts({
+      raffle: raffleId,
+      raffleWinner: raffleWinnerId,
+      payer: wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+      recentSlothashes: SYSVAR_SLOT_HASHES_PUBKEY,
+    })
+    .instruction();
+  tx.add(ix);
+  return tx;
 };
