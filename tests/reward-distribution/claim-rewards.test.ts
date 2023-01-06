@@ -1,4 +1,9 @@
+import type { CardinalProvider } from "@cardinal/common";
 import {
+  createMintTx,
+  executeTransaction,
+  executeTransactions,
+  getTestProvider,
   withFindOrInitAssociatedTokenAccount,
   withWrapSol,
 } from "@cardinal/common";
@@ -30,14 +35,7 @@ import {
   stake,
   WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import {
-  createMasterEditionTx,
-  createMintTx,
-  executeTransaction,
-  executeTransactions,
-  getProvider,
-} from "../utils";
+import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
@@ -52,7 +50,7 @@ const PAYMENT_AMOUNT = LAMPORTS_PER_SOL;
 let paymentMintId: PublicKey;
 
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
   const mintKeypair = Keypair.generate();
   mintId = mintKeypair.publicKey;
   const mintTx = await createMasterEditionTx(
@@ -63,7 +61,7 @@ beforeAll(async () => {
 
   const rewardMintKeypair = Keypair.generate();
   rewardMintId = rewardMintKeypair.publicKey;
-  const rewardMintTx = await createMintTx(
+  const [rewardMintTx] = await createMintTx(
     provider.connection,
     rewardMintId,
     provider.wallet.publicKey,

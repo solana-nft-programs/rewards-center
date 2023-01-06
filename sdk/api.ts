@@ -4,7 +4,6 @@ import {
   MintManager,
   PROGRAM_ID as CREATOR_STANDARD_PROGRAM_ID,
 } from "@cardinal/creator-standard";
-import type * as beet from "@metaplex-foundation/beet";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 import {
   getAssociatedTokenAddressSync,
@@ -12,7 +11,7 @@ import {
 } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { SystemProgram, Transaction } from "@solana/web3.js";
-import { BN } from "bn.js";
+import BN from "bn.js";
 
 import { fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
@@ -50,7 +49,7 @@ export const stake = async (
   stakePoolIdentifier: string,
   mintInfos: {
     mintId: PublicKey;
-    amount?: beet.bignum;
+    amount?: BN;
     fungible?: boolean;
   }[]
 ) => {

@@ -1,4 +1,11 @@
-import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  createMintTx,
+  executeTransaction,
+  executeTransactions,
+  getTestProvider,
+  withFindOrInitAssociatedTokenAccount,
+} from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import {
   createTransferInstruction,
@@ -21,14 +28,7 @@ import {
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import {
-  createMasterEditionTx,
-  createMintTx,
-  executeTransaction,
-  executeTransactions,
-  getProvider,
-} from "../utils";
+import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
@@ -39,7 +39,7 @@ let mintId: PublicKey;
 let rewardMintId: PublicKey;
 
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
   const mintKeypair = Keypair.generate();
   mintId = mintKeypair.publicKey;
   const mintTx = await createMasterEditionTx(
@@ -50,7 +50,7 @@ beforeAll(async () => {
 
   const rewardMintKeypair = Keypair.generate();
   rewardMintId = rewardMintKeypair.publicKey;
-  const rewardMintTx = await createMintTx(
+  const [rewardMintTx] = await createMintTx(
     provider.connection,
     rewardMintId,
     provider.wallet.publicKey,

@@ -1,4 +1,9 @@
-import { withWrapSol } from "@cardinal/common";
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  executeTransaction,
+  getTestProvider,
+  withWrapSol,
+} from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { NATIVE_MINT } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
@@ -13,8 +18,6 @@ import {
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import { executeTransaction, getProvider } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
@@ -23,7 +26,7 @@ let paymentMintId: PublicKey;
 let paymentRecipientId: PublicKey;
 
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
 
   await executeTransaction(
     provider.connection,

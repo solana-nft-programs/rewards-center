@@ -1,3 +1,4 @@
+import { connectionFor, executeTransaction } from "@cardinal/common";
 import { utils, Wallet } from "@project-serum/anchor";
 import type { Cluster } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
@@ -8,8 +9,6 @@ import {
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
-import { connectionFor } from "../../tests/utils";
-import { executeTransaction } from "../utils";
 
 dotenv.config();
 

@@ -1,4 +1,10 @@
-import { withWrapSol } from "@cardinal/common";
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  executeTransaction,
+  executeTransactions,
+  getTestProvider,
+  withWrapSol,
+} from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import {
   getAccount,
@@ -20,13 +26,7 @@ import {
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import {
-  createMasterEditionTx,
-  executeTransaction,
-  executeTransactions,
-  getProvider,
-} from "../utils";
+import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
@@ -39,7 +39,7 @@ let paymentMintId: PublicKey;
 let paymentRecipientId: PublicKey;
 
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
   const mintKeypair = Keypair.generate();
   mintId = mintKeypair.publicKey;
   const mintTx = await createMasterEditionTx(
