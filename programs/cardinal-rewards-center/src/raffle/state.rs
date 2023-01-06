@@ -17,7 +17,7 @@ pub struct Raffle {
     pub name: String,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Eq, PartialEq)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Eq, Debug, PartialEq)]
 pub struct RaffleTicket {
     pub recipient: Pubkey,
     pub cumulative_stake_seconds: u128,

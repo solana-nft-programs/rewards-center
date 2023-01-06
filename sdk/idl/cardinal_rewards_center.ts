@@ -1070,6 +1070,161 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "initRaffle";
+      accounts: [
+        {
+          name: "raffle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "InitRaffleIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "updateRaffle";
+      accounts: [
+        {
+          name: "raffle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdateRaffleIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "enterRaffle";
+      accounts: [
+        {
+          name: "raffle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "lastStaker";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "EnterRaffleIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "executeRaffle";
+      accounts: [
+        {
+          name: "raffle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "raffleWinner";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "executor";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "recentSlothashes";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "initPaymentInfo";
       accounts: [
         {
@@ -1149,6 +1304,62 @@ export type CardinalRewardsCenter = {
   ];
   accounts: [
     {
+      name: "auction";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "highestBidder";
+            type: "publicKey";
+          },
+          {
+            name: "highestBid";
+            type: "u64";
+          },
+          {
+            name: "endDate";
+            type: "i64";
+          },
+          {
+            name: "name";
+            type: "string";
+          }
+        ];
+      };
+    },
+    {
+      name: "auctionWinner";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "auction";
+            type: "publicKey";
+          },
+          {
+            name: "owner";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
       name: "stakeAuthorizationRecord";
       type: {
         kind: "struct";
@@ -1200,6 +1411,78 @@ export type CardinalRewardsCenter = {
                 defined: "PaymentShare";
               };
             };
+          }
+        ];
+      };
+    },
+    {
+      name: "raffle";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "totalWinners";
+            type: "u64";
+          },
+          {
+            name: "winnerCount";
+            type: "u64";
+          },
+          {
+            name: "minStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "maxStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "raffleTickets";
+            type: {
+              vec: {
+                defined: "RaffleTicket";
+              };
+            };
+          },
+          {
+            name: "endDate";
+            type: "i64";
+          },
+          {
+            name: "name";
+            type: "string";
+          }
+        ];
+      };
+    },
+    {
+      name: "raffleWinner";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "raffle";
+            type: "publicKey";
+          },
+          {
+            name: "recipient";
+            type: "publicKey";
           }
         ];
       };
@@ -1563,6 +1846,46 @@ export type CardinalRewardsCenter = {
   ];
   types: [
     {
+      name: "InitAuctionIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "name";
+            type: "string";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "endDate";
+            type: "i64";
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdateAuctionIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "name";
+            type: "string";
+          },
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "endDate";
+            type: "i64";
+          }
+        ];
+      };
+    },
+    {
       name: "InitPaymentInfoIx";
       type: {
         kind: "struct";
@@ -1634,6 +1957,102 @@ export type CardinalRewardsCenter = {
                 defined: "PaymentShare";
               };
             };
+          }
+        ];
+      };
+    },
+    {
+      name: "EnterRaffleIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "stakeSeconds";
+            type: "u128";
+          }
+        ];
+      };
+    },
+    {
+      name: "InitRaffleIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "stakePool";
+            type: "publicKey";
+          },
+          {
+            name: "totalWinners";
+            type: "u64";
+          },
+          {
+            name: "minStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "maxStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "endDate";
+            type: "i64";
+          },
+          {
+            name: "name";
+            type: "string";
+          }
+        ];
+      };
+    },
+    {
+      name: "RaffleTicket";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "recipient";
+            type: "publicKey";
+          },
+          {
+            name: "cumulativeStakeSeconds";
+            type: "u128";
+          },
+          {
+            name: "unixSeconds";
+            type: "i64";
+          }
+        ];
+      };
+    },
+    {
+      name: "UpdateRaffleIx";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "authority";
+            type: "publicKey";
+          },
+          {
+            name: "totalWinners";
+            type: "u64";
+          },
+          {
+            name: "minStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "maxStakeSecondsToUse";
+            type: "u128";
+          },
+          {
+            name: "endDate";
+            type: "i64";
           }
         ];
       };
@@ -2094,6 +2513,11 @@ export type CardinalRewardsCenter = {
       msg: "Mismatched user and escrow";
     },
     {
+      code: 6004;
+      name: "InvalidCollector";
+      msg: "Invalid colelctor";
+    },
+    {
       code: 6010;
       name: "InvalidUserStakeMintTokenAccount";
       msg: "Invalid user original mint token account";
@@ -2332,6 +2756,26 @@ export type CardinalRewardsCenter = {
       code: 6102;
       name: "InvalidAuthorityTokenAccount";
       msg: "Invalid authority token account";
+    },
+    {
+      code: 6110;
+      name: "InvalidRaffle";
+      msg: "Invalid raffle";
+    },
+    {
+      code: 6120;
+      name: "NotHighestBid";
+      msg: "Not highest bid";
+    },
+    {
+      code: 6121;
+      name: "AuctionEnded";
+      msg: "Auction ended";
+    },
+    {
+      code: 6122;
+      name: "AuctionIsLive";
+      msg: "Auction is live";
     }
   ];
 };
@@ -3408,6 +3852,161 @@ export const IDL: CardinalRewardsCenter = {
       args: [],
     },
     {
+      name: "initRaffle",
+      accounts: [
+        {
+          name: "raffle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "InitRaffleIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "updateRaffle",
+      accounts: [
+        {
+          name: "raffle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdateRaffleIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "enterRaffle",
+      accounts: [
+        {
+          name: "raffle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "lastStaker",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "EnterRaffleIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "executeRaffle",
+      accounts: [
+        {
+          name: "raffle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "raffleWinner",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "executor",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "recentSlothashes",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
       name: "initPaymentInfo",
       accounts: [
         {
@@ -3487,6 +4086,62 @@ export const IDL: CardinalRewardsCenter = {
   ],
   accounts: [
     {
+      name: "auction",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "highestBidder",
+            type: "publicKey",
+          },
+          {
+            name: "highestBid",
+            type: "u64",
+          },
+          {
+            name: "endDate",
+            type: "i64",
+          },
+          {
+            name: "name",
+            type: "string",
+          },
+        ],
+      },
+    },
+    {
+      name: "auctionWinner",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "auction",
+            type: "publicKey",
+          },
+          {
+            name: "owner",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
       name: "stakeAuthorizationRecord",
       type: {
         kind: "struct",
@@ -3538,6 +4193,78 @@ export const IDL: CardinalRewardsCenter = {
                 defined: "PaymentShare",
               },
             },
+          },
+        ],
+      },
+    },
+    {
+      name: "raffle",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "totalWinners",
+            type: "u64",
+          },
+          {
+            name: "winnerCount",
+            type: "u64",
+          },
+          {
+            name: "minStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "maxStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "raffleTickets",
+            type: {
+              vec: {
+                defined: "RaffleTicket",
+              },
+            },
+          },
+          {
+            name: "endDate",
+            type: "i64",
+          },
+          {
+            name: "name",
+            type: "string",
+          },
+        ],
+      },
+    },
+    {
+      name: "raffleWinner",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "raffle",
+            type: "publicKey",
+          },
+          {
+            name: "recipient",
+            type: "publicKey",
           },
         ],
       },
@@ -3901,6 +4628,46 @@ export const IDL: CardinalRewardsCenter = {
   ],
   types: [
     {
+      name: "InitAuctionIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "name",
+            type: "string",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "endDate",
+            type: "i64",
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdateAuctionIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "name",
+            type: "string",
+          },
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "endDate",
+            type: "i64",
+          },
+        ],
+      },
+    },
+    {
       name: "InitPaymentInfoIx",
       type: {
         kind: "struct",
@@ -3972,6 +4739,102 @@ export const IDL: CardinalRewardsCenter = {
                 defined: "PaymentShare",
               },
             },
+          },
+        ],
+      },
+    },
+    {
+      name: "EnterRaffleIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "stakeSeconds",
+            type: "u128",
+          },
+        ],
+      },
+    },
+    {
+      name: "InitRaffleIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "stakePool",
+            type: "publicKey",
+          },
+          {
+            name: "totalWinners",
+            type: "u64",
+          },
+          {
+            name: "minStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "maxStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "endDate",
+            type: "i64",
+          },
+          {
+            name: "name",
+            type: "string",
+          },
+        ],
+      },
+    },
+    {
+      name: "RaffleTicket",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "recipient",
+            type: "publicKey",
+          },
+          {
+            name: "cumulativeStakeSeconds",
+            type: "u128",
+          },
+          {
+            name: "unixSeconds",
+            type: "i64",
+          },
+        ],
+      },
+    },
+    {
+      name: "UpdateRaffleIx",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "authority",
+            type: "publicKey",
+          },
+          {
+            name: "totalWinners",
+            type: "u64",
+          },
+          {
+            name: "minStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "maxStakeSecondsToUse",
+            type: "u128",
+          },
+          {
+            name: "endDate",
+            type: "i64",
           },
         ],
       },
@@ -4432,6 +5295,11 @@ export const IDL: CardinalRewardsCenter = {
       msg: "Mismatched user and escrow",
     },
     {
+      code: 6004,
+      name: "InvalidCollector",
+      msg: "Invalid colelctor",
+    },
+    {
       code: 6010,
       name: "InvalidUserStakeMintTokenAccount",
       msg: "Invalid user original mint token account",
@@ -4670,6 +5538,26 @@ export const IDL: CardinalRewardsCenter = {
       code: 6102,
       name: "InvalidAuthorityTokenAccount",
       msg: "Invalid authority token account",
+    },
+    {
+      code: 6110,
+      name: "InvalidRaffle",
+      msg: "Invalid raffle",
+    },
+    {
+      code: 6120,
+      name: "NotHighestBid",
+      msg: "Not highest bid",
+    },
+    {
+      code: 6121,
+      name: "AuctionEnded",
+      msg: "Auction ended",
+    },
+    {
+      code: 6122,
+      name: "AuctionIsLive",
+      msg: "Auction is live",
     },
   ],
 };

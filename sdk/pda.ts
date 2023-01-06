@@ -130,6 +130,36 @@ export const findRewardReceiptId = (
   )[0];
 };
 
+export const RAFFLE_SEED = "raffle";
+export const findRaffleId = (
+  stakePoolId: PublicKey,
+  identifier: string
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(RAFFLE_SEED),
+      stakePoolId.toBuffer(),
+      utils.bytes.utf8.encode(identifier),
+    ],
+    REWARDS_CENTER_ADDRESS
+  )[0];
+};
+
+export const RAFFLE_WINNER_SEED = "raffle-winner";
+export const findRaffleWinner = (
+  raffleId: PublicKey,
+  winnerCount?: BN
+): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [
+      utils.bytes.utf8.encode(RAFFLE_WINNER_SEED),
+      raffleId.toBuffer(),
+      (winnerCount ?? new BN(0)).toArrayLike(Buffer, "le", 8),
+    ],
+    REWARDS_CENTER_ADDRESS
+  )[0];
+};
+
 export const PAYMENT_INFO_SEED = "payment-info";
 export const findPaymentInfoId = (identifier: string): PublicKey => {
   return PublicKey.findProgramAddressSync(

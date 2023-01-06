@@ -145,6 +145,20 @@ pub mod cardinal_rewards_center {
         reward_distribution::reward_entry::claim_rewards::handler(ctx)
     }
 
+    //// raffles ////
+    pub fn init_raffle(ctx: Context<InitRaffleCtx>, ix: InitRaffleIx) -> Result<()> {
+        raffle::init_raffle::handler(ctx, ix)
+    }
+    pub fn update_raffle(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> {
+        raffle::update_raffle::handler(ctx, ix)
+    }
+    pub fn enter_raffle(ctx: Context<EnterRaffleCtx>, ix: EnterRaffleIx) -> Result<()> {
+        raffle::enter_raffle::handler(ctx, ix)
+    }
+    pub fn execute_raffle(ctx: Context<ExecuteRaffleCtx>) -> Result<()> {
+        raffle::execute_raffle::handler(ctx)
+    }
+
     //// payment ////
     pub fn init_payment_info(ctx: Context<InitPaymentInfoCtx>, ix: InitPaymentInfoIx) -> Result<()> {
         payment::init_payment_info::handler(ctx, ix)

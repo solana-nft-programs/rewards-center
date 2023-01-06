@@ -7,9 +7,7 @@ use anchor_lang::prelude::*;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdateRaffleIx {
     authority: Pubkey,
-    stake_pool: Pubkey,
     total_winners: u64,
-    winner_count: u64,
     min_stake_seconds_to_use: u128,
     max_stake_seconds_to_use: u128,
     end_date: i64,
@@ -47,7 +45,7 @@ pub fn handler(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> 
         name: raffle.name.clone(),
     };
 
-    if ix.total_winners > raffle.winner_count {
+    if ix.total_winners < raffle.winner_count {
         return Err(error!(ErrorCode::InvalidRaffle));
     }
 

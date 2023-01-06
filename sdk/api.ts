@@ -658,3 +658,53 @@ export const boost = async (
   tx.add(boostIx);
   return tx;
 };
+
+/**
+ * Enter a raffle with stake seconds for each mint
+ *
+ * @param connection
+ * @param wallet
+ * @param stakePoolIdentifier
+ * @param mintInfos
+ * @param raffleId
+ * @returns
+ */
+export const enterRaffle = async (
+  connection: Connection,
+  wallet: Wallet,
+  stakePoolIdentifier: string,
+  mintInfos: {
+    mintId: PublicKey;
+    stakeSeconds: BN;
+    fungible?: boolean;
+  }[],
+  raffleId: PublicKey
+) => {
+  const stakePoolId = findStakePoolId(stakePoolIdentifier);
+  const txs: Transaction[] = [];
+  for (let i = 0; i < mintInfos.length; i++) {
+    const { mintId, fungible, stakeSeconds } = mintInfos[i]!;
+    const tx = new Transaction();
+    const stakeEntryId = findStakeEntryId(
+      stakePoolId,
+      mintId,
+      fungible ? wallet.publicKey : undefined
+    );
+    const ix = await rewardsCenterProgram(connection, wallet)
+      .methods.enterRaffle({
+        stakeSeconds,
+      })
+      .accounts({
+        raffle: raffleId,
+        stakePool: stakePoolId,
+        stakeEntry: stakeEntryId,
+        lastStaker: wallet.publicKey,
+        payer: wallet.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
+    tx.add(ix);
+    txs.push(tx);
+  }
+  return txs;
+};
