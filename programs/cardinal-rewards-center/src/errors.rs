@@ -125,6 +125,8 @@ pub enum ErrorCode {
     InvalidRewardDistributorTokenAccount,
     #[msg("Invalid authority token account")]
     InvalidAuthorityTokenAccount,
+    #[msg("No rewards found to claim")]
+    NoRewardsToClaim,
 
     // raffle errors
     #[msg("Invalid raffle")]
