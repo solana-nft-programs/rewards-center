@@ -5,8 +5,8 @@ import {
   getTestProvider,
   newAccountWithLamports,
 } from "@cardinal/common";
+import { Wallet } from "@coral-xyz/anchor";
 import { beforeAll, expect, test } from "@jest/globals";
-import { Wallet } from "@project-serum/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";

@@ -1,4 +1,4 @@
-import type { Wallet } from "@project-serum/anchor";
+import type { Wallet } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 
 import { findStakePoolId } from "../../sdk";

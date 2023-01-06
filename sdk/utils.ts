@@ -1,5 +1,5 @@
-import { utils } from "@project-serum/anchor";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
+import { utils } from "@coral-xyz/anchor";
+import { findProgramAddressSync } from "@coral-xyz/anchor/dist/cjs/utils/pubkey";
 import { getMint } from "@solana/spl-token";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";

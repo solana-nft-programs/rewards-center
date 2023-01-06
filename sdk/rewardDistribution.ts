@@ -1,4 +1,4 @@
-import { BN } from "@project-serum/anchor";
+import { BN } from "@coral-xyz/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 

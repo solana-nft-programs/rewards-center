@@ -1,4 +1,4 @@
-import { BN, utils } from "@project-serum/anchor";
+import { BN, utils } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 
 import { REWARDS_CENTER_ADDRESS } from "./constants";

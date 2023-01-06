@@ -13,7 +13,7 @@ import {
   tryDecodeIdlAccount as cTryDecodeIdlAccount,
   tryDecodeIdlAccountUnknown as cTryDecodeIdlAccountUnknown,
 } from "@cardinal/common";
-import type { AllAccountsMap } from "@project-serum/anchor/dist/cjs/program/namespace/types";
+import type { AllAccountsMap } from "@coral-xyz/anchor/dist/cjs/program/namespace/types";
 import type {
   AccountInfo,
   Connection,

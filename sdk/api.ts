@@ -4,7 +4,7 @@ import {
   MintManager,
   PROGRAM_ID as CREATOR_STANDARD_PROGRAM_ID,
 } from "@cardinal/creator-standard";
-import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
+import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
