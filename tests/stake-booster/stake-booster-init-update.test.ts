@@ -105,6 +105,7 @@ test("Create stake booster", async () => {
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);

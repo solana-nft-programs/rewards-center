@@ -2,6 +2,7 @@ import type { CardinalProvider } from "@cardinal/common";
 import {
   executeTransaction,
   executeTransactions,
+  findMintMetadataId,
   getTestProvider,
 } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
@@ -22,7 +23,6 @@ import {
   stake,
   unstake,
 } from "../../sdk";
-import { findMintMetadataId } from "../../sdk/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
