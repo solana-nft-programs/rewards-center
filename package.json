@@ -46,11 +46,9 @@
   "devDependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^2.5.1",
     "@rushstack/eslint-patch": "^1.2.0",
-    "@solana/spl-token": "=0.3.6",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^29.2.0",
     "@types/yargs": "^17.0.13",
-    "colors": "^1.4.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.25.0",
     "eslint-import-resolver-node": "^0.3.6",
