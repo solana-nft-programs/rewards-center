@@ -28,7 +28,6 @@ pub struct InitRaffleCtx<'info> {
         bump,
     )]
     raffle: Box<Account<'info, Raffle>>,
-    #[account(mut)]
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = authority.key() == stake_pool.authority @ ErrorCode::InvalidAuthority)]
     authority: Signer<'info>,

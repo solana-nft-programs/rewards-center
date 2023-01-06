@@ -1,10 +1,10 @@
-use anchor_lang::prelude::*;
-
+use crate::errors::ErrorCode;
 use crate::utils::resize_account;
 use crate::Auction;
 use crate::StakePool;
 use crate::AUCTION_DEFAULT_SIZE;
 use crate::AUCTION_PREFIX;
+use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitAuctionIx {
@@ -25,7 +25,8 @@ pub struct InitAuctionCtx<'info> {
     )]
     auction: Box<Account<'info, Auction>>,
     stake_pool: Box<Account<'info, StakePool>>,
-
+    #[account(mut, constraint = authority.key() == stake_pool.authority @ ErrorCode::InvalidAuthority)]
+    authority: Signer<'info>,
     #[account(mut)]
     payer: Signer<'info>,
     system_program: Program<'info, System>,
@@ -36,7 +37,7 @@ pub fn handler(ctx: Context<InitAuctionCtx>, ix: InitAuctionIx) -> Result<()> {
         bump: *ctx.bumps.get("auction").unwrap(),
         stake_pool: ctx.accounts.stake_pool.key(),
         authority: ix.authority,
-        highest_bidding_stake_entry: Pubkey::default(),
+        highest_bidding_stake_entry: ctx.accounts.auction.key(),
         highest_bid: 0,
         end_timestamp_seconds: ix.end_timestamp_seconds,
         completed: false,

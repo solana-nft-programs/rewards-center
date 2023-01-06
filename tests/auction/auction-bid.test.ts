@@ -12,7 +12,7 @@ import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
-  bid,
+  bidAuction,
   fetchIdlAccount,
   findAuctionId,
   findStakeEntryId,
@@ -88,12 +88,11 @@ test("Init pool", async () => {
 });
 
 test("Init auction", async () => {
-  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const auctionId = findAuctionId(stakePoolId, auctionName);
   const tx = new Transaction();
-  const ix = await program.methods
-    .initAuction({
+  const ix = await rewardsCenterProgram(provider.connection, provider.wallet)
+    .methods.initAuction({
       name: auctionName,
       authority: provider.wallet.publicKey,
       endTimestampSeconds: new BN(endTimestampSeconds),
@@ -101,6 +100,7 @@ test("Init auction", async () => {
     .accountsStrict({
       auction: auctionId,
       stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
     })
@@ -171,17 +171,18 @@ test("Fail bid on auction", async () => {
   const biddingAmount = new BN(10);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
 
-  const tx = await bid(
+  const tx = await bidAuction(
     provider.connection,
     provider.wallet,
     biddingAmount,
-    auctionName,
-    stakePoolId,
+    findAuctionId(stakePoolId, auctionName),
     mintId
   );
 
   await expect(
-    executeTransaction(provider.connection, tx, provider.wallet)
+    executeTransaction(provider.connection, tx, provider.wallet, {
+      silent: true,
+    })
   ).rejects.toThrow();
 });
 
@@ -190,12 +191,11 @@ test("Bid on auction", async () => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const biddingAmount = new BN(2);
 
-  const tx = await bid(
+  const tx = await bidAuction(
     provider.connection,
     provider.wallet,
     biddingAmount,
-    auctionName,
-    stakePoolId,
+    findAuctionId(stakePoolId, auctionName),
     mintId
   );
 
@@ -220,16 +220,17 @@ test("Auction ended", async () => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const biddingAmount = new BN(2);
 
-  const tx = await bid(
+  const tx = await bidAuction(
     provider.connection,
     provider.wallet,
     biddingAmount,
-    auctionName,
-    stakePoolId,
+    findAuctionId(stakePoolId, auctionName),
     mintId
   );
 
   await expect(
-    executeTransaction(provider.connection, tx, provider.wallet)
+    executeTransaction(provider.connection, tx, provider.wallet, {
+      silent: true,
+    })
   ).rejects.toThrow();
 });

@@ -3,6 +3,7 @@ use crate::handle_payment;
 use crate::handle_payment_info;
 use crate::reward_receipts::ReceiptManager;
 use crate::reward_receipts::RewardReceipt;
+use crate::use_total_stake_seconds;
 use crate::Action;
 use crate::StakeEntry;
 use anchor_lang::prelude::*;
@@ -46,10 +47,7 @@ pub fn handler(ctx: Context<ClaimRewardReceiptCtx>) -> Result<()> {
 
     // add to used seconds
     let stake_entry = &mut ctx.accounts.stake_entry;
-    stake_entry.used_stake_seconds = stake_entry.used_stake_seconds.checked_add(ctx.accounts.receipt_manager.stake_seconds_to_use).expect("Add error");
-    if stake_entry.used_stake_seconds > ctx.accounts.stake_entry.total_stake_seconds {
-        return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
-    }
+    use_total_stake_seconds(stake_entry, ctx.accounts.receipt_manager.stake_seconds_to_use)?;
 
     // handle payment
     let remaining_accounts = &mut ctx.remaining_accounts.iter();

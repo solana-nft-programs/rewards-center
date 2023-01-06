@@ -37,3 +37,11 @@ pub struct StakeEntry {
     pub used_stake_seconds: u128,
     pub cooldown_start_seconds: Option<i64>,
 }
+
+pub fn use_total_stake_seconds(stake_entry: &mut Account<StakeEntry>, amount: u128) -> Result<()> {
+    stake_entry.used_stake_seconds = stake_entry.used_stake_seconds.checked_add(amount).expect("Add error");
+    if stake_entry.used_stake_seconds > stake_entry.total_stake_seconds {
+        return Err(error!(ErrorCode::InsufficientAvailableStakeSeconds));
+    }
+    Ok(())
+}

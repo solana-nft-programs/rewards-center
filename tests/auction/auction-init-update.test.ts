@@ -75,6 +75,7 @@ test("Init auction", async () => {
     .accountsStrict({
       auction: auctionId,
       stakePool: stakePoolId,
+      authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
     })

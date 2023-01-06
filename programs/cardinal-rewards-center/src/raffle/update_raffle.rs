@@ -28,10 +28,6 @@ pub struct UpdateRaffleCtx<'info> {
 
 pub fn handler(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> {
     let raffle = &mut ctx.accounts.raffle;
-
-    // assert_payment_info(stake_pool.key(), Action::Stake, ix.stake_payment_info)?;
-    // assert_payment_info(stake_pool.key(), Action::Unstake, ix.unstake_payment_info)?;
-
     let new_raffle = Raffle {
         bump: raffle.bump,
         authority: ix.authority,
@@ -45,7 +41,7 @@ pub fn handler(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> 
         name: raffle.name.clone(),
     };
 
-    if ix.total_winners < raffle.winner_count {
+    if new_raffle.total_winners < raffle.winner_count {
         return Err(error!(ErrorCode::InvalidRaffle));
     }
 
@@ -56,5 +52,6 @@ pub fn handler(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> 
         &ctx.accounts.payer.to_account_info(),
         &ctx.accounts.system_program.to_account_info(),
     )?;
+
     Ok(())
 }

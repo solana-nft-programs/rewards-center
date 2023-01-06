@@ -152,8 +152,8 @@ pub mod cardinal_rewards_center {
     pub fn update_raffle(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> {
         raffle::update_raffle::handler(ctx, ix)
     }
-    pub fn enter_raffle(ctx: Context<EnterRaffleCtx>, ix: EnterRaffleIx) -> Result<()> {
-        raffle::enter_raffle::handler(ctx, ix)
+    pub fn enter_raffle(ctx: Context<EnterRaffleCtx>, raffle_stake_seconds: u128) -> Result<()> {
+        raffle::enter_raffle::handler(ctx, raffle_stake_seconds)
     }
     pub fn execute_raffle(ctx: Context<ExecuteRaffleCtx>) -> Result<()> {
         raffle::execute_raffle::handler(ctx)
@@ -179,7 +179,7 @@ pub mod cardinal_rewards_center {
         auction::update_auction::handler(ctx, ix)
     }
 
-    pub fn bid(ctx: Context<BidCtx>, bidding_amount: u128) -> Result<()> {
-        auction::bid::handler(ctx, bidding_amount)
+    pub fn bid_auction(ctx: Context<BidAuctionCtx>, bidding_stake_seconds: u128) -> Result<()> {
+        auction::bid_auction::handler(ctx, bidding_stake_seconds)
     }
 }

@@ -1079,7 +1079,7 @@
         },
         {
           "name": "stakePool",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1155,7 +1155,7 @@
         },
         {
           "name": "stakePool",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1181,10 +1181,8 @@
       ],
       "args": [
         {
-          "name": "ix",
-          "type": {
-            "defined": "EnterRaffleIx"
-          }
+          "name": "raffleStakeSeconds",
+          "type": "u128"
         }
       ]
     },
@@ -1315,6 +1313,11 @@
           "isSigner": false
         },
         {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
           "name": "payer",
           "isMut": true,
           "isSigner": true
@@ -1373,7 +1376,7 @@
       ]
     },
     {
-      "name": "bid",
+      "name": "bidAuction",
       "accounts": [
         {
           "name": "auction",
@@ -1393,22 +1396,20 @@
         {
           "name": "highestBiddingStakeEntry",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "CHECK This is checked below"
+          ]
         },
         {
           "name": "bidder",
           "isMut": true,
           "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "biddingAmount",
+          "name": "biddingStakeSeconds",
           "type": "u128"
         }
       ]
@@ -2057,18 +2058,6 @@
                 "defined": "PaymentShare"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "EnterRaffleIx",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "stakeSeconds",
-            "type": "u128"
           }
         ]
       }

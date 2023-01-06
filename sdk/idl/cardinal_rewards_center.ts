@@ -1079,7 +1079,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "stakePool";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -1155,7 +1155,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "stakePool";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -1181,10 +1181,8 @@ export type CardinalRewardsCenter = {
       ];
       args: [
         {
-          name: "ix";
-          type: {
-            defined: "EnterRaffleIx";
-          };
+          name: "raffleStakeSeconds";
+          type: "u128";
         }
       ];
     },
@@ -1315,6 +1313,11 @@ export type CardinalRewardsCenter = {
           isSigner: false;
         },
         {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
           name: "payer";
           isMut: true;
           isSigner: true;
@@ -1373,7 +1376,7 @@ export type CardinalRewardsCenter = {
       ];
     },
     {
-      name: "bid";
+      name: "bidAuction";
       accounts: [
         {
           name: "auction";
@@ -1394,21 +1397,17 @@ export type CardinalRewardsCenter = {
           name: "highestBiddingStakeEntry";
           isMut: true;
           isSigner: false;
+          docs: ["CHECK This is checked below"];
         },
         {
           name: "bidder";
           isMut: true;
           isSigner: true;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
         {
-          name: "biddingAmount";
+          name: "biddingStakeSeconds";
           type: "u128";
         }
       ];
@@ -2057,18 +2056,6 @@ export type CardinalRewardsCenter = {
                 defined: "PaymentShare";
               };
             };
-          }
-        ];
-      };
-    },
-    {
-      name: "EnterRaffleIx";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "stakeSeconds";
-            type: "u128";
           }
         ];
       };
@@ -3976,7 +3963,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "stakePool",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -4052,7 +4039,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "stakePool",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -4078,10 +4065,8 @@ export const IDL: CardinalRewardsCenter = {
       ],
       args: [
         {
-          name: "ix",
-          type: {
-            defined: "EnterRaffleIx",
-          },
+          name: "raffleStakeSeconds",
+          type: "u128",
         },
       ],
     },
@@ -4212,6 +4197,11 @@ export const IDL: CardinalRewardsCenter = {
           isSigner: false,
         },
         {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
           name: "payer",
           isMut: true,
           isSigner: true,
@@ -4270,7 +4260,7 @@ export const IDL: CardinalRewardsCenter = {
       ],
     },
     {
-      name: "bid",
+      name: "bidAuction",
       accounts: [
         {
           name: "auction",
@@ -4291,21 +4281,17 @@ export const IDL: CardinalRewardsCenter = {
           name: "highestBiddingStakeEntry",
           isMut: true,
           isSigner: false,
+          docs: ["CHECK This is checked below"],
         },
         {
           name: "bidder",
           isMut: true,
           isSigner: true,
         },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
-          name: "biddingAmount",
+          name: "biddingStakeSeconds",
           type: "u128",
         },
       ],
@@ -4954,18 +4940,6 @@ export const IDL: CardinalRewardsCenter = {
                 defined: "PaymentShare",
               },
             },
-          },
-        ],
-      },
-    },
-    {
-      name: "EnterRaffleIx",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "stakeSeconds",
-            type: "u128",
           },
         ],
       },

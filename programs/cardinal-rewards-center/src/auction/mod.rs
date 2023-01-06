@@ -7,5 +7,5 @@ pub use init_auction::*;
 pub mod update_auction;
 pub use update_auction::*;
 
-pub mod bid;
-pub use bid::*;
+pub mod bid_auction;
+pub use bid_auction::*;

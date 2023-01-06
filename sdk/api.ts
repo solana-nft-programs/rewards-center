@@ -30,7 +30,6 @@ import {
   withRemainingAccountsForPaymentInfo,
 } from "./payment";
 import {
-  findAuctionId,
   findRaffleWinnerId,
   findRewardEntryId,
   findRewardReceiptId,
@@ -712,9 +711,7 @@ export const enterRaffle = async (
     );
     tx.add(
       await rewardsCenterProgram(connection, wallet)
-        .methods.enterRaffle({
-          stakeSeconds,
-        })
+        .methods.enterRaffle(stakeSeconds)
         .accountsStrict({
           raffle: raffleId,
           stakePool: stakePoolId,
@@ -741,34 +738,30 @@ export const enterRaffle = async (
  * @param stakedMintId
  * @returns
  */
-export const bid = async (
+export const bidAuction = async (
   connection: Connection,
   wallet: Wallet,
   biddingAmount: BN,
-  auctionName: string,
-  stakePoolId: PublicKey,
+  auctionId: PublicKey,
   stakedMintId: PublicKey
 ) => {
-  const program = rewardsCenterProgram(connection, wallet);
-  const auctionId = findAuctionId(stakePoolId, auctionName);
   const auctionData = await tryGetAccount(() =>
     fetchIdlAccount(connection, auctionId, "auction")
   );
-  if (!auctionData) throw `No auction found with name ${auctionName}`;
+  if (!auctionData) throw `No auction found ${auctionId.toString()}`;
   const stakeEntryId = findStakeEntryId(
     auctionData.parsed.stakePool,
     stakedMintId
   );
   const transaction = new Transaction();
-  const ix = await program.methods
-    .bid(biddingAmount)
+  const ix = await rewardsCenterProgram(connection, wallet)
+    .methods.bidAuction(biddingAmount)
     .accountsStrict({
       auction: auctionId,
       stakePool: auctionData.parsed.stakePool,
       stakeEntry: stakeEntryId,
       highestBiddingStakeEntry: auctionData.parsed.highestBiddingStakeEntry,
       bidder: wallet.publicKey,
-      systemProgram: SystemProgram.programId,
     })
     .instruction();
   transaction.add(ix);
