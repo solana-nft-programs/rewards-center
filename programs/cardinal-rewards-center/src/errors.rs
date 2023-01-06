@@ -137,4 +137,8 @@ pub enum ErrorCode {
     AuctionEnded,
     #[msg("Auction is live")]
     AuctionIsLive,
+    #[msg("Not enough stake seconds")]
+    NotEnoughStakeSeconds,
+    #[msg("Invalid highest bidding stake entry")]
+    InvalidHighestBiddingStakeEntry,
 }

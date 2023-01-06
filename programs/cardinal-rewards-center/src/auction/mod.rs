@@ -9,6 +9,3 @@ pub use update_auction::*;
 
 pub mod bid;
 pub use bid::*;
-
-pub mod execute_auction;
-pub use execute_auction::*;

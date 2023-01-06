@@ -1,4 +1,7 @@
-import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
+import {
+  tryGetAccount,
+  withFindOrInitAssociatedTokenAccount,
+} from "@cardinal/common";
 import {
   findMintManagerId,
   MintManager,
@@ -13,7 +16,7 @@ import type { Connection, PublicKey } from "@solana/web3.js";
 import { SystemProgram, Transaction } from "@solana/web3.js";
 import BN from "bn.js";
 
-import { fetchIdlAccountDataById } from "./accounts";
+import { fetchIdlAccount, fetchIdlAccountDataById } from "./accounts";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
@@ -21,6 +24,7 @@ import {
   withRemainingAccountsForPaymentInfo,
 } from "./payment";
 import {
+  findAuctionId,
   findRewardEntryId,
   findRewardReceiptId,
   findStakeBoosterId,
@@ -707,4 +711,47 @@ export const enterRaffle = async (
     txs.push(tx);
   }
   return txs;
+};
+
+/**
+ * Bid on an auction
+ *
+ * @param connection
+ * @param wallet
+ * @param biddingAmount
+ * @param auctionName
+ * @param stakedMintId
+ * @returns
+ */
+export const bid = async (
+  connection: Connection,
+  wallet: Wallet,
+  biddingAmount: BN,
+  auctionName: string,
+  stakedMintId: PublicKey
+) => {
+  const program = rewardsCenterProgram(connection, wallet);
+  const auctionId = findAuctionId(auctionName);
+  const auctionData = await tryGetAccount(() =>
+    fetchIdlAccount(connection, auctionId, "auction")
+  );
+  if (!auctionData) throw `No auction found with name ${auctionName}`;
+  const stakeEntryId = findStakeEntryId(
+    auctionData.parsed.stakePool,
+    stakedMintId
+  );
+  const transaction = new Transaction();
+  const ix = await program.methods
+    .bid(biddingAmount)
+    .accountsStrict({
+      auction: auctionId,
+      stakePool: auctionData.parsed.stakePool,
+      stakeEntry: stakeEntryId,
+      highestBiddingStakeEntry: auctionData.parsed.highestBiddingStakeEntry,
+      bidder: wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+  transaction.add(ix);
+  return transaction;
 };

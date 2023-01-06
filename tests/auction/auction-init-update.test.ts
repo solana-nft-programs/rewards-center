@@ -1,19 +1,20 @@
 import type { CardinalProvider } from "@cardinal/common";
 import { executeTransaction, getTestProvider } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
-import { SystemProgram, Transaction } from "@solana/web3.js";
+import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
   fetchIdlAccount,
-  findRaffleId,
+  findAuctionId,
   findStakePoolId,
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
-const raffleIdentifier = `raffle-${Math.random()}`;
+const auctionName = `test-${Math.random()}`;
+const endDate = Date.now() / 1000 + 5;
 let provider: CardinalProvider;
 
 beforeAll(async () => {
@@ -60,66 +61,66 @@ test("Init pool", async () => {
   );
 });
 
-test("Create raffle", async () => {
-  const tx = new Transaction();
+test("Init auction", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const raffleId = findRaffleId(stakePoolId, raffleIdentifier);
-
-  const ix = await rewardsCenterProgram(provider.connection, provider.wallet)
-    .methods.initRaffle({
+  const auctionId = findAuctionId(auctionName);
+  const tx = new Transaction();
+  const ix = await program.methods
+    .initAuction({
+      name: auctionName,
       authority: provider.wallet.publicKey,
-      stakePool: stakePoolId,
-      totalWinners: new BN(1),
-      minStakeSecondsToUse: new BN(0),
-      maxStakeSecondsToUse: new BN(10),
-      endDate: new BN(0),
-      name: raffleIdentifier,
+      endDate: new BN(endDate),
     })
     .accounts({
-      raffle: raffleId,
+      auction: auctionId,
       stakePool: stakePoolId,
-      authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);
-
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const raffle = await fetchIdlAccount(provider.connection, raffleId, "raffle");
-  expect(Number(raffle.parsed.winnerCount)).toBe(0);
-  expect(Number(raffle.parsed.totalWinners)).toBe(1);
-  expect(Number(raffle.parsed.minStakeSecondsToUse)).toBe(0);
-  expect(Number(raffle.parsed.maxStakeSecondsToUse)).toBe(10);
+  const auction = await fetchIdlAccount(
+    provider.connection,
+    stakePoolId,
+    "auction"
+  );
+  expect(auction.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
+  );
+  expect(auction.parsed.endDate.toString()).toEqual(endDate.toString());
+  expect(auction.parsed.completed).toBeFalsy();
 });
 
-test("Update raffle", async () => {
-  const tx = new Transaction();
+test("Update auction", async () => {
+  const program = rewardsCenterProgram(provider.connection, provider.wallet);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const raffleId = findRaffleId(stakePoolId, raffleIdentifier);
-
-  const ix = await rewardsCenterProgram(provider.connection, provider.wallet)
-    .methods.updateRaffle({
-      authority: provider.wallet.publicKey,
-      totalWinners: new BN(2),
-      minStakeSecondsToUse: new BN(0),
-      maxStakeSecondsToUse: new BN(20),
-      endDate: new BN(0),
+  const auctionId = findAuctionId(auctionName);
+  const tx = new Transaction();
+  const newAuthority = Keypair.generate().publicKey;
+  const newEndDate = Date.now() / 1000 + 10;
+  const ix = await program.methods
+    .updateAuction({
+      authority: newAuthority,
+      endDate: new BN(newEndDate),
+      completed: true,
     })
     .accounts({
-      raffle: raffleId,
+      auction: auctionId,
       stakePool: stakePoolId,
-      authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);
-
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const raffle = await fetchIdlAccount(provider.connection, raffleId, "raffle");
-  expect(Number(raffle.parsed.winnerCount)).toBe(0);
-  expect(Number(raffle.parsed.totalWinners)).toBe(2);
-  expect(Number(raffle.parsed.minStakeSecondsToUse)).toBe(0);
-  expect(Number(raffle.parsed.maxStakeSecondsToUse)).toBe(20);
+  const auction = await fetchIdlAccount(
+    provider.connection,
+    stakePoolId,
+    "auction"
+  );
+  expect(auction.parsed.authority.toString()).toBe(newAuthority.toString());
+  expect(auction.parsed.endDate.toString()).toEqual(newEndDate.toString());
+  expect(auction.parsed.completed).toBeTruthy();
 });

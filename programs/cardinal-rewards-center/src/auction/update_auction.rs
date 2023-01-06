@@ -7,9 +7,9 @@ use crate::StakePool;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct UpdateAuctionIx {
-    name: String,
     authority: Pubkey,
     end_date: i64,
+    completed: bool,
 }
 
 #[derive(Accounts)]
@@ -32,10 +32,11 @@ pub fn handler(ctx: Context<UpdateAuctionCtx>, ix: UpdateAuctionIx) -> Result<()
         bump: *ctx.bumps.get("auction").unwrap(),
         stake_pool: ctx.accounts.stake_pool.key(),
         authority: ix.authority,
-        highest_bidder: Pubkey::default(),
-        highest_bid: 0,
+        highest_bidding_stake_entry: ctx.accounts.auction.highest_bidding_stake_entry,
+        highest_bid: ctx.accounts.auction.highest_bid,
         end_date: ix.end_date,
-        name: ix.name,
+        completed: ix.completed,
+        name: ctx.accounts.auction.name.to_string(),
     };
 
     let auction = &mut ctx.accounts.auction;

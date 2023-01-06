@@ -15,7 +15,7 @@ pub struct InitAuctionIx {
 
 #[derive(Accounts)]
 #[instruction(ix: InitAuctionIx)]
-pub struct InitAutcionCtx<'info> {
+pub struct InitAuctionCtx<'info> {
     #[account(
         init,
         payer = payer,
@@ -31,14 +31,15 @@ pub struct InitAutcionCtx<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<InitAutcionCtx>, ix: InitAuctionIx) -> Result<()> {
+pub fn handler(ctx: Context<InitAuctionCtx>, ix: InitAuctionIx) -> Result<()> {
     let new_auction = Auction {
         bump: *ctx.bumps.get("auction").unwrap(),
         stake_pool: ctx.accounts.stake_pool.key(),
         authority: ix.authority,
-        highest_bidder: Pubkey::default(),
+        highest_bidding_stake_entry: Pubkey::default(),
         highest_bid: 0,
         end_date: ix.end_date,
+        completed: false,
         name: ix.name,
     };
 

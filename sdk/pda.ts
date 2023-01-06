@@ -170,3 +170,11 @@ export const findPaymentInfoId = (identifier: string): PublicKey => {
     REWARDS_CENTER_ADDRESS
   )[0];
 };
+
+export const AUCTION_SEED = "auction";
+export const findAuctionId = (name: string): PublicKey => {
+  return PublicKey.findProgramAddressSync(
+    [utils.bytes.utf8.encode(AUCTION_SEED), utils.bytes.utf8.encode(name)],
+    REWARDS_CENTER_ADDRESS
+  )[0];
+};

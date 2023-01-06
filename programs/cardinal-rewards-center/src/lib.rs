@@ -169,4 +169,17 @@ pub mod cardinal_rewards_center {
     pub fn close_payment_info(ctx: Context<ClosePaymentInfoCtx>) -> Result<()> {
         payment::close_payment_info::handler(ctx)
     }
+
+    //// auction ////
+    pub fn init_auction(ctx: Context<InitAuctionCtx>, ix: InitAuctionIx) -> Result<()> {
+        auction::init_auction::handler(ctx, ix)
+    }
+
+    pub fn update_auction(ctx: Context<UpdateAuctionCtx>, ix: UpdateAuctionIx) -> Result<()> {
+        auction::update_auction::handler(ctx, ix)
+    }
+
+    pub fn bid(ctx: Context<BidCtx>, bidding_amount: u128) -> Result<()> {
+        auction::bid::handler(ctx, bidding_amount)
+    }
 }

@@ -1300,6 +1300,118 @@ export type CardinalRewardsCenter = {
         }
       ];
       args: [];
+    },
+    {
+      name: "initAuction";
+      accounts: [
+        {
+          name: "auction";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "InitAuctionIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "updateAuction";
+      accounts: [
+        {
+          name: "auction";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "ix";
+          type: {
+            defined: "UpdateAuctionIx";
+          };
+        }
+      ];
+    },
+    {
+      name: "bid";
+      accounts: [
+        {
+          name: "auction";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "highestBiddingStakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "bidder";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "biddingAmount";
+          type: "u128";
+        }
+      ];
     }
   ];
   accounts: [
@@ -1321,40 +1433,24 @@ export type CardinalRewardsCenter = {
             type: "publicKey";
           },
           {
-            name: "highestBidder";
+            name: "highestBiddingStakeEntry";
             type: "publicKey";
           },
           {
             name: "highestBid";
-            type: "u64";
+            type: "u128";
           },
           {
             name: "endDate";
             type: "i64";
           },
           {
+            name: "completed";
+            type: "bool";
+          },
+          {
             name: "name";
             type: "string";
-          }
-        ];
-      };
-    },
-    {
-      name: "auctionWinner";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "bump";
-            type: "u8";
-          },
-          {
-            name: "auction";
-            type: "publicKey";
-          },
-          {
-            name: "owner";
-            type: "publicKey";
           }
         ];
       };
@@ -1871,16 +1967,16 @@ export type CardinalRewardsCenter = {
         kind: "struct";
         fields: [
           {
-            name: "name";
-            type: "string";
-          },
-          {
             name: "authority";
             type: "publicKey";
           },
           {
             name: "endDate";
             type: "i64";
+          },
+          {
+            name: "completed";
+            type: "bool";
           }
         ];
       };
@@ -2776,6 +2872,16 @@ export type CardinalRewardsCenter = {
       code: 6122;
       name: "AuctionIsLive";
       msg: "Auction is live";
+    },
+    {
+      code: 6123;
+      name: "NotEnoughStakeSeconds";
+      msg: "Not enough stake seconds";
+    },
+    {
+      code: 6124;
+      name: "InvalidHighestBiddingStakeEntry";
+      msg: "Invalid highest bidding stake entry";
     }
   ];
 };
@@ -4083,6 +4189,118 @@ export const IDL: CardinalRewardsCenter = {
       ],
       args: [],
     },
+    {
+      name: "initAuction",
+      accounts: [
+        {
+          name: "auction",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "InitAuctionIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "updateAuction",
+      accounts: [
+        {
+          name: "auction",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "ix",
+          type: {
+            defined: "UpdateAuctionIx",
+          },
+        },
+      ],
+    },
+    {
+      name: "bid",
+      accounts: [
+        {
+          name: "auction",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "highestBiddingStakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "bidder",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "biddingAmount",
+          type: "u128",
+        },
+      ],
+    },
   ],
   accounts: [
     {
@@ -4103,40 +4321,24 @@ export const IDL: CardinalRewardsCenter = {
             type: "publicKey",
           },
           {
-            name: "highestBidder",
+            name: "highestBiddingStakeEntry",
             type: "publicKey",
           },
           {
             name: "highestBid",
-            type: "u64",
+            type: "u128",
           },
           {
             name: "endDate",
             type: "i64",
           },
           {
+            name: "completed",
+            type: "bool",
+          },
+          {
             name: "name",
             type: "string",
-          },
-        ],
-      },
-    },
-    {
-      name: "auctionWinner",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "bump",
-            type: "u8",
-          },
-          {
-            name: "auction",
-            type: "publicKey",
-          },
-          {
-            name: "owner",
-            type: "publicKey",
           },
         ],
       },
@@ -4653,16 +4855,16 @@ export const IDL: CardinalRewardsCenter = {
         kind: "struct",
         fields: [
           {
-            name: "name",
-            type: "string",
-          },
-          {
             name: "authority",
             type: "publicKey",
           },
           {
             name: "endDate",
             type: "i64",
+          },
+          {
+            name: "completed",
+            type: "bool",
           },
         ],
       },
@@ -5558,6 +5760,16 @@ export const IDL: CardinalRewardsCenter = {
       code: 6122,
       name: "AuctionIsLive",
       msg: "Auction is live",
+    },
+    {
+      code: 6123,
+      name: "NotEnoughStakeSeconds",
+      msg: "Not enough stake seconds",
+    },
+    {
+      code: 6124,
+      name: "InvalidHighestBiddingStakeEntry",
+      msg: "Invalid highest bidding stake entry",
     },
   ],
 };
