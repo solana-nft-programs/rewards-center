@@ -36,7 +36,7 @@ const main = async (cluster: Cluster) => {
         "Ad29pAAdYvYTcDzRHtA1req5an2DqFUfY1s5tkUC88Lr"
       ),
     })
-    .accounts({
+    .accountsStrict({
       rewardDistributor: rewardDistributorId,
       authority: wallet.publicKey,
     })

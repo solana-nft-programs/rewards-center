@@ -1,4 +1,9 @@
-import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
+import {
+  findMintEditionId,
+  findMintMetadataId,
+  METADATA_PROGRAM_ID,
+  withFindOrInitAssociatedTokenAccount,
+} from "@cardinal/common";
 import {
   findMintManagerId,
   MintManager,
@@ -33,11 +38,6 @@ import {
   findStakePoolId,
   findUserEscrowId,
 } from "./pda";
-import {
-  findMintEditionId,
-  findMintMetadataId,
-  METADATA_PROGRAM_ID,
-} from "./utils";
 
 /**
  * Stake all mints and also initialize entries if not already initialized
@@ -90,7 +90,7 @@ export const stake = async (
     if (!accountDataById[stakeEntryId.toString()]) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.initEntry(wallet.publicKey)
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           stakePool: stakePoolId,
           stakeMint: mintId,
@@ -116,7 +116,7 @@ export const stake = async (
       )[0];
       const stakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.stakeCcs(new BN(amount ?? 1))
-        .accounts({
+        .accountsStrict({
           stakePool: stakePoolId,
           stakeEntry: stakeEntryId,
           stakeMint: mintId,
@@ -144,7 +144,7 @@ export const stake = async (
       const editionId = findMintEditionId(mintId);
       const stakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.stakeEdition(new BN(amount ?? 1))
-        .accounts({
+        .accountsStrict({
           stakePool: stakePoolId,
           stakeEntry: stakeEntryId,
           stakeMint: mintId,
@@ -230,7 +230,7 @@ export const unstake = async (
     ) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.updateTotalStakeSeconds()
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           updater: wallet.publicKey,
         })
@@ -264,7 +264,7 @@ export const unstake = async (
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
-              .accounts({
+              .accountsStrict({
                 rewardEntry: findRewardEntryId(
                   rewardDistributorId,
                   stakeEntryId
@@ -272,6 +272,7 @@ export const unstake = async (
                 rewardDistributor: rewardDistributorId,
                 stakeEntry: stakeEntryId,
                 payer: wallet.publicKey,
+                systemProgram: SystemProgram.programId,
               })
               .instruction();
             tx.add(ix);
@@ -285,7 +286,7 @@ export const unstake = async (
             );
           const ix = await rewardsCenterProgram(connection, wallet)
             .methods.claimRewards()
-            .accounts({
+            .accountsStrict({
               rewardEntry: findRewardEntryId(rewardDistributorId, stakeEntryId),
               rewardDistributor: rewardDistributorId,
               stakeEntry: stakeEntryId,
@@ -294,6 +295,8 @@ export const unstake = async (
               userRewardMintTokenAccount: userRewardMintTokenAccount,
               rewardDistributorTokenAccount: rewardDistributorTokenAccount,
               user: wallet.publicKey,
+              systemProgram: SystemProgram.programId,
+              tokenProgram: TOKEN_PROGRAM_ID,
             })
             .remainingAccounts(remainingAccountsForPayment)
             .instruction();
@@ -322,7 +325,7 @@ export const unstake = async (
     if (mintManagerAccountInfo?.data) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.unstakeCcs()
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           stakePool: stakePoolId,
           stakeMint: mintId,
@@ -331,6 +334,8 @@ export const unstake = async (
           userEscrow: userEscrowId,
           userStakeMintTokenAccount: userAtaId,
           creatorStandardProgram: CREATOR_STANDARD_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .remainingAccounts(remainingAccounts)
         .instruction();
@@ -339,7 +344,7 @@ export const unstake = async (
       const editionId = findMintEditionId(mintId);
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.unstakeEdition()
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           stakePool: stakePoolId,
           stakeMint: mintId,
@@ -348,6 +353,8 @@ export const unstake = async (
           userEscrow: userEscrowId,
           userStakeMintTokenAccount: userAtaId,
           tokenMetadataProgram: METADATA_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
         })
         .remainingAccounts(remainingAccounts)
         .instruction();
@@ -409,7 +416,7 @@ export const claimRewards = async (
     ) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.updateTotalStakeSeconds()
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           updater: wallet.publicKey,
         })
@@ -443,7 +450,7 @@ export const claimRewards = async (
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
-              .accounts({
+              .accountsStrict({
                 rewardEntry: findRewardEntryId(
                   rewardDistributorId,
                   stakeEntryId
@@ -451,6 +458,7 @@ export const claimRewards = async (
                 rewardDistributor: rewardDistributorId,
                 stakeEntry: stakeEntryId,
                 payer: wallet.publicKey,
+                systemProgram: SystemProgram.programId,
               })
               .instruction();
             tx.add(ix);
@@ -464,7 +472,7 @@ export const claimRewards = async (
             );
           const ix = await rewardsCenterProgram(connection, wallet)
             .methods.claimRewards()
-            .accounts({
+            .accountsStrict({
               rewardEntry: findRewardEntryId(rewardDistributorId, stakeEntryId),
               rewardDistributor: rewardDistributorId,
               stakeEntry: stakeEntryId,
@@ -473,6 +481,8 @@ export const claimRewards = async (
               userRewardMintTokenAccount: userRewardMintTokenAccount,
               rewardDistributorTokenAccount: rewardDistributorTokenAccount,
               user: wallet.publicKey,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              systemProgram: SystemProgram.programId,
             })
             .remainingAccounts(remainingAccountsForPayment)
             .instruction();
@@ -528,7 +538,7 @@ export const claimRewardReceipt = async (
   const tx = new Transaction();
   const ix = await rewardsCenterProgram(connection, wallet)
     .methods.updateTotalStakeSeconds()
-    .accounts({
+    .accountsStrict({
       stakeEntry: stakeEntryId,
       updater: wallet.publicKey,
     })
@@ -537,11 +547,12 @@ export const claimRewardReceipt = async (
   if (!accountDataById[rewardReceiptId.toString()]?.parsed) {
     const ix = await rewardsCenterProgram(connection, wallet)
       .methods.initRewardReceipt()
-      .accounts({
+      .accountsStrict({
         rewardReceipt: rewardReceiptId,
         receiptManager: receiptManagerId,
         stakeEntry: stakeEntryId,
         payer: wallet.publicKey,
+        systemProgram: SystemProgram.programId,
       })
       .instruction();
     tx.add(ix);
@@ -564,7 +575,7 @@ export const claimRewardReceipt = async (
   );
   const rewardReceiptIx = await rewardsCenterProgram(connection, wallet)
     .methods.claimRewardReceipt()
-    .accounts({
+    .accountsStrict({
       rewardReceipt: rewardReceiptId,
       receiptManager: receiptManagerId,
       stakeEntry: stakeEntryId,
@@ -624,7 +635,7 @@ export const boost = async (
   const tx = new Transaction();
   const ix = await rewardsCenterProgram(connection, wallet)
     .methods.updateTotalStakeSeconds()
-    .accounts({
+    .accountsStrict({
       stakeEntry: stakeEntryId,
       updater: wallet.publicKey,
     })
@@ -649,7 +660,7 @@ export const boost = async (
   );
   const boostIx = await rewardsCenterProgram(connection, wallet)
     .methods.boostStakeEntry({ secondsToBoost: new BN(secondsToBoost) })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       stakeBooster: stakeBoosterId,
       stakeEntry: stakeEntryId,
@@ -698,7 +709,7 @@ export const enterRaffle = async (
     tx.add(
       await rewardsCenterProgram(connection, wallet)
         .methods.updateTotalStakeSeconds()
-        .accounts({
+        .accountsStrict({
           stakeEntry: stakeEntryId,
           updater: wallet.publicKey,
         })
@@ -709,7 +720,7 @@ export const enterRaffle = async (
         .methods.enterRaffle({
           stakeSeconds,
         })
-        .accounts({
+        .accountsStrict({
           raffle: raffleId,
           stakePool: stakePoolId,
           stakeEntry: stakeEntryId,
@@ -747,9 +758,10 @@ export const executeRaffle = async (
   const tx = new Transaction();
   const ix = await rewardsCenterProgram(connection, wallet)
     .methods.executeRaffle()
-    .accounts({
+    .accountsStrict({
       raffle: raffleId,
       raffleWinner: raffleWinnerId,
+      executor: wallet.publicKey,
       payer: wallet.publicKey,
       systemProgram: SystemProgram.programId,
       recentSlothashes: SYSVAR_SLOT_HASHES_PUBKEY,

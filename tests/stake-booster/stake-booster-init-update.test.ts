@@ -60,7 +60,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -100,7 +100,7 @@ test("Create stake booster", async () => {
       startTimeSeconds: new BN(0),
       boostActionPaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakeBooster: stakeBoosterId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
@@ -138,7 +138,7 @@ test("Update stake booster", async () => {
       startTimeSeconds: new BN(4),
       boostActionPaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakeBooster: stakeBoosterId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,

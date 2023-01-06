@@ -45,21 +45,15 @@ pub fn handler(ctx: Context<ExecuteRaffleCtx>) -> Result<()> {
     let pseudo_random_num = u128::MAX
         .checked_sub(u64::from_le_bytes(*recent_slothash).saturating_mul(unix_seconds.try_into().expect("Conversion error")).into())
         .expect("Sub error");
-
-    msg!("tickets {:#?}", raffle.raffle_tickets);
-    msg!("nums {} {} {}", u64::from_le_bytes(*recent_slothash), pseudo_random_num, unix_seconds);
-    // TODO better random number
     let cumulative_seconds = raffle.raffle_tickets.last().expect("Error getting last ticket").cumulative_stake_seconds;
     let winning_ticket_number = pseudo_random_num.checked_rem(cumulative_seconds).expect("Mod error");
 
-    msg!("winnning num {}", winning_ticket_number);
     let winning_ticket_ix = match raffle.raffle_tickets.binary_search_by_key(&winning_ticket_number, |t| t.cumulative_stake_seconds) {
         Ok(v) => v,
         Err(v) => v,
     };
     let winning_ticket = raffle.raffle_tickets.get(winning_ticket_ix).expect("Error getting ticket");
 
-    msg!("winning {} {} {:?}", winning_ticket_number, winning_ticket_ix, winning_ticket.cumulative_stake_seconds);
     let raffle_winner = &mut ctx.accounts.raffle_winner;
     raffle_winner.bump = *ctx.bumps.get("raffle_winner").unwrap();
     raffle_winner.recipient = winning_ticket.recipient;

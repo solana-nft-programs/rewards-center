@@ -38,7 +38,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -75,7 +75,7 @@ test("Create raffle", async () => {
       endDate: new BN(0),
       name: raffleIdentifier,
     })
-    .accounts({
+    .accountsStrict({
       raffle: raffleId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
@@ -106,7 +106,7 @@ test("Update raffle", async () => {
       maxStakeSecondsToUse: new BN(20),
       endDate: new BN(0),
     })
-    .accounts({
+    .accountsStrict({
       raffle: raffleId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
