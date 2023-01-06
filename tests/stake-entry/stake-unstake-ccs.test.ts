@@ -1,3 +1,9 @@
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  executeTransaction,
+  executeTransactions,
+  getTestProvider,
+} from "@cardinal/common";
 import { findMintManagerId, MintManager } from "@cardinal/creator-standard";
 import { beforeAll, expect, test } from "@jest/globals";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -18,19 +24,13 @@ import {
   stake,
   unstake,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import {
-  createCCSTokenTx,
-  executeTransaction,
-  executeTransactions,
-  getProvider,
-} from "../utils";
+import { createCCSTokenTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
 let mintId: PublicKey;
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
   const mintKeypair = Keypair.generate();
   mintId = mintKeypair.publicKey;
   await executeTransaction(
@@ -147,7 +147,7 @@ test("Stake again fail", async () => {
         { mintId },
       ]),
       provider.wallet,
-      { silent: true }
+      { errorHandler: () => "" }
     )
   ).rejects.toThrow();
 });

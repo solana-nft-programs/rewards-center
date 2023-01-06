@@ -1,9 +1,10 @@
+import type { IdlAccountData as cIdlAccountData } from "@cardinal/common";
 import { AnchorProvider, Program } from "@project-serum/anchor";
+import type { AllAccountsMap } from "@project-serum/anchor/dist/cjs/program/namespace/types";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 import type { ConfirmOptions, Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 
-import type { IdlAccountData } from "./accounts";
 import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
 import { IDL } from "./idl/cardinal_rewards_center";
 
@@ -25,6 +26,9 @@ export const DEFAULT_PAYMENT_INFO = new PublicKey(
   "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL"
 );
 
+export type IdlAccountData<
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+> = cIdlAccountData<T, CardinalRewardsCenter>;
 export type RewardDistributor = IdlAccountData<"rewardDistributor">;
 export type RewardEntry = IdlAccountData<"rewardEntry">;
 export type StakePool = IdlAccountData<"stakePool">;

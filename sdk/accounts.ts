@@ -1,11 +1,19 @@
-import { getBatchedMultipleAccounts } from "@cardinal/common";
-import type { Idl } from "@project-serum/anchor";
-import { BorshAccountsCoder, utils } from "@project-serum/anchor";
 import type {
-  AllAccountsMap,
-  IdlTypes,
-  TypeDef,
-} from "@project-serum/anchor/dist/cjs/program/namespace/types";
+  NullableIdlAccountData,
+  NullableIdlAccountInfo,
+  ParsedIdlAccount,
+} from "@cardinal/common";
+import {
+  decodeIdlAccount as cDecodeIdlAccount,
+  decodeIdlAccountUnknown as cDecodeIdlAccountUnknown,
+  fetchIdlAccount as cFetchIdlAccount,
+  fetchIdlAccountNullable as cFetchIdlAccountNullable,
+  getBatchedMultipleAccounts,
+  getProgramIdlAccounts as cGetProgramIdlAccounts,
+  tryDecodeIdlAccount as cTryDecodeIdlAccount,
+  tryDecodeIdlAccountUnknown as cTryDecodeIdlAccountUnknown,
+} from "@cardinal/common";
+import type { AllAccountsMap } from "@project-serum/anchor/dist/cjs/program/namespace/types";
 import type {
   AccountInfo,
   Connection,
@@ -17,42 +25,6 @@ import type {
 import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
 import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
 
-export type ParsedIdlAccount<IDL extends Idl = CardinalRewardsCenter> = {
-  [T in keyof AllAccountsMap<IDL>]: {
-    type: T;
-    parsed: TypeDef<AllAccountsMap<IDL>[T], IdlTypes<IDL>>;
-  };
-};
-
-export type IdlAccountInfo<
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
-> = AccountInfo<Buffer> & ParsedIdlAccount<IDL>[T];
-
-export type IdlAccountData<
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
-> = {
-  pubkey: PublicKey;
-} & IdlAccountInfo<T, IDL>;
-
-export type NullableIdlAccountInfo<
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
-> =
-  | IdlAccountInfo<T, IDL>
-  | (AccountInfo<Buffer> & {
-      type: "unknown";
-      parsed: null;
-    });
-
-export type NullableIdlAccountData<
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
-> = {
-  pubkey: PublicKey;
-} & NullableIdlAccountInfo<T, IDL>;
-
 /**
  * Fetch an account with idl types
  * @param connection
@@ -62,22 +34,20 @@ export type NullableIdlAccountData<
  * @returns
  */
 export const fetchIdlAccount = async <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   connection: Connection,
   pubkey: PublicKey,
   accountType: T,
   config?: GetAccountInfoConfig
 ) => {
-  const account = await fetchIdlAccountNullable<T, IDL>(
+  return cFetchIdlAccount<T, CardinalRewardsCenter>(
     connection,
     pubkey,
     accountType,
+    REWARDS_CENTER_IDL,
     config
   );
-  if (!account) throw "Account info not found";
-  return account;
 };
 
 /**
@@ -90,32 +60,20 @@ export const fetchIdlAccount = async <
  * @returns
  */
 export const fetchIdlAccountNullable = async <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   connection: Connection,
   pubkey: PublicKey,
   accountType: T,
-  config?: GetAccountInfoConfig,
-  idl: Idl = REWARDS_CENTER_IDL
+  config?: GetAccountInfoConfig
 ) => {
-  const accountInfo = await connection.getAccountInfo(pubkey, config);
-  if (
-    !accountInfo ||
-    accountInfo.owner.toString() !== REWARDS_CENTER_ADDRESS.toString()
-  )
-    return null;
-
-  const parsed: TypeDef<
-    AllAccountsMap<IDL>[T],
-    IdlTypes<IDL>
-  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
-  return {
-    ...accountInfo,
+  return cFetchIdlAccountNullable<T, CardinalRewardsCenter>(
+    connection,
     pubkey,
-    parsed,
-    type: accountType,
-  };
+    accountType,
+    REWARDS_CENTER_IDL,
+    config
+  );
 };
 
 /**
@@ -126,22 +84,16 @@ export const fetchIdlAccountNullable = async <
  * @returns
  */
 export const decodeIdlAccount = <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   accountInfo: AccountInfo<Buffer>,
-  accountType: T,
-  idl: Idl = REWARDS_CENTER_IDL
+  accountType: T
 ) => {
-  const parsed: TypeDef<
-    AllAccountsMap<IDL>[T],
-    IdlTypes<IDL>
-  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
-  return {
-    ...accountInfo,
-    type: accountType,
-    parsed,
-  };
+  return cDecodeIdlAccount<T, CardinalRewardsCenter>(
+    accountInfo,
+    accountType,
+    REWARDS_CENTER_IDL
+  );
 };
 
 /**
@@ -152,22 +104,16 @@ export const decodeIdlAccount = <
  * @returns
  */
 export const tryDecodeIdlAccount = <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   accountInfo: AccountInfo<Buffer>,
-  accountType: T,
-  idl: Idl = REWARDS_CENTER_IDL
+  accountType: T
 ) => {
-  try {
-    return decodeIdlAccount<T, IDL>(accountInfo, accountType, idl);
-  } catch (e) {
-    return {
-      ...accountInfo,
-      type: "unknown",
-      parsed: null,
-    };
-  }
+  return cTryDecodeIdlAccount<T, CardinalRewardsCenter>(
+    accountInfo,
+    accountType,
+    REWARDS_CENTER_IDL
+  );
 };
 
 /**
@@ -177,36 +123,14 @@ export const tryDecodeIdlAccount = <
  * @returns
  */
 export const decodeIdlAccountUnknown = <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
-  accountInfo: AccountInfo<Buffer> | null,
-  idl: Idl = REWARDS_CENTER_IDL
-): AccountInfo<Buffer> & ParsedIdlAccount<IDL>[T] => {
-  if (!accountInfo) throw "No account found";
-  // get idl accounts
-  const idlAccounts = idl["accounts"];
-  if (!idlAccounts) throw "No account definitions found in IDL";
-  // find matching account name
-  const accountTypes = idlAccounts.map((a) => a.name);
-  const accountType = accountTypes?.find(
-    (accountType) =>
-      BorshAccountsCoder.accountDiscriminator(accountType).compare(
-        accountInfo.data.subarray(0, 8)
-      ) === 0
+  accountInfo: AccountInfo<Buffer> | null
+): AccountInfo<Buffer> & ParsedIdlAccount<CardinalRewardsCenter>[T] => {
+  return cDecodeIdlAccountUnknown<T, CardinalRewardsCenter>(
+    accountInfo,
+    REWARDS_CENTER_IDL
   );
-  if (!accountType) throw "No account discriminator match found";
-
-  // decode
-  const parsed: TypeDef<
-    AllAccountsMap<IDL>[T],
-    IdlTypes<IDL>
-  > = new BorshAccountsCoder(idl).decode(accountType, accountInfo.data);
-  return {
-    ...accountInfo,
-    type: accountType as T,
-    parsed,
-  };
 };
 
 /**
@@ -216,21 +140,14 @@ export const decodeIdlAccountUnknown = <
  * @returns
  */
 export const tryDecodeIdlAccountUnknown = <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
-  accountInfo: AccountInfo<Buffer>,
-  idl: Idl = REWARDS_CENTER_IDL
-): NullableIdlAccountInfo<T, IDL> => {
-  try {
-    return decodeIdlAccountUnknown<T, IDL>(accountInfo, idl);
-  } catch (e) {
-    return {
-      ...accountInfo,
-      type: "unknown",
-      parsed: null,
-    };
-  }
+  accountInfo: AccountInfo<Buffer>
+): NullableIdlAccountInfo<T, CardinalRewardsCenter> => {
+  return cTryDecodeIdlAccountUnknown<T, CardinalRewardsCenter>(
+    accountInfo,
+    REWARDS_CENTER_IDL
+  );
 };
 
 /**
@@ -243,39 +160,25 @@ export const tryDecodeIdlAccountUnknown = <
  * @returns
  */
 export const getProgramIdlAccounts = async <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   connection: Connection,
   accountType: T,
-  config?: GetProgramAccountsConfig,
-  programId: PublicKey = REWARDS_CENTER_ADDRESS,
-  idl: Idl = REWARDS_CENTER_IDL
+  config?: GetProgramAccountsConfig
 ) => {
-  const accountInfos = await connection.getProgramAccounts(programId, {
-    filters: [
-      {
-        memcmp: {
-          offset: 0,
-          bytes: utils.bytes.bs58.encode(
-            BorshAccountsCoder.accountDiscriminator(accountType)
-          ),
-        },
-      },
-      ...(config?.filters ?? []),
-    ],
-  });
-  return accountInfos.map((accountInfo) => ({
-    pubkey: accountInfo.pubkey,
-    ...tryDecodeIdlAccount<T, IDL>(accountInfo.account, accountType, idl),
-  }));
+  return cGetProgramIdlAccounts<T, CardinalRewardsCenter>(
+    connection,
+    accountType,
+    REWARDS_CENTER_ADDRESS,
+    REWARDS_CENTER_IDL,
+    config
+  );
 };
 
 export type IdlAccountDataById<
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 > = {
-  [accountId: string]: NullableIdlAccountData<T, IDL>;
+  [accountId: string]: NullableIdlAccountData<T, CardinalRewardsCenter>;
 };
 
 /**
@@ -285,12 +188,11 @@ export type IdlAccountDataById<
  * @returns
  */
 export const decodeAccountInfos = <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   accountIds: PublicKey[],
   accountInfos: (AccountInfo<Buffer> | null)[]
-): IdlAccountDataById<T, IDL> => {
+): IdlAccountDataById<T> => {
   return accountInfos.reduce((acc, accountInfo, i) => {
     if (!accountInfo?.data) return acc;
     const accoutIdString = accountIds[i]?.toString() ?? "";
@@ -304,7 +206,7 @@ export const decodeAccountInfos = <
       case REWARDS_CENTER_ADDRESS.toString(): {
         acc[accoutIdString] = {
           ...baseData,
-          ...tryDecodeIdlAccountUnknown<T, IDL>(accountInfo),
+          ...tryDecodeIdlAccountUnknown<T>(accountInfo),
         };
         return acc;
       }
@@ -318,7 +220,7 @@ export const decodeAccountInfos = <
         };
         return acc;
     }
-  }, {} as IdlAccountDataById<T, IDL>);
+  }, {} as IdlAccountDataById<T>);
 };
 
 /**
@@ -328,12 +230,11 @@ export const decodeAccountInfos = <
  * @returns
  */
 export const fetchIdlAccountDataById = async <
-  T extends keyof AllAccountsMap<IDL>,
-  IDL extends Idl = CardinalRewardsCenter
+  T extends keyof AllAccountsMap<CardinalRewardsCenter>
 >(
   connection: Connection,
   ids: (PublicKey | null)[]
-): Promise<IdlAccountDataById<T, IDL>> => {
+): Promise<IdlAccountDataById<T>> => {
   const filteredIds = ids.filter((id): id is PublicKey => id !== null);
   const accountInfos = await getBatchedMultipleAccounts(
     connection,

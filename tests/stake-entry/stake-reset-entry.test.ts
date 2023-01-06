@@ -1,3 +1,10 @@
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  executeTransaction,
+  executeTransactions,
+  getTestProvider,
+  newAccountWithLamports,
+} from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { Wallet } from "@project-serum/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -12,14 +19,7 @@ import {
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
-import type { CardinalProvider } from "../utils";
-import {
-  createMasterEditionTx,
-  executeTransaction,
-  executeTransactions,
-  getProvider,
-  newAccountWithLamports,
-} from "../utils";
+import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;
@@ -27,7 +27,7 @@ let mintId: PublicKey;
 let nonAuthority: Keypair;
 
 beforeAll(async () => {
-  provider = await getProvider();
+  provider = await getTestProvider();
   const mintKeypair = Keypair.generate();
   mintId = mintKeypair.publicKey;
   nonAuthority = await newAccountWithLamports(provider.connection);
@@ -134,7 +134,7 @@ test("Stake again fail", async () => {
         { mintId },
       ]),
       provider.wallet,
-      { silent: true }
+      { errorHandler: () => "" }
     )
   ).rejects.toThrow();
 });
