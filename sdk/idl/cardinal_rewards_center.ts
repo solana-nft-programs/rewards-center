@@ -1579,6 +1579,10 @@ export type CardinalRewardsCenter = {
           {
             name: "recipient";
             type: "publicKey";
+          },
+          {
+            name: "unixSeconds";
+            type: "i64";
           }
         ];
       };
@@ -4467,6 +4471,10 @@ export const IDL: CardinalRewardsCenter = {
           {
             name: "recipient",
             type: "publicKey",
+          },
+          {
+            name: "unixSeconds",
+            type: "i64",
           },
         ],
       },

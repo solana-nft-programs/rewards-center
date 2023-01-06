@@ -57,7 +57,7 @@ export const handler = async (
         paymentMint: args.ix.paymentMint,
         paymentShares: args.ix.paymentShares,
       })
-      .accounts({
+      .accountsStrict({
         paymentInfo: paymentInfoId,
         authority: wallet.publicKey,
         payer: wallet.publicKey,

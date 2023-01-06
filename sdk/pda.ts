@@ -146,7 +146,7 @@ export const findRaffleId = (
 };
 
 export const RAFFLE_WINNER_SEED = "raffle-winner";
-export const findRaffleWinner = (
+export const findRaffleWinnerId = (
   raffleId: PublicKey,
   winnerCount?: BN
 ): PublicKey => {

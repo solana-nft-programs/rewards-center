@@ -11,6 +11,7 @@ import {
   createTransferInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
@@ -82,7 +83,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -120,12 +121,14 @@ test("Init reward distributor", async () => {
       maxRewardSecondsReceived: null,
       claimRewardsPaymentInfo: DEFAULT_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       rewardDistributor: rewardDistributorId,
       stakePool: stakePoolId,
       rewardMint: rewardMintId,
       authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
     })
     .instruction();
   tx.add(ix);

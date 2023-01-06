@@ -80,7 +80,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -120,11 +120,12 @@ test("Create stake booster", async () => {
       startTimeSeconds: new BN(Date.now() / 1000 - 1000),
       boostActionPaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakeBooster: stakeBoosterId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);

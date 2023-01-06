@@ -32,4 +32,5 @@ pub struct RaffleWinner {
     pub bump: u8,
     pub raffle: Pubkey,
     pub recipient: Pubkey,
+    pub unix_seconds: i64,
 }
