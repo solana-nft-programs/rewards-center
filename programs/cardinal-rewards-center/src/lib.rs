@@ -10,8 +10,12 @@ pub mod stake_booster;
 pub use stake_booster::*;
 pub mod reward_receipts;
 pub use reward_receipts::*;
+pub mod raffle;
+pub use raffle::*;
 pub mod payment;
 pub use payment::*;
+pub mod auction;
+pub use auction::*;
 
 pub mod errors;
 pub mod utils;
@@ -141,6 +145,20 @@ pub mod cardinal_rewards_center {
         reward_distribution::reward_entry::claim_rewards::handler(ctx)
     }
 
+    //// raffles ////
+    pub fn init_raffle(ctx: Context<InitRaffleCtx>, ix: InitRaffleIx) -> Result<()> {
+        raffle::init_raffle::handler(ctx, ix)
+    }
+    pub fn update_raffle(ctx: Context<UpdateRaffleCtx>, ix: UpdateRaffleIx) -> Result<()> {
+        raffle::update_raffle::handler(ctx, ix)
+    }
+    pub fn enter_raffle(ctx: Context<EnterRaffleCtx>, raffle_stake_seconds: u128) -> Result<()> {
+        raffle::enter_raffle::handler(ctx, raffle_stake_seconds)
+    }
+    pub fn execute_raffle(ctx: Context<ExecuteRaffleCtx>) -> Result<()> {
+        raffle::execute_raffle::handler(ctx)
+    }
+
     //// payment ////
     pub fn init_payment_info(ctx: Context<InitPaymentInfoCtx>, ix: InitPaymentInfoIx) -> Result<()> {
         payment::init_payment_info::handler(ctx, ix)
@@ -150,5 +168,18 @@ pub mod cardinal_rewards_center {
     }
     pub fn close_payment_info(ctx: Context<ClosePaymentInfoCtx>) -> Result<()> {
         payment::close_payment_info::handler(ctx)
+    }
+
+    //// auction ////
+    pub fn init_auction(ctx: Context<InitAuctionCtx>, ix: InitAuctionIx) -> Result<()> {
+        auction::init_auction::handler(ctx, ix)
+    }
+
+    pub fn update_auction(ctx: Context<UpdateAuctionCtx>, ix: UpdateAuctionIx) -> Result<()> {
+        auction::update_auction::handler(ctx, ix)
+    }
+
+    pub fn bid_auction(ctx: Context<BidAuctionCtx>, bidding_stake_seconds: u128) -> Result<()> {
+        auction::bid_auction::handler(ctx, bidding_stake_seconds)
     }
 }

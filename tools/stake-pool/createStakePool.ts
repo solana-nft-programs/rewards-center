@@ -37,7 +37,7 @@ const main = async (cluster: Cluster) => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: wallet.publicKey,
       systemProgram: SystemProgram.programId,

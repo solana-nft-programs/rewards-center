@@ -2,6 +2,7 @@ import type { CardinalProvider } from "@cardinal/common";
 import {
   executeTransaction,
   executeTransactions,
+  findMintMetadataId,
   getTestProvider,
 } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
@@ -22,7 +23,6 @@ import {
   stake,
   unstake,
 } from "../../sdk";
-import { findMintMetadataId } from "../../sdk/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
@@ -62,7 +62,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -93,7 +93,7 @@ test("Init entry", async () => {
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   const ix = await program.methods
     .initEntry(provider.wallet.publicKey)
-    .accounts({
+    .accountsStrict({
       stakeEntry: stakeEntryId,
       stakePool: stakePoolId,
       stakeMint: mintId,

@@ -81,7 +81,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -122,10 +122,11 @@ test("Create receipt manager", async () => {
       maxClaimedReceipts: null,
       claimActionPaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       receiptManager: receiptManagerId,
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);

@@ -37,7 +37,7 @@ const main = async (cluster: Cluster) => {
       stakePaymentInfo: new PublicKey(""),
       unstakePaymentInfo: new PublicKey(""),
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: wallet.publicKey,
       systemProgram: SystemProgram.programId,

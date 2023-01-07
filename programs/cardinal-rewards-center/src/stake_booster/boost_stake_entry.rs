@@ -1,5 +1,4 @@
 use super::StakeBooster;
-use crate::assert_payment_info;
 use crate::errors::ErrorCode;
 use crate::handle_payment;
 use crate::handle_payment_info;
@@ -62,11 +61,11 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
     )?;
 
     // handle action payment
-    assert_payment_info(
+    handle_payment_info(
         ctx.accounts.stake_booster.stake_pool.key(),
         Action::BoostStakeEntry,
         ctx.accounts.stake_booster.boost_action_payment_info,
+        remaining_accounts,
     )?;
-    handle_payment_info(ctx.accounts.stake_booster.boost_action_payment_info, remaining_accounts)?;
     Ok(())
 }

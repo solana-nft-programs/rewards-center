@@ -1,45 +1,24 @@
 import type { CardinalProvider } from "@cardinal/common";
-import {
-  executeTransaction,
-  getTestProvider,
-  withWrapSol,
-} from "@cardinal/common";
+import { executeTransaction, getTestProvider } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
-import { NATIVE_MINT } from "@solana/spl-token";
-import type { PublicKey } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
-  BASIS_POINTS_DIVISOR,
   fetchIdlAccount,
-  findStakeBoosterId,
+  findAuctionId,
   findStakePoolId,
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
+const auctionName = `test-${Math.random()}`;
+const endDate = Date.now() + 5;
 let provider: CardinalProvider;
-const PAYMENT_AMOUNT = 10;
-let paymentMintId: PublicKey;
-let paymentRecipientId: PublicKey;
 
 beforeAll(async () => {
   provider = await getTestProvider();
-
-  await executeTransaction(
-    provider.connection,
-    await withWrapSol(
-      new Transaction(),
-      provider.connection,
-      provider.wallet,
-      PAYMENT_AMOUNT
-    ),
-    provider.wallet
-  );
-  paymentMintId = NATIVE_MINT;
-  paymentRecipientId = Keypair.generate().publicKey;
 });
 
 test("Init pool", async () => {
@@ -82,26 +61,19 @@ test("Init pool", async () => {
   );
 });
 
-test("Create stake booster", async () => {
+test("Init auction", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
-  const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const stakeBoosterId = findStakeBoosterId(stakePoolId);
+  const auctionId = findAuctionId(stakePoolId, auctionName);
+  const tx = new Transaction();
   const ix = await program.methods
-    .initStakeBooster({
-      identifier: new BN(0),
-      stakePool: stakePoolId,
-      paymentAmount: new BN(PAYMENT_AMOUNT),
-      paymentMint: paymentMintId,
-      paymentShares: [
-        { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
-      ],
-      boostSeconds: new BN(2),
-      startTimeSeconds: new BN(0),
-      boostActionPaymentInfo: SOL_PAYMENT_INFO,
+    .initAuction({
+      name: auctionName,
+      authority: provider.wallet.publicKey,
+      endTimestampSeconds: new BN(endDate),
     })
     .accountsStrict({
-      stakeBooster: stakeBoosterId,
+      auction: auctionId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
       payer: provider.wallet.publicKey,
@@ -110,52 +82,51 @@ test("Create stake booster", async () => {
     .instruction();
   tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const stakeBooster = await fetchIdlAccount(
+  const auction = await fetchIdlAccount(
     provider.connection,
-    stakeBoosterId,
-    "stakeBooster"
+    auctionId,
+    "auction"
   );
-  expect(stakeBooster.parsed.paymentMint.toString()).toBe(
-    paymentMintId.toString()
+  expect(auction.parsed.authority.toString()).toBe(
+    provider.wallet.publicKey.toString()
   );
-  expect(Number(stakeBooster.parsed.boostSeconds)).toBe(2);
-  expect(Number(stakeBooster.parsed.paymentAmount)).toBe(PAYMENT_AMOUNT);
+  expect(auction.parsed.endTimestampSeconds.toNumber()).toBeGreaterThan(
+    Date.now() / 1000
+  );
+  expect(auction.parsed.completed).toBeFalsy();
 });
 
-test("Update stake booster", async () => {
+test("Update auction", async () => {
   const program = rewardsCenterProgram(provider.connection, provider.wallet);
-  const tx = new Transaction();
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const stakeBoosterId = findStakeBoosterId(stakePoolId);
-
+  const auctionId = findAuctionId(stakePoolId, auctionName);
+  const tx = new Transaction();
+  const newAuthority = Keypair.generate().publicKey;
+  const newEndDate = Date.now() / 1000 + 10;
   const ix = await program.methods
-    .updateStakeBooster({
-      paymentAmount: new BN(PAYMENT_AMOUNT),
-      paymentMint: paymentMintId,
-      paymentShares: [
-        { address: paymentRecipientId, basisPoints: BASIS_POINTS_DIVISOR },
-      ],
-      boostSeconds: new BN(4),
-      startTimeSeconds: new BN(4),
-      boostActionPaymentInfo: SOL_PAYMENT_INFO,
+    .updateAuction({
+      authority: newAuthority,
+      endTimestampSeconds: new BN(newEndDate),
+      completed: true,
     })
     .accountsStrict({
-      stakeBooster: stakeBoosterId,
+      auction: auctionId,
       stakePool: stakePoolId,
       authority: provider.wallet.publicKey,
+      payer: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
     })
     .instruction();
   tx.add(ix);
   await executeTransaction(provider.connection, tx, provider.wallet);
-  const stakeBooster = await fetchIdlAccount(
+  const auction = await fetchIdlAccount(
     provider.connection,
-    stakeBoosterId,
-    "stakeBooster"
+    auctionId,
+    "auction"
   );
-  expect(stakeBooster.parsed.paymentMint.toString()).toBe(
-    paymentMintId.toString()
+  expect(auction.parsed.authority.toString()).toBe(newAuthority.toString());
+  expect(auction.parsed.endTimestampSeconds.toNumber()).toBeGreaterThan(
+    Date.now() / 1000
   );
-  expect(Number(stakeBooster.parsed.boostSeconds)).toBe(4);
-  expect(Number(stakeBooster.parsed.startTimeSeconds)).toBe(4);
-  expect(Number(stakeBooster.parsed.paymentAmount)).toBe(PAYMENT_AMOUNT);
+  expect(auction.parsed.completed).toBeTruthy();
 });

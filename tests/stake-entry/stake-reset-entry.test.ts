@@ -61,7 +61,7 @@ test("Init pool", async () => {
       stakePaymentInfo: SOL_PAYMENT_INFO,
       unstakePaymentInfo: SOL_PAYMENT_INFO,
     })
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       payer: provider.wallet.publicKey,
       systemProgram: SystemProgram.programId,
@@ -149,7 +149,7 @@ test("Reset fail", async () => {
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   const ix = await program.methods
     .resetStakeEntry()
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       stakeEntry: stakeEntryId,
       authority: nonAuthority.publicKey,
@@ -177,7 +177,7 @@ test("Reset stake entry", async () => {
   );
   const ix = await program.methods
     .resetStakeEntry()
-    .accounts({
+    .accountsStrict({
       stakePool: stakePoolId,
       stakeEntry: stakeEntryId,
       authority: provider.wallet.publicKey,

@@ -9,3 +9,6 @@ pub use update_payment_info::*;
 
 pub mod close_payment_info;
 pub use close_payment_info::*;
+
+pub mod payments;
+pub use payments::*;

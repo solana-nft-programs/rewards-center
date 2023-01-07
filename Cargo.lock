@@ -429,6 +429,7 @@ version = "2.2.2"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
+ "arrayref",
  "cardinal-creator-standard",
  "mpl-token-metadata",
  "proptest",

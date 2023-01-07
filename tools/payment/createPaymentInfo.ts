@@ -47,7 +47,7 @@ export const handler = async (
         paymentMint: args.paymentMint,
         paymentShares: args.paymentShares,
       })
-      .accounts({ paymentInfo: paymentInfoId, payer: wallet.publicKey })
+      .accountsStrict({ paymentInfo: paymentInfoId, payer: wallet.publicKey })
       .instruction()
   );
   await new Promise((r) => setTimeout(r, 200));
