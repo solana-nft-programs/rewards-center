@@ -1,6 +1,6 @@
 import { executeTransaction } from "@cardinal/common";
 import type { Wallet } from "@coral-xyz/anchor";
-import { BN } from "@coral-xyz/anchor
+import { BN } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, Transaction } from "@solana/web3.js";
 
