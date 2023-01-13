@@ -1,9 +1,10 @@
 import type { IdlAccountData as cIdlAccountData } from "@cardinal/common";
+import { emptyWallet } from "@cardinal/common";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
 import type { AllAccountsMap } from "@coral-xyz/anchor/dist/cjs/program/namespace/types";
 import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type { ConfirmOptions, Connection } from "@solana/web3.js";
-import { PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
 import { IDL } from "./idl/cardinal_rewards_center";
@@ -53,6 +54,10 @@ export const rewardsCenterProgram = (
   return new Program<CardinalRewardsCenter>(
     REWARDS_CENTER_IDL,
     REWARDS_CENTER_ADDRESS,
-    new AnchorProvider(connection, wallet, opts ?? {})
+    new AnchorProvider(
+      connection,
+      wallet ?? emptyWallet(Keypair.generate().publicKey),
+      opts ?? {}
+    )
   );
 };
