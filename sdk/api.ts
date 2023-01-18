@@ -189,8 +189,7 @@ export const unstake = async (
     mintId: PublicKey;
     fungible?: boolean;
   }[],
-  rewardDistributorIds?: PublicKey[],
-  skipRewardMintTokenAccount?: boolean
+  rewardDistributorIds?: PublicKey[]
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
@@ -252,15 +251,11 @@ export const unstake = async (
             rewardDistributorId,
             true
           );
-          const userRewardMintTokenAccount = skipRewardMintTokenAccount
-            ? await findAta(rewardMint, wallet.publicKey, true)
-            : await withFindOrInitAssociatedTokenAccount(
-                tx,
-                connection,
-                rewardMint,
-                wallet.publicKey,
-                wallet.publicKey
-              );
+          const userRewardMintTokenAccount = getAssociatedTokenAddressSync(
+            rewardMint,
+            wallet.publicKey,
+            true
+          );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
