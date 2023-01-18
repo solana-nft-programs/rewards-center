@@ -1,4 +1,7 @@
-import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
+import {
+  findAta,
+  withFindOrInitAssociatedTokenAccount,
+} from "@cardinal/common";
 import {
   findMintManagerId,
   MintManager,
@@ -186,7 +189,8 @@ export const unstake = async (
     mintId: PublicKey;
     fungible?: boolean;
   }[],
-  rewardDistributorIds?: PublicKey[]
+  rewardDistributorIds?: PublicKey[],
+  skipRewardMintTokenAccount?: boolean
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
@@ -248,14 +252,15 @@ export const unstake = async (
             rewardDistributorId,
             true
           );
-          const userRewardMintTokenAccount =
-            await withFindOrInitAssociatedTokenAccount(
-              tx,
-              connection,
-              rewardMint,
-              wallet.publicKey,
-              wallet.publicKey
-            );
+          const userRewardMintTokenAccount = skipRewardMintTokenAccount
+            ? await findAta(rewardMint, wallet.publicKey, true)
+            : await withFindOrInitAssociatedTokenAccount(
+                tx,
+                connection,
+                rewardMint,
+                wallet.publicKey,
+                wallet.publicKey
+              );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
@@ -371,7 +376,8 @@ export const claimRewards = async (
     mintId: PublicKey;
     fungible?: boolean;
   }[],
-  rewardDistributorIds?: PublicKey[]
+  rewardDistributorIds?: PublicKey[],
+  skipRewardMintTokenAccount?: boolean
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
@@ -427,14 +433,15 @@ export const claimRewards = async (
             rewardDistributorId,
             true
           );
-          const userRewardMintTokenAccount =
-            await withFindOrInitAssociatedTokenAccount(
-              tx,
-              connection,
-              rewardMint,
-              wallet.publicKey,
-              wallet.publicKey
-            );
+          const userRewardMintTokenAccount = skipRewardMintTokenAccount
+            ? await findAta(rewardMint, wallet.publicKey, true)
+            : await withFindOrInitAssociatedTokenAccount(
+                tx,
+                connection,
+                rewardMint,
+                wallet.publicKey,
+                wallet.publicKey
+              );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
