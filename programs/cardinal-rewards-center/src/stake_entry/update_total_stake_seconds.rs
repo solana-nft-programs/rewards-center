@@ -16,7 +16,7 @@ pub fn handler(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
 
     //// FEATURE: Cooldown
     if stake_entry.cooldown_start_seconds.is_some() {
-        return Err(error!(ErrorCode::CooldownSecondRemaining));
+        return Ok(());
     }
 
     increment_total_stake_seconds(stake_entry)?;
