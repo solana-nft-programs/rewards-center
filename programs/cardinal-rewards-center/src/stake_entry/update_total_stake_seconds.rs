@@ -16,8 +16,7 @@ pub fn handler(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
 
     //// FEATURE: Cooldown
     if stake_entry.cooldown_start_seconds.is_some() {
-        stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
-        return Ok(());
+        return Err(error!(ErrorCode::CooldownSecondRemaining));
     }
 
     increment_total_stake_seconds(stake_entry)?;

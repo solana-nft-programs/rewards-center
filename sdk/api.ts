@@ -212,6 +212,7 @@ export const unstake = async (
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
     ...mints.map((m) => findMintManagerId(m.mintId)),
+    ...mints.map((m) => m.stakeEntryId),
   ]);
   const stakePoolData = accountDataById[stakePoolId.toString()];
 
@@ -220,11 +221,16 @@ export const unstake = async (
     const tx = new Transaction();
     const userEscrowId = findUserEscrowId(wallet.publicKey);
     const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
+    const stakeEntry = accountDataById[stakeEntryId.toString()];
 
     if (
       rewardEntryIds &&
       rewardDistributorIds &&
-      rewardDistributorIds?.length > 0
+      rewardDistributorIds?.length > 0 &&
+      !(
+        stakeEntry?.type === "stakeEntry" &&
+        stakeEntry.parsed.cooldownStartSeconds
+      )
     ) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.updateTotalStakeSeconds()
@@ -234,6 +240,7 @@ export const unstake = async (
         })
         .instruction();
       tx.add(ix);
+
       for (let j = 0; j < rewardDistributorIds.length; j++) {
         const rewardDistributorId = rewardDistributorIds[j]!;
         const rewardDistributorData =
