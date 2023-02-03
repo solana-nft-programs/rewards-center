@@ -1,6 +1,7 @@
 use crate::assert_payment_info;
 use crate::authorization::mint_is_allowed;
 use crate::errors::ErrorCode;
+use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
 use crate::stake_seed;
@@ -55,6 +56,9 @@ pub struct StakeCCSCtx<'info> {
 pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCCSCtx<'info>>, amount: u64) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
+
+    // check user escrow
+    escrow_seeds(&ctx.accounts.user.key(), &ctx.accounts.user_escrow.key())?;
 
     //// FEATURE: Ended
     if stake_pool.end_date.is_some() && Clock::get().unwrap().unix_timestamp > stake_pool.end_date.unwrap() {
