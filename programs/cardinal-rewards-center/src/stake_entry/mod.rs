@@ -20,3 +20,7 @@ pub use editions::unstake_edition::*;
 pub mod ccs;
 pub use ccs::stake_ccs::*;
 pub use ccs::unstake_ccs::*;
+
+pub mod pnfts;
+pub use pnfts::stake_pnft::*;
+pub use pnfts::unstake_pnft::*;
