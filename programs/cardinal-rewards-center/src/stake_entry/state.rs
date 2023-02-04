@@ -2,6 +2,13 @@ use crate::errors::ErrorCode;
 use anchor_lang::prelude::*;
 
 pub const USER_ESCROW_PREFIX: &str = "escrow";
+pub const USER_ESCROW_SIZE: usize = 8 + std::mem::size_of::<UserEscrow>() + 8;
+#[account]
+pub struct UserEscrow {
+    pub bump: u8,
+    pub user: Pubkey,
+}
+
 #[inline]
 pub fn escrow_seeds(user: &Pubkey, expected_key: &Pubkey) -> Result<Vec<Vec<u8>>> {
     let mut seeds = vec![USER_ESCROW_PREFIX.as_bytes().as_ref().to_vec(), user.as_ref().to_vec()];

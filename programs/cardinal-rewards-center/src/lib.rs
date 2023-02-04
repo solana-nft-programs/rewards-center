@@ -63,10 +63,11 @@ pub mod cardinal_rewards_center {
     pub fn unstake_ccs<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCCSCtx<'info>>) -> Result<()> {
         stake_entry::ccs::unstake_ccs::handler(ctx)
     }
-    pub fn stake_pnft(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
+    pub fn stake_pnft(ctx: Context<StakePNFTCtx>) -> Result<()> {
         stake_entry::pnfts::stake_pnft::handler(ctx)
     }
-    pub fn unstake_pnft(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
+
+    pub fn unstake_pnft(ctx: Context<UnstakePNFTCtx>) -> Result<()> {
         stake_entry::pnfts::unstake_pnft::handler(ctx)
     }
 

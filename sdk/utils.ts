@@ -1,5 +1,9 @@
 import { utils } from "@coral-xyz/anchor";
 import { findProgramAddressSync } from "@coral-xyz/anchor/dist/cjs/utils/pubkey";
+import {
+  PREFIX as TOKEN_AUTH_RULESET_PREFIX,
+  PROGRAM_ID as TOKEN_AUTH_RULES_ID,
+} from "@metaplex-foundation/mpl-token-auth-rules";
 import { getMint } from "@solana/spl-token";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
@@ -51,5 +55,32 @@ export const findMintEditionId = (mintId: PublicKey): PublicKey => {
       utils.bytes.utf8.encode("edition"),
     ],
     METADATA_PROGRAM_ID
+  )[0];
+};
+
+export function findTokenRecordId(
+  mint: PublicKey,
+  token: PublicKey
+): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("metadata"),
+      METADATA_PROGRAM_ID.toBuffer(),
+      mint.toBuffer(),
+      Buffer.from("token_record"),
+      token.toBuffer(),
+    ],
+    METADATA_PROGRAM_ID
+  )[0];
+}
+
+export const findRuleSetId = (authority: PublicKey, name: string) => {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from(TOKEN_AUTH_RULESET_PREFIX),
+      authority.toBuffer(),
+      Buffer.from(name),
+    ],
+    TOKEN_AUTH_RULES_ID
   )[0];
 };

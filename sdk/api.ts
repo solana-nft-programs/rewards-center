@@ -1,5 +1,6 @@
 import {
   findAta,
+  tryNull,
   withFindOrInitAssociatedTokenAccount,
 } from "@cardinal/common";
 import {
@@ -8,12 +9,18 @@ import {
   PROGRAM_ID as CREATOR_STANDARD_PROGRAM_ID,
 } from "@cardinal/creator-standard";
 import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
+import { PROGRAM_ID as TOKEN_AUTH_RULES_ID } from "@metaplex-foundation/mpl-token-auth-rules";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
-import { SystemProgram, Transaction } from "@solana/web3.js";
+import {
+  SystemProgram,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
+  Transaction,
+} from "@solana/web3.js";
 import BN from "bn.js";
 
 import { fetchIdlAccountDataById } from "./accounts";
@@ -34,6 +41,7 @@ import {
 import {
   findMintEditionId,
   findMintMetadataId,
+  findTokenRecordId,
   METADATA_PROGRAM_ID,
 } from "./utils";
 
@@ -108,6 +116,9 @@ export const stake = async (
     );
 
     const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
+    const metadata = await tryNull(
+      Metadata.fromAccountAddress(connection, metadataId)
+    );
     if (mintManagerAccountInfo?.data) {
       const mintManager = MintManager.fromAccountInfo(
         mintManagerAccountInfo
@@ -127,6 +138,38 @@ export const stake = async (
           creatorStandardProgram: CREATOR_STANDARD_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
+        })
+        .remainingAccounts(
+          await withRemainingAccountsForPaymentInfo(
+            connection,
+            tx,
+            wallet.publicKey,
+            stakePoolData.parsed.stakePaymentInfo
+          )
+        )
+        .instruction();
+      tx.add(stakeIx);
+    } else if (metadata?.programmableConfig?.ruleSet) {
+      const editionId = findMintEditionId(mintId);
+      const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
+      const stakeIx = await rewardsCenterProgram(connection, wallet)
+        .methods.stakePnft()
+        .accountsStrict({
+          stakePool: stakePoolId,
+          stakeEntry: stakeEntryId,
+          stakeMint: mintId,
+          stakeMintMetadata: metadataId,
+          stakeMintEdition: editionId,
+          stakeTokenRecordAccount: stakeTokenRecordAccountId,
+          authorizationRules: metadata?.programmableConfig?.ruleSet,
+          user: wallet.publicKey,
+          userEscrow: userEscrowId,
+          userStakeMintTokenAccount: userAtaId,
+          tokenMetadataProgram: METADATA_PROGRAM_ID,
+          sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          authorizationRulesProgram: TOKEN_AUTH_RULES_ID,
         })
         .remainingAccounts(
           await withRemainingAccountsForPaymentInfo(
@@ -321,6 +364,10 @@ export const unstake = async (
 
     const mintManagerId = findMintManagerId(mintId);
     const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
+    const metadataId = findMintMetadataId(mintId);
+    const metadata = await tryNull(
+      Metadata.fromAccountAddress(connection, metadataId)
+    );
     if (mintManagerAccountInfo?.data) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.unstakeCcs()
@@ -337,6 +384,31 @@ export const unstake = async (
         .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(ix);
+    } else if (metadata?.programmableConfig?.ruleSet) {
+      const editionId = findMintEditionId(mintId);
+      const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
+      const stakeIx = await rewardsCenterProgram(connection, wallet)
+        .methods.unstakePnft()
+        .accountsStrict({
+          stakePool: stakePoolId,
+          stakeEntry: stakeEntryId,
+          stakeMint: mintId,
+          stakeMintMetadata: metadataId,
+          stakeMintEdition: editionId,
+          stakeTokenRecordAccount: stakeTokenRecordAccountId,
+          authorizationRules: metadata?.programmableConfig?.ruleSet,
+          user: wallet.publicKey,
+          userEscrow: userEscrowId,
+          userStakeMintTokenAccount: userAtaId,
+          tokenMetadataProgram: METADATA_PROGRAM_ID,
+          sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          authorizationRulesProgram: TOKEN_AUTH_RULES_ID,
+        })
+        .remainingAccounts(remainingAccounts)
+        .instruction();
+      tx.add(stakeIx);
     } else {
       const editionId = findMintEditionId(mintId);
       const ix = await rewardsCenterProgram(connection, wallet)
