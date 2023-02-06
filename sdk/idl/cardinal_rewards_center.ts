@@ -301,7 +301,7 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
-      name: "stakePnfts";
+      name: "stakePnft";
       accounts: [
         {
           name: "stakePool";
@@ -382,7 +382,7 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
-      name: "unstakePnfts";
+      name: "unstakePnft";
       accounts: [
         {
           name: "stakePool";
@@ -2654,7 +2654,7 @@ export const IDL: CardinalRewardsCenter = {
       args: [],
     },
     {
-      name: "stakePnfts",
+      name: "stakePnft",
       accounts: [
         {
           name: "stakePool",
@@ -2735,7 +2735,7 @@ export const IDL: CardinalRewardsCenter = {
       args: [],
     },
     {
-      name: "unstakePnfts",
+      name: "unstakePnft",
       accounts: [
         {
           name: "stakePool",

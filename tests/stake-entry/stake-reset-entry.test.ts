@@ -1,3 +1,4 @@
+import { newAccountWithLamports } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { Wallet } from "@project-serum/anchor";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -22,7 +23,6 @@ import {
   executeTransaction,
   executeTransactions,
   getProvider,
-  newAccountWithLamports,
 } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

@@ -301,7 +301,7 @@
       "args": []
     },
     {
-      "name": "stakePnfts",
+      "name": "stakePnft",
       "accounts": [
         {
           "name": "stakePool",
@@ -382,7 +382,7 @@
       "args": []
     },
     {
-      "name": "unstakePnfts",
+      "name": "unstakePnft",
       "accounts": [
         {
           "name": "stakePool",

@@ -11,17 +11,17 @@ import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
- * @category StakePnfts
+ * @category StakePnft
  * @category generated
  */
-export const stakePnftsStruct = new beet.BeetArgsStruct<{
+export const stakePnftStruct = new beet.BeetArgsStruct<{
   instructionDiscriminator: number[] /* size: 8 */
 }>(
   [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
-  'StakePnftsInstructionArgs'
+  'StakePnftInstructionArgs'
 )
 /**
- * Accounts required by the _stakePnfts_ instruction
+ * Accounts required by the _stakePnft_ instruction
  *
  * @property [_writable_] stakePool
  * @property [_writable_] stakeEntry
@@ -37,10 +37,10 @@ export const stakePnftsStruct = new beet.BeetArgsStruct<{
  * @property [] sysvarInstructions
  * @property [] authorizationRulesProgram
  * @category Instructions
- * @category StakePnfts
+ * @category StakePnft
  * @category generated
  */
-export type StakePnftsInstructionAccounts = {
+export type StakePnftInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
   stakeMint: web3.PublicKey
@@ -58,24 +58,24 @@ export type StakePnftsInstructionAccounts = {
   systemProgram?: web3.PublicKey
 }
 
-export const stakePnftsInstructionDiscriminator = [
-  147, 37, 242, 174, 144, 131, 119, 59,
+export const stakePnftInstructionDiscriminator = [
+  193, 24, 172, 118, 212, 184, 230, 251,
 ]
 
 /**
- * Creates a _StakePnfts_ instruction.
+ * Creates a _StakePnft_ instruction.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @category Instructions
- * @category StakePnfts
+ * @category StakePnft
  * @category generated
  */
-export function createStakePnftsInstruction(
-  accounts: StakePnftsInstructionAccounts,
+export function createStakePnftInstruction(
+  accounts: StakePnftInstructionAccounts,
   programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
-  const [data] = stakePnftsStruct.serialize({
-    instructionDiscriminator: stakePnftsInstructionDiscriminator,
+  const [data] = stakePnftStruct.serialize({
+    instructionDiscriminator: stakePnftInstructionDiscriminator,
   })
   const keys: web3.AccountMeta[] = [
     {

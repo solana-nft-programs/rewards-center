@@ -11,7 +11,7 @@ import { IDL } from "./idl/cardinal_rewards_center";
 export const REWARDS_CENTER_IDL = IDL;
 
 export const REWARDS_CENTER_ADDRESS = new PublicKey(
-  "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
+  "rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U"
 );
 
 export const SOL_PAYMENT_INFO = new PublicKey(

@@ -11,17 +11,17 @@ import * as web3 from '@solana/web3.js'
 
 /**
  * @category Instructions
- * @category UnstakePnfts
+ * @category UnstakePnft
  * @category generated
  */
-export const unstakePnftsStruct = new beet.BeetArgsStruct<{
+export const unstakePnftStruct = new beet.BeetArgsStruct<{
   instructionDiscriminator: number[] /* size: 8 */
 }>(
   [['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]],
-  'UnstakePnftsInstructionArgs'
+  'UnstakePnftInstructionArgs'
 )
 /**
- * Accounts required by the _unstakePnfts_ instruction
+ * Accounts required by the _unstakePnft_ instruction
  *
  * @property [_writable_] stakePool
  * @property [_writable_] stakeEntry
@@ -37,10 +37,10 @@ export const unstakePnftsStruct = new beet.BeetArgsStruct<{
  * @property [] sysvarInstructions
  * @property [] authorizationRulesProgram
  * @category Instructions
- * @category UnstakePnfts
+ * @category UnstakePnft
  * @category generated
  */
-export type UnstakePnftsInstructionAccounts = {
+export type UnstakePnftInstructionAccounts = {
   stakePool: web3.PublicKey
   stakeEntry: web3.PublicKey
   stakeMint: web3.PublicKey
@@ -58,24 +58,24 @@ export type UnstakePnftsInstructionAccounts = {
   systemProgram?: web3.PublicKey
 }
 
-export const unstakePnftsInstructionDiscriminator = [
-  110, 86, 205, 68, 38, 87, 189, 196,
+export const unstakePnftInstructionDiscriminator = [
+  192, 227, 99, 215, 56, 106, 148, 203,
 ]
 
 /**
- * Creates a _UnstakePnfts_ instruction.
+ * Creates a _UnstakePnft_ instruction.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @category Instructions
- * @category UnstakePnfts
+ * @category UnstakePnft
  * @category generated
  */
-export function createUnstakePnftsInstruction(
-  accounts: UnstakePnftsInstructionAccounts,
+export function createUnstakePnftInstruction(
+  accounts: UnstakePnftInstructionAccounts,
   programId = new web3.PublicKey('rwcn6Ry17ChPXpJCN2hoK5kwpgFarQqzycXwVJ3om7U')
 ) {
-  const [data] = unstakePnftsStruct.serialize({
-    instructionDiscriminator: unstakePnftsInstructionDiscriminator,
+  const [data] = unstakePnftStruct.serialize({
+    instructionDiscriminator: unstakePnftInstructionDiscriminator,
   })
   const keys: web3.AccountMeta[] = [
     {
