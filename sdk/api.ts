@@ -1,4 +1,8 @@
-import { withFindOrInitAssociatedTokenAccount } from "@cardinal/common";
+import {
+  findMintEditionId,
+  findMintMetadataId,
+  withFindOrInitAssociatedTokenAccount,
+} from "@cardinal/common";
 import type * as beet from "@metaplex-foundation/beet";
 import * as tokenMetadata from "@metaplex-foundation/mpl-token-metadata";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
@@ -6,7 +10,6 @@ import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import { fetchAccountDataById } from "./accounts";
 import {
@@ -79,7 +82,7 @@ export const stake = async (
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, amount } of mints) {
     const tx = new Transaction();
-    const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+    const metadataId = findMintMetadataId(mintId);
     if (!accountDataById[stakeEntryId.toString()]) {
       tx.add(
         createInitEntryInstruction(
@@ -103,7 +106,7 @@ export const stake = async (
       wallet.publicKey,
       true
     );
-    const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+    const editionId = findMintEditionId(mintId);
     const stakeIx = createStakeEditionInstruction(
       {
         stakeEntry: stakeEntryId,
@@ -184,7 +187,7 @@ export const unstake = async (
     const tx = new Transaction();
     const userEscrowId = findUserEscrowId(wallet.publicKey);
     const userAtaId = getAssociatedTokenAddressSync(mintId, wallet.publicKey);
-    const editionId = await tokenMetadatV1.Edition.getPDA(mintId);
+    const editionId = findMintEditionId(mintId);
 
     if (
       rewardEntryIds &&

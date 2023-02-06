@@ -1,7 +1,7 @@
+import { findMintMetadataId } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
-import * as tokenMetadatV1 from "mpl-token-metadata-v1";
 
 import {
   findStakeEntryId,
@@ -80,7 +80,7 @@ test("Init pool", async () => {
 
 test("Init entry", async () => {
   const tx = new Transaction();
-  const metadataId = await tokenMetadatV1.Metadata.getPDA(mintId);
+  const metadataId = findMintMetadataId(mintId);
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
   tx.add(
