@@ -1,10 +1,25 @@
-import { findMintEditionId, findMintMetadataId } from "@cardinal/common";
 import {
+  findMintEditionId,
+  findMintMetadataId,
+  findRuleSetId,
+  findTokenRecordId,
+  newAccountWithLamports,
+} from "@cardinal/common";
+import { Wallet } from "@coral-xyz/anchor";
+import {
+  createCreateOrUpdateInstruction,
+  PROGRAM_ID as TOKEN_AUTH_RULES_ID,
+} from "@metaplex-foundation/mpl-token-auth-rules";
+import {
+  createCreateInstruction,
   createCreateMasterEditionV3Instruction,
   createCreateMetadataAccountV2Instruction,
+  createMintInstruction,
+  TokenStandard,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { utils, Wallet } from "@project-serum/anchor";
+import { encode } from "@msgpack/msgpack";
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   createInitializeMint2Instruction,
   createMintToInstruction,
@@ -17,25 +32,132 @@ import type { PublicKey, SendTransactionError, Signer } from "@solana/web3.js";
 import {
   Connection,
   Keypair,
-  LAMPORTS_PER_SOL,
   sendAndConfirmRawTransaction,
   SystemProgram,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
 } from "@solana/web3.js";
 
-export async function newAccountWithLamports(
+export const createProgrammableAsset = async (
   connection: Connection,
-  lamports = LAMPORTS_PER_SOL * 10,
-  keypair = Keypair.generate()
-): Promise<Keypair> {
-  const account = keypair;
-  const signature = await connection.requestAirdrop(
-    account.publicKey,
-    lamports
+  wallet: Wallet
+): Promise<[PublicKey, PublicKey, PublicKey]> => {
+  const mintKeypair = Keypair.generate();
+  const mintId = mintKeypair.publicKey;
+  const [tx, ata, rulesetId] = createProgrammableAssetTx(
+    mintKeypair.publicKey,
+    wallet.publicKey
   );
-  await connection.confirmTransaction(signature, "confirmed");
-  return account;
-}
+  await executeTransaction(connection, tx, wallet, { signers: [mintKeypair] });
+  return [ata, mintId, rulesetId];
+};
+
+export const createProgrammableAssetTx = (
+  mintId: PublicKey,
+  authority: PublicKey
+): [Transaction, PublicKey, PublicKey] => {
+  const metadataId = findMintMetadataId(mintId);
+  const masterEditionId = findMintEditionId(mintId);
+  const ataId = getAssociatedTokenAddressSync(mintId, authority);
+  const rulesetName = `rs-${Math.floor(Date.now() / 1000)}`;
+  const rulesetId = findRuleSetId(authority, rulesetName);
+  const rulesetIx = createCreateOrUpdateInstruction(
+    {
+      payer: authority,
+      ruleSetPda: rulesetId,
+    },
+    {
+      createOrUpdateArgs: {
+        __kind: "V1",
+        serializedRuleSet: encode([
+          1,
+          authority.toBuffer().reduce((acc, i) => {
+            acc.push(i);
+            return acc;
+          }, [] as number[]),
+          rulesetName,
+          {
+            "Delegate:Staking": "Pass",
+          },
+        ]),
+      },
+    }
+  );
+  const createIx = createCreateInstruction(
+    {
+      metadata: metadataId,
+      masterEdition: masterEditionId,
+      mint: mintId,
+      authority: authority,
+      payer: authority,
+      splTokenProgram: TOKEN_PROGRAM_ID,
+      sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+      updateAuthority: authority,
+    },
+    {
+      createArgs: {
+        __kind: "V1",
+        assetData: {
+          name: `NFT - ${Math.floor(Date.now() / 1000)}`,
+          symbol: "PNF",
+          uri: "uri",
+          sellerFeeBasisPoints: 0,
+          creators: [
+            {
+              address: authority,
+              share: 100,
+              verified: false,
+            },
+          ],
+          primarySaleHappened: false,
+          isMutable: true,
+          tokenStandard: TokenStandard.ProgrammableNonFungible,
+          collection: null,
+          uses: null,
+          collectionDetails: null,
+          ruleSet: rulesetId,
+        },
+        decimals: 0,
+        printSupply: { __kind: "Zero" },
+      },
+    }
+  );
+  const createIxWithSigner = {
+    ...createIx,
+    keys: createIx.keys.map((k) =>
+      k.pubkey.toString() === mintId.toString() ? { ...k, isSigner: true } : k
+    ),
+  };
+  const mintIx = createMintInstruction(
+    {
+      token: ataId,
+      tokenOwner: authority,
+      metadata: metadataId,
+      masterEdition: masterEditionId,
+      tokenRecord: findTokenRecordId(mintId, ataId),
+      mint: mintId,
+      payer: authority,
+      authority: authority,
+      sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+      splAtaProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      splTokenProgram: TOKEN_PROGRAM_ID,
+      authorizationRules: rulesetId,
+      authorizationRulesProgram: TOKEN_AUTH_RULES_ID,
+    },
+    {
+      mintArgs: {
+        __kind: "V1",
+        amount: 1,
+        authorizationData: null,
+      },
+    }
+  );
+  return [
+    new Transaction().add(rulesetIx, createIxWithSigner, mintIx),
+    ataId,
+    rulesetId,
+  ];
+};
 
 export function getConnection(): Connection {
   const url = "http://127.0.0.1:8899";
@@ -118,41 +240,6 @@ export async function getProvider(): Promise<CardinalProvider> {
   };
 }
 
-export const keypairFrom = (s: string, n?: string): Keypair => {
-  try {
-    if (s.includes("[")) {
-      return Keypair.fromSecretKey(
-        Buffer.from(
-          s
-            .replace("[", "")
-            .replace("]", "")
-            .split(",")
-            .map((c) => parseInt(c))
-        )
-      );
-    } else {
-      return Keypair.fromSecretKey(utils.bytes.bs58.decode(s));
-    }
-  } catch (e) {
-    try {
-      return Keypair.fromSecretKey(
-        Buffer.from(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          JSON.parse(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires
-            require("fs").readFileSync(s, {
-              encoding: "utf-8",
-            })
-          )
-        )
-      );
-    } catch (e) {
-      process.stdout.write(`${n ?? "keypair"} is not valid keypair`);
-      process.exit(1);
-    }
-  }
-};
-
 export const handleError = (e: any) => {
   const message = (e as SendTransactionError).message ?? "";
   const logs = (e as SendTransactionError).logs;
@@ -186,18 +273,6 @@ export const connectionFor = (
 ) => {
   return new Connection(
     process.env.RPC_URL || networkURLs[cluster || defaultCluster]!.primary,
-    "recent"
-  );
-};
-
-export const secondaryConnectionFor = (
-  cluster: string | null,
-  defaultCluster = "mainnet"
-) => {
-  return new Connection(
-    process.env.RPC_URL ||
-      networkURLs[cluster || defaultCluster]?.secondary ||
-      networkURLs[cluster || defaultCluster]!.primary,
     "recent"
   );
 };
