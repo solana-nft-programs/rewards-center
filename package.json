@@ -36,18 +36,21 @@
     "test": "jest --setupFiles dotenv/config --detectOpenHandles"
   },
   "dependencies": {
-    "@cardinal/common": "^6.0.0",
+    "@cardinal/common": "^6.1.3",
     "@cardinal/creator-standard": "^2.1.11",
     "@coral-xyz/anchor": "0.26.0",
+    "@metaplex-foundation/mpl-token-auth-rules": "^1.1.0",
+    "@msgpack/msgpack": "^2.8.0",
     "@solana/spl-token": "^0.3.6",
     "@solana/web3.js": "^1.66.2",
     "bn.js": "^5.2.0"
   },
   "devDependencies": {
-    "@metaplex-foundation/mpl-token-metadata": "^2.5.1",
+    "@metaplex-foundation/mpl-token-metadata": "^2.8.0",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^29.2.0",
+    "@types/node-fetch": "^2.6.2",
     "@types/yargs": "^17.0.13",
     "dotenv": "^16.0.3",
     "eslint": "^8.25.0",
@@ -64,7 +67,6 @@
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.20",
     "typescript": "^4.8.4",
-    "yargs": "^17.6.2",
-    "@types/node-fetch": "^2.6.2"
+    "yargs": "^17.6.2"
   }
 }
