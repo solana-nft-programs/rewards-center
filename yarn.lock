@@ -312,10 +312,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cardinal/common@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-6.0.1.tgz#cc7c84eb97111d8d78ab398111c036a1c338177e"
-  integrity sha512-7V3SGE2U0x8jYbVN7mTBdkSZdFcF27dnwPtlpkZ8vpFLjHMSDFc3t+Wjfk4NsZM9O+y+U5KRA3xxKNXs+qFFdw==
+"@cardinal/common@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-6.1.3.tgz#15e8a366ed88c2cf92508f7114f0c0fd816cb173"
+  integrity sha512-y9XisVk3iMYP+FS+VJbVMzjS9Hbl8fdXIif+HwuSJ6KzHHnimdFHMrHprvjvfrOLSTBPOnuALrDkbexsMG715w==
   dependencies:
     "@coral-xyz/anchor" "^0.26.0"
     "@solana/buffer-layout" "^4.0.0"

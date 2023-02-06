@@ -1,4 +1,8 @@
-import { executeTransaction } from "@cardinal/common";
+import {
+  executeTransaction,
+  findRuleSetId,
+  findTokenRecordId,
+} from "@cardinal/common";
 import {
   createInitMintManagerInstruction,
   DEFAULT_REQUIRED_CREATOR,
@@ -37,12 +41,7 @@ import {
   Transaction,
 } from "@solana/web3.js";
 
-import {
-  findMintEditionId,
-  findMintMetadataId,
-  findRuleSetId,
-  findTokenRecordId,
-} from "../sdk/utils";
+import { findMintEditionId, findMintMetadataId } from "../sdk/utils";
 
 export const createProgrammableAsset = async (
   connection: Connection,

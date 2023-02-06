@@ -1,5 +1,6 @@
 import {
   findAta,
+  findTokenRecordId,
   tryNull,
   withFindOrInitAssociatedTokenAccount,
 } from "@cardinal/common";
@@ -41,7 +42,6 @@ import {
 import {
   findMintEditionId,
   findMintMetadataId,
-  findTokenRecordId,
   METADATA_PROGRAM_ID,
 } from "./utils";
 
@@ -81,6 +81,7 @@ export const stake = async (
     stakePoolId,
     ...mints.map((m) => m.stakeEntryId),
     ...mints.map((m) => findMintManagerId(m.mintId)),
+    ...mints.map((m) => findMintMetadataId(m.mintId)),
   ]);
   const stakePoolData = accountDataById[stakePoolId.toString()];
   if (!stakePoolData?.parsed || stakePoolData.type !== "stakePool") {
@@ -116,9 +117,10 @@ export const stake = async (
     );
 
     const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
-    const metadata = await tryNull(
-      Metadata.fromAccountAddress(connection, metadataId)
-    );
+    const metadataAccountInfo = accountDataById[metadataId.toString()];
+    const metadataInfo = metadataAccountInfo
+      ? Metadata.fromAccountInfo(metadataAccountInfo)[0]
+      : undefined;
     if (mintManagerAccountInfo?.data) {
       const mintManager = MintManager.fromAccountInfo(
         mintManagerAccountInfo
@@ -149,7 +151,7 @@ export const stake = async (
         )
         .instruction();
       tx.add(stakeIx);
-    } else if (metadata?.programmableConfig?.ruleSet) {
+    } else if (metadataInfo && metadataInfo.programmableConfig?.ruleSet) {
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
       const stakeIx = await rewardsCenterProgram(connection, wallet)
@@ -161,7 +163,7 @@ export const stake = async (
           stakeMintMetadata: metadataId,
           stakeMintEdition: editionId,
           stakeTokenRecordAccount: stakeTokenRecordAccountId,
-          authorizationRules: metadata?.programmableConfig?.ruleSet,
+          authorizationRules: metadataInfo?.programmableConfig?.ruleSet,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
           userStakeMintTokenAccount: userAtaId,
