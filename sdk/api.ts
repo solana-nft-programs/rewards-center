@@ -25,6 +25,7 @@ import {
 import BN from "bn.js";
 
 import { fetchIdlAccountDataById } from "./accounts";
+import { remainingAccountsForAuthorization } from "./authorization";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
@@ -121,6 +122,21 @@ export const stake = async (
     const metadataInfo = metadataAccountInfo
       ? Metadata.fromAccountInfo(metadataAccountInfo)[0]
       : undefined;
+
+    const remainingAccounts = [
+      ...remainingAccountsForAuthorization(
+        stakePoolData,
+        mintId,
+        metadataInfo ?? null
+      ),
+      ...(await withRemainingAccountsForPaymentInfo(
+        connection,
+        tx,
+        wallet.publicKey,
+        stakePoolData.parsed.stakePaymentInfo
+      )),
+    ];
+
     if (mintManagerAccountInfo?.data) {
       const mintManager = MintManager.fromAccountInfo(
         mintManagerAccountInfo
@@ -141,14 +157,7 @@ export const stake = async (
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .remainingAccounts(
-          await withRemainingAccountsForPaymentInfo(
-            connection,
-            tx,
-            wallet.publicKey,
-            stakePoolData.parsed.stakePaymentInfo
-          )
-        )
+        .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(stakeIx);
     } else if (metadataInfo && metadataInfo.programmableConfig?.ruleSet) {
@@ -173,14 +182,7 @@ export const stake = async (
           systemProgram: SystemProgram.programId,
           authorizationRulesProgram: TOKEN_AUTH_RULES_ID,
         })
-        .remainingAccounts(
-          await withRemainingAccountsForPaymentInfo(
-            connection,
-            tx,
-            wallet.publicKey,
-            stakePoolData.parsed.stakePaymentInfo
-          )
-        )
+        .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(stakeIx);
     } else {
@@ -200,14 +202,7 @@ export const stake = async (
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
-        .remainingAccounts(
-          await withRemainingAccountsForPaymentInfo(
-            connection,
-            tx,
-            wallet.publicKey,
-            stakePoolData.parsed.stakePaymentInfo
-          )
-        )
+        .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(stakeIx);
     }
