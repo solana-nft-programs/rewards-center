@@ -5,7 +5,6 @@ import {
 } from "@cardinal/common";
 import {
   createInitMintManagerInstruction,
-  DEFAULT_REQUIRED_CREATOR,
   findMintManagerId,
   findRulesetId,
 } from "@cardinal/creator-standard";
@@ -32,10 +31,9 @@ import {
   MINT_SIZE,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import type { Connection } from "@solana/web3.js";
+import type { Connection, PublicKey } from "@solana/web3.js";
 import {
   Keypair,
-  PublicKey,
   SystemProgram,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
@@ -257,14 +255,7 @@ export const createCCSTokenTx = async (
             symbol: "SYMB",
             uri: `uri-${Math.random()}`,
             sellerFeeBasisPoints: 0,
-            creators: [
-              { address: authority, share: 50, verified: true },
-              {
-                address: new PublicKey(DEFAULT_REQUIRED_CREATOR),
-                share: 50,
-                verified: false,
-              },
-            ],
+            creators: [{ address: authority, share: 50, verified: true }],
             collection: null,
             uses: null,
           },
