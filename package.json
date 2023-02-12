@@ -36,8 +36,8 @@
     "test": "jest --setupFiles dotenv/config --detectOpenHandles"
   },
   "dependencies": {
-    "@cardinal/common": "^6.1.3",
-    "@cardinal/creator-standard": "^2.1.11",
+    "@cardinal/common": "^7.0.0",
+    "@cardinal/creator-standard": "^2.4.0",
     "@coral-xyz/anchor": "0.26.0",
     "@metaplex-foundation/mpl-token-auth-rules": "^1.1.0",
     "@msgpack/msgpack": "^2.8.0",

@@ -312,10 +312,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cardinal/common@^6.1.3":
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-6.1.3.tgz#15e8a366ed88c2cf92508f7114f0c0fd816cb173"
-  integrity sha512-y9XisVk3iMYP+FS+VJbVMzjS9Hbl8fdXIif+HwuSJ6KzHHnimdFHMrHprvjvfrOLSTBPOnuALrDkbexsMG715w==
+"@cardinal/common@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@cardinal/common/-/common-7.0.0.tgz#eec9bba897e85a2d5b81444f405e1462da06ee3a"
+  integrity sha512-X7plp4uuyH7eeKISQoD70nO4QDfvLdSgvPBMyq+iv6Emkj7UA8Jn3EyJGNFyQUe9o1fSgPua6deor/ZjfJjOCQ==
   dependencies:
     "@coral-xyz/anchor" "^0.26.0"
     "@solana/buffer-layout" "^4.0.0"
@@ -325,10 +325,10 @@
     polished "^4.2.2"
     tslib "^2.4.0"
 
-"@cardinal/creator-standard@^2.1.11":
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/@cardinal/creator-standard/-/creator-standard-2.1.11.tgz#426e5ca99d06e6939db90473523cd016807f73ed"
-  integrity sha512-wujthpbzV8PcH9s0YhEiRLlFnTmCBNs3zzBCzRqSB7jfDNOc9j5x4AGbnt1MBsS1yv1GKDbNKrOR+YcjZ3utgA==
+"@cardinal/creator-standard@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@cardinal/creator-standard/-/creator-standard-2.4.0.tgz#cae7787a6003218a1030148cc99316058bbd3bb6"
+  integrity sha512-VgQ4ksXamR9xCsycu7att1lYZdt7Sg4XnbTTVkYG1V5v/K5k6LXB4NlEfTMHizAaNktE8HOdsj+K8rptmemH7A==
   dependencies:
     "@metaplex-foundation/rustbin" "^0.3.1"
     "@metaplex-foundation/solita" "^0.12.2"
