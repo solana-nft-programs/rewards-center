@@ -95,6 +95,17 @@ export const stake = async (
     const metadataId = findMintMetadataId(mintId);
     const mintManagerId = findMintManagerId(mintId);
 
+    const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
+    const metadataAccountInfo = accountDataById[metadataId.toString()];
+    const metadataInfo = metadataAccountInfo
+      ? Metadata.fromAccountInfo(metadataAccountInfo)[0]
+      : undefined;
+
+    const authorizationAccounts = remainingAccountsForAuthorization(
+      stakePoolData,
+      mintId,
+      metadataInfo ?? null
+    );
     if (!accountDataById[stakeEntryId.toString()]) {
       const ix = await rewardsCenterProgram(connection, wallet)
         .methods.initEntry(wallet.publicKey)
@@ -106,6 +117,7 @@ export const stake = async (
           payer: wallet.publicKey,
           systemProgram: SystemProgram.programId,
         })
+        .remainingAccounts(authorizationAccounts)
         .instruction();
       tx.add(ix);
     }
@@ -117,18 +129,8 @@ export const stake = async (
       true
     );
 
-    const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
-    const metadataAccountInfo = accountDataById[metadataId.toString()];
-    const metadataInfo = metadataAccountInfo
-      ? Metadata.fromAccountInfo(metadataAccountInfo)[0]
-      : undefined;
-
     const remainingAccounts = [
-      ...remainingAccountsForAuthorization(
-        stakePoolData,
-        mintId,
-        metadataInfo ?? null
-      ),
+      ...authorizationAccounts,
       ...(await withRemainingAccountsForPaymentInfo(
         connection,
         tx,
