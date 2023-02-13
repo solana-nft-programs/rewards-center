@@ -76,4 +76,5 @@ void yargs(hideBin(process.argv))
   .command(commandBuilder(getStakePool))
   .strict()
   .demandCommand()
+  .help("h")
   .alias({ h: "help" }).argv;

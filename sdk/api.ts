@@ -24,7 +24,7 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 
-import { fetchIdlAccountDataById } from "./accounts";
+import { decodeIdlAccount, fetchIdlAccountDataById } from "./accounts";
 import { remainingAccountsForAuthorization } from "./authorization";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
@@ -450,7 +450,8 @@ export const claimRewards = async (
     fungible?: boolean;
   }[],
   rewardDistributorIds?: PublicKey[],
-  skipRewardMintTokenAccount?: boolean
+  skipRewardMintTokenAccount?: boolean,
+  claimingRewardsForUsers?: boolean
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
@@ -471,6 +472,9 @@ export const claimRewards = async (
   const accountDataById = await fetchIdlAccountDataById(connection, [
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
+    ...(claimingRewardsForUsers
+      ? mints.map((m) => findStakeEntryId(stakePoolId, m.mintId)).flat()
+      : []),
   ]);
   const txs: Transaction[] = [];
 
@@ -506,13 +510,19 @@ export const claimRewards = async (
             rewardDistributorId,
             true
           );
+          const stakeEntryDataInfo = accountDataById[stakeEntryId.toString()];
+          const userRewardMintTokenAccountOwnerId = stakeEntryDataInfo
+            ? decodeIdlAccount(stakeEntryDataInfo, "stakeEntry").parsed
+                .lastStaker
+            : wallet.publicKey;
+
           const userRewardMintTokenAccount = skipRewardMintTokenAccount
             ? await findAta(rewardMint, wallet.publicKey, true)
             : await withFindOrInitAssociatedTokenAccount(
                 tx,
                 connection,
                 rewardMint,
-                wallet.publicKey,
+                userRewardMintTokenAccountOwnerId,
                 wallet.publicKey
               );
           if (!rewardEntry) {
