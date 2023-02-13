@@ -1,9 +1,4 @@
-import {
-  findAta,
-  findTokenRecordId,
-  tryNull,
-  withFindOrInitAssociatedTokenAccount,
-} from "@cardinal/common";
+import { findAta, findTokenRecordId, tryNull } from "@cardinal/common";
 import {
   findMintManagerId,
   MintManager,
@@ -13,6 +8,7 @@ import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import { PROGRAM_ID as TOKEN_AUTH_RULES_ID } from "@metaplex-foundation/mpl-token-auth-rules";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import {
+  createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
@@ -450,7 +446,6 @@ export const claimRewards = async (
     fungible?: boolean;
   }[],
   rewardDistributorIds?: PublicKey[],
-  skipRewardMintTokenAccount?: boolean,
   claimingRewardsForUsers?: boolean
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
@@ -516,15 +511,19 @@ export const claimRewards = async (
                 .lastStaker
             : wallet.publicKey;
 
-          const userRewardMintTokenAccount = skipRewardMintTokenAccount
-            ? await findAta(rewardMint, wallet.publicKey, true)
-            : await withFindOrInitAssociatedTokenAccount(
-                tx,
-                connection,
-                rewardMint,
-                userRewardMintTokenAccountOwnerId,
-                wallet.publicKey
-              );
+          const userRewardMintTokenAccount = await findAta(
+            rewardMint,
+            userRewardMintTokenAccountOwnerId,
+            true
+          );
+          tx.add(
+            createAssociatedTokenAccountIdempotentInstruction(
+              wallet.publicKey,
+              userRewardMintTokenAccount,
+              userRewardMintTokenAccountOwnerId,
+              rewardMint
+            )
+          );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
               .methods.initRewardEntry()
