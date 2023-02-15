@@ -28,7 +28,7 @@ pub struct ClaimRewardsCtx<'info> {
 
     #[account(mut, constraint = reward_mint.key() == reward_distributor.reward_mint @ ErrorCode::InvalidRewardMint)]
     reward_mint: Box<Account<'info, Mint>>,
-    #[account(mut, constraint =user_reward_mint_token_account.owner == stake_entry.last_staker &&  user_reward_mint_token_account.mint == reward_distributor.reward_mint @ ErrorCode::InvalidUserRewardMintTokenAccount)]
+    #[account(mut, constraint = user_reward_mint_token_account.owner == stake_entry.last_staker &&  user_reward_mint_token_account.mint == reward_distributor.reward_mint @ ErrorCode::InvalidUserRewardMintTokenAccount)]
     user_reward_mint_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == reward_distributor.key() @ ErrorCode::InvalidTokenAccount)]
