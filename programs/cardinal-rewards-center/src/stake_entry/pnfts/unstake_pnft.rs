@@ -9,6 +9,8 @@ use crate::StakeEntry;
 use crate::StakePool;
 use crate::UserEscrow;
 use crate::STAKE_ENTRY_PREFIX;
+use crate::USER_ESCROW_PREFIX;
+use crate::USER_ESCROW_SIZE;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
@@ -42,7 +44,13 @@ pub struct UnstakePNFTCtx<'info> {
     #[account(mut)]
     user: Signer<'info>,
 
-    #[account(constraint = user_escrow.user == user.key() @ ErrorCode::InvalidEscrow )]
+    #[account(
+        init_if_needed,
+        payer = user,
+        space = USER_ESCROW_SIZE,
+        seeds = [USER_ESCROW_PREFIX.as_bytes(), user.key().as_ref()],
+        bump,
+    )]
     user_escrow: Box<Account<'info, UserEscrow>>,
 
     #[account(mut, constraint =
