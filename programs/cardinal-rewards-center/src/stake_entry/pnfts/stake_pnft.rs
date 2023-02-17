@@ -16,11 +16,9 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
-use mpl_token_metadata::instruction::DelegateArgs;
 use mpl_token_metadata::instruction::LockArgs;
 use mpl_token_metadata::instruction::MetadataInstruction;
 use solana_program::instruction::Instruction;
-use solana_program::program::invoke;
 use solana_program::program::invoke_signed;
 use solana_program::sysvar;
 
@@ -106,43 +104,6 @@ pub fn handler(ctx: Context<StakePNFTCtx>) -> Result<()> {
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
 
     // pnft actions to stake
-    invoke(
-        &Instruction {
-            program_id: mpl_token_metadata::id(),
-            accounts: vec![
-                AccountMeta::new_readonly(mpl_token_metadata::id(), false),
-                AccountMeta::new_readonly(ctx.accounts.user_escrow.key(), false),
-                AccountMeta::new(ctx.accounts.stake_mint_metadata.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.stake_mint_edition.key(), false),
-                AccountMeta::new(ctx.accounts.stake_token_record_account.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.stake_mint.key(), false),
-                AccountMeta::new(ctx.accounts.user_stake_mint_token_account.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.user.key(), true),
-                AccountMeta::new(ctx.accounts.user.key(), true),
-                AccountMeta::new_readonly(ctx.accounts.system_program.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.sysvar_instructions.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.token_program.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.authorization_rules_program.key(), false),
-                AccountMeta::new_readonly(ctx.accounts.authorization_rules.key(), false),
-            ],
-            data: MetadataInstruction::Delegate(DelegateArgs::StakingV1 { amount: 1, authorization_data: None }).try_to_vec().unwrap(),
-        },
-        &[
-            ctx.accounts.user_escrow.to_account_info(),
-            ctx.accounts.stake_mint_metadata.to_account_info(),
-            ctx.accounts.stake_mint_edition.to_account_info(),
-            ctx.accounts.stake_token_record_account.to_account_info(),
-            ctx.accounts.stake_mint.to_account_info(),
-            ctx.accounts.user_stake_mint_token_account.to_account_info(),
-            ctx.accounts.user.to_account_info(),
-            ctx.accounts.system_program.to_account_info(),
-            ctx.accounts.sysvar_instructions.to_account_info(),
-            ctx.accounts.token_program.to_account_info(),
-            ctx.accounts.authorization_rules_program.to_account_info(),
-            ctx.accounts.authorization_rules.to_account_info(),
-        ],
-    )?;
-
     invoke_signed(
         &Instruction {
             program_id: mpl_token_metadata::id(),
