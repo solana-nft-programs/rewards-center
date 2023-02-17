@@ -553,7 +553,7 @@
         },
         {
           "name": "userEscrow",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {

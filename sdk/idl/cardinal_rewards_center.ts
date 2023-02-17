@@ -553,7 +553,7 @@ export type CardinalRewardsCenter = {
         },
         {
           name: "userEscrow";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -3069,7 +3069,7 @@ export const IDL: CardinalRewardsCenter = {
         },
         {
           name: "userEscrow",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

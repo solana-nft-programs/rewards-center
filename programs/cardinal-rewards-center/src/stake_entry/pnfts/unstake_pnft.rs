@@ -76,6 +76,7 @@ pub struct UnstakePNFTCtx<'info> {
 pub fn handler(ctx: Context<UnstakePNFTCtx>) -> Result<()> {
     let stake_pool = &mut ctx.accounts.stake_pool;
     let stake_entry = &mut ctx.accounts.stake_entry;
+    ctx.accounts.user_escrow.user = ctx.accounts.user.key();
 
     let user = ctx.accounts.user.key();
     let user_escrow = ctx.accounts.user_escrow.key();
