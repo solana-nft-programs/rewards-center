@@ -16,6 +16,7 @@ import {
 } from "@solana/spl-token";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import {
+  ComputeBudgetProgram,
   SystemProgram,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
@@ -123,6 +124,11 @@ export const stake = async (
     if (metadataInfo && metadataInfo.programmableConfig?.ruleSet) {
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
+      tx.add(
+        ComputeBudgetProgram.setComputeUnitLimit({
+          units: 100000000,
+        })
+      );
       const stakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.stakePnft()
         .accountsStrict({
@@ -339,7 +345,12 @@ export const unstake = async (
     if (metadata?.programmableConfig?.ruleSet) {
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
-      const stakeIx = await rewardsCenterProgram(connection, wallet)
+      tx.add(
+        ComputeBudgetProgram.setComputeUnitLimit({
+          units: 100000000,
+        })
+      );
+      const unstakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.unstakePnft()
         .accountsStrict({
           stakePool: stakePoolId,
@@ -360,7 +371,7 @@ export const unstake = async (
         })
         .remainingAccounts(remainingAccounts)
         .instruction();
-      tx.add(stakeIx);
+      tx.add(unstakeIx);
     } else {
       const editionId = findMintEditionId(mintId);
       const ix = await rewardsCenterProgram(connection, wallet)
