@@ -18,6 +18,9 @@ use anchor_spl::token::TokenAccount;
 use mpl_token_metadata::instruction::MetadataInstruction;
 use mpl_token_metadata::instruction::RevokeArgs;
 use mpl_token_metadata::instruction::UnlockArgs;
+use mpl_token_metadata::state::TokenDelegateRole;
+use mpl_token_metadata::state::TokenMetadataAccount;
+use mpl_token_metadata::state::TokenRecord;
 use solana_program::instruction::Instruction;
 use solana_program::program::invoke;
 use solana_program::program::invoke_signed;
@@ -152,6 +155,7 @@ pub fn handler(ctx: Context<UnstakePNFTCtx>) -> Result<()> {
         &[&user_escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
+    let stake_token_record_account = TokenRecord::from_account_info(&ctx.accounts.stake_token_record_account.to_account_info())?;
     invoke(
         &Instruction {
             program_id: mpl_token_metadata::id(),
@@ -171,7 +175,15 @@ pub fn handler(ctx: Context<UnstakePNFTCtx>) -> Result<()> {
                 AccountMeta::new_readonly(ctx.accounts.authorization_rules_program.key(), false),
                 AccountMeta::new_readonly(ctx.accounts.authorization_rules.key(), false),
             ],
-            data: MetadataInstruction::Revoke(RevokeArgs::StakingV1).try_to_vec().unwrap(),
+            data: MetadataInstruction::Revoke(
+                if stake_token_record_account.delegate_role.is_some() && stake_token_record_account.delegate_role.unwrap() == TokenDelegateRole::Migration {
+                    RevokeArgs::MigrationV1
+                } else {
+                    RevokeArgs::StakingV1
+                },
+            )
+            .try_to_vec()
+            .unwrap(),
         },
         &[
             ctx.accounts.user_escrow.to_account_info(),
