@@ -16,3 +16,7 @@ pub use close_stake_entry::*;
 pub mod editions;
 pub use editions::stake_edition::*;
 pub use editions::unstake_edition::*;
+
+pub mod pnfts;
+pub use pnfts::stake_pnft::*;
+pub use pnfts::unstake_pnft::*;

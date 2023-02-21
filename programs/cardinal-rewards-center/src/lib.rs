@@ -55,6 +55,13 @@ pub mod cardinal_rewards_center {
     pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
         stake_entry::editions::unstake_edition::handler(ctx)
     }
+    //// stake_entry::pnfts ////
+    pub fn stake_pnft<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakePNFTCtx<'info>>) -> Result<()> {
+        stake_entry::pnfts::stake_pnft::handler(ctx)
+    }
+    pub fn unstake_pnft<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakePNFTCtx<'info>>) -> Result<()> {
+        stake_entry::pnfts::unstake_pnft::handler(ctx)
+    }
 
     //// authorization ////
     pub fn authorize_mint(ctx: Context<AuthorizeMintCtx>, mint: Pubkey) -> Result<()> {

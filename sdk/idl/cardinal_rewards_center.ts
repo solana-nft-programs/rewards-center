@@ -301,6 +301,168 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "stakePnft";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintEdition";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeTokenRecordAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRules";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "sysvarInstructions";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRulesProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "unstakePnft";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintEdition";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeTokenRecordAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRules";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "userEscrow";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "userStakeMintTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "sysvarInstructions";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRulesProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "authorizeMint";
       accounts: [
         {
@@ -1268,6 +1430,22 @@ export type CardinalRewardsCenter = {
           },
           {
             name: "boostActionPaymentInfo";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "userEscrow";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "user";
             type: "publicKey";
           }
         ];
@@ -2476,6 +2654,168 @@ export const IDL: CardinalRewardsCenter = {
       args: [],
     },
     {
+      name: "stakePnft",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintEdition",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeTokenRecordAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRules",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "sysvarInstructions",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRulesProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "unstakePnft",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintEdition",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeTokenRecordAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRules",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "userEscrow",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "userStakeMintTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "sysvarInstructions",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRulesProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
       name: "authorizeMint",
       accounts: [
         {
@@ -3443,6 +3783,22 @@ export const IDL: CardinalRewardsCenter = {
           },
           {
             name: "boostActionPaymentInfo",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "userEscrow",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "user",
             type: "publicKey",
           },
         ],
