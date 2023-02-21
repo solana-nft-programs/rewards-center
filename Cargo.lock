@@ -1092,9 +1092,9 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-metadata"
-version = "1.8.1"
+version = "1.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7684c4f89993b79128c0415f31588ebd24580def06959d999d4dc931f7c57ce3"
+checksum = "301235b920e1b3a4bf9c3ffd6a16b1db1f3ac5bdcb6b6f201d4bb7a9fd1d94a0"
 dependencies = [
  "arrayref",
  "borsh",
