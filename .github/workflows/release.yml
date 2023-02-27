@@ -46,22 +46,6 @@ jobs:
       - name: Publish
         run: yarn publish
 
-  release-crate:
-    runs-on: ubuntu-latest
-    name: Release crate on crates.io
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Rust nightly
-        uses: actions-rs/toolchain@v1
-        with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-      - run: cargo install cargo-workspaces
-      - uses: Swatinem/rust-cache@v1
-      - name: Publish crates
-        run: cargo workspaces publish --from-git --yes --skip-published --token ${{ secrets.CARGO_PUBLISH_TOKEN }}
-
   release-binaries:
     runs-on: ubuntu-latest
     name: Release verifiable binaries
