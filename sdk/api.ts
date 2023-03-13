@@ -329,6 +329,8 @@ export const unstake = async (
               wallet.publicKey,
               rewardDistributorData.parsed.claimRewardsPaymentInfo
             );
+          const stakeEntryInfo = accountDataById[stakeEntryId.toString()]!;
+          const stakeEntryData = decodeIdlAccount(stakeEntryInfo, "stakeEntry");
           const ix = await rewardsCenterProgram(connection, wallet)
             .methods.claimRewards()
             .accounts({
@@ -343,7 +345,15 @@ export const unstake = async (
             })
             .remainingAccounts(remainingAccountsForPayment)
             .instruction();
-          tx.add(ix);
+          if (
+            !(
+              rewardDistributorData.parsed.maxRewardSecondsReceived &&
+              stakeEntryData.parsed.totalStakeSeconds >
+                rewardDistributorData.parsed.maxRewardSecondsReceived
+            )
+          ) {
+            tx.add(ix);
+          }
         }
       }
     }

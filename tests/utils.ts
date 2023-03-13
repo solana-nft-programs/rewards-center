@@ -255,7 +255,7 @@ export const createCCSTokenTx = async (
             symbol: "SYMB",
             uri: `uri-${Math.random()}`,
             sellerFeeBasisPoints: 0,
-            creators: [{ address: authority, share: 50, verified: true }],
+            creators: [{ address: authority, share: 100, verified: true }],
             collection: null,
             uses: null,
           },

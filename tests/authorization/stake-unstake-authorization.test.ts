@@ -78,7 +78,7 @@ test("Init pool", async () => {
   expect(pool.parsed.authority.toString()).toBe(
     provider.wallet.publicKey.toString()
   );
-  expect(pool.parsed.requiresAuthorization).toBe(false);
+  expect(pool.parsed.requiresAuthorization).toBe(true);
   expect(pool.parsed.stakePaymentInfo.toString()).toBe(
     SOL_PAYMENT_INFO.toString()
   );
