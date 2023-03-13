@@ -90,6 +90,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-modules-
 
+      - name: Install Yarn dependencies
+        run: yarn install
+      - run: cp -R doc-assets/ site/
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
