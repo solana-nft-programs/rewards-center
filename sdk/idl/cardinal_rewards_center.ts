@@ -2510,6 +2510,11 @@ export type CardinalRewardsCenter = {
       code: 6102;
       name: "InvalidAuthorityTokenAccount";
       msg: "Invalid authority token account";
+    },
+    {
+      code: 6103;
+      name: "MaxRewardSecondsClaimed";
+      msg: "Max reward seconds claimed";
     }
   ];
 };
@@ -5026,6 +5031,11 @@ export const IDL: CardinalRewardsCenter = {
       code: 6102,
       name: "InvalidAuthorityTokenAccount",
       msg: "Invalid authority token account",
+    },
+    {
+      code: 6103,
+      name: "MaxRewardSecondsClaimed",
+      msg: "Max reward seconds claimed",
     },
   ],
 };

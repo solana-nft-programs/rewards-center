@@ -123,4 +123,6 @@ pub enum ErrorCode {
     InvalidRewardDistributorTokenAccount,
     #[msg("Invalid authority token account")]
     InvalidAuthorityTokenAccount,
+    #[msg("Max reward seconds claimed")]
+    MaxRewardSecondsClaimed,
 }
