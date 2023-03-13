@@ -49,6 +49,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Increase node max memory size
+        id: increase-node-max-memory-size
+        run: echo NODE_OPTIONS=--max_old_space_size=8096
+
       - name: Install Yarn dependencies
         run: yarn install
       - run: yarn docs:generate
