@@ -58,7 +58,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         if let Some(max_reward_seconds) = reward_distributor.max_reward_seconds_received {
             reward_seconds = min(reward_seconds, max_reward_seconds)
         };
-        if reward_seconds_received > reward_seconds {
+        if reward_seconds_received >= reward_seconds {
             return Err(error!(ErrorCode::MaxRewardSecondsClaimed));
         }
 
