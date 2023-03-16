@@ -19,6 +19,7 @@ pub struct InitRewardDistributorIx {
     multiplier_decimals: Option<u8>,
     max_reward_seconds_received: Option<u128>,
     claim_rewards_payment_info: Pubkey,
+    no_rewards: bool,
 }
 
 #[derive(Accounts)]
@@ -58,6 +59,7 @@ pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributor
     reward_distributor.multiplier_decimals = ix.multiplier_decimals.unwrap_or(0);
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
     reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
+    reward_distributor.no_rewards = ix.no_rewards;
 
     assert_payment_info(ctx.accounts.stake_pool.key(), Action::ClaimRewards, ix.claim_rewards_payment_info)?;
     Ok(())
