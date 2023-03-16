@@ -28,4 +28,5 @@ pub struct RewardDistributor {
     pub multiplier_decimals: u8,
     pub claim_rewards_payment_info: Pubkey,
     pub max_reward_seconds_received: Option<u128>,
+    pub no_rewards: bool,
 }

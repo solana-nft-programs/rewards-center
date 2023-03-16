@@ -58,7 +58,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         if let Some(max_reward_seconds) = reward_distributor.max_reward_seconds_received {
             reward_seconds = min(reward_seconds, max_reward_seconds)
         };
-        if reward_seconds_received >= reward_seconds {
+        if !reward_distributor.no_rewards && reward_seconds_received >= reward_seconds {
             return Err(error!(ErrorCode::MaxRewardSecondsClaimed));
         }
 
@@ -74,23 +74,31 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
             .checked_div((10_u128).checked_pow(reward_distributor.multiplier_decimals as u32).unwrap())
             .unwrap();
 
-        // mint to the user
-        if reward_amount_to_receive > ctx.accounts.reward_distributor_token_account.amount as u128 {
-            reward_amount_to_receive = ctx.accounts.reward_distributor_token_account.amount as u128;
-        }
-        let cpi_accounts = token::Transfer {
-            from: ctx.accounts.reward_distributor_token_account.to_account_info(),
-            to: ctx.accounts.user_reward_mint_token_account.to_account_info(),
-            authority: reward_distributor.to_account_info(),
-        };
-        let cpi_program = ctx.accounts.token_program.to_account_info();
-        let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(reward_distributor_signer);
-        // todo this could be an issue and get stuck, might need 2 transfers
-        token::transfer(cpi_context, reward_amount_to_receive.try_into().expect("Too many rewards to receive"))?;
+        if !reward_distributor.no_rewards {
+            // mint to the user
+            if reward_amount_to_receive > ctx.accounts.reward_distributor_token_account.amount as u128 {
+                reward_amount_to_receive = ctx.accounts.reward_distributor_token_account.amount as u128;
+            }
+            let cpi_accounts = token::Transfer {
+                from: ctx.accounts.reward_distributor_token_account.to_account_info(),
+                to: ctx.accounts.user_reward_mint_token_account.to_account_info(),
+                authority: reward_distributor.to_account_info(),
+            };
+            let cpi_program = ctx.accounts.token_program.to_account_info();
+            let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(reward_distributor_signer);
+            // todo this could be an issue and get stuck, might need 2 transfers
+            token::transfer(cpi_context, reward_amount_to_receive.try_into().expect("Too many rewards to receive"))?;
 
-        // update values
-        // this is nuanced about if the rewards are closed, should they get the reward time for that time even though they didnt get any rewards?
-        // this only matters if the reward distributor becomes open again and they missed out on some rewards they coudlve gotten
+            // update values
+            // this is nuanced about if the rewards are closed, should they get the reward time for that time even though they didnt get any rewards?
+            // this only matters if the reward distributor becomes open again and they missed out on some rewards they coudlve gotten
+
+            // handle payment
+            let remaining_accounts = &mut ctx.remaining_accounts.iter();
+            assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
+            handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
+        }
+
         let reward_time_to_receive = if reward_entry.multiplier != 0 {
             reward_amount_to_receive
                 .checked_mul((10_u128).checked_pow(reward_distributor.multiplier_decimals as u32).unwrap())
@@ -104,14 +112,8 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         } else {
             0_u128
         };
-
         reward_distributor.rewards_issued = reward_distributor.rewards_issued.checked_add(reward_amount_to_receive).unwrap();
         reward_entry.reward_seconds_received = reward_entry.reward_seconds_received.checked_add(reward_time_to_receive).unwrap();
-
-        // handle payment
-        let remaining_accounts = &mut ctx.remaining_accounts.iter();
-        assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
-        handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
     }
 
     Ok(())

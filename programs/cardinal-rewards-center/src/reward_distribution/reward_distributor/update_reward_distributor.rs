@@ -12,6 +12,7 @@ pub struct UpdateRewardDistributorIx {
     pub reward_duration_seconds: u128,
     pub max_reward_seconds_received: Option<u128>,
     pub claim_rewards_payment_info: Pubkey,
+    pub no_rewards: bool,
 }
 
 #[derive(Accounts)]
@@ -30,7 +31,7 @@ pub fn handler(ctx: Context<UpdateRewardDistributorCtx>, ix: UpdateRewardDistrib
     reward_distributor.reward_amount = ix.reward_amount;
     reward_distributor.reward_duration_seconds = ix.reward_duration_seconds;
     reward_distributor.max_reward_seconds_received = ix.max_reward_seconds_received;
-    reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
+    reward_distributor.no_rewards = ix.no_rewards;
 
     assert_payment_info(reward_distributor.stake_pool, Action::ClaimRewards, ix.claim_rewards_payment_info)?;
     Ok(())
