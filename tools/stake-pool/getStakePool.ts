@@ -1,7 +1,7 @@
 import type { Wallet } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 
-import { findStakePoolId } from "../../sdk";
+import { decodeIdlAccount, findStakePoolId } from "../../sdk";
 
 export const commandName = "getStakePool";
 export const description = "Get a stake pool";
@@ -11,7 +11,7 @@ export type Args = {
 };
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
-  identifier: "degods",
+  identifier: "pool-name-0.3875061479820159",
 });
 
 export const handler = async (
@@ -21,8 +21,10 @@ export const handler = async (
 ) => {
   const stakePoolId = findStakePoolId(args.identifier);
   const stakePool = await connection.getAccountInfo(stakePoolId);
+  if (!stakePool) throw "Stake pool not found";
+  const parsed = decodeIdlAccount(stakePool, "stakePool");
   console.log(
     `[success] ${args.identifier} [${stakePoolId.toString()}]`,
-    JSON.stringify(stakePool, null, 2)
+    JSON.stringify(parsed, null, 2)
   );
 };
