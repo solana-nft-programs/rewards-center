@@ -1688,11 +1688,15 @@ export type CardinalRewardsCenter = {
           },
           {
             name: "multiplierStakeSeconds";
-            type: "u128";
+            type: {
+              option: "u128";
+            };
           },
           {
             name: "multiplierBasisPoints";
-            type: "u64";
+            type: {
+              option: "u64";
+            };
           }
         ];
       };
@@ -4233,11 +4237,15 @@ export const IDL: CardinalRewardsCenter = {
           },
           {
             name: "multiplierStakeSeconds",
-            type: "u128",
+            type: {
+              option: "u128",
+            },
           },
           {
             name: "multiplierBasisPoints",
-            type: "u64",
+            type: {
+              option: "u64",
+            },
           },
         ],
       },

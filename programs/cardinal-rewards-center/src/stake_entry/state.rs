@@ -43,6 +43,6 @@ pub struct StakeEntry {
     pub total_stake_seconds: u128,
     pub used_stake_seconds: u128,
     pub cooldown_start_seconds: Option<i64>,
-    pub multiplier_stake_seconds: u128,
-    pub multiplier_basis_points: u64,
+    pub multiplier_stake_seconds: Option<u128>,
+    pub multiplier_basis_points: Option<u64>,
 }
