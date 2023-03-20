@@ -158,6 +158,27 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "resizeStakeEntry";
+      accounts: [
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "closeStakeEntry";
       accounts: [
         {
@@ -2677,6 +2698,27 @@ export const IDL: CardinalRewardsCenter = {
           name: "authority",
           isMut: true,
           isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "resizeStakeEntry",
+      accounts: [
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
       ],
       args: [],

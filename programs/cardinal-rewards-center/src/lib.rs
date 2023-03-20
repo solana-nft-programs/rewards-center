@@ -46,6 +46,9 @@ pub mod cardinal_rewards_center {
     pub fn reset_stake_entry(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
         stake_entry::reset_stake_entry::handler(ctx)
     }
+    pub fn resize_stake_entry(ctx: Context<ResizeStakeEntryCtx>) -> Result<()> {
+        stake_entry::resize_stake_entry::handler(ctx)
+    }
     pub fn close_stake_entry(ctx: Context<CloseStakeEntryCtx>) -> Result<()> {
         stake_entry::close_stake_entry::handler(ctx)
     }
