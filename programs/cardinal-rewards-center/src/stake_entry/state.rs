@@ -29,9 +29,23 @@ pub fn stake_seed(supply: u64, user: Pubkey) -> Pubkey {
 }
 
 pub const STAKE_ENTRY_PREFIX: &str = "stake-entry";
-pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
+pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntryV2>() + 8;
 #[account]
 pub struct StakeEntry {
+    pub bump: u8,
+    pub kind: u8,
+    pub pool: Pubkey,
+    pub amount: u64,
+    pub stake_mint: Pubkey,
+    pub last_staker: Pubkey,
+    pub last_staked_at: i64,
+    pub last_updated_at: i64,
+    pub total_stake_seconds: u128,
+    pub used_stake_seconds: u128,
+    pub cooldown_start_seconds: Option<i64>,
+}
+
+pub struct StakeEntryV2 {
     pub bump: u8,
     pub kind: u8,
     pub pool: Pubkey,

@@ -18,5 +18,8 @@ export const handler = async (
 ) => {
   const programAccounts = await getProgramIdlAccounts(connection, "stakeEntry");
   const nulledAccounts = programAccounts.filter((acc) => !acc.parsed);
-  console.log(`[success] [${nulledAccounts.length}]`, nulledAccounts);
+  console.log(
+    `[success] [${nulledAccounts.length}]`,
+    nulledAccounts.map((acc) => acc.pubkey.toString())
+  );
 };
