@@ -3,6 +3,7 @@ use crate::errors::ErrorCode;
 use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
+use crate::stake_entry_fill_zeros;
 use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
@@ -112,5 +113,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     if stake_pool.reset_on_unstake {
         stake_entry.total_stake_seconds = 0;
     }
+    stake_entry_fill_zeros(stake_entry)?;
+
     Ok(())
 }

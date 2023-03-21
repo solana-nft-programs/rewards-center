@@ -53,8 +53,7 @@ const main = async (cluster: Cluster) => {
       new Wallet(wallet)
     );
   } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    console.log(`Transactionn failed: ${e}`);
+    console.log(`Transaction failed: `, e);
   }
 
   try {

@@ -4,6 +4,7 @@ use crate::errors::ErrorCode;
 use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::stake_entry::increment_total_stake_seconds;
+use crate::stake_entry_fill_zeros;
 use crate::stake_seed;
 use crate::Action;
 use crate::StakeEntry;
@@ -109,6 +110,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.amount = stake_entry.amount.checked_add(amount).unwrap();
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
+    stake_entry_fill_zeros(stake_entry)?;
 
     Ok(())
 }

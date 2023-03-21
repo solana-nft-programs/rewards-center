@@ -1,4 +1,5 @@
 use crate::errors::ErrorCode;
+use crate::stake_entry_fill_zeros;
 use crate::StakeEntry;
 use crate::StakePool;
 use anchor_lang::prelude::*;
@@ -19,5 +20,7 @@ pub fn handler(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
     stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.cooldown_start_seconds = None;
+    stake_entry_fill_zeros(stake_entry)?;
+
     Ok(())
 }

@@ -13,8 +13,8 @@ export type Args = {
 };
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
-  poolId: "2BmUEV3rkBGpgcPXrZCRfKGsA3Nq17nh1AJB5nrH3STC",
-  mintId: "9x8pDhjKMeyejWHhb9pcqbVbqAVasVGL4rDP1qkTUHTx",
+  poolId: "3WhzdFqLJ2FV5sjZVFJ1k2FnHLXYTZDdVDa8fBUpfNbZ",
+  mintId: "FHAprwtFJTK2d7T97c3Uqrputscy5Szdza5RhG8FpRwy",
 });
 
 export const handler = async (

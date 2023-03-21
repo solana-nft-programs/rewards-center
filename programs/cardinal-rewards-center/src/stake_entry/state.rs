@@ -29,7 +29,7 @@ pub fn stake_seed(supply: u64, user: Pubkey) -> Pubkey {
 }
 
 pub const STAKE_ENTRY_PREFIX: &str = "stake-entry";
-pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntryV2>() + 8;
+pub const STAKE_ENTRY_SIZE: usize = 8 + std::mem::size_of::<StakeEntry>() + 8;
 #[account]
 pub struct StakeEntry {
     pub bump: u8,
@@ -43,20 +43,14 @@ pub struct StakeEntry {
     pub total_stake_seconds: u128,
     pub used_stake_seconds: u128,
     pub cooldown_start_seconds: Option<i64>,
-}
-
-pub struct StakeEntryV2 {
-    pub bump: u8,
-    pub kind: u8,
-    pub pool: Pubkey,
-    pub amount: u64,
-    pub stake_mint: Pubkey,
-    pub last_staker: Pubkey,
-    pub last_staked_at: i64,
-    pub last_updated_at: i64,
-    pub total_stake_seconds: u128,
-    pub used_stake_seconds: u128,
-    pub cooldown_start_seconds: Option<i64>,
     pub multiplier_stake_seconds: Option<u128>,
     pub multiplier_basis_points: Option<u64>,
+}
+
+pub fn stake_entry_fill_zeros(stake_entry: &mut Account<StakeEntry>) -> Result<()> {
+    let stake_entry_account = stake_entry.to_account_info();
+    let mut stake_entry_data = stake_entry_account.data.borrow_mut();
+    let len = stake_entry_data.len();
+    stake_entry_data[stake_entry.try_to_vec()?.len()..len].iter_mut().for_each(|d| *d = 0);
+    Ok(())
 }

@@ -48,7 +48,7 @@ export type PaymentShare = {
 
 export const rewardsCenterProgram = (
   connection: Connection,
-  wallet: Wallet,
+  wallet?: Wallet,
   opts?: ConfirmOptions
 ) => {
   return new Program<CardinalRewardsCenter>(

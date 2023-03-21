@@ -11,6 +11,8 @@ import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
 import * as checkStakeEntries from "./stake-entry/checkStakeEntries";
 import * as getStakeEntry from "./stake-entry/getStakeEntry";
+import * as resizeStakeEntries from "./stake-entry/resizeStakeEntries";
+import * as stakeEntriesFillZeros from "./stake-entry/stakeEntriesFillZeros";
 import * as getStakePool from "./stake-pool/getStakePool";
 import { keypairFrom } from "./utils";
 
@@ -98,6 +100,8 @@ void yargs(hideBin(process.argv))
   .command(commandBuilder(getStakePool))
   .command(commandBuilder(getStakeEntry))
   .command(commandBuilder(checkStakeEntries))
+  .command(commandBuilder(resizeStakeEntries))
+  .command(commandBuilder(stakeEntriesFillZeros))
   .strict()
   .demandCommand()
   .help("h")
