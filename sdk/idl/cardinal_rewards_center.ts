@@ -158,6 +158,34 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "setStakeEntryMultiplier";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "multiplierBasisPoints";
+          type: {
+            option: "u64";
+          };
+        }
+      ];
+    },
+    {
       name: "resizeStakeEntry";
       accounts: [
         {
@@ -2705,6 +2733,34 @@ export const IDL: CardinalRewardsCenter = {
         },
       ],
       args: [],
+    },
+    {
+      name: "setStakeEntryMultiplier",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "multiplierBasisPoints",
+          type: {
+            option: "u64",
+          },
+        },
+      ],
     },
     {
       name: "resizeStakeEntry",

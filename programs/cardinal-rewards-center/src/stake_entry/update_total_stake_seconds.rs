@@ -29,12 +29,19 @@ pub fn increment_total_stake_seconds(stake_entry: &mut Account<StakeEntry>) -> R
         .saturating_sub(u128::try_from(stake_entry.last_updated_at).unwrap()))
     .checked_mul(u128::try_from(stake_entry.amount).unwrap())
     .expect("Mul error");
+    if let Some(multiplier_basis_points) = stake_entry.multiplier_basis_points {
+        let base_seconds = stake_entry.multiplier_stake_seconds.unwrap_or(stake_entry.total_stake_seconds);
+        stake_entry.multiplier_stake_seconds = Some(
+            base_seconds.saturating_add(
+                seconds_increased
+                    .checked_mul(u128::from(multiplier_basis_points))
+                    .expect("Mul error")
+                    .checked_div(u128::from(BASIS_POINTS_DIVISOR))
+                    .expect("Div error"),
+            ),
+        );
+    }
     stake_entry.total_stake_seconds = stake_entry.total_stake_seconds.saturating_add(seconds_increased);
     stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
-    if let Some(multiplier_basis_points) = stake_entry.multiplier_basis_points {
-        let multiplier = u128::from(multiplier_basis_points).checked_div(u128::from(BASIS_POINTS_DIVISOR)).expect("Div error");
-        let base_seconds = stake_entry.multiplier_stake_seconds.unwrap_or(stake_entry.total_stake_seconds);
-        stake_entry.multiplier_stake_seconds = Some(base_seconds.saturating_add(seconds_increased.checked_mul(multiplier).expect("Mul error")));
-    }
     Ok(())
 }
