@@ -40,13 +40,13 @@
     "@cardinal/creator-standard": "^2.4.0",
     "@coral-xyz/anchor": "0.26.0",
     "@metaplex-foundation/mpl-token-auth-rules": "^1.1.0",
+    "@metaplex-foundation/mpl-token-metadata": "^2.8.0",
     "@msgpack/msgpack": "^2.8.0",
     "@solana/spl-token": "^0.3.6",
     "@solana/web3.js": "^1.66.2",
     "bn.js": "^5.2.0"
   },
   "devDependencies": {
-    "@metaplex-foundation/mpl-token-metadata": "^2.8.0",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^29.2.0",
