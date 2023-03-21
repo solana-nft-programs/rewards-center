@@ -118,24 +118,17 @@ jobs:
       - name: Run local validator
         run: solana-test-validator --url https://api.mainnet-beta.solana.com --clone metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s --clone PwDiXFxQsGra4sFFTT8r1QWRMd4vfumiWC1jfWNfdYT --clone creatS3mfzrTGjwuLD1Pa2HXJ1gmq6WXb4ssnwUbJez --clone 9sSzF8VKN9di46LUa9aQetX3rEoMtgCyzTiAcx7E5yAz --clone auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg --clone BXPrcDXuxa4G7m5qj4hu9Fs48sAPJqsjK5Y5S8qxH44J --clone 2NjwBshDhNPyGXmYU2VBnWySvgqg1hiEAY2CPeNCd4qf --clone HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU --clone 382KXQfzC26jbFmLZBmKoZ6eRz53iwGfxXwoGyyyH8po --clone SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL --bpf-program crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd ./target/deploy/cardinal_rewards_center.so --reset --quiet & echo $$! > validator.PID
       - run: sleep 6
-      - run: solana airdrop 1000 $(solana-keygen pubkey ./tests/test-keypairs/test-key.json) --url http://localhost:8899
       - run: yarn test
 
-      # - uses: dorny/test-reporter@v1
-      #   if: always()
-      #   with:
-      #     artifact: test-results
-      #     name: Local Tests
-      #     path: tests/*.json
-      #     reporter: mocha-json
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Unit Test Results
+          name: Integration Tests
           path: tests/out.xml
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+      - uses: dorny/test-reporter@v1
         if: always()
         with:
-          files: tests/out.xml
+          name: Integration Tests Results
+          path: tests/out.xml
+          reporter: jest-junit

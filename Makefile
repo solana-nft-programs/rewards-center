@@ -1,8 +1,6 @@
-.PHONY: install test-keys build start test clean-test-keys stop
+.PHONY: install build start test stop
 
-TEST_KEY := $(shell solana-keygen pubkey ./tests/test-key.json)
-
-all: install test-keys build start test clean-test-keys stop
+all: install build start test stop
 
 install:
 	yarn install
@@ -23,8 +21,6 @@ start:
 		--bpf-program crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd ./target/deploy/cardinal_rewards_center.so \
 		--reset --quiet & echo $$!
 	sleep 10
-	solana-keygen pubkey ./tests/test-keypairs/test-key.json
-	solana airdrop 1000 $(TEST_KEY) --url http://localhost:8899
 
 test:
 	yarn test

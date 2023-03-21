@@ -5,5 +5,11 @@ module.exports = {
   transform: {
     "^.+\\.ts$": "ts-jest",
   },
+  testTimeout: 10000,
   verbose: true,
+  reporters: [
+    "default",
+    ["jest-junit", { outputDirectory: "tests", outputName: "out.xml" }],
+    "github-actions",
+  ],
 };
