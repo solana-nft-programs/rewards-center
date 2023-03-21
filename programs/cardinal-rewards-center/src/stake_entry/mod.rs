@@ -10,6 +10,12 @@ pub use update_total_stake_seconds::*;
 pub mod reset_stake_entry;
 pub use reset_stake_entry::*;
 
+pub mod resize_stake_entry;
+pub use resize_stake_entry::*;
+
+pub mod set_stake_entry_multiplier;
+pub use set_stake_entry_multiplier::*;
+
 pub mod close_stake_entry;
 pub use close_stake_entry::*;
 

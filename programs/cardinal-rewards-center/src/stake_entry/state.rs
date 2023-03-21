@@ -43,4 +43,14 @@ pub struct StakeEntry {
     pub total_stake_seconds: u128,
     pub used_stake_seconds: u128,
     pub cooldown_start_seconds: Option<i64>,
+    pub multiplier_stake_seconds: Option<u128>,
+    pub multiplier_basis_points: Option<u64>,
+}
+
+pub fn stake_entry_fill_zeros(stake_entry: &mut Account<StakeEntry>) -> Result<()> {
+    let stake_entry_account = stake_entry.to_account_info();
+    let mut stake_entry_data = stake_entry_account.data.borrow_mut();
+    let len = stake_entry_data.len();
+    stake_entry_data[stake_entry.try_to_vec()?.len()..len].iter_mut().for_each(|d| *d = 0);
+    Ok(())
 }

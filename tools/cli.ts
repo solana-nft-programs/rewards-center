@@ -1,6 +1,6 @@
-import { connectionFor } from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
-import type { Cluster, Connection } from "@solana/web3.js";
+import type { Cluster } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import * as dotenv from "dotenv";
 import * as readline from "readline";
 import type { ArgumentsCamelCase, CommandModule } from "yargs";
@@ -9,6 +9,10 @@ import { hideBin } from "yargs/helpers";
 
 import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
+import * as checkStakeEntries from "./stake-entry/checkStakeEntries";
+import * as getStakeEntry from "./stake-entry/getStakeEntry";
+import * as resizeStakeEntries from "./stake-entry/resizeStakeEntries";
+import * as stakeEntriesFillZeros from "./stake-entry/stakeEntriesFillZeros";
 import * as getStakePool from "./stake-pool/getStakePool";
 import { keypairFrom } from "./utils";
 
@@ -17,6 +21,26 @@ dotenv.config();
 export type ProviderParams = {
   cluster: string;
   wallet: string;
+};
+
+const networkURLs: { [key in Cluster | "mainnet" | "localnet"]: string } = {
+  ["mainnet-beta"]:
+    process.env.MAINNET_PRIMARY_URL ?? "https://solana-api.projectserum.com",
+  mainnet:
+    process.env.MAINNET_PRIMARY_URL ?? "https://solana-api.projectserum.com",
+  devnet: "https://api.devnet.solana.com/",
+  testnet: "https://api.testnet.solana.com/",
+  localnet: "http://localhost:8899/",
+};
+
+export const connectionFor = (
+  cluster: Cluster | "mainnet" | "localnet",
+  defaultCluster = "mainnet"
+) => {
+  return new Connection(
+    process.env.RPC_URL || networkURLs[cluster || defaultCluster],
+    "recent"
+  );
 };
 
 const commandBuilder = <T>(command: {
@@ -74,6 +98,10 @@ void yargs(hideBin(process.argv))
   .command(commandBuilder(createPaymentInfo))
   .command(commandBuilder(updatePaymentInfo))
   .command(commandBuilder(getStakePool))
+  .command(commandBuilder(getStakeEntry))
+  .command(commandBuilder(checkStakeEntries))
+  .command(commandBuilder(resizeStakeEntries))
+  .command(commandBuilder(stakeEntriesFillZeros))
   .strict()
   .demandCommand()
   .help("h")

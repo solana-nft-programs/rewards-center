@@ -158,6 +158,55 @@ export type CardinalRewardsCenter = {
       args: [];
     },
     {
+      name: "setStakeEntryMultiplier";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "multiplierBasisPoints";
+          type: {
+            option: "u64";
+          };
+        }
+      ];
+    },
+    {
+      name: "resizeStakeEntry";
+      accounts: [
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "payer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "closeStakeEntry";
       accounts: [
         {
@@ -1664,6 +1713,18 @@ export type CardinalRewardsCenter = {
             type: {
               option: "i64";
             };
+          },
+          {
+            name: "multiplierStakeSeconds";
+            type: {
+              option: "u128";
+            };
+          },
+          {
+            name: "multiplierBasisPoints";
+            type: {
+              option: "u64";
+            };
           }
         ];
       };
@@ -2674,6 +2735,55 @@ export const IDL: CardinalRewardsCenter = {
           name: "authority",
           isMut: true,
           isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "setStakeEntryMultiplier",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "multiplierBasisPoints",
+          type: {
+            option: "u64",
+          },
+        },
+      ],
+    },
+    {
+      name: "resizeStakeEntry",
+      accounts: [
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "payer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
       ],
       args: [],
@@ -4184,6 +4294,18 @@ export const IDL: CardinalRewardsCenter = {
             name: "cooldownStartSeconds",
             type: {
               option: "i64",
+            },
+          },
+          {
+            name: "multiplierStakeSeconds",
+            type: {
+              option: "u128",
+            },
+          },
+          {
+            name: "multiplierBasisPoints",
+            type: {
+              option: "u64",
             },
           },
         ],

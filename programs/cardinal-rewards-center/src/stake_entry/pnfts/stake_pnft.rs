@@ -4,6 +4,7 @@ use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::increment_total_stake_seconds;
 use crate::mint_is_allowed;
+use crate::stake_entry_fill_zeros;
 use crate::stake_seed;
 use crate::Action;
 use crate::StakeEntry;
@@ -104,6 +105,7 @@ pub fn handler(ctx: Context<StakePNFTCtx>) -> Result<()> {
     stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
     stake_entry.amount = stake_entry.amount.checked_add(1).unwrap();
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
+    stake_entry_fill_zeros(stake_entry)?;
 
     // pnft actions to stake
     invoke(

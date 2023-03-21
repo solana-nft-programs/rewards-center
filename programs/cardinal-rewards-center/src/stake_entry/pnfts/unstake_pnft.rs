@@ -3,6 +3,7 @@ use crate::errors::ErrorCode;
 use crate::escrow_seeds;
 use crate::handle_payment_info;
 use crate::increment_total_stake_seconds;
+use crate::stake_entry_fill_zeros;
 use crate::stake_seed;
 use crate::Action;
 use crate::StakeEntry;
@@ -116,6 +117,7 @@ pub fn handler(ctx: Context<UnstakePNFTCtx>) -> Result<()> {
     if stake_pool.reset_on_unstake {
         stake_entry.total_stake_seconds = 0;
     }
+    stake_entry_fill_zeros(stake_entry)?;
 
     // pnft actions to unstake
     invoke_signed(

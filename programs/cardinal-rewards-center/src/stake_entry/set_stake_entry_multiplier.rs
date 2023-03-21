@@ -5,7 +5,7 @@ use crate::StakePool;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-pub struct ResetStakeEntryCtx<'info> {
+pub struct SetStakeEntryMultiplierCtx<'info> {
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = stake_pool.key() == stake_entry.pool @ ErrorCode::InvalidStakePool)]
     stake_entry: Box<Account<'info, StakeEntry>>,
@@ -13,13 +13,9 @@ pub struct ResetStakeEntryCtx<'info> {
     authority: Signer<'info>,
 }
 
-pub fn handler(ctx: Context<ResetStakeEntryCtx>) -> Result<()> {
+pub fn handler(ctx: Context<SetStakeEntryMultiplierCtx>, multiplier_basis_points: Option<u64>) -> Result<()> {
     let stake_entry = &mut ctx.accounts.stake_entry;
-    stake_entry.total_stake_seconds = 0;
-    stake_entry.used_stake_seconds = 0;
-    stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
-    stake_entry.last_staked_at = Clock::get().unwrap().unix_timestamp;
-    stake_entry.cooldown_start_seconds = None;
+    stake_entry.multiplier_basis_points = multiplier_basis_points;
     stake_entry_fill_zeros(stake_entry)?;
 
     Ok(())
