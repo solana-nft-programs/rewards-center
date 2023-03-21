@@ -1,5 +1,5 @@
 export type CardinalRewardsCenter = {
-  version: "2.7.3";
+  version: "3.0.0";
   name: "cardinal_rewards_center";
   instructions: [
     {
@@ -2581,7 +2581,7 @@ export type CardinalRewardsCenter = {
 };
 
 export const IDL: CardinalRewardsCenter = {
-  version: "2.7.3",
+  version: "3.0.0",
   name: "cardinal_rewards_center",
   instructions: [
     {

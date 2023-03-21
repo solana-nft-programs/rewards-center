@@ -485,7 +485,7 @@ dependencies = [
 
 [[package]]
 name = "cardinal-rewards-center"
-version = "2.7.3"
+version = "3.0.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
