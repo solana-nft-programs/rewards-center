@@ -1,6 +1,6 @@
 [provider]
 cluster = "localnet"
-wallet = "./tests/test-key.json"
+wallet = "./tests/test-keypairs/test-key.json"
 
 [programs.mainnet]
 cardinal_rewards_center = "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd"
