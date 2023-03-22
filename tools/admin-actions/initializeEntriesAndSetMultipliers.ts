@@ -33,8 +33,6 @@ export const description =
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   // stake pool id
   stakePoolId: new PublicKey("3BZCupFU6X3wYJwgTsKS2vTs4VeMrhSZgx4P2TfzExtP"),
-  // whether this pool deals with fungible tokens
-  fungible: false,
   // array of mints and optionally multiplier to initialize
   // REMINDER: Take into account rewardDistributor.multiplierDecimals!
   initEntries: [] as EntryData[],
@@ -74,7 +72,7 @@ export const handler = async (
   wallet: Wallet,
   args: ReturnType<typeof getArgs>
 ) => {
-  const { stakePoolId, initEntries, fungible, metadataRules } = args;
+  const { stakePoolId, initEntries, metadataRules } = args;
   const program = rewardsCenterProgram(connection, wallet);
 
   const rewardDistributorId = findRewardDistributorId(stakePoolId);
@@ -89,9 +87,7 @@ export const handler = async (
     } entries for pool (${stakePoolId.toString()}) and reward distributor (${rewardDistributorId.toString()}) ---------`
   );
   const stakeEntryIds = await Promise.all(
-    initEntries.map((e) =>
-      findStakeEntryId(wallet.publicKey, stakePoolId, e.mintId, fungible)
-    )
+    initEntries.map((e) => findStakeEntryId(stakePoolId, e.mintId))
   );
   const stakeEntriesAccountInfos = await fetchIdlAccountDataById(
     connection,
@@ -189,12 +185,7 @@ export const handler = async (
             }] (${mintId.toString()})`
           );
           try {
-            const stakeEntryId = findStakeEntryId(
-              wallet.publicKey,
-              stakePoolId,
-              mintId,
-              fungible
-            );
+            const stakeEntryId = findStakeEntryId(stakePoolId, mintId);
 
             await withFindOrInitAssociatedTokenAccount(
               transaction,

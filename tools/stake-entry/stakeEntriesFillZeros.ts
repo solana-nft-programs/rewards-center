@@ -1,6 +1,7 @@
 import {
   chunkArray,
   executeTransaction,
+  executeTransactions,
   fetchAccountDataById,
 } from "@cardinal/common";
 import type { Wallet } from "@coral-xyz/anchor";
@@ -87,11 +88,11 @@ export const handler = async (
 
   console.log(`\n2/3 Building transactions...`);
   const txs = [];
-  const accChunks = chunkArray(programAccounts, args.batchSize);
-  for (let i = 0; i < accChunks.length; i++) {
-    const chunk = accChunks[i]!;
+  const chunks = chunkArray(programAccounts, args.batchSize);
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i]!;
     const tx = new Transaction();
-    console.log(`> ${i}/${accChunks.length}`);
+    console.log(`> ${i}/${chunks.length}`);
     for (let j = 0; j < chunk.length; j++) {
       const acc = chunk[j]!;
       // console.log(`>> ${j}/${chunk.length} ${acc.pubkey.toString()}`);
@@ -134,4 +135,5 @@ export const handler = async (
       );
     }
   }
+  executeTransactions;
 };

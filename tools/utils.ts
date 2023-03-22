@@ -1,8 +1,9 @@
+import { chunkArray, logError } from "@cardinal/common";
 import { utils } from "@coral-xyz/anchor";
 import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type {
+  ConfirmOptions,
   Connection,
-  SendTransactionError,
   Signer,
   Transaction,
 } from "@solana/web3.js";
@@ -47,30 +48,6 @@ export const keypairFrom = (s: string, n?: string): Keypair => {
   }
 };
 
-export async function executeTransaction(
-  connection: Connection,
-  tx: Transaction,
-  wallet: Wallet,
-  signers?: Signer[],
-  silent?: boolean
-): Promise<string> {
-  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-  tx.feePayer = wallet.publicKey;
-  await wallet.signTransaction(tx);
-  if (signers) {
-    tx.partialSign(...signers);
-  }
-  try {
-    const txid = await sendAndConfirmRawTransaction(connection, tx.serialize());
-    return txid;
-  } catch (e) {
-    if (!silent) {
-      handleError(e);
-    }
-    throw e;
-  }
-}
-
 export const publicKeyFrom = (s: string, n?: string): PublicKey => {
   try {
     return new PublicKey(s);
@@ -80,46 +57,73 @@ export const publicKeyFrom = (s: string, n?: string): PublicKey => {
   }
 };
 
-export async function executeTransactions(
+export async function executeTransactionBatches<T = null>(
   connection: Connection,
   txs: Transaction[],
   wallet: Wallet,
-  signers?: Signer[]
-): Promise<string[]> {
-  const latestBlockhash = (await connection.getLatestBlockhash()).blockhash;
-  const signedTxs = await wallet.signAllTransactions(
-    txs.map((tx) => {
-      tx.recentBlockhash = latestBlockhash;
-      tx.feePayer = wallet.publicKey;
-      if (signers) {
-        tx.partialSign(...signers);
-      }
-      return tx;
-    })
-  );
-  const txids = await Promise.all(
-    signedTxs.map(async (tx) => {
-      try {
-        const txid = await sendAndConfirmRawTransaction(
-          connection,
-          tx.serialize()
-        );
-        return txid;
-      } catch (e) {
-        handleError(e);
-        throw e;
-      }
-    })
-  );
+  config?: {
+    signers?: Signer[];
+    batchSize?: number;
+    successHandler?: (
+      txid: string,
+      ix: { i: number; j: number; it: number; jt: number }
+    ) => void;
+    errorHandler?: (
+      e: unknown,
+      ix: { i: number; j: number; it: number; jt: number }
+    ) => T;
+    confirmOptions?: ConfirmOptions;
+  }
+): Promise<(string | null | T)[]> {
+  const batchedTxs = chunkArray(txs, config?.batchSize ?? txs.length);
+  const txids: (string | T | null)[] = [];
+  for (let i = 0; i < batchedTxs.length; i++) {
+    const batch = batchedTxs[i];
+    if (batch) {
+      const latestBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      const batchSignedTxs = await wallet.signAllTransactions(
+        batch.map((tx) => {
+          tx.recentBlockhash = latestBlockhash;
+          tx.feePayer = wallet.publicKey;
+          if (config?.signers) {
+            tx.partialSign(...(config?.signers ?? []));
+          }
+          return tx;
+        })
+      );
+      const batchTxids = await Promise.all(
+        batchSignedTxs.map(async (tx, j) => {
+          try {
+            const txid = await sendAndConfirmRawTransaction(
+              connection,
+              tx.serialize(),
+              config?.confirmOptions
+            );
+            if (config?.successHandler) {
+              config?.successHandler(txid, {
+                i,
+                it: batchedTxs.length,
+                j,
+                jt: batchSignedTxs.length,
+              });
+            }
+            return txid;
+          } catch (e) {
+            if (config?.errorHandler) {
+              return config?.errorHandler(e, {
+                i,
+                it: batchedTxs.length,
+                j,
+                jt: batchSignedTxs.length,
+              });
+            }
+            logError(e);
+            return null;
+          }
+        })
+      );
+      txids.push(...batchTxids);
+    }
+  }
   return txids;
 }
-
-export const handleError = (e: any) => {
-  const message = (e as SendTransactionError).message ?? "";
-  const logs = (e as SendTransactionError).logs;
-  if (logs) {
-    console.log(logs);
-  } else {
-    console.log(e, message);
-  }
-};
