@@ -1,7 +1,7 @@
 import { chunkArray } from "@cardinal/common";
 import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 import type { Connection } from "@solana/web3.js";
-import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 
 import {
   fetchIdlAccountDataById,
@@ -10,16 +10,16 @@ import {
 } from "../../sdk";
 import { executeTransactionBatches } from "../utils";
 
-export const commandName = "authorizeMints";
-export const description = "Authorize mints";
+export const commandName = "deauthorizeMints";
+export const description = "Deauthorize mints";
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   // stake pool id
-  stakePoolId: new PublicKey("57crrxG7VvKAsuoBkpRSdnSRbDzmxnQg3pXwjyrF5gmX"),
+  stakePoolId: new PublicKey("CferUKod4FNLE8h7PJNpbzFQ99cpz1ShtonL48fff6n"),
   // array of mints and multipliers to set
   entryDatas: [] as { mintId: PublicKey }[],
   // file to read entry mints from
-  entryFile: "tools/data/knittables-Legendary-Santa.csv",
+  entryFile: "tools/data/knittables-Legendary-Neo.csv",
   // number of entries per transaction
   batchSize: 12,
   // number of transactions in parallel
@@ -36,7 +36,7 @@ export const handler = async (
   const { stakePoolId, entryDatas: mintList } = args;
   let entryDatas = mintList;
 
-  if (args.entryFile && entryDatas.length === 0) {
+  if (args.entryFile) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
     const file = require("fs").readFileSync(args.entryFile, {
       encoding: "utf-8",
@@ -70,15 +70,13 @@ export const handler = async (
       //   console.log(`>>[${j}/${chunk.length}] ${mintId.toString()}`);
       const stakeAuthorizationRecord =
         stakeAuthorizationRecords[stakeAuthorizationRecordId.toString()];
-      if (!stakeAuthorizationRecord?.parsed) {
+      if (stakeAuthorizationRecord?.parsed) {
         const ix = await rewardsCenterProgram(connection, wallet)
-          .methods.authorizeMint(mintId)
+          .methods.deauthorizeMint()
           .accountsStrict({
             stakePool: stakePoolId,
             stakeAuthorizationRecord: stakeAuthorizationRecordId,
             authority: wallet.publicKey,
-            payer: wallet.publicKey,
-            systemProgram: SystemProgram.programId,
           })
           .instruction();
         tx.add(ix);

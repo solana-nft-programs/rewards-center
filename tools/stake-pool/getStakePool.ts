@@ -11,7 +11,7 @@ export type Args = {
 };
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
-  identifier: "pool-name-0.3875061479820159",
+  identifier: "knittables-proto",
 });
 
 export const handler = async (

@@ -6,8 +6,10 @@ import { BN } from "bn.js";
 
 import {
   BASIS_POINTS_DIVISOR,
+  fetchIdlAccount,
   fetchIdlAccountDataById,
   findStakeEntryId,
+  remainingAccountsForAuthorization,
   rewardsCenterProgram,
 } from "../../sdk";
 import { executeTransactionBatches } from "../utils";
@@ -17,9 +19,11 @@ export const description = "Initialize stake entries and set multipliers";
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   // stake pool id
-  stakePoolId: new PublicKey("3BZCupFU6X3wYJwgTsKS2vTs4VeMrhSZgx4P2TfzExtP"),
-  // array of mints and multipliers to set
-  entryDatas: [] as { mintId: PublicKey; multiplierBasisPoints: number }[],
+  stakePoolId: new PublicKey("57crrxG7VvKAsuoBkpRSdnSRbDzmxnQg3pXwjyrF5gmX"),
+  // file to read entry mints from
+  entryFile: "tools/data/knittables-Tribe-Evo-Golden.csv",
+  // multiplier to set
+  multiplierBasisPoints: 30000,
   // number of entries per transaction
   batchSize: 3,
   // number of transactions in parallel
@@ -33,13 +37,30 @@ export const handler = async (
   wallet: Wallet,
   args: ReturnType<typeof getArgs>
 ) => {
-  const { stakePoolId, entryDatas } = args;
+  const { stakePoolId } = args;
+  let entryDatas: { mintId: PublicKey; multiplierBasisPoints: number }[] = [];
+  if (args.entryFile && entryDatas.length === 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
+    const file = require("fs").readFileSync(args.entryFile, {
+      encoding: "utf-8",
+    }) as string;
+    entryDatas = file.split(",\n").map((v) => ({
+      mintId: new PublicKey(v),
+      multiplierBasisPoints: args.multiplierBasisPoints,
+    }));
+  }
+
   const chunkData = entryDatas.map((e) => ({
     ...e,
     stakeEntryId: findStakeEntryId(stakePoolId, e.mintId),
   }));
 
   console.log(`\n1/3 Fetching data...`);
+  const stakePool = await fetchIdlAccount(
+    connection,
+    args.stakePoolId,
+    "stakePool"
+  );
   const stakeEntriesById = await fetchIdlAccountDataById(
     connection,
     chunkData.map((i) => i.stakeEntryId)
@@ -57,6 +78,11 @@ export const handler = async (
       console.log(`>>[${j}/${chunk.length}] ${mintId.toString()}`);
       const stakeEntry = stakeEntriesById[stakeEntryId.toString()];
       if (!stakeEntry?.parsed) {
+        const authorizationAccounts = remainingAccountsForAuthorization(
+          stakePool,
+          mintId,
+          null
+        );
         const ix = await rewardsCenterProgram(connection, wallet)
           .methods.initEntry(wallet.publicKey)
           .accountsStrict({
@@ -67,6 +93,7 @@ export const handler = async (
             payer: wallet.publicKey,
             systemProgram: SystemProgram.programId,
           })
+          .remainingAccounts(authorizationAccounts)
           .instruction();
         tx.add(ix);
         console.log(

@@ -7,6 +7,12 @@ import type { ArgumentsCamelCase, CommandModule } from "yargs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import * as authorizeMints from "./admin-actions/authorizeMints";
+import * as deauthorizeMints from "./admin-actions/deauthorizeMints";
+import * as resetAllEntries from "./admin-actions/resetAllEntries";
+import * as setStakeEntryMultipliers from "./admin-actions/setStakeEntryMultipliers";
+import * as attributeBreakdown from "./mint-tools/attributeBreakdown";
+import * as attributeFilter from "./mint-tools/attributeFilter";
 import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
 import * as checkStakeEntries from "./stake-entry/checkStakeEntries";
@@ -14,6 +20,8 @@ import * as getStakeEntry from "./stake-entry/getStakeEntry";
 import * as resizeStakeEntries from "./stake-entry/resizeStakeEntries";
 import * as stakeEntriesFillZeros from "./stake-entry/stakeEntriesFillZeros";
 import * as getStakePool from "./stake-pool/getStakePool";
+import * as initPool from "./stake-pool/initPool";
+import * as updatePool from "./stake-pool/updatePool";
 import { keypairFrom } from "./utils";
 
 dotenv.config();
@@ -95,13 +103,21 @@ void yargs(hideBin(process.argv))
       "Solana cluster moniker to use [mainnet, devnet] - ovverride url with RPC_URL environment variable or mainnet moniker with MAINNET_PRIMARY environment variable",
     default: "devnet",
   })
+  .command(commandBuilder(initPool))
+  .command(commandBuilder(updatePool))
+  .command(commandBuilder(getStakePool))
   .command(commandBuilder(createPaymentInfo))
   .command(commandBuilder(updatePaymentInfo))
-  .command(commandBuilder(getStakePool))
   .command(commandBuilder(getStakeEntry))
   .command(commandBuilder(checkStakeEntries))
   .command(commandBuilder(resizeStakeEntries))
   .command(commandBuilder(stakeEntriesFillZeros))
+  .command(commandBuilder(authorizeMints))
+  .command(commandBuilder(deauthorizeMints))
+  .command(commandBuilder(setStakeEntryMultipliers))
+  .command(commandBuilder(resetAllEntries))
+  .command(commandBuilder(attributeFilter))
+  .command(commandBuilder(attributeBreakdown))
   .strict()
   .demandCommand()
   .help("h")
