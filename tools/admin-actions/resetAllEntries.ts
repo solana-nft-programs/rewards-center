@@ -11,7 +11,7 @@ export const description = "Reset all stake entries";
 
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   // stake pool id
-  stakePoolId: new PublicKey("CferUKod4FNLE8h7PJNpbzFQ99cpz1ShtonL48fff6n"),
+  stakePoolId: new PublicKey("57crrxG7VvKAsuoBkpRSdnSRbDzmxnQg3pXwjyrF5gmX"),
   // number of entries per transaction
   batchSize: 20,
   // number of transactions in parallel
