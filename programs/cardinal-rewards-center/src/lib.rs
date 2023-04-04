@@ -49,6 +49,9 @@ pub mod cardinal_rewards_center {
     pub fn set_stake_entry_multiplier(ctx: Context<SetStakeEntryMultiplierCtx>, multiplier_basis_points: Option<u64>) -> Result<()> {
         stake_entry::set_stake_entry_multiplier::handler(ctx, multiplier_basis_points)
     }
+    pub fn set_stake_entry_multiplier_stake_seconds(ctx: Context<SetStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: Option<u128>) -> Result<()> {
+        stake_entry::set_stake_entry_multiplier_stake_seconds::handler(ctx, multiplier_stake_seconds)
+    }
     pub fn resize_stake_entry(ctx: Context<ResizeStakeEntryCtx>) -> Result<()> {
         stake_entry::resize_stake_entry::handler(ctx)
     }
