@@ -16,7 +16,9 @@ pub struct SetStakeEntryMultiplierStakeSecondsCtx<'info> {
 
 pub fn handler(ctx: Context<SetStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: Option<u128>) -> Result<()> {
     let stake_entry = &mut ctx.accounts.stake_entry;
-    stake_entry.multiplier_basis_points = Some(BASIS_POINTS_DIVISOR);
+    if stake_entry.multiplier_basis_points.is_none() {
+        stake_entry.multiplier_basis_points = Some(BASIS_POINTS_DIVISOR);
+    }
     stake_entry.multiplier_stake_seconds = multiplier_stake_seconds;
     stake_entry_fill_zeros(stake_entry)?;
 
