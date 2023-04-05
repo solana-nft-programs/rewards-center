@@ -1,6 +1,6 @@
 [package]
 name = "cardinal-rewards-center"
-version = "3.0.0"
+version = "3.1.0"
 description = "Cardinal rewards center"
 edition = "2021"
 homepage = "https://cardinal.so"
