@@ -1,5 +1,5 @@
 import {
-  createAssociatedTokenAccountInstruction,
+  createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
@@ -12,7 +12,7 @@ import type {
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { fetchIdlAccount } from "./accounts";
-import type { PaymentShare } from "./constants";
+import type { PaymentInfo, PaymentShare } from "./constants";
 
 export const BASIS_POINTS_DIVISOR = 10_000;
 
@@ -40,26 +40,54 @@ export const withRemainingAccountsForPaymentInfo = async (
     return remainingAccounts;
 
   remainingAccounts.push(
-    ...(await withRemainingAccountsForPayment(
-      connection,
+    ...withRemainingAccountsForPayment(
       transaction,
       payer,
       paymentInfoData.parsed.paymentMint,
       (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
         (p) => p.address
       )
-    ))
+    )
   );
   return remainingAccounts;
 };
 
-export const withRemainingAccountsForPayment = async (
-  connection: Connection,
+export const withRemainingAccountsForPaymentInfoSync = (
+  transaction: Transaction,
+  payer: PublicKey,
+  paymentInfoData: Pick<PaymentInfo, "parsed" | "pubkey">
+): AccountMeta[] => {
+  const remainingAccounts: AccountMeta[] = [
+    {
+      pubkey: paymentInfoData.pubkey,
+      isSigner: false,
+      isWritable: false,
+    },
+  ];
+
+  // add payer
+  if (Number(paymentInfoData.parsed.paymentAmount) === 0)
+    return remainingAccounts;
+
+  remainingAccounts.push(
+    ...withRemainingAccountsForPayment(
+      transaction,
+      payer,
+      paymentInfoData.parsed.paymentMint,
+      (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
+        (p) => p.address
+      )
+    )
+  );
+  return remainingAccounts;
+};
+
+export const withRemainingAccountsForPayment = (
   transaction: Transaction,
   payer: PublicKey,
   paymentMint: PublicKey,
   paymentTargets: PublicKey[]
-): Promise<AccountMeta[]> => {
+): AccountMeta[] => {
   const remainingAccounts = [
     {
       pubkey: payer,
@@ -95,18 +123,15 @@ export const withRemainingAccountsForPayment = async (
     const ataIds = paymentTargets.map((a) =>
       getAssociatedTokenAddressSync(paymentMint, a, true)
     );
-    const tokenAccountInfos = await connection.getMultipleAccountsInfo(ataIds);
-    for (let i = 0; i < tokenAccountInfos.length; i++) {
-      if (!tokenAccountInfos[i]) {
-        transaction.add(
-          createAssociatedTokenAccountInstruction(
-            payer,
-            ataIds[i]!,
-            paymentTargets[i]!,
-            paymentMint
-          )
-        );
-      }
+    for (let i = 0; i < ataIds.length; i++) {
+      transaction.add(
+        createAssociatedTokenAccountIdempotentInstruction(
+          payer,
+          ataIds[i]!,
+          paymentTargets[i]!,
+          paymentMint
+        )
+      );
     }
     remainingAccounts.push(
       ...ataIds.map((id) => ({
