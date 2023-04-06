@@ -7,17 +7,17 @@ pub use init_entry::*;
 pub mod update_total_stake_seconds;
 pub use update_total_stake_seconds::*;
 
-pub mod set_stake_entry_multiplier_stake_seconds;
-pub use set_stake_entry_multiplier_stake_seconds::*;
-
 pub mod reset_stake_entry;
 pub use reset_stake_entry::*;
 
 pub mod resize_stake_entry;
 pub use resize_stake_entry::*;
 
-pub mod set_stake_entry_multiplier;
-pub use set_stake_entry_multiplier::*;
+pub mod points;
+pub use points::decrement_stake_entry_multiplier_stake_seconds::*;
+pub use points::increment_stake_entry_multiplier_stake_seconds::*;
+pub use points::set_stake_entry_multiplier::*;
+pub use points::set_stake_entry_multiplier_stake_seconds::*;
 
 pub mod close_stake_entry;
 pub use close_stake_entry::*;
