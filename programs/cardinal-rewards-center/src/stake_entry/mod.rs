@@ -13,11 +13,11 @@ pub use reset_stake_entry::*;
 pub mod resize_stake_entry;
 pub use resize_stake_entry::*;
 
-pub mod points;
-pub use points::decrement_stake_entry_multiplier_stake_seconds::*;
-pub use points::increment_stake_entry_multiplier_stake_seconds::*;
-pub use points::set_stake_entry_multiplier::*;
-pub use points::set_stake_entry_multiplier_stake_seconds::*;
+pub mod multiplier_stake_seconds;
+pub use multiplier_stake_seconds::decrement_stake_entry_multiplier_stake_seconds::*;
+pub use multiplier_stake_seconds::increment_stake_entry_multiplier_stake_seconds::*;
+pub use multiplier_stake_seconds::set_stake_entry_multiplier::*;
+pub use multiplier_stake_seconds::set_stake_entry_multiplier_stake_seconds::*;
 
 pub mod close_stake_entry;
 pub use close_stake_entry::*;
