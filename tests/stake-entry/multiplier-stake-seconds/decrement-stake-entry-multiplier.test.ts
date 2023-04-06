@@ -1,6 +1,7 @@
 import type { CardinalProvider } from "@cardinal/common";
 import {
   executeTransaction,
+  executeTransactions,
   findMintMetadataId,
   getTestProvider,
 } from "@cardinal/common";
@@ -15,6 +16,7 @@ import {
   findStakePoolId,
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
+  stake,
 } from "../../../sdk";
 import { createMasterEditionTx } from "../../utils";
 
@@ -104,7 +106,17 @@ test("Init entry", async () => {
   expect(stakeEntry.parsed.multiplierStakeSeconds).toBe(null);
 });
 
-test("Set multiplier stake seconds", async () => {
+test("Stake", async () => {
+  await executeTransactions(
+    provider.connection,
+    await stake(provider.connection, provider.wallet, stakePoolIdentifier, [
+      { mintId },
+    ]),
+    provider.wallet
+  );
+});
+
+test("Decrement multiplier stake seconds", async () => {
   const tx = new Transaction();
   await new Promise((r) => setTimeout(r, 4000));
   const stakePoolId = findStakePoolId(stakePoolIdentifier);

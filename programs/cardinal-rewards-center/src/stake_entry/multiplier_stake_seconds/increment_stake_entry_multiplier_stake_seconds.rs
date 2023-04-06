@@ -19,11 +19,13 @@ pub fn handler(ctx: Context<IncrementStakeEntryMultiplierStakeSecondsCtx>, multi
     if stake_entry.multiplier_basis_points.is_none() {
         stake_entry.multiplier_basis_points = Some(BASIS_POINTS_DIVISOR);
     }
-    increment_total_stake_seconds(stake_entry).expect("Error increment stake seconds");
-    stake_entry
-        .multiplier_stake_seconds
-        .expect("No multiplier stake seconds found")
-        .checked_add(multiplier_stake_seconds)
-        .expect("Error decrementing");
+    increment_total_stake_seconds(stake_entry)?;
+    stake_entry.multiplier_stake_seconds = Some(
+        stake_entry
+            .multiplier_stake_seconds
+            .expect("No multiplier stake seconds found")
+            .checked_add(multiplier_stake_seconds)
+            .expect("Error decrementing"),
+    );
     Ok(())
 }
