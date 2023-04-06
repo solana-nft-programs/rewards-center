@@ -1,6 +1,6 @@
 [package]
 name = "cardinal-rewards-center"
-version = "3.1.0"
+version = "3.3.0"
 description = "Cardinal rewards center"
 edition = "2021"
 homepage = "https://cardinal.so"
@@ -8,6 +8,7 @@ repository = "https://github.com/cardinal-labs/cardinal-rewards-center"
 authors = ["Giannis Chatziveroglou <giannis@cardinal.so>"]
 license = "AGPL-3.0"
 keywords = ["solana", "cardinal"]
+publish = false
 
 [lib]
 crate-type = ["cdylib", "lib"]
