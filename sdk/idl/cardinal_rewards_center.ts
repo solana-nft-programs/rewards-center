@@ -214,6 +214,58 @@ export type CardinalRewardsCenter = {
       ];
     },
     {
+      name: "incrementStakeEntryMultiplierStakeSeconds";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "multiplierStakeSeconds";
+          type: "u128";
+        }
+      ];
+    },
+    {
+      name: "decrementStakeEntryMultiplierStakeSeconds";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        }
+      ];
+      args: [
+        {
+          name: "multiplierStakeSeconds";
+          type: "u128";
+        }
+      ];
+    },
+    {
       name: "resizeStakeEntry";
       accounts: [
         {
@@ -2820,6 +2872,58 @@ export const IDL: CardinalRewardsCenter = {
           type: {
             option: "u128",
           },
+        },
+      ],
+    },
+    {
+      name: "incrementStakeEntryMultiplierStakeSeconds",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "multiplierStakeSeconds",
+          type: "u128",
+        },
+      ],
+    },
+    {
+      name: "decrementStakeEntryMultiplierStakeSeconds",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+      ],
+      args: [
+        {
+          name: "multiplierStakeSeconds",
+          type: "u128",
         },
       ],
     },

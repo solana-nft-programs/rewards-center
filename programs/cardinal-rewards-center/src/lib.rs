@@ -47,10 +47,16 @@ pub mod cardinal_rewards_center {
         stake_entry::reset_stake_entry::handler(ctx)
     }
     pub fn set_stake_entry_multiplier(ctx: Context<SetStakeEntryMultiplierCtx>, multiplier_basis_points: Option<u64>) -> Result<()> {
-        stake_entry::set_stake_entry_multiplier::handler(ctx, multiplier_basis_points)
+        stake_entry::multiplier_stake_seconds::set_stake_entry_multiplier::handler(ctx, multiplier_basis_points)
     }
     pub fn set_stake_entry_multiplier_stake_seconds(ctx: Context<SetStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: Option<u128>) -> Result<()> {
-        stake_entry::set_stake_entry_multiplier_stake_seconds::handler(ctx, multiplier_stake_seconds)
+        stake_entry::multiplier_stake_seconds::set_stake_entry_multiplier_stake_seconds::handler(ctx, multiplier_stake_seconds)
+    }
+    pub fn increment_stake_entry_multiplier_stake_seconds(ctx: Context<IncrementStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: u128) -> Result<()> {
+        stake_entry::multiplier_stake_seconds::increment_stake_entry_multiplier_stake_seconds::handler(ctx, multiplier_stake_seconds)
+    }
+    pub fn decrement_stake_entry_multiplier_stake_seconds(ctx: Context<DecrementStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: u128) -> Result<()> {
+        stake_entry::multiplier_stake_seconds::decrement_stake_entry_multiplier_stake_seconds::handler(ctx, multiplier_stake_seconds)
     }
     pub fn resize_stake_entry(ctx: Context<ResizeStakeEntryCtx>) -> Result<()> {
         stake_entry::resize_stake_entry::handler(ctx)

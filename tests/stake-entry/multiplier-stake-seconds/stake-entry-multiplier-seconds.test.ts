@@ -15,8 +15,8 @@ import {
   findStakePoolId,
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
-} from "../../sdk";
-import { createMasterEditionTx } from "../utils";
+} from "../../../sdk";
+import { createMasterEditionTx } from "../../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 const stakeEntryMultiplierSeconds = 10000;

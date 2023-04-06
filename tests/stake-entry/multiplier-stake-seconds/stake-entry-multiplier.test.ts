@@ -26,8 +26,8 @@ import {
   SOL_PAYMENT_INFO,
   stake,
   unstake,
-} from "../../sdk";
-import { createMasterEditionTx } from "../utils";
+} from "../../../sdk";
+import { createMasterEditionTx } from "../../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 const multiplierBasisPoints = 10000 * 2.5;

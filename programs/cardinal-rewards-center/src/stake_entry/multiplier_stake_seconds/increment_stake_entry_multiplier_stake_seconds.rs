@@ -1,12 +1,12 @@
 use crate::errors::ErrorCode;
-use crate::stake_entry_fill_zeros;
+use crate::increment_total_stake_seconds;
 use crate::StakeEntry;
 use crate::StakePool;
 use crate::BASIS_POINTS_DIVISOR;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-pub struct SetStakeEntryMultiplierStakeSecondsCtx<'info> {
+pub struct IncrementStakeEntryMultiplierStakeSecondsCtx<'info> {
     stake_pool: Box<Account<'info, StakePool>>,
     #[account(mut, constraint = stake_pool.key() == stake_entry.pool @ ErrorCode::InvalidStakePool)]
     stake_entry: Box<Account<'info, StakeEntry>>,
@@ -14,13 +14,18 @@ pub struct SetStakeEntryMultiplierStakeSecondsCtx<'info> {
     authority: Signer<'info>,
 }
 
-pub fn handler(ctx: Context<SetStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: Option<u128>) -> Result<()> {
+pub fn handler(ctx: Context<IncrementStakeEntryMultiplierStakeSecondsCtx>, multiplier_stake_seconds: u128) -> Result<()> {
     let stake_entry = &mut ctx.accounts.stake_entry;
     if stake_entry.multiplier_basis_points.is_none() {
         stake_entry.multiplier_basis_points = Some(BASIS_POINTS_DIVISOR);
     }
-    stake_entry.multiplier_stake_seconds = multiplier_stake_seconds;
-    stake_entry_fill_zeros(stake_entry)?;
-
+    increment_total_stake_seconds(stake_entry)?;
+    stake_entry.multiplier_stake_seconds = Some(
+        stake_entry
+            .multiplier_stake_seconds
+            .expect("No multiplier stake seconds found")
+            .checked_add(multiplier_stake_seconds)
+            .expect("Error decrementing"),
+    );
     Ok(())
 }
