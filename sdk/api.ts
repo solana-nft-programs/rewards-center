@@ -21,13 +21,18 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 
-import { decodeIdlAccount, fetchIdlAccountDataById } from "./accounts";
+import {
+  decodeIdlAccount,
+  fetchIdlAccount,
+  fetchIdlAccountDataById,
+} from "./accounts";
 import { remainingAccountsForAuthorization } from "./authorization";
 import type { PaymentShare } from "./constants";
 import { rewardsCenterProgram } from "./constants";
 import {
   withRemainingAccountsForPayment,
   withRemainingAccountsForPaymentInfo,
+  withRemainingAccountsForPaymentInfoSync,
 } from "./payment";
 import {
   findRewardEntryId,
@@ -86,6 +91,12 @@ export const stake = async (
     throw "Stake pool not found";
   }
 
+  const stakePaymentInfoData = await fetchIdlAccount(
+    connection,
+    stakePoolData.parsed.stakePaymentInfo,
+    "paymentInfo"
+  );
+
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, amount } of mints) {
     const tx = new Transaction();
@@ -128,12 +139,11 @@ export const stake = async (
 
     const remainingAccounts = [
       ...authorizationAccounts,
-      ...(await withRemainingAccountsForPaymentInfo(
-        connection,
+      ...withRemainingAccountsForPaymentInfoSync(
         tx,
         wallet.publicKey,
-        stakePoolData.parsed.stakePaymentInfo
-      )),
+        stakePaymentInfoData
+      ),
     ];
 
     if (mintManagerAccountInfo?.data) {
@@ -251,7 +261,7 @@ export const unstake = async (
     };
   });
 
-  const accountDataById = await fetchIdlAccountDataById(connection, [
+  let accountDataById = await fetchIdlAccountDataById(connection, [
     stakePoolId,
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
@@ -259,6 +269,25 @@ export const unstake = async (
     ...mints.map((m) => m.stakeEntryId),
   ]);
   const stakePoolData = accountDataById[stakePoolId.toString()];
+  if (!stakePoolData?.parsed || stakePoolData.type !== "stakePool") {
+    throw "Stake pool not found";
+  }
+
+  const claimRewardsPaymentInfoIds = rewardDistributorIds?.map((id) => {
+    const rewardDistributorData = accountDataById[id.toString()];
+    if (
+      rewardDistributorData &&
+      rewardDistributorData.type === "rewardDistributor"
+    ) {
+      return rewardDistributorData.parsed.claimRewardsPaymentInfo;
+    }
+    return null;
+  });
+  const accountDataById2 = await fetchIdlAccountDataById(connection, [
+    stakePoolData.parsed.unstakePaymentInfo,
+    ...(claimRewardsPaymentInfoIds ?? []),
+  ]);
+  accountDataById = { ...accountDataById, ...accountDataById2 };
 
   const txs: Transaction[] = [];
   for (const { mintId, stakeEntryId, rewardEntryIds } of mints) {
@@ -322,13 +351,24 @@ export const unstake = async (
               .instruction();
             tx.add(ix);
           }
-          const remainingAccountsForPayment =
-            await withRemainingAccountsForPaymentInfo(
-              connection,
-              tx,
-              wallet.publicKey,
-              rewardDistributorData.parsed.claimRewardsPaymentInfo
+
+          const remainingAccountsForPayment = [];
+          const claimRewardsPaymentInfo =
+            accountDataById[
+              rewardDistributorData.parsed.claimRewardsPaymentInfo.toString()
+            ];
+          if (
+            claimRewardsPaymentInfo &&
+            claimRewardsPaymentInfo.type === "paymentInfo"
+          ) {
+            remainingAccountsForPayment.push(
+              ...withRemainingAccountsForPaymentInfoSync(
+                tx,
+                wallet.publicKey,
+                claimRewardsPaymentInfo
+              )
             );
+          }
           const stakeEntryInfo = accountDataById[stakeEntryId.toString()]!;
           const stakeEntryData = decodeIdlAccount(stakeEntryInfo, "stakeEntry");
           const ix = await rewardsCenterProgram(connection, wallet)
@@ -359,20 +399,17 @@ export const unstake = async (
     }
 
     const remainingAccounts = [];
-    if (
-      stakePoolData?.type === "stakePool" &&
-      stakePoolData.parsed.unstakePaymentInfo
-    ) {
-      const remainingAccountsForPayment =
-        await withRemainingAccountsForPaymentInfo(
-          connection,
+    const unstakePaymentInfo =
+      accountDataById[stakePoolData.parsed.unstakePaymentInfo.toString()];
+    if (unstakePaymentInfo && unstakePaymentInfo.type === "paymentInfo") {
+      remainingAccounts.push(
+        ...withRemainingAccountsForPaymentInfoSync(
           tx,
           wallet.publicKey,
-          stakePoolData.parsed.unstakePaymentInfo
-        );
-      remainingAccounts.push(...remainingAccountsForPayment);
+          unstakePaymentInfo
+        )
+      );
     }
-
     const mintManagerId = findMintManagerId(mintId);
     const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
     const metadataId = findMintMetadataId(mintId);
@@ -485,13 +522,28 @@ export const claimRewards = async (
     };
   });
 
-  const accountDataById = await fetchIdlAccountDataById(connection, [
+  let accountDataById = await fetchIdlAccountDataById(connection, [
     ...(rewardDistributorIds ?? []),
     ...mints.map((m) => m.rewardEntryIds ?? []).flat(),
     ...(claimingRewardsForUsers
       ? mints.map((m) => findStakeEntryId(stakePoolId, m.mintId)).flat()
       : []),
   ]);
+  const claimRewardsPaymentInfoIds = rewardDistributorIds?.map((id) => {
+    const rewardDistributorData = accountDataById[id.toString()];
+    if (
+      rewardDistributorData &&
+      rewardDistributorData.type === "rewardDistributor"
+    ) {
+      return rewardDistributorData.parsed.claimRewardsPaymentInfo;
+    }
+    return null;
+  });
+  const accountDataById2 = await fetchIdlAccountDataById(connection, [
+    ...(claimRewardsPaymentInfoIds ?? []),
+  ]);
+  accountDataById = { ...accountDataById, ...accountDataById2 };
+
   const txs: Transaction[] = [];
 
   for (const { stakeEntryId, rewardEntryIds } of mints) {
@@ -560,13 +612,21 @@ export const claimRewards = async (
               .instruction();
             tx.add(ix);
           }
-          const remainingAccountsForPayment =
-            await withRemainingAccountsForPaymentInfo(
-              connection,
-              tx,
-              wallet.publicKey,
-              rewardDistributorData.parsed.claimRewardsPaymentInfo
+
+          const remainingAccountsForPayment = [];
+          const unstakePaymentInfo =
+            accountDataById[
+              rewardDistributorData.parsed.claimRewardsPaymentInfo.toString()
+            ];
+          if (unstakePaymentInfo && unstakePaymentInfo.type === "paymentInfo") {
+            remainingAccountsForPayment.push(
+              ...withRemainingAccountsForPaymentInfoSync(
+                tx,
+                wallet.publicKey,
+                unstakePaymentInfo
+              )
             );
+          }
           const ix = await rewardsCenterProgram(connection, wallet)
             .methods.claimRewards()
             .accounts({
@@ -651,8 +711,7 @@ export const claimRewardReceipt = async (
       .instruction();
     tx.add(ix);
   }
-  const remainingAccountsForPayment = await withRemainingAccountsForPayment(
-    connection,
+  const remainingAccountsForPayment = withRemainingAccountsForPayment(
     tx,
     wallet.publicKey,
     receiptManagerData.parsed.paymentMint,
@@ -736,8 +795,7 @@ export const boost = async (
     .instruction();
   tx.add(ix);
 
-  const remainingAccountsForPayment = await withRemainingAccountsForPayment(
-    connection,
+  const remainingAccountsForPayment = withRemainingAccountsForPayment(
     tx,
     wallet.publicKey,
     stakeBoosterData.parsed.paymentMint,

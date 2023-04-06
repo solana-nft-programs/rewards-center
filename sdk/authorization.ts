@@ -5,7 +5,7 @@ import type { StakePool } from "./constants";
 import { findStakeAuthorizationRecordId } from "./pda";
 
 export const remainingAccountsForAuthorization = (
-  stakePool: StakePool,
+  stakePool: Pick<StakePool, "parsed" | "pubkey">,
   mintId: PublicKey,
   mintMetadata: Metadata | null
 ) => {
