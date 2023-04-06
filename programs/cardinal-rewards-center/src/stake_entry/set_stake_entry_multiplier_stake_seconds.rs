@@ -20,6 +20,7 @@ pub fn handler(ctx: Context<SetStakeEntryMultiplierStakeSecondsCtx>, multiplier_
         stake_entry.multiplier_basis_points = Some(BASIS_POINTS_DIVISOR);
     }
     stake_entry.multiplier_stake_seconds = multiplier_stake_seconds;
+    stake_entry.last_updated_at = Clock::get().unwrap().unix_timestamp;
     stake_entry_fill_zeros(stake_entry)?;
 
     Ok(())
