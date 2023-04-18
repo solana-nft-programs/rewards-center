@@ -6,6 +6,7 @@ import {
   newAccountWithLamports,
 } from "@cardinal/common";
 import { utils, Wallet } from "@coral-xyz/anchor";
+import type { Wallet as IWallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type {
   ConfirmOptions,
   Connection,
@@ -75,7 +76,7 @@ export const publicKeyFrom = (s: string, n?: string): PublicKey => {
 export async function executeTransactionBatches<T = null>(
   connection: Connection,
   txs: Transaction[],
-  wallet: Wallet,
+  wallet: IWallet,
   config?: {
     signers?: Signer[];
     batchSize?: number;

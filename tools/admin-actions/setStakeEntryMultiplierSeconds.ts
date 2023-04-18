@@ -1,5 +1,5 @@
 import { chunkArray, findMintMetadataId } from "@cardinal/common";
-import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
+import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";

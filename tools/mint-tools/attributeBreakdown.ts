@@ -1,6 +1,6 @@
 import { chunkArray, findMintMetadataId } from "@cardinal/common";
+import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import type { Wallet } from "@project-serum/anchor/dist/cjs/provider";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import fetch from "node-fetch";
