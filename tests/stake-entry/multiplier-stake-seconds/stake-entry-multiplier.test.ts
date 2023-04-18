@@ -3,7 +3,6 @@ import {
   executeTransaction,
   executeTransactions,
   findMintMetadataId,
-  getTestProvider,
   newAccountWithLamports,
 } from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
@@ -27,6 +26,7 @@ import {
   stake,
   unstake,
 } from "../../../sdk";
+import { getTestProvider } from "../../../tools/utils";
 import { createMasterEditionTx } from "../../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

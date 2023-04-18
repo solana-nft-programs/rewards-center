@@ -3,7 +3,6 @@ import {
   executeTransaction,
   executeTransactions,
   findTokenRecordId,
-  getTestProvider,
 } from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
 import { beforeAll, expect, test } from "@jest/globals";
@@ -27,6 +26,7 @@ import {
   stake,
   unstake,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 import { createProgrammableAsset } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

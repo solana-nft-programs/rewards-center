@@ -3,7 +3,6 @@ import {
   createMintTx,
   executeTransaction,
   executeTransactions,
-  getTestProvider,
   withFindOrInitAssociatedTokenAccount,
   withWrapSol,
 } from "@cardinal/common";
@@ -35,6 +34,7 @@ import {
   stake,
   WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

@@ -2,7 +2,6 @@ import type { CardinalProvider } from "@cardinal/common";
 import {
   executeTransaction,
   executeTransactions,
-  getTestProvider,
   newAccountWithLamports,
 } from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
@@ -19,6 +18,7 @@ import {
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

@@ -1,9 +1,5 @@
 import type { CardinalProvider } from "@cardinal/common";
-import {
-  executeTransaction,
-  getTestProvider,
-  withWrapSol,
-} from "@cardinal/common";
+import { executeTransaction, withWrapSol } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { NATIVE_MINT } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
@@ -18,6 +14,7 @@ import {
   rewardsCenterProgram,
   SOL_PAYMENT_INFO,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 let provider: CardinalProvider;

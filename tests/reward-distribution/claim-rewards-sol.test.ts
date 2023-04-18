@@ -3,7 +3,6 @@ import {
   createMintTx,
   executeTransaction,
   executeTransactions,
-  getTestProvider,
   withFindOrInitAssociatedTokenAccount,
 } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
@@ -28,6 +27,7 @@ import {
   SOL_PAYMENT_INFO,
   stake,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

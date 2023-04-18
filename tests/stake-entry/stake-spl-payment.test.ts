@@ -2,7 +2,6 @@ import type { CardinalProvider } from "@cardinal/common";
 import {
   executeTransaction,
   executeTransactions,
-  getTestProvider,
   withWrapSol,
 } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
@@ -28,6 +27,7 @@ import {
   unstake,
   WRAPPED_SOL_PAYMENT_INFO,
 } from "../../sdk";
+import { getTestProvider } from "../../tools/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;

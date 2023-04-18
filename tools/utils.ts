@@ -1,6 +1,11 @@
-import { chunkArray, logError } from "@cardinal/common";
-import { utils } from "@coral-xyz/anchor";
-import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
+import type { CardinalProvider } from "@cardinal/common";
+import {
+  chunkArray,
+  getTestConnection,
+  logError,
+  newAccountWithLamports,
+} from "@cardinal/common";
+import { utils, Wallet } from "@coral-xyz/anchor";
 import type {
   ConfirmOptions,
   Connection,
@@ -12,6 +17,16 @@ import {
   PublicKey,
   sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
+
+export async function getTestProvider(): Promise<CardinalProvider> {
+  const connection = getTestConnection();
+  const keypair = await newAccountWithLamports(connection);
+  const wallet = new Wallet(keypair);
+  return {
+    connection,
+    wallet,
+  };
+}
 
 export const keypairFrom = (s: string, n?: string): Keypair => {
   try {
