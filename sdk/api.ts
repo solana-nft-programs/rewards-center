@@ -169,7 +169,7 @@ export const stake = async (
         .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(stakeIx);
-    } else if (metadataInfo && metadataInfo.programmableConfig?.ruleSet) {
+    } else if (metadataInfo && metadataInfo.programmableConfig) {
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
       tx.add(
@@ -186,7 +186,8 @@ export const stake = async (
           stakeMintMetadata: metadataId,
           stakeMintEdition: editionId,
           stakeTokenRecordAccount: stakeTokenRecordAccountId,
-          authorizationRules: metadataInfo?.programmableConfig?.ruleSet,
+          authorizationRules:
+            metadataInfo?.programmableConfig?.ruleSet ?? METADATA_PROGRAM_ID,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
           userStakeMintTokenAccount: userAtaId,
@@ -432,7 +433,7 @@ export const unstake = async (
         .remainingAccounts(remainingAccounts)
         .instruction();
       tx.add(ix);
-    } else if (metadata?.programmableConfig?.ruleSet) {
+    } else if (metadata?.programmableConfig) {
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
       tx.add(
@@ -449,7 +450,8 @@ export const unstake = async (
           stakeMintMetadata: metadataId,
           stakeMintEdition: editionId,
           stakeTokenRecordAccount: stakeTokenRecordAccountId,
-          authorizationRules: metadata?.programmableConfig?.ruleSet,
+          authorizationRules:
+            metadata?.programmableConfig?.ruleSet ?? METADATA_PROGRAM_ID,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
           userStakeMintTokenAccount: userAtaId,
