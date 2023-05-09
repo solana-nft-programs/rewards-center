@@ -40,7 +40,7 @@
     "@cardinal/creator-standard": "^2.4.0",
     "@coral-xyz/anchor": "^0.27.0",
     "@metaplex-foundation/mpl-token-auth-rules": "^1.1.0",
-    "@metaplex-foundation/mpl-token-metadata": "^2.8.0",
+    "@metaplex-foundation/mpl-token-metadata": "^2.11.0",
     "@msgpack/msgpack": "^2.8.0",
     "@solana/spl-token": "^0.3.6",
     "@solana/web3.js": "^1.66.2",

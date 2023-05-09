@@ -16,7 +16,7 @@ import {
 import {
   createCreateInstruction,
   createCreateMasterEditionV3Instruction,
-  createCreateMetadataAccountV2Instruction,
+  createCreateMetadataAccountV3Instruction,
   createMintInstruction,
   TokenStandard,
 } from "@metaplex-foundation/mpl-token-metadata";
@@ -183,7 +183,7 @@ export const createMasterEditionTx = async (
     createInitializeMint2Instruction(mintId, 0, authority, authority),
     createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
     createMintToInstruction(mintId, ata, authority, 1),
-    createCreateMetadataAccountV2Instruction(
+    createCreateMetadataAccountV3Instruction(
       {
         metadata: metadataId,
         mint: mintId,
@@ -192,7 +192,7 @@ export const createMasterEditionTx = async (
         payer: authority,
       },
       {
-        createMetadataAccountArgsV2: {
+        createMetadataAccountArgsV3: {
           data: {
             name: `name-${Math.random()}`,
             symbol: "SYMB",
@@ -202,6 +202,7 @@ export const createMasterEditionTx = async (
             collection: null,
             uses: null,
           },
+          collectionDetails: null,
           isMutable: true,
         },
       }
@@ -240,7 +241,7 @@ export const createCCSTokenTx = async (
     createInitializeMint2Instruction(mintId, 0, authority, authority),
     createAssociatedTokenAccountInstruction(authority, ata, target, mintId),
     createMintToInstruction(mintId, ata, authority, 1),
-    createCreateMetadataAccountV2Instruction(
+    createCreateMetadataAccountV3Instruction(
       {
         metadata: metadataId,
         mint: mintId,
@@ -249,7 +250,7 @@ export const createCCSTokenTx = async (
         payer: authority,
       },
       {
-        createMetadataAccountArgsV2: {
+        createMetadataAccountArgsV3: {
           data: {
             name: `name-${Math.random()}`,
             symbol: "SYMB",
@@ -259,6 +260,7 @@ export const createCCSTokenTx = async (
             collection: null,
             uses: null,
           },
+          collectionDetails: null,
           isMutable: true,
         },
       }
