@@ -63,23 +63,28 @@ export const stake = async (
   stakePoolIdentifier: string,
   mintInfos: {
     mintId: PublicKey;
+    tokenAccountId?: PublicKey;
     amount?: BN;
     fungible?: boolean;
   }[]
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
-  const mints = mintInfos.map(({ mintId, amount, fungible }) => {
-    const stakeEntryId = findStakeEntryId(
-      stakePoolId,
-      mintId,
-      fungible ? wallet.publicKey : undefined
-    );
-    return {
-      mintId,
-      stakeEntryId,
-      amount,
-    };
-  });
+  const mints = mintInfos.map(
+    ({ mintId, tokenAccountId, amount, fungible }) => {
+      return {
+        mintId,
+        amount,
+        stakeEntryId: findStakeEntryId(
+          stakePoolId,
+          mintId,
+          fungible ? wallet.publicKey : undefined
+        ),
+        mintTokenAccountId:
+          tokenAccountId ??
+          getAssociatedTokenAddressSync(mintId, wallet.publicKey, true),
+      };
+    }
+  );
   const accountDataById = await fetchIdlAccountDataById(connection, [
     stakePoolId,
     ...mints.map((m) => m.stakeEntryId),
@@ -98,7 +103,7 @@ export const stake = async (
   );
 
   const txs: Transaction[] = [];
-  for (const { mintId, stakeEntryId, amount } of mints) {
+  for (const { mintId, mintTokenAccountId, stakeEntryId, amount } of mints) {
     const tx = new Transaction();
     const metadataId = findMintMetadataId(mintId);
     const mintManagerId = findMintManagerId(mintId);
@@ -131,11 +136,6 @@ export const stake = async (
     }
 
     const userEscrowId = findUserEscrowId(wallet.publicKey);
-    const userAtaId = getAssociatedTokenAddressSync(
-      mintId,
-      wallet.publicKey,
-      true
-    );
 
     const remainingAccounts = [
       ...authorizationAccounts,
@@ -161,7 +161,7 @@ export const stake = async (
           stakeMintManagerRuleset: mintManager.ruleset,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
-          userStakeMintTokenAccount: userAtaId,
+          userStakeMintTokenAccount: mintTokenAccountId,
           creatorStandardProgram: CREATOR_STANDARD_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
@@ -171,7 +171,10 @@ export const stake = async (
       tx.add(stakeIx);
     } else if (metadataInfo && metadataInfo.programmableConfig) {
       const editionId = findMintEditionId(mintId);
-      const stakeTokenRecordAccountId = findTokenRecordId(mintId, userAtaId);
+      const stakeTokenRecordAccountId = findTokenRecordId(
+        mintId,
+        mintTokenAccountId
+      );
       tx.add(
         ComputeBudgetProgram.setComputeUnitLimit({
           units: 100000000,
@@ -190,7 +193,7 @@ export const stake = async (
             metadataInfo?.programmableConfig?.ruleSet ?? METADATA_PROGRAM_ID,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
-          userStakeMintTokenAccount: userAtaId,
+          userStakeMintTokenAccount: mintTokenAccountId,
           tokenMetadataProgram: METADATA_PROGRAM_ID,
           sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -212,7 +215,7 @@ export const stake = async (
           stakeMintMetadata: metadataId,
           user: wallet.publicKey,
           userEscrow: userEscrowId,
-          userStakeMintTokenAccount: userAtaId,
+          userStakeMintTokenAccount: mintTokenAccountId,
           tokenMetadataProgram: METADATA_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
