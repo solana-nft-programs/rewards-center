@@ -59,7 +59,8 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
             reward_seconds = min(reward_seconds, max_reward_seconds)
         };
         if reward_seconds_received >= reward_seconds {
-            return Err(error!(ErrorCode::MaxRewardSecondsClaimed));
+            msg!("Max reward seconds claimed");
+            return Ok(());
         }
 
         let mut reward_amount_to_receive = reward_seconds
