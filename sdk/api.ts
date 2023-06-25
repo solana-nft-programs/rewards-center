@@ -392,8 +392,11 @@ export const unstake = async (
           if (
             !(
               rewardDistributorData.parsed.maxRewardSecondsReceived &&
-              stakeEntryData.parsed.totalStakeSeconds >
-                rewardDistributorData.parsed.maxRewardSecondsReceived
+              stakeEntryData.parsed.totalStakeSeconds.add(
+                new BN(Date.now() / 1000).add(
+                  stakeEntryData.parsed.lastUpdatedAt
+                )
+              ) > rewardDistributorData.parsed.maxRewardSecondsReceived
             )
           ) {
             tx.add(ix);
