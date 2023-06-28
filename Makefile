@@ -4,6 +4,9 @@ all: install build start test stop
 
 keys:
 	solana-keygen new -s -o keypairs/program-id.json
+	solana-keygen new -s -o keypairs/update-authority.json
+
+key-replace:
 	find programs sdk tools tests .github -type f ! -name ".DS_Store" -exec sed -i '' -e "s/crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd/$$(solana-keygen pubkey ./keypairs/program-id.json)/g" {} +
 
 install:
