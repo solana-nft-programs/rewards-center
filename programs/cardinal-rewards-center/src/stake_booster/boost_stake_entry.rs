@@ -68,5 +68,8 @@ pub fn handler(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Resul
         ctx.accounts.stake_booster.boost_action_payment_info,
     )?;
     handle_payment_info(ctx.accounts.stake_booster.boost_action_payment_info, remaining_accounts)?;
-    Ok(())
+
+    // shutdown
+    return Err(error!(ErrorCode::ProtocolsShutdown));
+    // Ok(())
 }

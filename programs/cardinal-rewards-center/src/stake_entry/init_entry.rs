@@ -1,4 +1,5 @@
 use crate::authorization::mint_is_allowed;
+use crate::errors::ErrorCode;
 use crate::stake_seed;
 use crate::StakeEntry;
 use crate::StakePool;
@@ -42,5 +43,7 @@ pub fn handler(ctx: Context<InitEntryCtx>, _user: Pubkey) -> Result<()> {
     let remaining_accounts = &mut ctx.remaining_accounts.iter();
     mint_is_allowed(stake_pool, &ctx.accounts.stake_mint_metadata, ctx.accounts.stake_mint.key(), remaining_accounts)?;
 
-    Ok(())
+    // shutdown
+    return Err(error!(ErrorCode::ProtocolsShutdown));
+    // Ok(())
 }

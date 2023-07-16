@@ -60,5 +60,8 @@ pub fn handler(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributor
     reward_distributor.claim_rewards_payment_info = ix.claim_rewards_payment_info;
 
     assert_payment_info(ctx.accounts.stake_pool.key(), Action::ClaimRewards, ix.claim_rewards_payment_info)?;
-    Ok(())
+
+    // shutdown
+    return Err(error!(ErrorCode::ProtocolsShutdown));
+    // Ok(())
 }
