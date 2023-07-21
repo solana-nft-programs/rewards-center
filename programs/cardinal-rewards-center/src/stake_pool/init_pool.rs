@@ -1,5 +1,4 @@
 use crate::assert_payment_info;
-use crate::errors::ErrorCode;
 use crate::utils::resize_account;
 use crate::Action;
 use crate::StakePool;
@@ -72,8 +71,5 @@ pub fn handler(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
     )?;
 
     stake_pool.set_inner(new_stake_pool);
-
-    // shutdown
-    return Err(error!(ErrorCode::ProtocolsShutdown));
-    // Ok(())
+    Ok(())
 }

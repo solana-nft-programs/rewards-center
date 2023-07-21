@@ -112,7 +112,5 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
     stake_pool.total_staked = stake_pool.total_staked.checked_add(1).expect("Add error");
     stake_entry_fill_zeros(stake_entry)?;
 
-    // shutdown
-    return Err(error!(ErrorCode::ProtocolsShutdown));
-    // Ok(())
+    Ok(())
 }

@@ -54,7 +54,5 @@ pub fn handler(ctx: Context<InitStakeBoosterCtx>, ix: InitStakeBoosterIx) -> Res
     stake_booster.start_time_seconds = ix.start_time_seconds;
     stake_booster.boost_action_payment_info = ix.boost_action_payment_info;
 
-    // shutdown
-    return Err(error!(ErrorCode::ProtocolsShutdown));
-    // Ok(())
+    Ok(())
 }

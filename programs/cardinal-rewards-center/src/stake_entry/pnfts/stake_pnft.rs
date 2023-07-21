@@ -182,7 +182,5 @@ pub fn handler(ctx: Context<StakePNFTCtx>) -> Result<()> {
         &[&user_escrow_seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )?;
 
-    // shutdown
-    return Err(error!(ErrorCode::ProtocolsShutdown));
-    // Ok(())
+    Ok(())
 }
