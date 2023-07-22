@@ -1,3 +1,4 @@
+use crate::errors::ErrorCode;
 pub mod stake_pool;
 pub use stake_pool::*;
 pub mod stake_entry;
@@ -27,6 +28,7 @@ pub mod cardinal_rewards_center {
 
     //// stake_pool ////
     pub fn init_pool(ctx: Context<InitPoolCtx>, ix: InitPoolIx) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_pool::init_pool::handler(ctx, ix)
     }
     pub fn update_pool(ctx: Context<UpdatePoolCtx>, ix: UpdatePoolIx) -> Result<()> {
@@ -38,6 +40,7 @@ pub mod cardinal_rewards_center {
 
     //// stake_entry ////
     pub fn init_entry(ctx: Context<InitEntryCtx>, user: Pubkey) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_entry::init_entry::handler(ctx, user)
     }
     pub fn update_total_stake_seconds(ctx: Context<UpdateTotalStakeSecondsCtx>) -> Result<()> {
@@ -66,6 +69,7 @@ pub mod cardinal_rewards_center {
     }
     //// stake_entry::editions ////
     pub fn stake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeEditionCtx<'info>>, amount: u64) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_entry::editions::stake_edition::handler(ctx, amount)
     }
     pub fn unstake_edition<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeEditionCtx<'info>>) -> Result<()> {
@@ -73,12 +77,14 @@ pub mod cardinal_rewards_center {
     }
     //// stake_entry::ccs ////
     pub fn stake_ccs<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, StakeCCSCtx<'info>>, amount: u64) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_entry::ccs::stake_ccs::handler(ctx, amount)
     }
     pub fn unstake_ccs<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, UnstakeCCSCtx<'info>>) -> Result<()> {
         stake_entry::ccs::unstake_ccs::handler(ctx)
     }
     pub fn stake_pnft(ctx: Context<StakePNFTCtx>) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_entry::pnfts::stake_pnft::handler(ctx)
     }
 
@@ -96,12 +102,14 @@ pub mod cardinal_rewards_center {
 
     //// stake_booster ////
     pub fn init_stake_booster(ctx: Context<InitStakeBoosterCtx>, ix: InitStakeBoosterIx) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_booster::init_stake_booster::handler(ctx, ix)
     }
     pub fn update_stake_booster(ctx: Context<UpdateStakeBoosterCtx>, ix: UpdateStakeBoosterIx) -> Result<()> {
         stake_booster::update_stake_booster::handler(ctx, ix)
     }
     pub fn boost_stake_entry(ctx: Context<BoostStakeEntryCtx>, ix: BoostStakeEntryIx) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         stake_booster::boost_stake_entry::handler(ctx, ix)
     }
     pub fn close_stake_booster(ctx: Context<CloseStakeBoosterCtx>) -> Result<()> {
@@ -137,6 +145,7 @@ pub mod cardinal_rewards_center {
     //// reward_distribution ////
     //// reward_distribution::reward_distributor ////
     pub fn init_reward_distributor(ctx: Context<InitRewardDistributorCtx>, ix: InitRewardDistributorIx) -> Result<()> {
+        return Err(error!(ErrorCode::ProtocolsShutdown));
         reward_distribution::reward_distributor::init_reward_distributor::handler(ctx, ix)
     }
     pub fn update_reward_distributor(ctx: Context<UpdateRewardDistributorCtx>, ix: UpdateRewardDistributorIx) -> Result<()> {

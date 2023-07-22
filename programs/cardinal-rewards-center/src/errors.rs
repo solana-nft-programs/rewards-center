@@ -125,4 +125,8 @@ pub enum ErrorCode {
     InvalidAuthorityTokenAccount,
     #[msg("Max reward seconds claimed")]
     MaxRewardSecondsClaimed,
+
+    // Misc
+    #[msg("Cardinal Protocols are shutting down. Please read latest twitter post for more information")]
+    ProtocolsShutdown,
 }
