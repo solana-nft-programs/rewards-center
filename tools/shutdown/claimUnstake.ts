@@ -27,7 +27,6 @@ import {
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
 } from "@solana/web3.js";
-import { BN } from "bn.js";
 
 import type {
   RewardDistributor,
@@ -49,7 +48,7 @@ export const commandName = "claimUnstake";
 export const description = "Claim rewards and unstake";
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   parallelTransactions: 20,
-  parallelPools: 20,
+  parallelPools: 100,
 });
 
 export const handler = async (
@@ -60,7 +59,10 @@ export const handler = async (
   // get stake pools
   const stakePools = (
     await getProgramIdlAccounts(connection, "stakePool")
-  ).filter((a): a is StakePool => a.type === "stakePool");
+  ).filter(
+    (a): a is StakePool =>
+      a.type === "stakePool" && (a.parsed?.totalStaked ?? 0) > 0
+  );
 
   // get reward distributors
   const rewardDistributorIds = stakePools.map((a) =>
@@ -201,15 +203,7 @@ const claimUnstakePool = async (
     .filter(
       ({ stakeEntry }) =>
         !!stakeEntry &&
-        stakeEntry.parsed.lastStaker.toString() !==
-          PublicKey.default.toString() &&
-        Date.now() / 1000 -
-          (
-            stakeEntry?.parsed.lastUpdatedAt ||
-            stakeEntry?.parsed.lastStakedAt ||
-            new BN(0)
-          ).toNumber() >
-          10800
+        stakeEntry.parsed.lastStaker.toString() !== PublicKey.default.toString()
     );
 
   // fetch additional data

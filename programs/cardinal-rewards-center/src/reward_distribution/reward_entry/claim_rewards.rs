@@ -67,13 +67,17 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         let mut reward_amount_to_receive = reward_seconds
             .checked_sub(reward_seconds_received)
             .unwrap()
-            .checked_div(reward_duration_seconds)
+            .checked_div(if reward_duration_seconds == 0 { 1 } else { reward_duration_seconds as u128 })
             .unwrap()
             .checked_mul(reward_amount as u128)
             .unwrap()
             .checked_mul(reward_entry.multiplier as u128)
             .unwrap()
-            .checked_div((10_u128).checked_pow(reward_distributor.multiplier_decimals as u32).unwrap())
+            .checked_div(
+                (10_u128)
+                    .checked_pow(if reward_duration_seconds == 0 { 1 } else { reward_distributor.multiplier_decimals as u32 })
+                    .unwrap(),
+            )
             .unwrap();
 
         // mint to the user
