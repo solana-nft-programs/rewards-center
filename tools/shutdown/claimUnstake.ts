@@ -49,7 +49,7 @@ export const commandName = "claimUnstake";
 export const description = "Claim rewards and unstake";
 export const getArgs = (_connection: Connection, _wallet: Wallet) => ({
   parallelTransactions: 20,
-  parallelPools: 40,
+  parallelPools: 20,
 });
 
 export const handler = async (
@@ -132,8 +132,7 @@ export const handler = async (
           wallet,
           stakePoolData,
           args.parallelTransactions,
-          j,
-          chunk.length
+          `${i}/${chunks.length} ${j}/${chunk.length}`
         );
       })
     );
@@ -149,8 +148,7 @@ const claimUnstakePool = async (
     rewardDistributorTokenAccount: Account | null;
   },
   parallelTransactions: number,
-  pid: number,
-  pids: number
+  logPrefix: string
 ) => {
   const { stakePool, rewardDistributor } = stakePoolData;
   // fetch entries
@@ -351,9 +349,9 @@ const claimUnstakePool = async (
     batchSize: parallelTransactions,
     successHandler: (txid, { i, j, it, jt }) =>
       console.log(
-        ` >>> ${pid}/${pids} ${i}/${it} ${j}/${jt} https://explorer.solana.com/tx/${txid}`
+        ` >>> ${logPrefix} ${i}/${it} ${j}/${jt} https://explorer.solana.com/tx/${txid}`
       ),
     errorHandler: (e, { i, j, it, jt }) =>
-      console.log(` >>> ${pid}/${pids} ${i}/${it} ${j}/${jt} error=`, e),
+      console.log(` >>> ${logPrefix} ${i}/${it} ${j}/${jt} error=`, e),
   });
 };
