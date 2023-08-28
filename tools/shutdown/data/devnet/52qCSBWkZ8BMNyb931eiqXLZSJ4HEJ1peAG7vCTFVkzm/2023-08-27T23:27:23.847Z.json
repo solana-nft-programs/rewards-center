@@ -1,0 +1,111 @@
+{
+  "stakePool": {
+    "pubkey": "52qCSBWkZ8BMNyb931eiqXLZSJ4HEJ1peAG7vCTFVkzm",
+    "data": "{\"type\":\"Buffer\",\"data\":[121,34,206,21,79,127,255,28,255,212,65,156,101,3,28,74,5,235,59,2,29,158,154,123,162,255,45,143,49,162,80,253,219,178,15,216,191,241,118,147,103,0,0,0,0,0,0,1,1,0,0,0,0,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,0,1,0,0,0,45,126,71,213,44,87,168,255,236,252,13,93,97,137,7,2,217,42,63,91,88,185,117,13,210,84,148,97,69,193,118,212,0,0,0,0,29,0,0,0,112,111,111,108,45,110,97,109,101,45,48,46,52,53,53,54,49,53,56,51,57,49,49,51,48,51,52,48,53]}",
+    "executable": false,
+    "lamports": 2220240,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "space": 191,
+    "type": "stakePool",
+    "parsed": {
+      "bump": "255",
+      "authority": "FHZTba5FyQKCJ7edbGbuCbhrR6twpKuMNhcmMKoJZ48N",
+      "totalStaked": "0",
+      "resetOnUnstake": "false",
+      "minStakeSeconds": "1",
+      "stakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "unstakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "requiresAuthorization": "false",
+      "allowedCreators": "44b2ia7ipKUbaWZLZFARW9WXH2bb9GDQZv2grdeTc6Qs",
+      "allowedCollections": "",
+      "identifier": "pool-name-0.45561583911303405"
+    }
+  },
+  "rewardDistributor": null,
+  "rewardDistributorTokenAccount": {
+    "address": "BYBZyX25cFXwbDSvR2ZWcfU7WHToRtzhB22vEjiG4efP",
+    "mint": "GJ9LaCtZSYzcyJU2QAgu9sUsyKHhk6eFnBAGJVa5xndx",
+    "owner": "8sFgkQXENELV3wYyKiuPSuMwzcwEVETNfx7LVqTtS9x1",
+    "amount": "999821737000000000",
+    "delegate": null,
+    "delegatedAmount": "0",
+    "isInitialized": true,
+    "isFrozen": false,
+    "isNative": false,
+    "closeAuthority": null,
+    "tlvData": {
+      "type": "Buffer",
+      "data": "[]"
+    }
+  },
+  "stakeEntries": [
+    {
+      "pubkey": "73ejiC6U3UV2u48yVeZriB7t5PYTfXU3GGLkqzW9o6VR",
+      "data": "{\"type\":\"Buffer\",\"data\":[187,127,9,35,155,68,86,40,255,0,59,230,211,63,253,255,53,86,100,64,8,237,113,206,92,20,18,80,183,208,17,33,175,148,61,207,133,140,48,54,160,226,0,0,0,0,0,0,0,0,49,235,30,5,79,15,167,183,26,188,246,45,77,159,137,148,121,105,127,105,73,141,135,23,83,66,195,30,63,98,117,86,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,84,220,87,100,0,0,0,0,253,220,87,100,0,0,0,0,25,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}",
+      "executable": false,
+      "lamports": 2505600,
+      "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+      "rentEpoch": 0,
+      "space": 232,
+      "type": "stakeEntry",
+      "parsed": {
+        "bump": "255",
+        "kind": "0",
+        "pool": "52qCSBWkZ8BMNyb931eiqXLZSJ4HEJ1peAG7vCTFVkzm",
+        "amount": "0",
+        "stakeMint": "4Mrv8k2NW1zpu9yS9xuFa2SiGTaefoR3uuKdoRPeo8Tw",
+        "lastStaker": "11111111111111111111111111111111",
+        "lastStakedAt": "1683479636",
+        "lastUpdatedAt": "1683479805",
+        "totalStakeSeconds": "4121",
+        "usedStakeSeconds": "0"
+      }
+    },
+    {
+      "pubkey": "3YZUmULh48tMytMwJAuyTmoFysaWV2CNLjWjPU2hYxzd",
+      "data": "{\"type\":\"Buffer\",\"data\":[187,127,9,35,155,68,86,40,255,0,59,230,211,63,253,255,53,86,100,64,8,237,113,206,92,20,18,80,183,208,17,33,175,148,61,207,133,140,48,54,160,226,0,0,0,0,0,0,0,0,184,191,73,10,40,85,182,103,201,157,204,224,3,153,68,181,154,158,55,19,5,40,206,71,85,45,71,235,30,214,103,219,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,72,132,86,100,0,0,0,0,89,135,86,100,0,0,0,0,171,158,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}",
+      "executable": false,
+      "lamports": 2505600,
+      "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+      "rentEpoch": 0,
+      "space": 232,
+      "type": "stakeEntry",
+      "parsed": {
+        "bump": "255",
+        "kind": "0",
+        "pool": "52qCSBWkZ8BMNyb931eiqXLZSJ4HEJ1peAG7vCTFVkzm",
+        "amount": "0",
+        "stakeMint": "DSBC2TG7g43RDKV8U5ktVBbAdo1LcGhEfFPnG6UyKwna",
+        "lastStaker": "11111111111111111111111111111111",
+        "lastStakedAt": "1683391560",
+        "lastUpdatedAt": "1683392345",
+        "totalStakeSeconds": "171691",
+        "usedStakeSeconds": "0"
+      }
+    },
+    {
+      "pubkey": "3EnxfvLFoytV36sxm8fahxkiwBbGavommHcD4WfCYJsG",
+      "data": "{\"type\":\"Buffer\",\"data\":[187,127,9,35,155,68,86,40,253,0,59,230,211,63,253,255,53,86,100,64,8,237,113,206,92,20,18,80,183,208,17,33,175,148,61,207,133,140,48,54,160,226,0,0,0,0,0,0,0,0,215,187,187,192,102,237,59,75,246,44,62,202,240,86,10,32,90,236,9,0,17,119,70,213,75,162,204,203,77,152,173,218,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,208,87,100,0,0,0,0,21,208,87,100,0,0,0,0,147,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}",
+      "executable": false,
+      "lamports": 2505600,
+      "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+      "rentEpoch": 0,
+      "space": 232,
+      "type": "stakeEntry",
+      "parsed": {
+        "bump": "253",
+        "kind": "0",
+        "pool": "52qCSBWkZ8BMNyb931eiqXLZSJ4HEJ1peAG7vCTFVkzm",
+        "amount": "0",
+        "stakeMint": "FX8gsPhFqfsokpoBurB4gsLk1wpMM5HiRtbe7PBL6iBT",
+        "lastStaker": "11111111111111111111111111111111",
+        "lastStakedAt": "1683476487",
+        "lastUpdatedAt": "1683476501",
+        "totalStakeSeconds": "2451",
+        "usedStakeSeconds": "0"
+      }
+    }
+  ],
+  "rewardEntries": []
+}

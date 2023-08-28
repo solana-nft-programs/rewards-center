@@ -1,0 +1,28 @@
+{
+  "stakePool": {
+    "pubkey": "5ipPsbUfCjvT64snrFgKsDLLeZyqFnktF6j979BMMWU",
+    "data": "{\"type\":\"Buffer\",\"data\":[121,34,206,21,79,127,255,28,255,9,47,215,138,111,87,202,140,17,201,132,236,181,40,43,55,20,244,165,184,127,105,97,217,9,54,186,130,13,13,191,45,0,0,0,0,0,0,0,0,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,0,1,0,0,0,208,38,67,139,241,133,24,190,43,229,122,57,181,49,167,106,94,64,108,119,34,177,149,190,36,137,187,150,168,122,177,107,0,0,0,0,13,0,0,0,99,114,121,112,116,111,45,116,105,116,97,110,115]}",
+    "executable": false,
+    "lamports": 2081040,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "space": 171,
+    "type": "stakePool",
+    "parsed": {
+      "bump": "255",
+      "authority": "crytuo8d7YBTsDNfZogZA4sTDc5jqnjJB56D6b6eqSk",
+      "totalStaked": "0",
+      "resetOnUnstake": "false",
+      "stakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "unstakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "requiresAuthorization": "false",
+      "allowedCreators": "F1XeEHfaj1NcXMbVgtsSLjSA4WkjaMWafqMz9ecj6ACa",
+      "allowedCollections": "",
+      "identifier": "crypto-titans"
+    }
+  },
+  "rewardDistributor": null,
+  "rewardDistributorTokenAccount": null,
+  "stakeEntries": [],
+  "rewardEntries": []
+}

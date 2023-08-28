@@ -182,4 +182,8 @@ pub mod cardinal_rewards_center {
     pub fn close_payment_info(ctx: Context<ClosePaymentInfoCtx>) -> Result<()> {
         payment::close_payment_info::handler(ctx)
     }
+
+    pub fn force_unstake<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts, 'remaining, 'info, ForceUnstakeCtx<'info>>) -> Result<()> {
+        force_unstake::handler(ctx)
+    }
 }

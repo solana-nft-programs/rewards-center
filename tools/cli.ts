@@ -15,6 +15,8 @@ import * as attributeBreakdown from "./mint-tools/attributeBreakdown";
 import * as attributeFilter from "./mint-tools/attributeFilter";
 import * as createPaymentInfo from "./payment/createPaymentInfo";
 import * as updatePaymentInfo from "./payment/updatePaymentInfo";
+import * as claimUnstake from "./shutdown/claimUnstake";
+import * as snapshotEntries from "./shutdown/snapshotEntries";
 import * as checkStakeEntries from "./stake-entry/checkStakeEntries";
 import * as getStakeEntry from "./stake-entry/getStakeEntry";
 import * as resizeStakeEntries from "./stake-entry/resizeStakeEntries";
@@ -36,7 +38,7 @@ const networkURLs: { [key in Cluster | "mainnet" | "localnet"]: string } = {
     process.env.MAINNET_PRIMARY_URL ?? "https://solana-api.projectserum.com",
   mainnet:
     process.env.MAINNET_PRIMARY_URL ?? "https://solana-api.projectserum.com",
-  devnet: "https://api.devnet.solana.com/",
+  devnet: process.env.DEVNET_PRIMARY_URL ?? "https://api.devnet.solana.com/",
   testnet: "https://api.testnet.solana.com/",
   localnet: "http://localhost:8899/",
 };
@@ -118,6 +120,8 @@ void yargs(hideBin(process.argv))
   .command(commandBuilder(resetAllEntries))
   .command(commandBuilder(attributeFilter))
   .command(commandBuilder(attributeBreakdown))
+  .command(commandBuilder(snapshotEntries))
+  .command(commandBuilder(claimUnstake))
   .strict()
   .demandCommand()
   .help("h")

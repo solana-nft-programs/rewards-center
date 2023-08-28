@@ -1,0 +1,28 @@
+{
+  "stakePool": {
+    "pubkey": "CferUKod4FNLE8h7PJNpbzFQ99cpz1ShtonL48fff6n",
+    "data": "{\"type\":\"Buffer\",\"data\":[121,34,206,21,79,127,255,28,255,11,55,172,68,160,43,167,230,122,158,153,57,127,249,142,89,229,47,230,210,216,92,253,193,165,166,58,100,234,9,50,47,0,0,0,0,1,0,0,0,250,53,116,17,158,213,104,128,168,102,91,131,247,175,142,23,28,158,188,10,177,148,226,182,212,66,181,79,148,76,45,17,250,53,116,17,158,213,104,128,168,102,91,131,247,175,142,23,28,158,188,10,177,148,226,182,212,66,181,79,148,76,45,17,1,0,0,0,0,0,0,0,0,16,0,0,0,107,110,105,116,116,97,98,108,101,115,45,112,114,111,116,111]}",
+    "executable": false,
+    "lamports": 1879200,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "space": 142,
+    "type": "stakePool",
+    "parsed": {
+      "bump": "255",
+      "authority": "knit7QytAqCXK4zEAkWNTT8kG3GcsEMuWeLidmgCWc6",
+      "totalStaked": "0",
+      "resetOnUnstake": "true",
+      "stakePaymentInfo": "HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU",
+      "unstakePaymentInfo": "HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU",
+      "requiresAuthorization": "true",
+      "allowedCreators": "",
+      "allowedCollections": "",
+      "identifier": "knittables-proto"
+    }
+  },
+  "rewardDistributor": null,
+  "rewardDistributorTokenAccount": null,
+  "stakeEntries": [],
+  "rewardEntries": []
+}

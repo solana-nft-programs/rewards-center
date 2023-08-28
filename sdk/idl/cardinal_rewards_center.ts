@@ -1436,6 +1436,102 @@ export type CardinalRewardsCenter = {
         }
       ];
       args: [];
+    },
+    {
+      name: "forceUnstake";
+      accounts: [
+        {
+          name: "stakePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeEntry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userEscrow";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintEdition";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintUserTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintUserTokenRecord";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "stakeMintManager";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRules";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "creatorStandardProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "sysvarInstructions";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenMetadataProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authorizationRulesProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
     }
   ];
   accounts: [
@@ -4100,6 +4196,102 @@ export const IDL: CardinalRewardsCenter = {
           name: "authority",
           isMut: true,
           isSigner: true,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "forceUnstake",
+      accounts: [
+        {
+          name: "stakePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeEntry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userEscrow",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintEdition",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintUserTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintUserTokenRecord",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "stakeMintManager",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRules",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "creatorStandardProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "sysvarInstructions",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenMetadataProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authorizationRulesProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
       ],
       args: [],

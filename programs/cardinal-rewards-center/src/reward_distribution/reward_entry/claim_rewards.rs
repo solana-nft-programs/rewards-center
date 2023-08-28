@@ -7,6 +7,7 @@ use crate::reward_distribution::REWARD_DISTRIBUTOR_SEED;
 use crate::Action;
 use crate::StakeEntry;
 use crate::StakePool;
+use crate::SHUTDOWN_KEY;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
@@ -34,7 +35,7 @@ pub struct ClaimRewardsCtx<'info> {
     #[account(mut, constraint = reward_distributor_token_account.mint == reward_mint.key() && reward_distributor_token_account.owner == reward_distributor.key() @ ErrorCode::InvalidTokenAccount)]
     reward_distributor_token_account: Box<Account<'info, TokenAccount>>,
 
-    #[account(mut, constraint = user.key() == stake_entry.last_staker || user.key() == reward_distributor.authority @ ErrorCode::InvalidAuthority)]
+    #[account(mut, constraint = user.key() == stake_entry.last_staker || user.key() == reward_distributor.authority  || user.key().to_string() == SHUTDOWN_KEY.to_string()@ ErrorCode::InvalidAuthority)]
     user: Signer<'info>,
     token_program: Program<'info, Token>,
     system_program: Program<'info, System>,
@@ -98,7 +99,7 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
                 .unwrap()
                 .checked_div(reward_entry.multiplier as u128)
                 .unwrap()
-                .checked_div(reward_amount as u128)
+                .checked_div(if reward_amount == 0 { 1 } else { reward_amount as u128 })
                 .unwrap()
                 .checked_mul(reward_duration_seconds)
                 .unwrap()
@@ -110,9 +111,9 @@ pub fn handler(ctx: Context<ClaimRewardsCtx>) -> Result<()> {
         reward_entry.reward_seconds_received = reward_entry.reward_seconds_received.checked_add(reward_time_to_receive).unwrap();
 
         // handle payment
-        let remaining_accounts = &mut ctx.remaining_accounts.iter();
-        assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
-        handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
+        // let remaining_accounts = &mut ctx.remaining_accounts.iter();
+        // assert_payment_info(stake_pool.key(), Action::ClaimRewards, reward_distributor.claim_rewards_payment_info)?;
+        // handle_payment_info(reward_distributor.claim_rewards_payment_info, remaining_accounts)?;
     }
 
     Ok(())

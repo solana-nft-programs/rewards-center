@@ -1,0 +1,30 @@
+{
+  "stakePool": {
+    "pubkey": "HRnjro9rnh8Ar9TQHLDoYHv4NNYPwdGAyiavpmCrrSNy",
+    "data": "{\"type\":\"Buffer\",\"data\":[121,34,206,21,79,127,255,28,255,128,116,101,117,44,74,1,26,180,139,151,227,0,217,82,169,105,11,220,1,89,15,102,140,219,23,54,128,21,24,220,96,0,0,0,0,0,1,10,0,0,0,1,60,0,0,0,0,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,1,2,0,0,0,178,251,216,211,241,204,235,254,62,118,87,123,203,64,88,152,127,231,182,224,110,249,9,247,59,248,252,113,193,194,75,172,164,12,114,83,185,117,14,222,140,59,114,141,124,95,5,62,109,39,142,140,129,129,90,93,63,176,23,244,21,205,158,80,2,0,0,0,210,227,112,168,203,193,15,189,169,250,230,45,102,152,249,218,137,233,151,219,199,253,185,24,70,65,199,187,48,143,188,239,76,161,118,114,141,69,247,60,221,32,37,48,102,49,89,178,195,120,253,10,67,113,228,43,209,225,184,165,136,73,235,64,28,0,0,0,112,111,111,108,45,110,97,109,101,45,48,46,50,49,55,52,49,54,48,51,48,49,52,53,52,51,54,50]}",
+    "executable": false,
+    "lamports": 2909280,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "space": 290,
+    "type": "stakePool",
+    "parsed": {
+      "bump": "255",
+      "authority": "9eS8Mao98BayGAC6Nuiojmrxeb9qTtjGKTH4FU21uruu",
+      "totalStaked": "0",
+      "resetOnUnstake": "false",
+      "cooldownSeconds": "10",
+      "minStakeSeconds": "60",
+      "stakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "unstakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "requiresAuthorization": "true",
+      "allowedCreators": "D3gJgraMaEQdkZgEfDcLjAxSwTXrKksEoBidE9zMNdXh,C3NsUZChUwo4WB5yg7etTN9JThCNeQDNvCua5kBkFbH9",
+      "allowedCollections": "FCDmQmUQc7mDi7i85LmoNgC5ZHmAEx5xA2xyfhSMs4NJ,6A8nSWytwA8i2uDu9CsFYX84XeM1BDDnphLLA66Tqo4T",
+      "identifier": "pool-name-0.2174160301454362"
+    }
+  },
+  "rewardDistributor": null,
+  "rewardDistributorTokenAccount": null,
+  "stakeEntries": [],
+  "rewardEntries": []
+}

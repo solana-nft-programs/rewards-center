@@ -1,0 +1,66 @@
+{
+  "stakePool": {
+    "pubkey": "2A7ng6jSoGMjQm3ryibXgvgKdm7UuhN36FY3CvKjR9x7",
+    "data": "{\"type\":\"Buffer\",\"data\":[121,34,206,21,79,127,255,28,253,67,93,237,255,68,251,46,175,192,247,182,187,255,104,255,22,226,123,254,207,173,12,57,113,37,234,220,175,54,129,125,143,0,0,0,0,0,0,1,128,81,1,0,0,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,0,4,0,0,0,115,65,49,63,33,188,91,31,65,196,44,151,140,28,244,97,251,11,20,94,8,223,105,20,104,52,204,10,6,153,45,180,232,0,102,119,9,193,167,154,144,14,122,81,223,140,10,51,170,39,65,162,113,45,210,95,105,152,156,57,154,185,73,232,12,186,104,121,66,233,135,220,7,216,226,198,45,2,250,241,104,209,163,3,116,184,1,253,115,70,200,108,210,105,195,196,111,191,205,1,219,173,35,62,90,143,85,51,53,84,122,131,145,48,5,97,248,167,90,189,133,120,80,125,219,158,235,233,0,0,0,0,28,0,0,0,112,111,111,108,45,110,97,109,101,45,48,46,53,48,51,51,50,51,53,55,52,50,53,54,52,55,52,49]}",
+    "executable": false,
+    "lamports": 2881440,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "type": "stakePool",
+    "parsed": {
+      "bump": "253",
+      "authority": "5XyPUzeFCwUdLKWXU3TBUUn1zSo5RQdn15CvQfzamMUJ",
+      "totalStaked": "0",
+      "resetOnUnstake": "false",
+      "minStakeSeconds": "86400",
+      "stakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "unstakePaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL",
+      "requiresAuthorization": "false",
+      "allowedCreators": "8kuYRJ5kG9ACnjPv1mRVkCsg4LoM6cKTwAVEygTZNYJw,GcdwWiN3dDhyQ2zwM2ZUpjX2WcmRdURrQneYtAdjSkqu,rgketVMe5fYpnL8G6JM3QkHMy44Vg2JjLXFeTPqSqFq,8XDtGygScGsPerWiZrXAHTwnPQgQTnzvrNkzZzQbW78t",
+      "allowedCollections": "",
+      "identifier": "pool-name-0.5033235742564741"
+    }
+  },
+  "rewardDistributor": {
+    "timestamp": 1693179556700,
+    "pubkey": "Fn1vKaQHUcEUuq2UmUNNu9X2pKjdtm8oxAZLM6eC7pSo",
+    "data": "{\"type\":\"Buffer\",\"data\":[215,10,217,199,104,194,97,227,253,17,49,150,190,81,197,39,72,110,240,70,46,215,76,214,82,168,206,60,135,209,239,159,193,175,33,236,35,199,197,89,252,0,67,93,237,255,68,251,46,175,192,247,182,187,255,104,255,22,226,123,254,207,173,12,57,113,37,234,220,175,54,129,125,143,0,0,0,0,0,0,0,0,126,154,232,34,133,187,126,124,250,167,68,236,210,71,194,28,70,133,27,117,27,142,96,24,219,187,215,24,254,33,93,209,1,0,0,0,0,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,6,144,128,201,64,134,91,102,18,81,59,174,245,164,232,141,122,52,44,92,214,252,183,214,104,220,71,239,168,141,50,77,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}",
+    "executable": false,
+    "lamports": 2895360,
+    "owner": "crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd",
+    "rentEpoch": 0,
+    "type": "rewardDistributor",
+    "parsed": {
+      "bump": "253",
+      "stakePool": "2A7ng6jSoGMjQm3ryibXgvgKdm7UuhN36FY3CvKjR9x7",
+      "kind": "0",
+      "authority": "5XyPUzeFCwUdLKWXU3TBUUn1zSo5RQdn15CvQfzamMUJ",
+      "identifier": "0",
+      "rewardMint": "9XDNUYW3ACsLS1NJDi1W8uSSaxF1rwDCaKjjjgGVtTQU",
+      "rewardAmount": "1",
+      "rewardDurationSeconds": "60",
+      "rewardsIssued": "0",
+      "defaultMultiplier": "1",
+      "multiplierDecimals": "0",
+      "claimRewardsPaymentInfo": "SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL"
+    }
+  },
+  "rewardDistributorTokenAccount": {
+    "address": "GURxxeVC88xDinWzmLmRF8yzkQKFt7rYedyWJAENwXx7",
+    "mint": "9XDNUYW3ACsLS1NJDi1W8uSSaxF1rwDCaKjjjgGVtTQU",
+    "owner": "Fn1vKaQHUcEUuq2UmUNNu9X2pKjdtm8oxAZLM6eC7pSo",
+    "amount": "200",
+    "delegate": null,
+    "delegatedAmount": "0",
+    "isInitialized": true,
+    "isFrozen": false,
+    "isNative": false,
+    "closeAuthority": null,
+    "tlvData": {
+      "type": "Buffer",
+      "data": "[]"
+    }
+  },
+  "stakeEntries": [],
+  "rewardEntries": []
+}
