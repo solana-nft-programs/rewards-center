@@ -1,4 +1,4 @@
-import { connectionFor, executeTransaction } from "@cardinal/common";
+import { connectionFor, executeTransaction } from "@solana-nft-programs/common";
 import { utils, Wallet } from "@coral-xyz/anchor";
 import type { Cluster } from "@solana/web3.js";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";

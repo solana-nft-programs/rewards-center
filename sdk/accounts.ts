@@ -1,8 +1,16 @@
+import type { AllAccountsMap } from "@coral-xyz/anchor/dist/cjs/program/namespace/types";
+import type {
+  AccountInfo,
+  Connection,
+  GetAccountInfoConfig,
+  GetProgramAccountsConfig,
+  PublicKey,
+} from "@solana/web3.js";
 import type {
   NullableIdlAccountData,
   NullableIdlAccountInfo,
   ParsedIdlAccount,
-} from "@cardinal/common";
+} from "@solana-nft-programs/common";
 import {
   decodeIdlAccount as cDecodeIdlAccount,
   decodeIdlAccountUnknown as cDecodeIdlAccountUnknown,
@@ -12,18 +20,10 @@ import {
   getProgramIdlAccounts as cGetProgramIdlAccounts,
   tryDecodeIdlAccount as cTryDecodeIdlAccount,
   tryDecodeIdlAccountUnknown as cTryDecodeIdlAccountUnknown,
-} from "@cardinal/common";
-import type { AllAccountsMap } from "@coral-xyz/anchor/dist/cjs/program/namespace/types";
-import type {
-  AccountInfo,
-  Connection,
-  GetAccountInfoConfig,
-  GetProgramAccountsConfig,
-  PublicKey,
-} from "@solana/web3.js";
+} from "@solana-nft-programs/common";
 
 import { REWARDS_CENTER_ADDRESS, REWARDS_CENTER_IDL } from "./constants";
-import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
+import type { SolanaNftProgramsRewardsCenter } from "./idl/solana_nft_programs_rewards_center";
 
 /**
  * Fetch an account with idl types
@@ -34,19 +34,19 @@ import type { CardinalRewardsCenter } from "./idl/cardinal_rewards_center";
  * @returns
  */
 export const fetchIdlAccount = async <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   connection: Connection,
   pubkey: PublicKey,
   accountType: T,
-  config?: GetAccountInfoConfig
+  config?: GetAccountInfoConfig,
 ) => {
-  return cFetchIdlAccount<T, CardinalRewardsCenter>(
+  return cFetchIdlAccount<T, SolanaNftProgramsRewardsCenter>(
     connection,
     pubkey,
     accountType,
     REWARDS_CENTER_IDL,
-    config
+    config,
   );
 };
 
@@ -60,19 +60,19 @@ export const fetchIdlAccount = async <
  * @returns
  */
 export const fetchIdlAccountNullable = async <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   connection: Connection,
   pubkey: PublicKey,
   accountType: T,
-  config?: GetAccountInfoConfig
+  config?: GetAccountInfoConfig,
 ) => {
-  return cFetchIdlAccountNullable<T, CardinalRewardsCenter>(
+  return cFetchIdlAccountNullable<T, SolanaNftProgramsRewardsCenter>(
     connection,
     pubkey,
     accountType,
     REWARDS_CENTER_IDL,
-    config
+    config,
   );
 };
 
@@ -84,15 +84,15 @@ export const fetchIdlAccountNullable = async <
  * @returns
  */
 export const decodeIdlAccount = <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   accountInfo: AccountInfo<Buffer>,
-  accountType: T
+  accountType: T,
 ) => {
-  return cDecodeIdlAccount<T, CardinalRewardsCenter>(
+  return cDecodeIdlAccount<T, SolanaNftProgramsRewardsCenter>(
     accountInfo,
     accountType,
-    REWARDS_CENTER_IDL
+    REWARDS_CENTER_IDL,
   );
 };
 
@@ -104,15 +104,15 @@ export const decodeIdlAccount = <
  * @returns
  */
 export const tryDecodeIdlAccount = <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   accountInfo: AccountInfo<Buffer>,
-  accountType: T
+  accountType: T,
 ) => {
-  return cTryDecodeIdlAccount<T, CardinalRewardsCenter>(
+  return cTryDecodeIdlAccount<T, SolanaNftProgramsRewardsCenter>(
     accountInfo,
     accountType,
-    REWARDS_CENTER_IDL
+    REWARDS_CENTER_IDL,
   );
 };
 
@@ -123,13 +123,14 @@ export const tryDecodeIdlAccount = <
  * @returns
  */
 export const decodeIdlAccountUnknown = <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
-  accountInfo: AccountInfo<Buffer> | null
-): AccountInfo<Buffer> & ParsedIdlAccount<CardinalRewardsCenter>[T] => {
-  return cDecodeIdlAccountUnknown<T, CardinalRewardsCenter>(
+  accountInfo: AccountInfo<Buffer> | null,
+): AccountInfo<Buffer> &
+  ParsedIdlAccount<SolanaNftProgramsRewardsCenter>[T] => {
+  return cDecodeIdlAccountUnknown<T, SolanaNftProgramsRewardsCenter>(
     accountInfo,
-    REWARDS_CENTER_IDL
+    REWARDS_CENTER_IDL,
   );
 };
 
@@ -140,13 +141,13 @@ export const decodeIdlAccountUnknown = <
  * @returns
  */
 export const tryDecodeIdlAccountUnknown = <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
-  accountInfo: AccountInfo<Buffer>
-): NullableIdlAccountInfo<T, CardinalRewardsCenter> => {
-  return cTryDecodeIdlAccountUnknown<T, CardinalRewardsCenter>(
+  accountInfo: AccountInfo<Buffer>,
+): NullableIdlAccountInfo<T, SolanaNftProgramsRewardsCenter> => {
+  return cTryDecodeIdlAccountUnknown<T, SolanaNftProgramsRewardsCenter>(
     accountInfo,
-    REWARDS_CENTER_IDL
+    REWARDS_CENTER_IDL,
   );
 };
 
@@ -160,25 +161,28 @@ export const tryDecodeIdlAccountUnknown = <
  * @returns
  */
 export const getProgramIdlAccounts = async <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   connection: Connection,
   accountType: T,
-  config?: GetProgramAccountsConfig
+  config?: GetProgramAccountsConfig,
 ) => {
-  return cGetProgramIdlAccounts<T, CardinalRewardsCenter>(
+  return cGetProgramIdlAccounts<T, SolanaNftProgramsRewardsCenter>(
     connection,
     accountType,
     REWARDS_CENTER_ADDRESS,
     REWARDS_CENTER_IDL,
-    config
+    config,
   );
 };
 
 export type IdlAccountDataById<
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 > = {
-  [accountId: string]: NullableIdlAccountData<T, CardinalRewardsCenter>;
+  [accountId: string]: NullableIdlAccountData<
+    T,
+    SolanaNftProgramsRewardsCenter
+  >;
 };
 
 /**
@@ -188,10 +192,10 @@ export type IdlAccountDataById<
  * @returns
  */
 export const decodeAccountInfos = <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   accountIds: PublicKey[],
-  accountInfos: (AccountInfo<Buffer> | null)[]
+  accountInfos: (AccountInfo<Buffer> | null)[],
 ): IdlAccountDataById<T> => {
   return accountInfos.reduce((acc, accountInfo, i) => {
     if (!accountInfo?.data) return acc;
@@ -230,15 +234,15 @@ export const decodeAccountInfos = <
  * @returns
  */
 export const fetchIdlAccountDataById = async <
-  T extends keyof AllAccountsMap<CardinalRewardsCenter>
+  T extends keyof AllAccountsMap<SolanaNftProgramsRewardsCenter>,
 >(
   connection: Connection,
-  ids: (PublicKey | null)[]
+  ids: (PublicKey | null)[],
 ): Promise<IdlAccountDataById<T>> => {
   const filteredIds = ids.filter((id): id is PublicKey => id !== null);
   const accountInfos = await getBatchedMultipleAccounts(
     connection,
-    filteredIds
+    filteredIds,
   );
   return decodeAccountInfos(filteredIds, accountInfos);
 };

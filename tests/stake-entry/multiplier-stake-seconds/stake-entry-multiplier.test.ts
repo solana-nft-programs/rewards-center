@@ -1,10 +1,3 @@
-import type { CardinalProvider } from "@cardinal/common";
-import {
-  executeTransaction,
-  executeTransactions,
-  findMintMetadataId,
-  newAccountWithLamports,
-} from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
 import { beforeAll, expect, test } from "@jest/globals";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
@@ -14,6 +7,13 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
+import type { SolanaProvider } from "@solana-nft-programs/common";
+import {
+  executeTransaction,
+  executeTransactions,
+  findMintMetadataId,
+  newAccountWithLamports,
+} from "@solana-nft-programs/common";
 import { BN } from "bn.js";
 
 import {
@@ -31,7 +31,7 @@ import { createMasterEditionTx } from "../../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
 const multiplierBasisPoints = 10000 * 2.5;
-let provider: CardinalProvider;
+let provider: SolanaProvider;
 let mintId: PublicKey;
 let nonAuthority: Keypair;
 

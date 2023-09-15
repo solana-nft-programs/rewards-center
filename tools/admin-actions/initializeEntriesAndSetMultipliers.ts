@@ -3,7 +3,7 @@ import {
   executeTransaction,
   findMintMetadataId,
   withFindOrInitAssociatedTokenAccount,
-} from "@cardinal/common";
+} from "@solana-nft-programs/common";
 import type {
   AllAccountsMap,
   IdlTypes,

@@ -1,9 +1,9 @@
-import type { CardinalProvider } from "@cardinal/common";
-import { executeTransaction, withWrapSol } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { NATIVE_MINT } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
+import type { SolanaProvider } from "@solana-nft-programs/common";
+import { executeTransaction, withWrapSol } from "@solana-nft-programs/common";
 import { BN } from "bn.js";
 
 import {
@@ -17,7 +17,7 @@ import {
 import { getTestProvider } from "../../tools/utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
-let provider: CardinalProvider;
+let provider: SolanaProvider;
 const PAYMENT_AMOUNT = 10;
 let paymentMintId: PublicKey;
 let paymentRecipientId: PublicKey;

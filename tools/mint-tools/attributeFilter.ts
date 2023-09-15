@@ -1,4 +1,4 @@
-import { chunkArray, findMintMetadataId } from "@cardinal/common";
+import { chunkArray, findMintMetadataId } from "@solana-nft-programs/common";
 import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import type { Connection } from "@solana/web3.js";

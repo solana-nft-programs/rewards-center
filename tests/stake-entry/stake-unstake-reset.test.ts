@@ -1,5 +1,3 @@
-import type { CardinalProvider } from "@cardinal/common";
-import { executeTransaction, executeTransactions } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
@@ -8,6 +6,11 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
+import type { SolanaProvider } from "@solana-nft-programs/common";
+import {
+  executeTransaction,
+  executeTransactions,
+} from "@solana-nft-programs/common";
 
 import {
   fetchIdlAccount,
@@ -23,7 +26,7 @@ import { getTestProvider } from "../../tools/utils";
 import { createMasterEditionTx } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
-let provider: CardinalProvider;
+let provider: SolanaProvider;
 let mintId: PublicKey;
 beforeAll(async () => {
   provider = await getTestProvider();

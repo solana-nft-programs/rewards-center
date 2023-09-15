@@ -1,4 +1,4 @@
-import { tryPublicKey } from "@cardinal/common";
+import { tryPublicKey } from "@solana-nft-programs/common";
 import type { Wallet } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 

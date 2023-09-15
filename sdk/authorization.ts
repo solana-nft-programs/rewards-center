@@ -7,14 +7,14 @@ import { findStakeAuthorizationRecordId } from "./pda";
 export const remainingAccountsForAuthorization = (
   stakePool: Pick<StakePool, "parsed" | "pubkey">,
   mintId: PublicKey,
-  mintMetadata: Metadata | null
+  mintMetadata: Metadata | null,
 ) => {
   if (
     stakePool.parsed.requiresAuthorization &&
     !mintMetadata?.data.creators?.some((c) =>
       stakePool.parsed.allowedCreators
         .map((c) => c.toString())
-        .includes(c.address.toString())
+        .includes(c.address.toString()),
     ) &&
     !(
       mintMetadata?.collection?.key &&

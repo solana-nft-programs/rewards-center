@@ -1,5 +1,5 @@
 const { writeFile, writeFileSync } = require("fs");
-const IDL = require("./sdk/idl/cardinal_rewards_center_idl");
+const IDL = require("./sdk/idl/solana_nft_programs_rewards_center_idl");
 
 const snakeCase = (str) =>
   str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);

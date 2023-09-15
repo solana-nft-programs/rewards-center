@@ -1,9 +1,3 @@
-import type { CardinalProvider } from "@cardinal/common";
-import {
-  executeTransaction,
-  executeTransactions,
-  findTokenRecordId,
-} from "@cardinal/common";
 import { Wallet } from "@coral-xyz/anchor";
 import { beforeAll, expect, test } from "@jest/globals";
 import { TokenRecord } from "@metaplex-foundation/mpl-token-metadata";
@@ -15,6 +9,12 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
+import type { SolanaProvider } from "@solana-nft-programs/common";
+import {
+  executeTransaction,
+  executeTransactions,
+  findTokenRecordId,
+} from "@solana-nft-programs/common";
 
 import {
   fetchIdlAccount,
@@ -30,7 +30,7 @@ import { getTestProvider } from "../../tools/utils";
 import { createProgrammableAsset } from "../utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
-let provider: CardinalProvider;
+let provider: SolanaProvider;
 let mintId: PublicKey;
 let stakerTokenAccountId: PublicKey;
 const stakerWallet: Wallet = new Wallet(Keypair.generate());

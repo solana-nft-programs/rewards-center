@@ -7,7 +7,7 @@ import { BN } from "bn.js";
 import { findStakeEntryId } from "./pda";
 
 export const METADATA_PROGRAM_ID = new PublicKey(
-  "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+  "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
 );
 
 /**
@@ -20,7 +20,7 @@ export const findStakeEntryIdFromMint = async (
   stakePoolId: PublicKey,
   stakeMintId: PublicKey,
   user: PublicKey,
-  isFungible?: boolean
+  isFungible?: boolean,
 ): Promise<PublicKey> => {
   if (isFungible === undefined) {
     const mint = await getMint(connection, stakeMintId);
@@ -37,7 +37,7 @@ export const findMintMetadataId = (mintId: PublicKey): PublicKey => {
       METADATA_PROGRAM_ID.toBuffer(),
       mintId.toBuffer(),
     ],
-    METADATA_PROGRAM_ID
+    METADATA_PROGRAM_ID,
   )[0];
 };
 
@@ -49,6 +49,6 @@ export const findMintEditionId = (mintId: PublicKey): PublicKey => {
       mintId.toBuffer(),
       utils.bytes.utf8.encode("edition"),
     ],
-    METADATA_PROGRAM_ID
+    METADATA_PROGRAM_ID,
   )[0];
 };

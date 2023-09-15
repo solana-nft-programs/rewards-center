@@ -25,7 +25,7 @@ start:
 		--clone HqiCY5NqfHfyhyjheQ4ENo5J2XSQBpeqhNoeESkDWBpU \
 		--clone 382KXQfzC26jbFmLZBmKoZ6eRz53iwGfxXwoGyyyH8po \
 		--clone SdFEeJxn7XxcnYEMNpnoMMSsTfmA1bHfiRdu6qra7zL \
-		--bpf-program crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd ./target/deploy/cardinal_rewards_center.so \
+		--bpf-program crcBwD7wUjzwsy8tJsVCzZvBTHeq5GoboGg84YraRyd ./target/deploy/solana_nft_programs_reward_center.so \
 		--reset --quiet & echo $$!
 	sleep 10
 

@@ -1,10 +1,10 @@
-import type { CardinalProvider } from "@cardinal/common";
+import type { SolanaProvider } from "@solana-nft-programs/common";
 import {
   chunkArray,
   getTestConnection,
   logError,
   newAccountWithLamports,
-} from "@cardinal/common";
+} from "@solana-nft-programs/common";
 import { utils, Wallet } from "@coral-xyz/anchor";
 import type { Wallet as IWallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import type {
@@ -19,7 +19,7 @@ import {
   sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
 
-export async function getTestProvider(): Promise<CardinalProvider> {
+export async function getTestProvider(): Promise<SolanaProvider> {
   const connection = getTestConnection();
   const keypair = await newAccountWithLamports(connection);
   const wallet = new Wallet(keypair);

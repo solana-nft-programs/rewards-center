@@ -1,7 +1,7 @@
 import {
   findMintMetadataId,
   getBatchedMultipleAccounts,
-} from "@cardinal/common";
+} from "@solana-nft-programs/common";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import type { Connection, PublicKey } from "@solana/web3.js";
 import fetch from "node-fetch";

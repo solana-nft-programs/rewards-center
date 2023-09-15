@@ -1,7 +1,7 @@
-import type { CardinalProvider } from "@cardinal/common";
-import { executeTransaction } from "@cardinal/common";
 import { beforeAll, expect, test } from "@jest/globals";
 import { SystemProgram, Transaction } from "@solana/web3.js";
+import type { SolanaProvider } from "@solana-nft-programs/common";
+import { executeTransaction } from "@solana-nft-programs/common";
 
 import {
   fetchIdlAccount,
@@ -12,7 +12,7 @@ import {
 import { getTestProvider } from "../../tools/utils";
 
 const stakePoolIdentifier = `test-${Math.random()}`;
-let provider: CardinalProvider;
+let provider: SolanaProvider;
 beforeAll(async () => {
   provider = await getTestProvider();
 });

@@ -1,4 +1,4 @@
-import { executeTransaction } from "@cardinal/common";
+import { executeTransaction } from "@solana-nft-programs/common";
 import type { Wallet } from "@coral-xyz/anchor";
 import { BN } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";

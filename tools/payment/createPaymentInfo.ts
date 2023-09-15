@@ -1,15 +1,15 @@
-import { executeTransaction } from "@cardinal/common";
 import type { Wallet } from "@coral-xyz/anchor";
 import { BN } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, Transaction } from "@solana/web3.js";
+import { executeTransaction } from "@solana-nft-programs/common";
 
 import { findPaymentInfoId, rewardsCenterProgram } from "../../sdk";
 
 export const commandName = "createPaymentInfo";
 export const description = "Create a payment info object";
 export const getArgs = (_connection: Connection, wallet: Wallet) => ({
-  identifier: "cardinal-default",
+  identifier: "default",
   authority: wallet.publicKey,
   paymentAmount: 5 * 10 ** 7,
   paymentMint: PublicKey.default,

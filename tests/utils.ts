@@ -1,14 +1,3 @@
-import {
-  executeTransaction,
-  findRuleSetId,
-  findTokenRecordId,
-  METADATA_PROGRAM_ID,
-} from "@cardinal/common";
-import {
-  createInitMintManagerInstruction,
-  findMintManagerId,
-  findRulesetId,
-} from "@cardinal/creator-standard";
 import type { Wallet } from "@coral-xyz/anchor";
 import {
   createCreateOrUpdateInstruction,
@@ -39,6 +28,17 @@ import {
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
 } from "@solana/web3.js";
+import {
+  executeTransaction,
+  findRuleSetId,
+  findTokenRecordId,
+  METADATA_PROGRAM_ID,
+} from "@solana-nft-programs/common";
+import {
+  createInitMintManagerInstruction,
+  findMintManagerId,
+  findRulesetId,
+} from "@solana-nft-programs/creator-standard";
 
 import { findMintEditionId, findMintMetadataId } from "../sdk/utils";
 

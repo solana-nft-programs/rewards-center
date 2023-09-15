@@ -3,7 +3,7 @@ import {
   executeTransaction,
   executeTransactions,
   fetchAccountDataById,
-} from "@cardinal/common";
+} from "@solana-nft-programs/common";
 import type { Wallet } from "@coral-xyz/anchor";
 import type { Connection } from "@solana/web3.js";
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";

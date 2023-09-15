@@ -1,9 +1,3 @@
-import { findAta, findTokenRecordId, tryNull } from "@cardinal/common";
-import {
-  findMintManagerId,
-  MintManager,
-  PROGRAM_ID as CREATOR_STANDARD_PROGRAM_ID,
-} from "@cardinal/creator-standard";
 import type { Wallet } from "@coral-xyz/anchor/dist/cjs/provider";
 import { PROGRAM_ID as TOKEN_AUTH_RULES_ID } from "@metaplex-foundation/mpl-token-auth-rules";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
@@ -19,6 +13,16 @@ import {
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
 } from "@solana/web3.js";
+import {
+  findAta,
+  findTokenRecordId,
+  tryNull,
+} from "@solana-nft-programs/common";
+import {
+  findMintManagerId,
+  MintManager,
+  PROGRAM_ID as CREATOR_STANDARD_PROGRAM_ID,
+} from "@solana-nft-programs/creator-standard";
 import BN from "bn.js";
 
 import {
@@ -66,7 +70,7 @@ export const stake = async (
     tokenAccountId?: PublicKey;
     amount?: BN;
     fungible?: boolean;
-  }[]
+  }[],
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(
@@ -77,13 +81,13 @@ export const stake = async (
         stakeEntryId: findStakeEntryId(
           stakePoolId,
           mintId,
-          fungible ? wallet.publicKey : undefined
+          fungible ? wallet.publicKey : undefined,
         ),
         mintTokenAccountId:
           tokenAccountId ??
           getAssociatedTokenAddressSync(mintId, wallet.publicKey, true),
       };
-    }
+    },
   );
   const accountDataById = await fetchIdlAccountDataById(connection, [
     stakePoolId,
@@ -99,7 +103,7 @@ export const stake = async (
   const stakePaymentInfoData = await fetchIdlAccount(
     connection,
     stakePoolData.parsed.stakePaymentInfo,
-    "paymentInfo"
+    "paymentInfo",
   );
 
   const txs: Transaction[] = [];
@@ -117,7 +121,7 @@ export const stake = async (
     const authorizationAccounts = remainingAccountsForAuthorization(
       stakePoolData,
       mintId,
-      metadataInfo ?? null
+      metadataInfo ?? null,
     );
     if (!accountDataById[stakeEntryId.toString()]) {
       const ix = await rewardsCenterProgram(connection, wallet)
@@ -142,13 +146,13 @@ export const stake = async (
       ...withRemainingAccountsForPaymentInfoSync(
         tx,
         wallet.publicKey,
-        stakePaymentInfoData
+        stakePaymentInfoData,
       ),
     ];
 
     if (mintManagerAccountInfo?.data) {
       const mintManager = MintManager.fromAccountInfo(
-        mintManagerAccountInfo
+        mintManagerAccountInfo,
       )[0];
       const stakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.stakeCcs(new BN(amount ?? 1))
@@ -173,12 +177,12 @@ export const stake = async (
       const editionId = findMintEditionId(mintId);
       const stakeTokenRecordAccountId = findTokenRecordId(
         mintId,
-        mintTokenAccountId
+        mintTokenAccountId,
       );
       tx.add(
         ComputeBudgetProgram.setComputeUnitLimit({
           units: 100000000,
-        })
+        }),
       );
       const stakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.stakePnft()
@@ -247,20 +251,20 @@ export const unstake = async (
     mintId: PublicKey;
     fungible?: boolean;
   }[],
-  rewardDistributorIds?: PublicKey[]
+  rewardDistributorIds?: PublicKey[],
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
     const stakeEntryId = findStakeEntryId(
       stakePoolId,
       mintId,
-      fungible ? wallet.publicKey : undefined
+      fungible ? wallet.publicKey : undefined,
     );
     return {
       mintId,
       stakeEntryId,
       rewardEntryIds: rewardDistributorIds?.map((rewardDistributorId) =>
-        findRewardEntryId(rewardDistributorId, stakeEntryId)
+        findRewardEntryId(rewardDistributorId, stakeEntryId),
       ),
     };
   });
@@ -333,12 +337,12 @@ export const unstake = async (
           const rewardDistributorTokenAccount = getAssociatedTokenAddressSync(
             rewardMint,
             rewardDistributorId,
-            true
+            true,
           );
           const userRewardMintTokenAccount = getAssociatedTokenAddressSync(
             rewardMint,
             wallet.publicKey,
-            true
+            true,
           );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
@@ -346,7 +350,7 @@ export const unstake = async (
               .accounts({
                 rewardEntry: findRewardEntryId(
                   rewardDistributorId,
-                  stakeEntryId
+                  stakeEntryId,
                 ),
                 rewardDistributor: rewardDistributorId,
                 stakeEntry: stakeEntryId,
@@ -369,8 +373,8 @@ export const unstake = async (
               ...withRemainingAccountsForPaymentInfoSync(
                 tx,
                 wallet.publicKey,
-                claimRewardsPaymentInfo
-              )
+                claimRewardsPaymentInfo,
+              ),
             );
           }
           const ix = await rewardsCenterProgram(connection, wallet)
@@ -400,15 +404,15 @@ export const unstake = async (
         ...withRemainingAccountsForPaymentInfoSync(
           tx,
           wallet.publicKey,
-          unstakePaymentInfo
-        )
+          unstakePaymentInfo,
+        ),
       );
     }
     const mintManagerId = findMintManagerId(mintId);
     const mintManagerAccountInfo = accountDataById[mintManagerId.toString()];
     const metadataId = findMintMetadataId(mintId);
     const metadata = await tryNull(
-      Metadata.fromAccountAddress(connection, metadataId)
+      Metadata.fromAccountAddress(connection, metadataId),
     );
     if (mintManagerAccountInfo?.data) {
       const ix = await rewardsCenterProgram(connection, wallet)
@@ -432,7 +436,7 @@ export const unstake = async (
       tx.add(
         ComputeBudgetProgram.setComputeUnitLimit({
           units: 100000000,
-        })
+        }),
       );
       const unstakeIx = await rewardsCenterProgram(connection, wallet)
         .methods.unstakePnft()
@@ -499,20 +503,20 @@ export const claimRewards = async (
     fungible?: boolean;
   }[],
   rewardDistributorIds?: PublicKey[],
-  claimingRewardsForUsers?: boolean
+  claimingRewardsForUsers?: boolean,
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const mints = mintInfos.map(({ mintId, fungible }) => {
     const stakeEntryId = findStakeEntryId(
       stakePoolId,
       mintId,
-      fungible ? wallet.publicKey : undefined
+      fungible ? wallet.publicKey : undefined,
     );
     return {
       mintId,
       stakeEntryId,
       rewardEntryIds: rewardDistributorIds?.map((rewardDistributorId) =>
-        findRewardEntryId(rewardDistributorId, stakeEntryId)
+        findRewardEntryId(rewardDistributorId, stakeEntryId),
       ),
     };
   });
@@ -571,7 +575,7 @@ export const claimRewards = async (
           const rewardDistributorTokenAccount = getAssociatedTokenAddressSync(
             rewardMint,
             rewardDistributorId,
-            true
+            true,
           );
           const stakeEntryDataInfo = accountDataById[stakeEntryId.toString()];
           const userRewardMintTokenAccountOwnerId = stakeEntryDataInfo
@@ -582,15 +586,15 @@ export const claimRewards = async (
           const userRewardMintTokenAccount = await findAta(
             rewardMint,
             userRewardMintTokenAccountOwnerId,
-            true
+            true,
           );
           tx.add(
             createAssociatedTokenAccountIdempotentInstruction(
               wallet.publicKey,
               userRewardMintTokenAccount,
               userRewardMintTokenAccountOwnerId,
-              rewardMint
-            )
+              rewardMint,
+            ),
           );
           if (!rewardEntry) {
             const ix = await rewardsCenterProgram(connection, wallet)
@@ -598,7 +602,7 @@ export const claimRewards = async (
               .accounts({
                 rewardEntry: findRewardEntryId(
                   rewardDistributorId,
-                  stakeEntryId
+                  stakeEntryId,
                 ),
                 rewardDistributor: rewardDistributorId,
                 stakeEntry: stakeEntryId,
@@ -618,8 +622,8 @@ export const claimRewards = async (
               ...withRemainingAccountsForPaymentInfoSync(
                 tx,
                 wallet.publicKey,
-                unstakePaymentInfo
-              )
+                unstakePaymentInfo,
+              ),
             );
           }
           const ix = await rewardsCenterProgram(connection, wallet)
@@ -663,13 +667,13 @@ export const claimRewardReceipt = async (
     mintId: PublicKey;
     fungible?: boolean;
   },
-  receiptManagerId: PublicKey
+  receiptManagerId: PublicKey,
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(
     stakePoolId,
     mintInfo.mintId,
-    mintInfo.fungible ? wallet.publicKey : undefined
+    mintInfo.fungible ? wallet.publicKey : undefined,
   );
   const rewardReceiptId = findRewardReceiptId(receiptManagerId, stakeEntryId);
 
@@ -711,15 +715,15 @@ export const claimRewardReceipt = async (
     wallet.publicKey,
     receiptManagerData.parsed.paymentMint,
     (receiptManagerData.parsed.paymentShares as PaymentShare[]).map(
-      (p) => p.address
-    )
+      (p) => p.address,
+    ),
   );
 
   const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(
     connection,
     tx,
     wallet.publicKey,
-    receiptManagerData.parsed.claimActionPaymentInfo
+    receiptManagerData.parsed.claimActionPaymentInfo,
   );
   const rewardReceiptIx = await rewardsCenterProgram(connection, wallet)
     .methods.claimRewardReceipt()
@@ -759,17 +763,17 @@ export const boost = async (
     fungible?: boolean;
   },
   secondsToBoost: number,
-  stakeBoosterIdentifer?: number
+  stakeBoosterIdentifer?: number,
 ) => {
   const stakePoolId = findStakePoolId(stakePoolIdentifier);
   const stakeEntryId = findStakeEntryId(
     stakePoolId,
     mintInfo.mintId,
-    mintInfo.fungible ? wallet.publicKey : undefined
+    mintInfo.fungible ? wallet.publicKey : undefined,
   );
   const stakeBoosterId = findStakeBoosterId(
     stakePoolId,
-    stakeBoosterIdentifer ? new BN(stakeBoosterIdentifer) : undefined
+    stakeBoosterIdentifer ? new BN(stakeBoosterIdentifer) : undefined,
   );
 
   const accountDataById = await fetchIdlAccountDataById(connection, [
@@ -795,15 +799,15 @@ export const boost = async (
     wallet.publicKey,
     stakeBoosterData.parsed.paymentMint,
     (stakeBoosterData.parsed.paymentShares as PaymentShare[]).map(
-      (p) => p.address
-    )
+      (p) => p.address,
+    ),
   );
 
   const remainingAccountsForAction = await withRemainingAccountsForPaymentInfo(
     connection,
     tx,
     wallet.publicKey,
-    stakeBoosterData.parsed.boostActionPaymentInfo
+    stakeBoosterData.parsed.boostActionPaymentInfo,
   );
   const boostIx = await rewardsCenterProgram(connection, wallet)
     .methods.boostStakeEntry({ secondsToBoost: new BN(secondsToBoost) })

@@ -20,7 +20,7 @@ export const getPendingRewardsForPool = async (
   wallet: PublicKey,
   mintIds: PublicKey[],
   rewardDistributor: RewardDistributor,
-  UTCNow: number
+  UTCNow: number,
 ): Promise<{
   rewardMap: {
     [mintId: string]: { claimableRewards: BN; nextRewardsIn: BN };
@@ -30,11 +30,11 @@ export const getPendingRewardsForPool = async (
   const rewardDistributorTokenAccountId = getAssociatedTokenAddressSync(
     rewardDistributor.parsed.rewardMint,
     rewardDistributor.pubkey,
-    true
+    true,
   );
   const rewardDistributorTokenAccountInfo = await getAccount(
     connection,
-    rewardDistributorTokenAccountId
+    rewardDistributorTokenAccountId,
   );
 
   const stakeEntryIds: PublicKey[] = await Promise.all(
@@ -44,13 +44,13 @@ export const getPendingRewardsForPool = async (
           connection,
           rewardDistributor.parsed.stakePool,
           mintId,
-          wallet
-        )
-    )
+          wallet,
+        ),
+    ),
   );
 
   const rewardEntryIds = stakeEntryIds.map((stakeEntryId) =>
-    findRewardEntryId(rewardDistributor.pubkey, stakeEntryId)
+    findRewardEntryId(rewardDistributor.pubkey, stakeEntryId),
   );
 
   const accountDataById = await fetchIdlAccountDataById(connection, [
@@ -67,14 +67,14 @@ export const getPendingRewardsForPool = async (
       }
       return acc;
     },
-    [[], []] as [StakeEntry[], RewardEntry[]]
+    [[], []] as [StakeEntry[], RewardEntry[]],
   );
   return getRewardMap(
     stakeEntries,
     rewardEntries,
     rewardDistributor,
     new BN(rewardDistributorTokenAccountInfo.amount.toString()),
-    UTCNow
+    UTCNow,
   );
 };
 
@@ -92,7 +92,7 @@ export const getRewardMap = (
   rewardEntries: RewardEntry[],
   rewardDistributor: RewardDistributor,
   remainingRewardAmount: BN,
-  UTCNow: number
+  UTCNow: number,
 ): {
   rewardMap: {
     [stakeEntryId: string]: { claimableRewards: BN; nextRewardsIn: BN };
@@ -105,8 +105,9 @@ export const getRewardMap = (
 
   for (let i = 0; i < stakeEntries.length; i++) {
     const stakeEntry = stakeEntries[i]!;
-    const rewardEntry = rewardEntries.find((rewardEntry) =>
-      rewardEntry?.parsed?.stakeEntry.equals(stakeEntry?.pubkey)
+    const rewardEntry = rewardEntries.find(
+      (rewardEntry) =>
+        rewardEntry?.parsed?.stakeEntry.equals(stakeEntry?.pubkey),
     );
 
     if (stakeEntry) {
@@ -115,7 +116,7 @@ export const getRewardMap = (
         stakeEntry,
         rewardEntry,
         remainingRewardAmount,
-        UTCNow
+        UTCNow,
       );
       rewardMap[stakeEntry.pubkey.toString()] = {
         claimableRewards,
@@ -127,7 +128,7 @@ export const getRewardMap = (
   // Compute too many rewards
   let claimableRewards = Object.values(rewardMap).reduce(
     (acc, { claimableRewards }) => acc.add(claimableRewards),
-    new BN(0)
+    new BN(0),
   );
 
   if (claimableRewards.gt(remainingRewardAmount)) {
@@ -150,7 +151,7 @@ export const calculatePendingRewards = (
   stakeEntry: StakeEntry,
   rewardEntry: RewardEntry | undefined,
   remainingRewardAmount: BN,
-  UTCNow: number
+  UTCNow: number,
 ): [BN, BN] => {
   if (
     !stakeEntry ||
@@ -177,7 +178,7 @@ export const calculatePendingRewards = (
   if (rewardDistributor.parsed.maxRewardSecondsReceived) {
     rewardSeconds = BN.min(
       rewardSeconds,
-      new BN(rewardDistributor.parsed.maxRewardSecondsReceived)
+      new BN(rewardDistributor.parsed.maxRewardSecondsReceived),
     );
   }
 
@@ -193,12 +194,12 @@ export const calculatePendingRewards = (
   }
 
   const nextRewardsIn = new BN(
-    rewardDistributor.parsed.rewardDurationSeconds
+    rewardDistributor.parsed.rewardDurationSeconds,
   ).sub(
     currentSeconds
       .sub(new BN(stakeEntry.parsed.lastStakedAt))
       .add(new BN(stakeEntry.parsed.totalStakeSeconds))
-      .mod(new BN(rewardDistributor.parsed.rewardDurationSeconds))
+      .mod(new BN(rewardDistributor.parsed.rewardDurationSeconds)),
   );
 
   return [rewardAmountToReceive, nextRewardsIn];

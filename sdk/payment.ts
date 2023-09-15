@@ -20,12 +20,12 @@ export const withRemainingAccountsForPaymentInfo = async (
   connection: Connection,
   transaction: Transaction,
   payer: PublicKey,
-  paymentInfo: PublicKey
+  paymentInfo: PublicKey,
 ): Promise<AccountMeta[]> => {
   const paymentInfoData = await fetchIdlAccount(
     connection,
     paymentInfo,
-    "paymentInfo"
+    "paymentInfo",
   );
   const remainingAccounts: AccountMeta[] = [
     {
@@ -45,9 +45,9 @@ export const withRemainingAccountsForPaymentInfo = async (
       payer,
       paymentInfoData.parsed.paymentMint,
       (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
-        (p) => p.address
-      )
-    )
+        (p) => p.address,
+      ),
+    ),
   );
   return remainingAccounts;
 };
@@ -55,7 +55,7 @@ export const withRemainingAccountsForPaymentInfo = async (
 export const withRemainingAccountsForPaymentInfoSync = (
   transaction: Transaction,
   payer: PublicKey,
-  paymentInfoData: Pick<PaymentInfo, "parsed" | "pubkey">
+  paymentInfoData: Pick<PaymentInfo, "parsed" | "pubkey">,
 ): AccountMeta[] => {
   const remainingAccounts: AccountMeta[] = [
     {
@@ -75,9 +75,9 @@ export const withRemainingAccountsForPaymentInfoSync = (
       payer,
       paymentInfoData.parsed.paymentMint,
       (paymentInfoData.parsed.paymentShares as PaymentShare[]).map(
-        (p) => p.address
-      )
-    )
+        (p) => p.address,
+      ),
+    ),
   );
   return remainingAccounts;
 };
@@ -86,7 +86,7 @@ export const withRemainingAccountsForPayment = (
   transaction: Transaction,
   payer: PublicKey,
   paymentMint: PublicKey,
-  paymentTargets: PublicKey[]
+  paymentTargets: PublicKey[],
 ): AccountMeta[] => {
   const remainingAccounts = [
     {
@@ -107,7 +107,7 @@ export const withRemainingAccountsForPayment = (
         pubkey: a,
         isSigner: false,
         isWritable: true,
-      }))
+      })),
     );
   } else {
     remainingAccounts.push({
@@ -121,7 +121,7 @@ export const withRemainingAccountsForPayment = (
       isWritable: true,
     });
     const ataIds = paymentTargets.map((a) =>
-      getAssociatedTokenAddressSync(paymentMint, a, true)
+      getAssociatedTokenAddressSync(paymentMint, a, true),
     );
     for (let i = 0; i < ataIds.length; i++) {
       transaction.add(
@@ -129,8 +129,8 @@ export const withRemainingAccountsForPayment = (
           payer,
           ataIds[i]!,
           paymentTargets[i]!,
-          paymentMint
-        )
+          paymentMint,
+        ),
       );
     }
     remainingAccounts.push(
@@ -138,7 +138,7 @@ export const withRemainingAccountsForPayment = (
         pubkey: id,
         isSigner: false,
         isWritable: true,
-      }))
+      })),
     );
   }
   return remainingAccounts;
@@ -146,7 +146,7 @@ export const withRemainingAccountsForPayment = (
 
 export const withRemainingAccounts = (
   instruction: TransactionInstruction,
-  remainingAccounts: AccountMeta[]
+  remainingAccounts: AccountMeta[],
 ) => {
   return {
     ...instruction,
