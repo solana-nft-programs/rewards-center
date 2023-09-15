@@ -82,7 +82,7 @@ pub fn handler<'key, 'accounts, 'remaining, 'info>(ctx: Context<'key, 'accounts,
         &mpl_token_metadata::instructions::FreezeDelegatedAccount {
             delegate: user_escrow.key(),
             token_account: ctx.accounts.user_stake_mint_token_account.key(),
-            edition: ctx.accounts.stake_mint.key(),
+            edition: ctx.accounts.stake_mint_edition.key(),
             mint: ctx.accounts.stake_mint.key(),
             token_program: ctx.accounts.token_program.key(),
         }
